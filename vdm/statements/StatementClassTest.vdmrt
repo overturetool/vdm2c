@@ -1,0 +1,6 @@
+class StatementClassTest
+--this class is just here because we cannot do plain operations in VDM
+
+operations
+-- TODO Define operations here
+end StatementClassTest

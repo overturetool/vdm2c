@@ -1,0 +1,8 @@
+class ExpressionClassTest
+--this class is just here because we cannot do plain functions in VDM
+
+functions
+-- TODO Define functiones here
+
+
+end ExpressionClassTest
