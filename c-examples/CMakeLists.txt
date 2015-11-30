@@ -1,23 +1,31 @@
 cmake_minimum_required (VERSION 2.8.5)
-project (c-examples C)
+project (c-examples C CXX)
+
+set(CMAKE_INCLUDE_CURRENT_DIR on)
 
 enable_testing()
 
-set(CMAKE_VERBOSE_MAKEFILE on)
+IF(CMAKE_COMPILER_IS_GNUCC)
+  SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fmessage-length=0")
+ENDIF(CMAKE_COMPILER_IS_GNUCC)
+IF(CMAKE_COMPILER_IS_GNUCXX)
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fmessage-length=0")
+ENDIF(CMAKE_COMPILER_IS_GNUCXX)
+
+SET(CMAKE_VERBOSE_MAKEFILE ON)
 
 
-set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} "-pthread")
+#set(CMAKE_C_FLAGS_DEBUG " -O0 -g3 -Wall")
+#set(CMAKE_CXX_FLAGS_DEBUG " -O0 -g3 -Wall")
 
-file(GLOB C_FILES *.c)
+
+file(GLOB C_FILES *.c classes/*.c)
 file(GLOB CPP_FILES tests/*.cpp)
 
 add_executable(${PROJECT_NAME} ${C_FILES} ${CPP_FILES})
 
-#include_directories(${libshmfmi_INCLUDE_DIRS})
 include_directories(${gtest_SOURCE_DIR}/include)
 
 target_link_libraries(${PROJECT_NAME} gtest_main)
-#target_link_libraries(${PROJECT_NAME} libshmfmi)
-#target_link_libraries(${PROJECT_NAME} ${libshmfmi_LIBS})
 
 add_test(AllTestsIn-c-examples ${PROJECT_NAME})

@@ -5,7 +5,7 @@
  *      Author: kel
  */
 #include "ModelVarBOOL.h"
-#include "TypedValue.h"
+#include "lib/TypedValue.h"
 
 
 //
@@ -156,5 +156,5 @@ static struct ModelVarBOOL new()
 						}
 
 						const struct ModelVarBOOLClass ModelVarBOOL =
-						{ .new = &new, .newB = &newB, .newCharPtr = &newCharPtr };
+						{ ._new = &new, ._newB = &newB, ._newCharPtr = &newCharPtr };
 

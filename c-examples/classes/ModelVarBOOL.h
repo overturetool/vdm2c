@@ -5,12 +5,12 @@
  *      Author: kel
  */
 
-typedef int bool;
-#define true 1
-#define false 0
+
 
 #ifndef MODELVARBOOL_H_
 #define MODELVARBOOL_H_
+
+#include <stdbool.h>
 
 #include <stdlib.h>
 
@@ -31,27 +31,27 @@ struct ModelVarBOOL
 	char* memory_adresse;
 
 	//member functions
-	bool (*openContact)(struct ModelVarBOOL *this);
-	bool (*closedContact)(struct ModelVarBOOL *this);
-	void (*coil)(struct ModelVarBOOL *this);
-	void (*setCoil)(struct ModelVarBOOL *this);
-	void (*resetCoil)(struct ModelVarBOOL *this);
-	void (*notCoil)(struct ModelVarBOOL *this);
-	bool (*PContact)(struct ModelVarBOOL *this);
-	bool (*NContact)(struct ModelVarBOOL *this);
+	bool (*openContact)(struct ModelVarBOOL *self);
+	bool (*closedContact)(struct ModelVarBOOL *self);
+	void (*coil)(struct ModelVarBOOL *self);
+	void (*setCoil)(struct ModelVarBOOL *self);
+	void (*resetCoil)(struct ModelVarBOOL *self);
+	void (*notCoil)(struct ModelVarBOOL *self);
+	bool (*PContact)(struct ModelVarBOOL *self);
+	bool (*NContact)(struct ModelVarBOOL *self);
 
 
-	struct TypedValue* (*ff)(struct ModelVarBOOL *this);
-	bool (*gg)(struct ModelVarBOOL *this);
-	bool (*dd)(struct ModelVarBOOL *this, struct TypedValue* x);
+	struct TypedValue* (*ff)(struct ModelVarBOOL *self);
+	bool (*gg)(struct ModelVarBOOL *self);
+	bool (*dd)(struct ModelVarBOOL *self, struct TypedValue* x);
 };
 
 extern const struct ModelVarBOOLClass
 {
 	//class members
-	struct ModelVarBOOL (*newB)(bool x);
-	struct ModelVarBOOL (*newCharPtr)(char* x);
-	struct ModelVarBOOL (*new)();
+	struct ModelVarBOOL (*_newB)(bool x);
+	struct ModelVarBOOL (*_newCharPtr)(char* x);
+	struct ModelVarBOOL (*_new)();
 
 } ModelVarBOOL;
 

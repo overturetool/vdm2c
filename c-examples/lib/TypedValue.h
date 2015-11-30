@@ -10,7 +10,7 @@
 
 #include "Globals.h"
 #include <stdlib.h>
-#include "ModelVarBOOL.h"
+#include "classes/ModelVarBOOL.h"
 
 //,VDM_UNION
 typedef enum
@@ -45,7 +45,7 @@ struct ClassType
 
 static struct TypedValue* newTypeValue(vdmtype type, void* value)
 {
-	struct TypedValue* ptr = malloc(sizeof(struct TypedValue*));
+	struct TypedValue* ptr =(struct TypedValue*) malloc(sizeof(struct TypedValue*));
 	ptr->type = type;
 	ptr->value = value;
 	return ptr;
@@ -53,23 +53,23 @@ static struct TypedValue* newTypeValue(vdmtype type, void* value)
 
 static struct TypedValue* newSeq(size_t size)
 {
-	struct Collection* ptr = malloc(sizeof(struct Collection*));
+	struct Collection* ptr =(struct Collection*) malloc(sizeof(struct Collection*));
 	ptr->size = size;
-	ptr->value = malloc(sizeof(struct TypedValue*) * size);
+	ptr->value =(struct TypedValue**) malloc(sizeof(struct TypedValue*) * size);
 	return newTypeValue(VDM_SEQ, ptr);
 }
 
 static struct TypedValue* newSet(size_t size)
 {
-	struct Collection* ptr = malloc(sizeof(struct Collection*));
+	struct Collection* ptr = (struct Collection*)malloc(sizeof(struct Collection*));
 	ptr->size = size;
-	ptr->value = malloc(sizeof(struct TypedValue*) * size);
+	ptr->value = (struct TypedValue**)malloc(sizeof(struct TypedValue*) * size);
 	return newTypeValue(VDM_SET, ptr);
 }
 
 static struct ClassType* newClassValue(int id, unsigned int* refs, void* value)
 {
-	struct ClassType* ptr = malloc(sizeof(struct ClassType*));
+	struct ClassType* ptr = (struct ClassType*)malloc(sizeof(struct ClassType*));
 	ptr->classId = id;
 	ptr->value = value;
 	(*refs)++;
@@ -99,7 +99,7 @@ static void recursiveFree(struct TypedValue* ptr)
 	case VDM_SEQ:
 	case VDM_SET:
 	{
-		struct Collection* cptr = ptr->value;
+		struct Collection* cptr =(struct Collection*) ptr->value;
 		for (int i = 0; i < cptr->size; i++)
 		{
 			recursiveFree(cptr->value[i]);
@@ -111,7 +111,7 @@ static void recursiveFree(struct TypedValue* ptr)
 	case VDM_CLASS:
 	{
 		//handle smart pointer
-		struct ClassType* classTptr = ptr->value;
+		struct ClassType* classTptr =(struct ClassType*) ptr->value;
 		int count = 0;
 
 		switch (classTptr->classId)
@@ -119,7 +119,7 @@ static void recursiveFree(struct TypedValue* ptr)
 		{
 		case ModelVarBOOL_ID:
 		{
-			struct ModelVarBOOL* cptr = classTptr->value;
+			struct ModelVarBOOL* cptr = (struct ModelVarBOOL*) classTptr->value;
 			count = --cptr->_refs;
 			break;
 		}
