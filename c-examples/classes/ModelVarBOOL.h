@@ -16,6 +16,7 @@
 
 
 #include <assert.h>
+#include "../Globals.h"
 
 
 
@@ -44,6 +45,10 @@ struct ModelVarBOOL
 	struct TypedValue* (*ff)(struct ModelVarBOOL *self);
 	bool (*gg)(struct ModelVarBOOL *self);
 	bool (*dd)(struct ModelVarBOOL *self, struct TypedValue* x);
+
+
+	//void (*ModelVarBOOL_free)(struct ModelVarBOOL *self);
+	freeVdmClassFunction _free;
 };
 
 extern const struct ModelVarBOOLClass
@@ -52,6 +57,7 @@ extern const struct ModelVarBOOLClass
 	struct ModelVarBOOL* (*_newB)(bool x);
 	struct ModelVarBOOL* (*_newCharPtr)(char* x);
 	struct ModelVarBOOL* (*_new)();
+	struct TypedValue* (*_encapsulate)(struct ModelVarBOOL* x);
 
 } ModelVarBOOL;
 

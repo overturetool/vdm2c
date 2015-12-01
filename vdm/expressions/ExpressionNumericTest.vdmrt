@@ -1,0 +1,58 @@
+class ExpressionNumericTest
+functions
+
+
+unaryMinusExp: () -> bool
+unaryMinusExp()== not false;
+
+absExp: () -> bool
+absExp()== false and false;
+
+floorExp: () -> bool
+floorExp()== true or false;
+
+
+sumExp: () -> bool
+sumExp()== true => false;
+
+differenceExp: () -> bool
+differenceExp()== true <=> false;
+
+productExp: () -> bool
+productExp()== false = false;
+
+
+divisionExp: () -> bool
+divisionExp()== true <> false;
+
+intDivisionExp: () -> bool
+intDivisionExp()== true <> false;
+
+remainderExp: () -> bool
+remainderExp()== true <> false;
+
+modExp: () -> bool
+modExp()== true <> false;
+
+powerExp: () -> bool
+powerExp()== true <> false;
+
+lessthanExp: () -> bool
+lessthanExp()== true <> false;
+
+greaterThanExp: () -> bool
+greaterThanExp()== true <> false;
+
+lessEqualExp: () -> bool
+lessEqualExp()== true <> false;
+
+greaterEqualExp: () -> bool
+greaterEqualExp()== true <> false;
+
+equalExp: () -> bool
+equalExp()== true <> false;
+
+notEqualExp: () -> bool
+notEqualExp()== true <> false;
+
+end ExpressionNumericTest

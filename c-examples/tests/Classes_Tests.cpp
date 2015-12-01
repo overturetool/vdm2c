@@ -23,8 +23,8 @@ TEST(ModelVarBOOL, _new)
 	c->setCoil( c);
 	show(c);
 
-	struct ClassType* classT = newClassValue(c->_id,&c->_refs,c);
-	struct TypedValue* tclassT = newTypeValue(VDM_CLASS,classT);
+
+	struct TypedValue* tclassT = ModelVarBOOL._encapsulate(c);
 	recursiveFree(tclassT);
 }
 
@@ -35,8 +35,7 @@ TEST(ModelVarBOOL, _newB)
 	c->setCoil( c);
 	show(c);
 
-	struct ClassType* classT = newClassValue(c->_id,&c->_refs,c);
-	struct TypedValue* tclassT = newTypeValue(VDM_CLASS,classT);
+	struct TypedValue* tclassT = ModelVarBOOL._encapsulate(c);
 	recursiveFree(tclassT);
 }
 

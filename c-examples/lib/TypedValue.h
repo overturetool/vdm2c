@@ -10,7 +10,9 @@
 
 #include "Globals.h"
 #include <stdlib.h>
-#include "classes/ModelVarBOOL.h"
+#include <stdbool.h>
+
+//#define ALLOC(t,n) (t *) malloc((n)*sizeof(t))
 
 //,VDM_UNION
 typedef enum
@@ -18,10 +20,32 @@ typedef enum
 	VDM_INT, VDM_INT1, VDM_BOOL, VDM_REAL, VDM_CHAR, VDM_SET, VDM_SEQ, VDM_MAP, VDM_PRODUCT, VDM_QUOTE, VDM_CLASS
 } vdmtype;
 
+//typedef TypedValueType =
+typedef union TypedValueType
+{
+	//VDM_SET, SEQ, Map, Product and class
+	void* ptr;
+
+	//VDM_INT + INT1
+	int intVal;
+
+	//VDM_BOOL
+	bool boolVal;
+
+	//VDM_REAL
+	double doubleVal;
+
+	//VDM_CHAR
+	char charVal;
+
+	//VDM_QUOTE
+	unsigned int uintVal;
+} TypedValueType;
+
 struct TypedValue
 {
-	void* value;
 	vdmtype type;
+	TypedValueType value;
 };
 
 struct Collection
@@ -34,116 +58,39 @@ struct ClassType
 {
 	void* value;
 	int classId;
+	freeVdmClassFunction freeClass;
 };
 
-
-//static struct TypedValue* newTypeValue(vdmtype type, void* value);
-//static struct TypedValue* newSeq(size_t size);
-//static struct TypedValue* newSet(size_t size);
-//static struct ClassType* newClassValue(int id, unsigned int* refs, void* value);
-//static void recursiveFree(struct TypedValue* ptr);
-
-static struct TypedValue* newTypeValue(vdmtype type, void* value)
-{
-	struct TypedValue* ptr =(struct TypedValue*) malloc(sizeof(struct TypedValue*));
-	ptr->type = type;
-	ptr->value = value;
-	return ptr;
-}
-
-static struct TypedValue* newSeq(size_t size)
-{
-	struct Collection* ptr =(struct Collection*) malloc(sizeof(struct Collection*));
-	ptr->size = size;
-	ptr->value =(struct TypedValue**) malloc(sizeof(struct TypedValue*) * size);
-	return newTypeValue(VDM_SEQ, ptr);
-}
-
-static struct TypedValue* newSet(size_t size)
-{
-	struct Collection* ptr = (struct Collection*)malloc(sizeof(struct Collection*));
-	ptr->size = size;
-	ptr->value = (struct TypedValue**)malloc(sizeof(struct TypedValue*) * size);
-	return newTypeValue(VDM_SET, ptr);
-}
-
-static struct ClassType* newClassValue(int id, unsigned int* refs, void* value)
-{
-	struct ClassType* ptr = (struct ClassType*)malloc(sizeof(struct ClassType*));
-	ptr->classId = id;
-	ptr->value = value;
-	(*refs)++;
-	return ptr;
-}
-
-
-static void recursiveFree(struct TypedValue* ptr)
-{
-	switch (ptr->type)
-	{
-	case VDM_BOOL:
-	case VDM_CHAR:
-	case VDM_INT:
-	case VDM_INT1:
-	case VDM_REAL:
-	case VDM_QUOTE:
-	{
-		free(ptr->value);
-		ptr->value = NULL;
-		break;
-	}
-	case VDM_MAP:
-		//todo
-		break;
-	case VDM_PRODUCT:
-	case VDM_SEQ:
-	case VDM_SET:
-	{
-		struct Collection* cptr =(struct Collection*) ptr->value;
-		for (int i = 0; i < cptr->size; i++)
-		{
-			recursiveFree(cptr->value[i]);
-		}
-		free(cptr);
-		ptr->value = NULL;
-		break;
-	}
-	case VDM_CLASS:
-	{
-		//handle smart pointer
-		struct ClassType* classTptr =(struct ClassType*) ptr->value;
-		int count = 0;
-
-		switch (classTptr->classId)
-		//maybe global lookup map is better since it is dynamic
-		{
-		case ModelVarBOOL_ID:
-		{
-			struct ModelVarBOOL* cptr = (struct ModelVarBOOL*) classTptr->value;
-			count = --cptr->_refs;
-			break;
-		}
-//TODO add any other classes
-
-		}
-
-		if (count < 1)
-		{
-			//free class struct
-			free(classTptr->value);
-			classTptr->value=NULL;
-		}
-		//free class type struct
-		free(classTptr);
-		ptr->value=NULL;
-	}
-	}
-
-	free(ptr);
-}
+struct TypedValue* newTypeValue(vdmtype type, TypedValueType value);
 
 
 
+//static struct TypedValue* newInt(int x){return newTypeValue(VDM_INT,(TypedValueType){.intVal= x});}
+//static struct TypedValue* newInt1(int x){return newTypeValue(VDM_INT,(TypedValueType){.intVal= x});}
+//static struct TypedValue* newBool(bool x){return newTypeValue(VDM_INT,(TypedValueType){.intVal= x});}
+//static struct TypedValue* newReal(double x){return newTypeValue(VDM_INT,(TypedValueType){.intVal= x});}
+//static struct TypedValue* newChar(char x){return newTypeValue(VDM_INT,(TypedValueType){.intVal= x});}
+//static struct TypedValue* newQuote(unsigned int x){return newTypeValue(VDM_INT,(TypedValueType){.intVal= x});}
 
+// Basic - these should inline
+struct TypedValue* newInt(int x);
+struct TypedValue* newInt1(int x);
+struct TypedValue* newBool(bool x);
+struct TypedValue* newReal(double x);
+struct TypedValue* newChar(char x);
+struct TypedValue* newQuote(unsigned int x);
+
+// Complex
+struct TypedValue* newSeq(size_t size);
+struct TypedValue* newSet(size_t size);
+
+// Class
+struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction freeClass, void* value);
+
+struct TypedValue* newInt(int x);
+struct TypedValue* newDouble(double x);
+struct TypedValue* newChar(char x);
+
+void recursiveFree(struct TypedValue* ptr);
 
 #endif /* TYPEDVALUE_H_ */

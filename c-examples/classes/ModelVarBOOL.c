@@ -11,7 +11,7 @@
 
 #define ModelVarBOOL_ID_FIELDS ._id=ModelVarBOOL_ID, ._refs = 0
 #define ModelVarBOOL_fun_map .openContact=&openContact, .closedContact=&closedContact,\
-	.coil=&coil, .setCoil=&setCoil, .resetCoil=&resetCoil,.notCoil=&notCoil, .PContact=&PContact, .NContact=&NContact, .ff=&ff, .gg=&gg,.dd=&dd
+	.coil=&coil, .setCoil=&setCoil, .resetCoil=&resetCoil,.notCoil=&notCoil, .PContact=&PContact, .NContact=&NContact, .ff=&ff, .gg=&gg,.dd=&dd, ._free=(freeVdmClassFunction)&ModelVarBOOL_free
 
 //member functions
 static bool openContact(struct ModelVarBOOL *this)
@@ -58,13 +58,13 @@ static struct TypedValue* ff(struct ModelVarBOOL *this)
 	struct TypedValue* g = newSeq(2);
 //	struct	 ModelVarBOOL** g = malloc(sizeof(struct ModelVarBOOL*)*2);
 
-	struct Collection* c = g->value;
+	struct Collection* c = g->value.ptr;
 
 //	g[0]= this;
-	*(c->value + 0) = newTypeValue(VDM_CLASS, newClassValue(this->_id, &this->_refs, this));
+	*(c->value + 0) = ModelVarBOOL._encapsulate( this);
 
 //	g[1]=this;
-	*(c->value + 1) = newTypeValue(VDM_CLASS, newClassValue(this->_id, &this->_refs, this));
+	*(c->value + 1) = ModelVarBOOL._encapsulate(this);
 	return g;
 }
 
@@ -74,7 +74,7 @@ static bool gg(struct ModelVarBOOL *this)
 	struct TypedValue* left = this->ff(this);
 	struct TypedValue* right = this->ff(this);
 
-	bool res = left->value == right->value; //should be function now we compare memory locations
+	bool res = left->value.ptr == right->value.ptr; //should be function now we compare memory locations
 	recursiveFree(left);
 	recursiveFree(right);
 
@@ -109,11 +109,11 @@ static struct TypedValue* forlen(struct ModelVarBOOL *this, struct TypedValue* v
 {
 	//DTC
 	assert(v->type == VDM_SEQ && "Value is not a seq");
-	struct Collection* inner = v->value;
+	struct Collection* inner = v->value.ptr;
 	struct TypedValue* first = inner->value[0];
 	assert(first->type == VDM_CHAR && "Value is not a char");
 
-	return newTypeValue(VDM_INT, inner->size);
+	return newInt(inner->size);
 
 }
 
@@ -127,6 +127,16 @@ static struct TypedValue* forlen(struct ModelVarBOOL *this, struct TypedValue* v
 //		x= 7;
 //
 //}
+
+static void ModelVarBOOL_free(struct ModelVarBOOL *this)
+{
+	--this->_refs;
+	if (this->_refs < 1)
+	{
+		//free class struct
+		free(this);
+	}
+}
 
 static struct ModelVarBOOL* new()
 {
@@ -161,6 +171,11 @@ static struct ModelVarBOOL* newCharPtr(char * x)
 	return ptr;
 }
 
+struct TypedValue* encapsulate(struct ModelVarBOOL *this)
+{
+	return newTypeValue(VDM_CLASS, (TypedValueType){.ptr=newClassValue(this->_id, &this->_refs, this->_free, this)});
+}
+
 const struct ModelVarBOOLClass ModelVarBOOL =
-{ ._new = &new, ._newB = &newB, ._newCharPtr = &newCharPtr };
+{	._new = &new, ._newB = &newB, ._newCharPtr = &newCharPtr, ._encapsulate=&encapsulate};
 

@@ -10,4 +10,6 @@
 
 #define ModelVarBOOL_ID 123
 
+typedef void (*freeVdmClassFunction)(void*);
+
 #endif /* GLOBALS_H_ */
