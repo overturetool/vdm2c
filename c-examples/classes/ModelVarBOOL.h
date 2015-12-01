@@ -49,9 +49,9 @@ struct ModelVarBOOL
 extern const struct ModelVarBOOLClass
 {
 	//class members
-	struct ModelVarBOOL (*_newB)(bool x);
-	struct ModelVarBOOL (*_newCharPtr)(char* x);
-	struct ModelVarBOOL (*_new)();
+	struct ModelVarBOOL* (*_newB)(bool x);
+	struct ModelVarBOOL* (*_newCharPtr)(char* x);
+	struct ModelVarBOOL* (*_new)();
 
 } ModelVarBOOL;
 

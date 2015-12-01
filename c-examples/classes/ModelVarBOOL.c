@@ -7,7 +7,6 @@
 #include "ModelVarBOOL.h"
 #include "lib/TypedValue.h"
 
-
 //
 
 #define ModelVarBOOL_ID_FIELDS ._id=ModelVarBOOL_ID, ._refs = 0
@@ -129,32 +128,39 @@ static struct TypedValue* forlen(struct ModelVarBOOL *this, struct TypedValue* v
 //
 //}
 
-static struct ModelVarBOOL new()
+static struct ModelVarBOOL* new()
 {
-	return (struct ModelVarBOOL
+	struct ModelVarBOOL* ptr = (struct ModelVarBOOL*) malloc(sizeof(struct ModelVarBOOL));
+	*ptr = (struct ModelVarBOOL
 			)
-			{ ModelVarBOOL_ID_FIELDS, .value = false, .past = false, .lock = false, ModelVarBOOL_fun_map } ;
-		}
+			{ ModelVarBOOL_ID_FIELDS, .value = false, .past = false, .lock = false, ModelVarBOOL_fun_map };
+
+	return ptr;
+}
 
 //const struct ModelVarBOOLClass ModelVarBOOL =	{ .new = &new };
 
-		static struct ModelVarBOOL newB(bool x)
-		{
-			return (struct ModelVarBOOL
-					)
-					{ ModelVarBOOL_ID_FIELDS, .value = x, .past = false, .lock = false, ModelVarBOOL_fun_map } ;
-				}
+static struct ModelVarBOOL* newB(bool x)
+{
+	struct ModelVarBOOL* ptr = (struct ModelVarBOOL*) malloc(sizeof(struct ModelVarBOOL));
+	*ptr = (struct ModelVarBOOL
+			)
+			{ ModelVarBOOL_ID_FIELDS, .value = x, .past = false, .lock = false, ModelVarBOOL_fun_map };
+	return ptr;
+}
 
 //const struct ModelVarBOOLClass ModelVarBOOL =	{ .newB = &newB };
 
-				static struct ModelVarBOOL newCharPtr(char * x)
-				{
-					return (struct ModelVarBOOL
-							)
-							{ ModelVarBOOL_ID_FIELDS, .value = false, .past = false, .lock = false, .memory_adresse = x,
-							ModelVarBOOL_fun_map } ;
-						}
+static struct ModelVarBOOL* newCharPtr(char * x)
+{
+	struct ModelVarBOOL* ptr = (struct ModelVarBOOL*) malloc(sizeof(struct ModelVarBOOL));
+	*ptr = (struct ModelVarBOOL
+			)
+			{ ModelVarBOOL_ID_FIELDS, .value = false, .past = false, .lock = false, .memory_adresse = x,
+			ModelVarBOOL_fun_map };
+	return ptr;
+}
 
-						const struct ModelVarBOOLClass ModelVarBOOL =
-						{ ._new = &new, ._newB = &newB, ._newCharPtr = &newCharPtr };
+const struct ModelVarBOOLClass ModelVarBOOL =
+{ ._new = &new, ._newB = &newB, ._newCharPtr = &newCharPtr };
 

@@ -16,14 +16,26 @@ void show(struct ModelVarBOOL* c)
 	printf("\t.memory_adresse = %s\n", c->memory_adresse);
 }
 
-TEST(FmiIpc, shmbasetest)
+TEST(ModelVarBOOL, _new)
 {
-	struct ModelVarBOOL c=ModelVarBOOL._newB(true);
-	show(&c);
-	c.setCoil( &c);
-	show(&c);
+	struct ModelVarBOOL* c=ModelVarBOOL._new();//ModelVarBOOL._newB(true);
+	show(c);
+	c->setCoil( c);
+	show(c);
 
-	struct ClassType* classT = newClassValue(c._id,&c._refs,&c);
+	struct ClassType* classT = newClassValue(c->_id,&c->_refs,c);
+	struct TypedValue* tclassT = newTypeValue(VDM_CLASS,classT);
+	recursiveFree(tclassT);
+}
+
+TEST(ModelVarBOOL, _newB)
+{
+	struct ModelVarBOOL* c=ModelVarBOOL._newB(true);
+	show(c);
+	c->setCoil( c);
+	show(c);
+
+	struct ClassType* classT = newClassValue(c->_id,&c->_refs,c);
 	struct TypedValue* tclassT = newTypeValue(VDM_CLASS,classT);
 	recursiveFree(tclassT);
 }
