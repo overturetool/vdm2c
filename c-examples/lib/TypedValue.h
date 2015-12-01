@@ -12,6 +12,8 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+#define TVP struct TypedValue*
+
 //#define ALLOC(t,n) (t *) malloc((n)*sizeof(t))
 
 //,VDM_UNION
@@ -47,6 +49,8 @@ struct TypedValue
 	vdmtype type;
 	TypedValueType value;
 };
+
+
 
 struct Collection
 {
@@ -90,6 +94,10 @@ struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction
 struct TypedValue* newInt(int x);
 struct TypedValue* newDouble(double x);
 struct TypedValue* newChar(char x);
+
+//utils
+
+struct TypedValue* clone(struct TypedValue* x);
 
 void recursiveFree(struct TypedValue* ptr);
 

@@ -52,6 +52,16 @@ struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction
 	return ptr;
 }
 
+struct TypedValue* clone(struct TypedValue* x){
+
+	//clone struct
+	struct TypedValue* tmp = newTypeValue(x->type,x->value);
+
+	//FIXME clone any pointers
+
+	return tmp;
+}
+
 void recursiveFree(struct TypedValue* ptr)
 {
 	switch (ptr->type)

@@ -61,10 +61,10 @@ static struct TypedValue* ff(struct ModelVarBOOL *this)
 	struct Collection* c = g->value.ptr;
 
 //	g[0]= this;
-	*(c->value + 0) = ModelVarBOOL._encapsulate( this);
+	c->value[0] = ModelVarBOOL._encapsulate( this);
 
 //	g[1]=this;
-	*(c->value + 1) = ModelVarBOOL._encapsulate(this);
+	c->value[1] = ModelVarBOOL._encapsulate(this);
 	return g;
 }
 
