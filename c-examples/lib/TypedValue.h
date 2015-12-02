@@ -19,7 +19,19 @@
 //,VDM_UNION
 typedef enum
 {
-	VDM_INT, VDM_INT1, VDM_BOOL, VDM_REAL, VDM_CHAR, VDM_SET, VDM_SEQ, VDM_MAP, VDM_PRODUCT, VDM_QUOTE, VDM_CLASS
+	VDM_INT,
+	VDM_INT1,
+	VDM_BOOL,
+	VDM_REAL,
+	VDM_CHAR,
+	VDM_SET,
+	VDM_SEQ,
+	VDM_MAP,
+	VDM_PRODUCT,
+	VDM_QUOTE,
+	VDM_OPTIONAL,
+	VDM_RECORD,
+	VDM_CLASS
 } vdmtype;
 
 //typedef TypedValueType =
@@ -50,12 +62,16 @@ struct TypedValue
 	TypedValueType value;
 };
 
-
-
 struct Collection
 {
 	struct TypedValue** value;
 	int size;
+};
+
+struct OptionalType
+{
+	bool hasValue;
+	struct TypedValue value;
 };
 
 struct ClassType
@@ -66,9 +82,14 @@ struct ClassType
 	freeVdmClassFunction freeClass;
 };
 
+struct RecordType
+{
+	void* value;
+	int recordId;
+	freeVdmClassFunction freeRecord;
+};
+
 struct TypedValue* newTypeValue(vdmtype type, TypedValueType value);
-
-
 
 //static struct TypedValue* newInt(int x){return newTypeValue(VDM_INT,(TypedValueType){.intVal= x});}
 //static struct TypedValue* newInt1(int x){return newTypeValue(VDM_INT,(TypedValueType){.intVal= x});}
@@ -99,6 +120,7 @@ struct TypedValue* newChar(char x);
 //utils
 
 struct TypedValue* clone(struct TypedValue* x);
+bool equals(struct TypedValue* a, struct TypedValue* b);
 
 void recursiveFree(struct TypedValue* ptr);
 

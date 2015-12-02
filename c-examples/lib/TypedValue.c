@@ -16,13 +16,42 @@ struct TypedValue* newTypeValue(vdmtype type, TypedValueType value)
 }
 
 /// Basic
- struct TypedValue* newInt(int x){return newTypeValue(VDM_INT,(TypedValueType){.intVal= x});}
- struct TypedValue* newInt1(int x){return newTypeValue(VDM_INT1,(TypedValueType){.intVal= x});}
- struct TypedValue* newBool(bool x){return newTypeValue(VDM_BOOL,(TypedValueType){.boolVal= x});}
- struct TypedValue* newReal(double x){return newTypeValue(VDM_REAL,(TypedValueType){.doubleVal= x});}
- struct TypedValue* newChar(char x){return newTypeValue(VDM_CHAR,(TypedValueType){.charVal= x});}
- struct TypedValue* newQuote(unsigned int x){return newTypeValue(VDM_QUOTE,(TypedValueType){.uintVal= x});}
-
+struct TypedValue* newInt(int x)
+{
+	return newTypeValue(VDM_INT, (TypedValueType
+			)
+			{ .intVal = x });
+}
+struct TypedValue* newInt1(int x)
+{
+	return newTypeValue(VDM_INT1, (TypedValueType
+			)
+			{ .intVal = x });
+}
+struct TypedValue* newBool(bool x)
+{
+	return newTypeValue(VDM_BOOL, (TypedValueType
+			)
+			{ .boolVal = x });
+}
+struct TypedValue* newReal(double x)
+{
+	return newTypeValue(VDM_REAL, (TypedValueType
+			)
+			{ .doubleVal = x });
+}
+struct TypedValue* newChar(char x)
+{
+	return newTypeValue(VDM_CHAR, (TypedValueType
+			)
+			{ .charVal = x });
+}
+struct TypedValue* newQuote(unsigned int x)
+{
+	return newTypeValue(VDM_QUOTE, (TypedValueType
+			)
+			{ .uintVal = x });
+}
 
 ///
 
@@ -31,7 +60,9 @@ struct TypedValue* newSeq(size_t size)
 	struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
 	ptr->size = size;
 	ptr->value = (struct TypedValue**) malloc(sizeof(struct TypedValue*) * size);
-	return newTypeValue(VDM_SEQ,(TypedValueType){.ptr= ptr});
+	return newTypeValue(VDM_SEQ, (TypedValueType
+			)
+			{ .ptr = ptr });
 }
 
 struct TypedValue* newSet(size_t size)
@@ -39,7 +70,9 @@ struct TypedValue* newSet(size_t size)
 	struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
 	ptr->size = size;
 	ptr->value = (struct TypedValue**) malloc(sizeof(struct TypedValue) * size);
-	return newTypeValue(VDM_SET, (TypedValueType){.ptr=ptr});
+	return newTypeValue(VDM_SET, (TypedValueType
+			)
+			{ .ptr = ptr });
 }
 
 struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction freeClass, void* value)
@@ -53,10 +86,11 @@ struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction
 	return ptr;
 }
 
-struct TypedValue* clone(struct TypedValue* x){
+struct TypedValue* clone(struct TypedValue* x)
+{
 
 	//clone struct
-	struct TypedValue* tmp = newTypeValue(x->type,x->value);
+	struct TypedValue* tmp = newTypeValue(x->type, x->value);
 
 	//FIXME clone any pointers
 	switch (tmp->type)
@@ -93,17 +127,97 @@ struct TypedValue* clone(struct TypedValue* x){
 		tmp->value.ptr = ptr;
 		break;
 	}
+	case VDM_OPTIONAL:
+		//TODO
+		break;
+	case VDM_RECORD:
+	{
+		//TODO duplicate (memcpy) and duplicate what ever any pointers points to except if a class
+		break;
+	}
 	case VDM_CLASS:
 	{
 		//handle smart pointer
 		struct ClassType* classTptr = (struct ClassType*) tmp->value.ptr;
 
 		//improve using memcpy
-		tmp->value.ptr = newClassValue(classTptr->classId,classTptr->refs,classTptr->freeClass,classTptr->value);
+		tmp->value.ptr = newClassValue(classTptr->classId, classTptr->refs, classTptr->freeClass, classTptr->value);
 	}
 	}
 
 	return tmp;
+}
+
+bool equals(struct TypedValue* a, struct TypedValue* b)
+{
+	if (a->type != b->type) //is this correct for optional types too
+	{
+		return false;
+	}
+
+	switch (a->type)
+	{
+	case VDM_BOOL:
+	{
+		return a->value.boolVal == b->value.boolVal;
+	}
+	case VDM_CHAR:
+	{
+		return a->value.charVal == b->value.charVal;
+	}
+	case VDM_INT:
+	case VDM_INT1:
+	{
+		return a->value.intVal == b->value.intVal;
+	}
+	case VDM_REAL:
+	{
+		return a->value.doubleVal == b->value.doubleVal;
+	}
+	case VDM_QUOTE:
+	{
+		return a->value.uintVal == b->value.uintVal;
+	}
+	case VDM_MAP:
+	{
+		//			return mapEqual(a, b);
+		break;
+	}
+	case VDM_PRODUCT:
+	{
+		//			return productEqual(a, b);
+		break;
+	}
+	case VDM_SEQ:
+	{
+		//			return setEqual(a, b);
+		break;
+	}
+	case VDM_SET:
+	{
+		return seqEqual(a, b);
+	}
+	case VDM_OPTIONAL:
+	{
+		break;
+	}
+	case VDM_RECORD:
+	{
+		//like class but by value
+		//TODO
+		break;
+	}
+	case VDM_CLASS:
+	{
+		struct ClassType* ac = a->value.ptr;
+		struct ClassType* bc = b->value.ptr;
+
+		//reference compare does the pointer point to the same instance
+		return ac->value == bc->value;
+	}
+
+	}
+	return false;
 }
 
 void recursiveFree(struct TypedValue* ptr)
@@ -117,12 +231,10 @@ void recursiveFree(struct TypedValue* ptr)
 	case VDM_REAL:
 	case VDM_QUOTE:
 	{
-//		free(ptr->value);
-//		ptr->value = NULL;
 		break;
 	}
 	case VDM_MAP:
-		//todo
+		//TODO:
 		break;
 	case VDM_PRODUCT:
 	case VDM_SEQ:
@@ -137,6 +249,22 @@ void recursiveFree(struct TypedValue* ptr)
 		ptr->value.ptr = NULL;
 		break;
 	}
+	case VDM_OPTIONAL:
+		//TODO
+		break;
+	case VDM_RECORD:
+	{
+		//handle smart pointer
+		struct RecordType* recordTptr = (struct RecordType*) ptr->value.ptr;
+		recordTptr->freeRecord(recordTptr->value);
+		recordTptr->value = NULL;
+		recordTptr->freeRecord = NULL;
+
+		//free record type
+		free(recordTptr);
+		ptr->value.ptr = NULL;
+		break;
+	}
 	case VDM_CLASS:
 	{
 		//handle smart pointer
@@ -148,6 +276,7 @@ void recursiveFree(struct TypedValue* ptr)
 		//free classtype
 		free(classTptr);
 		ptr->value.ptr = NULL;
+		break;
 	}
 	}
 

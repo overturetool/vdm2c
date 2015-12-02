@@ -103,6 +103,8 @@ TEST(Expression_Seq, seqInds)
 	EXPECT_EQ(VDM_SET, res->type);
 	struct Collection* col = (struct Collection*) res->value.ptr;
 
+	EXPECT_TRUE(VDM_SET == res->type);
+	//TODO this is actually not the VDM version of inds [1,2] = {1,2}, the second set and the set,set comp is missing, I didnt do sets yet
 	EXPECT_TRUE(2 == col->value[0]->value.intVal || 2 == col->value[1]->value.intVal);
 	EXPECT_TRUE(1 == col->value[0]->value.intVal || 1 == col->value[1]->value.intVal);
 
@@ -133,7 +135,6 @@ TEST(Expression_Seq, seqConc)
 	recursiveFree(t);
 	recursiveFree(t2);
 }
-
 
 TEST(Expression_Seq, seqReverse)
 {
@@ -167,51 +168,56 @@ TEST(Expression_Seq, seqReverse)
 //	recursiveFree(t);
 //}
 
-//TEST(Expression_Seq, seqIndex)
-//{
-//	int arr[] =
-//	{ 1, 2 };
-//	TVP t = newSequence(2,arr);
-//
-//	TVP res = seqReverse(t);
-//
-//	struct Collection* col = (struct Collection*) res->value.ptr;
-//
-//	EXPECT_EQ(2, col->value[0]->value.intVal);
-//	recursiveFree(res);
-////
-//	recursiveFree(t);
-//}
+TEST(Expression_Seq, seqIndex)
+{
+	int arr[] =
+	{ 1, 2 };
+	TVP t = newSequence(2,arr);
 
+	TVP index = newInt(2);
+	TVP res = seqIndex(t,index);
 
-//TEST(Expression_Seq, seqEqual)
-//{
-//	int arr[] =
-//	{ 1, 2 };
-//	TVP t = newSequence(2,arr);
+	EXPECT_EQ(2, res->value.intVal);
+	recursiveFree(res);
 //
-//	TVP res = seqReverse(t);
+	recursiveFree(t);
+	recursiveFree(index);
+}
+
+TEST(Expression_Seq, seqEqual)
+{
+	int arr[] =
+	{ 1 };
+	TVP t = newSequence(1,arr);
+
+	int arr2[] =
+	{ 1 };
+	TVP t2 = newSequence(1,arr2);
+
+	TVP res = seqEqual(t,t2);
+
+	EXPECT_EQ(true, res->value.boolVal);
+	recursiveFree(res);
 //
-//	struct Collection* col = (struct Collection*) res->value.ptr;
-//
-//	EXPECT_EQ(2, col->value[0]->value.intVal);
-//	recursiveFree(res);
-////
-//	recursiveFree(t);
-//}
-//
-//TEST(Expression_Seq, seqInEqual)
-//{
-//	int arr[] =
-//	{ 1, 2 };
-//	TVP t = newSequence(2,arr);
-//
-//	TVP res = seqReverse(t);
-//
-//	struct Collection* col = (struct Collection*) res->value.ptr;
-//
-//	EXPECT_EQ(2, col->value[0]->value.intVal);
-//	recursiveFree(res);
-////
-//	recursiveFree(t);
-//}
+	recursiveFree(t);
+	recursiveFree(t2);
+}
+
+TEST(Expression_Seq, seqInEqual)
+{
+	int arr[] =
+	{ 1 };
+	TVP t = newSequence(1,arr);
+
+	int arr2[] =
+	{ 2 };
+	TVP t2 = newSequence(1,arr2);
+
+	TVP res = seqEqual(t,t2);
+
+	EXPECT_EQ(true, res->value.boolVal);
+	recursiveFree(res);
+	//
+	recursiveFree(t);
+	recursiveFree(t2);
+}

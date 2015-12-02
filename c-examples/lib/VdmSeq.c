@@ -121,10 +121,12 @@ TVP seqReverse(TVP seq)
 
 //TVP seqMod(TVP seq,TVP seq);
 
-TVP seqIndex(TVP seq,int index)//VDM uses 1 based index
+TVP seqIndex(TVP seq,TVP indexVal) //VDM uses 1 based index
 {
 	ASSERT_CHECK(seq);
+	assert((indexVal->type == VDM_INT||indexVal->type == VDM_INT1) && "index is not a int");
 
+	int index = indexVal->value.intVal;
 	struct Collection* col = (struct Collection*)seq->value.ptr;
 
 	assert(index-1>=0 && index-1<col->size && "invalid index");
@@ -135,14 +137,27 @@ TVP seqEqual(TVP seq,TVP seq2)
 	ASSERT_CHECK(seq);
 	ASSERT_CHECK(seq2);
 
-	//FIXME
-	return newBool(false);
+	struct Collection* aCol = (struct Collection*) seq->value.ptr;
+	struct Collection* bCol = (struct Collection*) seq2->value.ptr;
+
+	if(aCol->size!=bCol->size)
+	{
+		//wrong sizes
+		return false;
+	}
+
+	bool match = true;
+
+	for (int i = 0; i < aCol->size; i++)
+	{
+		match &= equals(aCol->value[i],aCol->value[i]);
+	}
+	return newBool(match);
 }
 TVP seqInEqual(TVP seq,TVP seq2)
 {
 	ASSERT_CHECK(seq);
 	ASSERT_CHECK(seq2);
 
-	//FIXME
-	return newBool(false);
+	return !seqEqual(seq,seq2);
 }

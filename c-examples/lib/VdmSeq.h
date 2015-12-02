@@ -18,7 +18,7 @@ TVP seqInds(TVP seq);
 TVP seqConc(TVP seq,TVP seq2);
 TVP seqReverse(TVP seq);
 //TVP seqMod(TVP seq,TVP seq);
-TVP seqIndex(TVP seq,int index);
+TVP seqIndex(TVP seq,TVP index);
 TVP seqEqual(TVP seq,TVP seq2);
 TVP seqInEqual(TVP seq,TVP seq2);
 

@@ -13,8 +13,8 @@ testseqLen()== assertTrue(seqLen());
 public testseqElems : () ==>()
 testseqElems()== assertTrue(seqElems());
 
---public testseqInds : () ==>()
---testseqInds()== assertTrue(seqInds());
+public testseqInds : () ==>()
+testseqInds()== assertTrue(seqInds());
 
 public testseqConc : () ==>()
 testseqConc()== assertTrue(seqConc());
@@ -50,8 +50,8 @@ seqLen()== len [1,2] = 2;
 seqElems: () -> bool
 seqElems()== elems [1,2] = {1,2};
 
---seqInds: () -> bool
---seqInds()== inds [1,2] = [1,2];
+seqInds: () -> bool
+seqInds()== inds [1,2] = {1,2};
 
 seqConc: () -> bool
 seqConc()==  [1]^[2] = [1,2];
@@ -67,6 +67,6 @@ seqEqual: () -> bool
 seqEqual()== [1,2] = [1,2];
 
 seqInEqual: () -> bool
-seqInEqual()== [1,2] <> [1,2,3];
+seqInEqual()== [1,2] <> [1,2];
 
 end ExpressionSeqTest
