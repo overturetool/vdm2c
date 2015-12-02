@@ -62,6 +62,7 @@ struct ClassType
 {
 	void* value;
 	int classId;
+	unsigned int* refs;
 	freeVdmClassFunction freeClass;
 };
 

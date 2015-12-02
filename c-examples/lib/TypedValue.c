@@ -48,6 +48,7 @@ struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction
 	ptr->classId = id;
 	ptr->value = value;
 	ptr->freeClass = freeClass;
+	ptr->refs = refs;
 	(*refs)++;
 	return ptr;
 }
@@ -58,6 +59,49 @@ struct TypedValue* clone(struct TypedValue* x){
 	struct TypedValue* tmp = newTypeValue(x->type,x->value);
 
 	//FIXME clone any pointers
+	switch (tmp->type)
+	{
+	case VDM_BOOL:
+	case VDM_CHAR:
+	case VDM_INT:
+	case VDM_INT1:
+	case VDM_REAL:
+	case VDM_QUOTE:
+	{
+		break;
+	}
+	case VDM_MAP:
+		//todo
+		break;
+	case VDM_PRODUCT:
+	case VDM_SEQ:
+	case VDM_SET:
+	{
+		struct Collection* cptr = (struct Collection*) tmp->value.ptr;
+
+		struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
+
+		//copy (size)
+		*ptr = *cptr;
+		ptr->value = (struct TypedValue**) malloc(sizeof(struct TypedValue) * ptr->size);
+
+		for (int i = 0; i < cptr->size; i++)
+		{
+			ptr->value[i] = clone(cptr->value[i]);
+		}
+
+		tmp->value.ptr = ptr;
+		break;
+	}
+	case VDM_CLASS:
+	{
+		//handle smart pointer
+		struct ClassType* classTptr = (struct ClassType*) tmp->value.ptr;
+
+		//improve using memcpy
+		tmp->value.ptr = newClassValue(classTptr->classId,classTptr->refs,classTptr->freeClass,classTptr->value);
+	}
+	}
 
 	return tmp;
 }
