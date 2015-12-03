@@ -55,24 +55,57 @@ struct TypedValue* newQuote(unsigned int x)
 
 ///
 
-struct TypedValue* newSeq(size_t size)
+struct TypedValue* newCollection(size_t size, vdmtype type)
 {
 	struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
 	ptr->size = size;
-	ptr->value = (struct TypedValue**) malloc(sizeof(struct TypedValue*) * size);
-	return newTypeValue(VDM_SEQ, (TypedValueType
+	ptr->value = (struct TypedValue**) calloc(size,sizeof(struct TypedValue*));//I know this is slower thank malloc but better for products
+	return newTypeValue(type, (TypedValueType
 			)
 			{ .ptr = ptr });
 }
 
+struct TypedValue* newSeq(size_t size)
+{
+	return newCollection(size, VDM_SEQ);
+}
+
 struct TypedValue* newSet(size_t size)
 {
-	struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
-	ptr->size = size;
-	ptr->value = (struct TypedValue**) malloc(sizeof(struct TypedValue) * size);
-	return newTypeValue(VDM_SET, (TypedValueType
-			)
-			{ .ptr = ptr });
+	return newCollection(size, VDM_SET);
+}
+
+struct TypedValue* newProduct(size_t size)
+{
+	return newCollection(size, VDM_PRODUCT);
+}
+
+
+struct TypedValue* newCollectionWithValues(vdmtype type,size_t size,TVP* elements)
+{
+	TVP product = newCollection(size,type);
+	struct Collection* col = (struct Collection*)product->value.ptr;
+
+	for (int i = 0; i < size; i++) {
+		col->value[i]= clone(elements[i]);
+	}
+	return product;
+}
+
+struct TypedValue* newSeqWithValues(size_t size,TVP* elements)
+{
+	return newCollectionWithValues(VDM_SEQ,size,elements);
+}
+
+struct TypedValue* newSetWithValues(size_t size,TVP* elements)
+{
+	//FIXME
+	return newCollectionWithValues(VDM_SET,size,elements);
+}
+
+struct TypedValue* newProductWithValues(size_t size,TVP* elements)
+{
+	return newCollectionWithValues(VDM_PRODUCT,size,elements);
 }
 
 struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction freeClass, void* value)
@@ -184,18 +217,14 @@ bool equals(struct TypedValue* a, struct TypedValue* b)
 		break;
 	}
 	case VDM_PRODUCT:
-	{
-		//			return productEqual(a, b);
-		break;
-	}
 	case VDM_SEQ:
 	{
-		//			return setEqual(a, b);
-		break;
+		return collectionEqual(a, b);
 	}
 	case VDM_SET:
 	{
-		return seqEqual(a, b);
+		//FIXME
+		return collectionEqual(a, b);
 	}
 	case VDM_OPTIONAL:
 	{
@@ -218,6 +247,28 @@ bool equals(struct TypedValue* a, struct TypedValue* b)
 
 	}
 	return false;
+}
+
+bool collectionEqual(TVP col1,TVP col2)
+{
+	//internal function do not call except if args points to a collection
+
+	struct Collection* aCol = (struct Collection*) col1->value.ptr;
+	struct Collection* bCol = (struct Collection*) col2->value.ptr;
+
+	if(aCol->size!=bCol->size)
+	{
+		//wrong sizes
+		return false;
+	}
+
+	bool match = true;
+
+	for (int i = 0; i < aCol->size; i++)
+	{
+		match &= equals(aCol->value[i],aCol->value[i]);
+	}
+	return match;
 }
 
 void recursiveFree(struct TypedValue* ptr)
@@ -243,7 +294,10 @@ void recursiveFree(struct TypedValue* ptr)
 		struct Collection* cptr = (struct Collection*) ptr->value.ptr;
 		for (int i = 0; i < cptr->size; i++)
 		{
-			recursiveFree(cptr->value[i]);
+			if (cptr->value[i] != NULL)
+			{
+				recursiveFree(cptr->value[i]);
+			}
 		}
 		free(cptr);
 		ptr->value.ptr = NULL;

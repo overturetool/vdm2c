@@ -1,0 +1,17 @@
+class ExpressionProductTest is subclass of TestCase
+operations
+
+public testproductExp : () ==>()
+testproductExp()== assertTrue(productExp());
+
+
+
+functions
+
+
+
+
+productExp: () -> bool
+productExp()== mk_(1,2)= mk_(1,2);
+
+end ExpressionProductTest

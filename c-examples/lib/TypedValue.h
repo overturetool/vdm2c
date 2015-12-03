@@ -109,18 +109,24 @@ struct TypedValue* newQuote(unsigned int x);
 // Complex
 struct TypedValue* newSeq(size_t size);
 struct TypedValue* newSet(size_t size);
+struct TypedValue* newProduct(size_t size);
+
+struct TypedValue* newSeqWithValues(size_t size,TVP* elements);
+struct TypedValue* newSetWithValues(size_t size,TVP* elements);
+struct TypedValue* newProductWithValues(size_t size,TVP* elements);
 
 // Class
 struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction freeClass, void* value);
 
-struct TypedValue* newInt(int x);
-struct TypedValue* newDouble(double x);
-struct TypedValue* newChar(char x);
+//struct TypedValue* newInt(int x);
+//struct TypedValue* newDouble(double x);
+//struct TypedValue* newChar(char x);
 
 //utils
 
 struct TypedValue* clone(struct TypedValue* x);
 bool equals(struct TypedValue* a, struct TypedValue* b);
+bool collectionEqual(TVP col1,TVP col2);
 
 void recursiveFree(struct TypedValue* ptr);
 

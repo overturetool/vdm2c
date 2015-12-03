@@ -137,27 +137,12 @@ TVP seqEqual(TVP seq,TVP seq2)
 	ASSERT_CHECK(seq);
 	ASSERT_CHECK(seq2);
 
-	struct Collection* aCol = (struct Collection*) seq->value.ptr;
-	struct Collection* bCol = (struct Collection*) seq2->value.ptr;
-
-	if(aCol->size!=bCol->size)
-	{
-		//wrong sizes
-		return false;
-	}
-
-	bool match = true;
-
-	for (int i = 0; i < aCol->size; i++)
-	{
-		match &= equals(aCol->value[i],aCol->value[i]);
-	}
-	return newBool(match);
+	return newBool(collectionEqual(seq,seq2));
 }
 TVP seqInEqual(TVP seq,TVP seq2)
 {
 	ASSERT_CHECK(seq);
 	ASSERT_CHECK(seq2);
 
-	return !seqEqual(seq,seq2);
+	return newBool(!collectionEqual(seq,seq2));
 }
