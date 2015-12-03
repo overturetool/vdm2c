@@ -52,6 +52,6 @@ let b = 2 in
  let 1 = b in true;
  
 letPatternMatch3: ()-> bool
-letPatternMatch3()== let mk_(a,b) = mk_(1,2) in true
+letPatternMatch3()== let mk_(a,2) = mk_(1,2) in true
 
 end ExpressionTest

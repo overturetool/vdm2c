@@ -14,6 +14,12 @@
 
 #define TVP struct TypedValue*
 
+#define UNWRAP_PRODUCT(var,product) struct Collection* var = (struct Collection*)product->value.ptr;
+
+#ifndef FATAL_ERROR
+#define FATAL_ERROR(message) exit(EXIT_FAILURE)
+#endif
+
 //#define ALLOC(t,n) (t *) malloc((n)*sizeof(t))
 
 //,VDM_UNION

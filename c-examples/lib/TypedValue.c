@@ -273,6 +273,9 @@ bool collectionEqual(TVP col1,TVP col2)
 
 void recursiveFree(struct TypedValue* ptr)
 {
+	if(ptr==NULL)
+		return;
+
 	switch (ptr->type)
 	{
 	case VDM_BOOL:
