@@ -42,13 +42,13 @@ TVP recordR1()
 
 TEST(Statements, recordR1)
 {
-	TVP TEST_TRUE = newBool(true);
-
-	TVP result = letIdentifierExp();
-
-	EXPECT_EQ (true,equals(TEST_TRUE,result));
-
-	recursiveFree(result);
-
-	recursiveFree (TEST_TRUE);
+//	TVP TEST_TRUE = newBool(true);
+//
+//	TVP result = recordR1();
+//
+//	EXPECT_EQ (true,equals(TEST_TRUE,result));
+//
+//	recursiveFree(result);
+//
+//	recursiveFree (TEST_TRUE);
 }
