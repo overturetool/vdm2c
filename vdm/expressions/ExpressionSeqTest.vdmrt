@@ -67,6 +67,6 @@ seqEqual: () -> bool
 seqEqual()== [1,2] = [1,2];
 
 seqInEqual: () -> bool
-seqInEqual()== [1,2] <> [1,2];
+seqInEqual()== [1] <> [2];
 
 end ExpressionSeqTest

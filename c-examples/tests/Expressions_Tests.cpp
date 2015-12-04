@@ -135,6 +135,44 @@ TVP letFilter1Exp()
 	}
 }
 
+TVP ifExp()
+{
+	/*if true or true
+	 then
+	 true or false
+	 else
+	 true;*/
+	TVP tmp1 = newBool(true);
+	TVP tmp2 = newBool(true);
+	TVP res = NULL;
+
+	if(tmp1->value.boolVal || tmp2->value.boolVal) //should I make a lib for bool operators
+	{
+		TVP tmp3 = newBool(true);
+		TVP tmp4 = newBool(false);
+		TVP tmp5 = newBool(tmp3->value.boolVal ||tmp4->value.boolVal);
+		res = clone(tmp5);
+
+		//local scope cleanup
+		recursiveFree(tmp5);
+		recursiveFree(tmp4);
+		recursiveFree(tmp3);
+
+	} else
+	{
+		TVP tmp3 = newBool(true);
+		res = clone(tmp3);
+
+		//local scope cleanup
+		recursiveFree(tmp3);
+	}
+	//if condition scope cleanup
+	recursiveFree(tmp2);
+	recursiveFree(tmp1);
+
+	return res;
+}
+
 TEST(Expression, letIdentifierExp)
 {
 	TVP TEST_TRUE = newBool(true);
@@ -205,6 +243,20 @@ TEST(Expression, letFilter1Exp)
 	}
 
 	if(!failed)
-		FAIL();
+	FAIL();
+	recursiveFree (TEST_TRUE);
+}
+
+
+TEST(Expression, ifExp)
+{
+	TVP TEST_TRUE = newBool(true);
+
+	TVP result = ifExp();
+
+	EXPECT_EQ (true,equals(TEST_TRUE,result));
+
+	recursiveFree(result);
+
 	recursiveFree (TEST_TRUE);
 }
