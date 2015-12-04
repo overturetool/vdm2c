@@ -1,6 +1,28 @@
-class StatementClassTest
---this class is just here because we cannot do plain operations in VDM
+class StatementClassTest is subclass of TestCase
+operations
+
+public testrecordR1 : () ==>()
+testrecordR1()== assertTrue(recordR1());
+
+types
+
+R1 ::
+	a : int
+	b : seq of char
+	c : bool;
 
 operations
--- TODO Define operations here
+
+public recordR1: ()==>bool
+recordR1()==(
+
+dcl r : R1 := mk_R1(0,"ab",false);
+
+let r2 = r,
+		mk_R1(-,-,b)=r
+in
+	return r2.c or true or b;
+
+);
+
 end StatementClassTest
