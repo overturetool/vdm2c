@@ -5,6 +5,11 @@ set(CMAKE_INCLUDE_CURRENT_DIR on)
 
 enable_testing()
 
+FIND_PACKAGE(PkgConfig)
+PKG_CHECK_MODULES(GLIB2 REQUIRED glib-2.0>=2.36.0)
+
+
+
 IF(CMAKE_COMPILER_IS_GNUCC)
   SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fmessage-length=0")
 ENDIF(CMAKE_COMPILER_IS_GNUCC)
@@ -25,7 +30,13 @@ file(GLOB CPP_FILES tests/*.cpp)
 add_executable(${PROJECT_NAME} ${C_FILES} ${CPP_FILES})
 
 include_directories(${gtest_SOURCE_DIR}/include)
+INCLUDE_DIRECTORIES(
+    GLIB2_INCLUDE_DIRS
+)
 
 target_link_libraries(${PROJECT_NAME} gtest_main)
+TARGET_LINK_LIBRARIES(${PROJECT_NAME}
+    GLIB2_LIBRARIES
+)
 
 add_test(AllTestsIn-c-examples ${PROJECT_NAME})
