@@ -13,7 +13,7 @@ TVP productGet(TVP product, int index)
 {
 	ASSERT_CHECK(product);
 
-	struct Collection* col = (struct Collection*)product->value.ptr;
+	UNWRAP_PRODUCT(col,product);
 
 	assert(index-1>=0 && index-1<col->size && "invalid index");
 	return clone(col->value[index-1]);
@@ -23,7 +23,7 @@ void productSet(TVP product, int index, TVP val)
 {
 	ASSERT_CHECK(product);
 
-	struct Collection* col = (struct Collection*)product->value.ptr;
+	UNWRAP_PRODUCT(col,product);
 
 	assert(index-1>=0 && index-1<col->size && "invalid index");
 

@@ -14,7 +14,8 @@
 
 #define TVP struct TypedValue*
 
-#define UNWRAP_PRODUCT(var,product) struct Collection* var = (struct Collection*)product->value.ptr;
+#define UNWRAP_PRODUCT(var,product) struct Collection* var = (struct Collection*)product->value.ptr
+#define UNWRAP_COLLECTION(var,collection) struct Collection* var = (struct Collection*)collection->value.ptr
 
 #ifndef FATAL_ERROR
 #define FATAL_ERROR(message) exit(EXIT_FAILURE)

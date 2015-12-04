@@ -84,7 +84,7 @@ struct TypedValue* newProduct(size_t size)
 struct TypedValue* newCollectionWithValues(vdmtype type,size_t size,TVP* elements)
 {
 	TVP product = newCollection(size,type);
-	struct Collection* col = (struct Collection*)product->value.ptr;
+	UNWRAP_COLLECTION(col,product);
 
 	for (int i = 0; i < size; i++) {
 		col->value[i]= clone(elements[i]);
@@ -144,7 +144,7 @@ struct TypedValue* clone(struct TypedValue* x)
 	case VDM_SEQ:
 	case VDM_SET:
 	{
-		struct Collection* cptr = (struct Collection*) tmp->value.ptr;
+		UNWRAP_COLLECTION(cptr,tmp);
 
 		struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
 
@@ -253,8 +253,8 @@ bool collectionEqual(TVP col1,TVP col2)
 {
 	//internal function do not call except if args points to a collection
 
-	struct Collection* aCol = (struct Collection*) col1->value.ptr;
-	struct Collection* bCol = (struct Collection*) col2->value.ptr;
+	UNWRAP_COLLECTION(aCol,col1);
+	UNWRAP_COLLECTION(bCol,col2);
 
 	if(aCol->size!=bCol->size)
 	{
@@ -294,7 +294,7 @@ void recursiveFree(struct TypedValue* ptr)
 	case VDM_SEQ:
 	case VDM_SET:
 	{
-		struct Collection* cptr = (struct Collection*) ptr->value.ptr;
+		UNWRAP_COLLECTION(cptr,ptr);
 		for (int i = 0; i < cptr->size; i++)
 		{
 			if (cptr->value[i] != NULL)

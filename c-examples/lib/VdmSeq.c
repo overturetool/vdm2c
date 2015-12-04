@@ -12,17 +12,17 @@
 TVP seqHd(TVP seq)
 {
 	ASSERT_CHECK(seq);
-	struct Collection* col = (struct Collection*)seq->value.ptr;
+	UNWRAP_COLLECTION(col,seq);
 	return clone(col->value[0]);
 }
 TVP seqTl(TVP seq)
 {
 	ASSERT_CHECK(seq);
-	struct Collection* col = (struct Collection*)seq->value.ptr;
+	UNWRAP_COLLECTION(col,seq);
 
 	//malloc
 	TVP tailVal = newSeq(col->size-1);
-	struct Collection* tail = tailVal->value.ptr;
+	UNWRAP_COLLECTION(tail,tailVal);
 
 	//copy tail list
 	for (int i = 1; i < col->size; i++)
@@ -35,13 +35,13 @@ TVP seqTl(TVP seq)
 TVP seqLen(TVP seq)
 {
 	ASSERT_CHECK(seq);
-	struct Collection* col = (struct Collection*)seq->value.ptr;
+	UNWRAP_COLLECTION(col,seq);
 	return newInt(col->size);
 }
 TVP seqElems(TVP seq)
 {
 	ASSERT_CHECK(seq);
-	struct Collection* col = (struct Collection*)seq->value.ptr;
+	UNWRAP_COLLECTION(col,seq);
 
 	//malloc
 	TVP elemsVal = newSet(col->size);
@@ -60,11 +60,11 @@ TVP seqElems(TVP seq)
 TVP seqInds(TVP seq)
 {
 	ASSERT_CHECK(seq);
-	struct Collection* col = (struct Collection*)seq->value.ptr;
+	UNWRAP_COLLECTION(col,seq);
 
 	//malloc
 	TVP indsVal = newSet(col->size);
-	struct Collection* inds = indsVal->value.ptr;
+	UNWRAP_COLLECTION(inds,indsVal);
 
 	//copy  list
 	for (int i = 0; i < col->size; i++)
@@ -78,12 +78,12 @@ TVP seqConc(TVP seq,TVP seq2)
 {
 	ASSERT_CHECK(seq);
 	ASSERT_CHECK(seq2);
-	struct Collection* col = (struct Collection*)seq->value.ptr;
-	struct Collection* col2 = (struct Collection*)seq2->value.ptr;
+	UNWRAP_COLLECTION(col,seq);
+	UNWRAP_COLLECTION(col2,seq2);
 
 	//malloc
 	TVP concVal = newSet(col->size+col2->size);
-	struct Collection* concSeq = concVal->value.ptr;
+	UNWRAP_COLLECTION(concSeq,concVal);
 
 	//copy  list
 	for (int i = 0; i < col->size; i++)
@@ -103,11 +103,11 @@ TVP seqConc(TVP seq,TVP seq2)
 TVP seqReverse(TVP seq)
 {
 	ASSERT_CHECK(seq);
-	struct Collection* col = (struct Collection*)seq->value.ptr;
+	UNWRAP_COLLECTION(col,seq);
 
 	//malloc
 	TVP elemsVal = newSeq(col->size);
-	struct Collection* elems = elemsVal->value.ptr;
+	UNWRAP_COLLECTION(elems,elemsVal);
 
 	int offset = col->size-1;
 	//copy  list
@@ -127,7 +127,7 @@ TVP seqIndex(TVP seq,TVP indexVal) //VDM uses 1 based index
 	assert((indexVal->type == VDM_INT||indexVal->type == VDM_INT1) && "index is not a int");
 
 	int index = indexVal->value.intVal;
-	struct Collection* col = (struct Collection*)seq->value.ptr;
+	UNWRAP_COLLECTION(col,seq);
 
 	assert(index-1>=0 && index-1<col->size && "invalid index");
 	return clone(col->value[index-1]);
