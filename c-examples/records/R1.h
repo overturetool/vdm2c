@@ -23,5 +23,6 @@ struct R1
 
 
 TVP mk_R1();
+void freeR1(struct R1* self);
 
 #endif /* RECORDS_R1_H_ */
