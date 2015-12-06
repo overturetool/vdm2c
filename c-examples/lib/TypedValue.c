@@ -7,6 +7,7 @@
 
 #include "lib/TypedValue.h"
 
+
 struct TypedValue* newTypeValue(vdmtype type, TypedValueType value)
 {
 	struct TypedValue* ptr = (struct TypedValue*) malloc(sizeof(struct TypedValue));
@@ -65,20 +66,11 @@ struct TypedValue* newCollection(size_t size, vdmtype type)
 			{ .ptr = ptr });
 }
 
-struct TypedValue* newSeq(size_t size)
-{
-	return newCollection(size, VDM_SEQ);
-}
 
-struct TypedValue* newSet(size_t size)
-{
-	return newCollection(size, VDM_SET);
-}
 
-struct TypedValue* newProduct(size_t size)
-{
-	return newCollection(size, VDM_PRODUCT);
-}
+
+
+
 
 
 struct TypedValue* newCollectionWithValues(vdmtype type,size_t size,TVP* elements)
@@ -92,21 +84,10 @@ struct TypedValue* newCollectionWithValues(vdmtype type,size_t size,TVP* element
 	return product;
 }
 
-struct TypedValue* newSeqWithValues(size_t size,TVP* elements)
-{
-	return newCollectionWithValues(VDM_SEQ,size,elements);
-}
 
-struct TypedValue* newSetWithValues(size_t size,TVP* elements)
-{
-	//FIXME
-	return newCollectionWithValues(VDM_SET,size,elements);
-}
 
-struct TypedValue* newProductWithValues(size_t size,TVP* elements)
-{
-	return newCollectionWithValues(VDM_PRODUCT,size,elements);
-}
+
+
 
 struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction freeClass, void* value)
 {

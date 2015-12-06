@@ -11,15 +11,11 @@
 #include "Globals.h"
 #include <stdlib.h>
 #include <stdbool.h>
+#include "VdmMap.h"
 
-#define TVP struct TypedValue*
 
-#define UNWRAP_PRODUCT(var,product) struct Collection* var = (struct Collection*)product->value.ptr
-#define UNWRAP_COLLECTION(var,collection) struct Collection* var = (struct Collection*)collection->value.ptr
 
-#ifndef FATAL_ERROR
-#define FATAL_ERROR(message) exit(EXIT_FAILURE)
-#endif
+#define vdmFree recursiveFree
 
 //#define ALLOC(t,n) (t *) malloc((n)*sizeof(t))
 
@@ -75,6 +71,8 @@ struct Collection
 	int size;
 };
 
+
+
 struct OptionalType
 {
 	bool hasValue;
@@ -98,12 +96,6 @@ struct RecordType
 
 struct TypedValue* newTypeValue(vdmtype type, TypedValueType value);
 
-//static struct TypedValue* newInt(int x){return newTypeValue(VDM_INT,(TypedValueType){.intVal= x});}
-//static struct TypedValue* newInt1(int x){return newTypeValue(VDM_INT,(TypedValueType){.intVal= x});}
-//static struct TypedValue* newBool(bool x){return newTypeValue(VDM_INT,(TypedValueType){.intVal= x});}
-//static struct TypedValue* newReal(double x){return newTypeValue(VDM_INT,(TypedValueType){.intVal= x});}
-//static struct TypedValue* newChar(char x){return newTypeValue(VDM_INT,(TypedValueType){.intVal= x});}
-//static struct TypedValue* newQuote(unsigned int x){return newTypeValue(VDM_INT,(TypedValueType){.intVal= x});}
 
 // Basic - these should inline
 struct TypedValue* newInt(int x);
@@ -113,16 +105,12 @@ struct TypedValue* newReal(double x);
 struct TypedValue* newChar(char x);
 struct TypedValue* newQuote(unsigned int x);
 
-// Complex
-struct TypedValue* newSeq(size_t size);
-struct TypedValue* newSet(size_t size);
-struct TypedValue* newProduct(size_t size);
 
-struct TypedValue* newSeqWithValues(size_t size,TVP* elements);
-struct TypedValue* newSetWithValues(size_t size,TVP* elements);
-struct TypedValue* newProductWithValues(size_t size,TVP* elements);
+// Complex
+
 
 // Class
+
 struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction freeClass, void* value);
 
 //struct TypedValue* newInt(int x);
@@ -130,6 +118,8 @@ struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction
 //struct TypedValue* newChar(char x);
 
 //utils
+struct TypedValue* newCollectionWithValues(vdmtype type,size_t size,TVP* elements);
+struct TypedValue* newCollection(size_t size, vdmtype type);
 
 struct TypedValue* clone(struct TypedValue* x);
 bool equals(struct TypedValue* a, struct TypedValue* b);

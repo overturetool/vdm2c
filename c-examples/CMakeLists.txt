@@ -31,12 +31,12 @@ add_executable(${PROJECT_NAME} ${C_FILES} ${CPP_FILES})
 
 include_directories(${gtest_SOURCE_DIR}/include)
 INCLUDE_DIRECTORIES(
-    GLIB2_INCLUDE_DIRS
+    ${GLIB2_INCLUDE_DIRS}
 )
 
 target_link_libraries(${PROJECT_NAME} gtest_main)
 TARGET_LINK_LIBRARIES(${PROJECT_NAME}
-    GLIB2_LIBRARIES
+    ${GLIB2_LIBRARIES}
 )
 
 add_test(AllTestsIn-c-examples ${PROJECT_NAME})

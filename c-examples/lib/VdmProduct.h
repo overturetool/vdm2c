@@ -10,6 +10,9 @@
 #include "TypedValue.h"
 #include <assert.h>
 
+struct TypedValue* newProduct(size_t size);
+struct TypedValue* newProductWithValues(size_t size,TVP* elements);
+
 TVP productGet(TVP product, int index);
 void productSet(TVP product, int index, TVP val);
 //bool productEqual(TVP product,TVP product2);

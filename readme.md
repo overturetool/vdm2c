@@ -32,12 +32,12 @@ https://bjornarnelid.wordpress.com/2014/03/10/how-to-get-started-with-google-tes
  * Name the project with the name of the cmake project you want to import
  * Select source location to be the location of the cmake project
 3. Build the project to see if Eclipse picksup the imports
- * It may miss the google test import (it did for me) The go and add it manually: Project->Properties->C/C++ general->Paths and Symbols->Includes->GNU C++ add the following include here (specific for you ofcause): `/.../third_party/googletest/googletest/include` 
+ * If it do not pickup the includes then enable the fix below
 
 ## Fix wired Eclipse setup for CDT discovery of includes for the indexer
 
 1. Goto `Project Properties -> C/C++ General -> Preprocessor Include Paths, Macros etc.`
 2. Enable `CDT GCC Build Output Parser`
-3. Change the *Compiler Command Pattern* to `(.*gcc)|(.*[gc]\+\+)|(clang)`
+3. Change the *Compiler Command Pattern* to `(.*gcc)|(.*[gc]\+\+)|(.*cc)|(clang)`
 
 Source: https://developer.mozilla.org/en-US/docs/Eclipse_CDT

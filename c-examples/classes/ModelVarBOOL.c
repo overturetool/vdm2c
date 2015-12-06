@@ -6,6 +6,7 @@
  */
 #include "ModelVarBOOL.h"
 #include "lib/TypedValue.h"
+#include "lib/VdmSeq.h"
 
 //
 

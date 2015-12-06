@@ -9,6 +9,10 @@
 #define LIB_VDMSEQ_H_
 #include "TypedValue.h"
 #include <assert.h>
+#include "VdmSet.h"
+
+struct TypedValue* newSeq(size_t size);
+struct TypedValue* newSeqWithValues(size_t size,TVP* elements);
 
 TVP seqHd(TVP seq);
 TVP seqTl(TVP seq);
