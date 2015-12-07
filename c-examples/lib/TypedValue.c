@@ -7,7 +7,6 @@
 
 #include "lib/TypedValue.h"
 
-
 struct TypedValue* newTypeValue(vdmtype type, TypedValueType value)
 {
 	struct TypedValue* ptr = (struct TypedValue*) malloc(sizeof(struct TypedValue));
@@ -60,34 +59,23 @@ struct TypedValue* newCollection(size_t size, vdmtype type)
 {
 	struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
 	ptr->size = size;
-	ptr->value = (struct TypedValue**) calloc(size,sizeof(struct TypedValue*));//I know this is slower thank malloc but better for products
+	ptr->value = (struct TypedValue**) calloc(size, sizeof(struct TypedValue*)); //I know this is slower thank malloc but better for products
 	return newTypeValue(type, (TypedValueType
 			)
 			{ .ptr = ptr });
 }
 
-
-
-
-
-
-
-
-struct TypedValue* newCollectionWithValues(vdmtype type,size_t size,TVP* elements)
+struct TypedValue* newCollectionWithValues(vdmtype type, size_t size, TVP* elements)
 {
 	TVP product = newCollection(size,type);
 	UNWRAP_COLLECTION(col,product);
 
-	for (int i = 0; i < size; i++) {
+	for (int i = 0; i < size; i++)
+	{
 		col->value[i]= clone(elements[i]);
 	}
 	return product;
 }
-
-
-
-
-
 
 struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction freeClass, void* value)
 {
@@ -125,7 +113,7 @@ struct TypedValue* clone(struct TypedValue* x)
 	case VDM_SEQ:
 	case VDM_SET:
 	{
-		UNWRAP_COLLECTION(cptr,tmp);
+		UNWRAP_COLLECTION(cptr, tmp);
 
 		struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
 
@@ -146,8 +134,10 @@ struct TypedValue* clone(struct TypedValue* x)
 		break;
 	case VDM_RECORD:
 	{
-		//TODO duplicate (memcpy) and duplicate what ever any pointers points to except if a class
-		break;
+		ASSERT_CHECK_RECORD(tmp);
+
+		UNWRAP_RECORD(record, tmp);
+		return record->cloneFun(tmp);
 	}
 	case VDM_CLASS:
 	{
@@ -213,9 +203,10 @@ bool equals(struct TypedValue* a, struct TypedValue* b)
 	}
 	case VDM_RECORD:
 	{
-		//like class but by value
-		//TODO
-		break;
+		ASSERT_CHECK_RECORD(a);
+
+		UNWRAP_RECORD(record, a);
+		return record->equalFun(a, b);
 	}
 	case VDM_CLASS:
 	{
@@ -254,7 +245,7 @@ bool collectionEqual(TVP col1,TVP col2)
 
 void recursiveFree(struct TypedValue* ptr)
 {
-	if(ptr==NULL)
+	if (ptr == NULL)
 		return;
 
 	switch (ptr->type)
@@ -275,7 +266,7 @@ void recursiveFree(struct TypedValue* ptr)
 	case VDM_SEQ:
 	case VDM_SET:
 	{
-		UNWRAP_COLLECTION(cptr,ptr);
+		UNWRAP_COLLECTION(cptr, ptr);
 		for (int i = 0; i < cptr->size; i++)
 		{
 			if (cptr->value[i] != NULL)

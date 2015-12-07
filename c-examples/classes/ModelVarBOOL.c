@@ -10,7 +10,7 @@
 
 //
 
-#define ModelVarBOOL_ID_FIELDS ._id=ModelVarBOOL_ID, ._refs = 0
+#define ModelVarBOOL_ID_FIELDS ._id=CLASS_ID_ModelVarBOOL_ID, ._refs = 0
 #define ModelVarBOOL_fun_map .openContact=&openContact, .closedContact=&closedContact,\
 	.coil=&coil, .setCoil=&setCoil, .resetCoil=&resetCoil,.notCoil=&notCoil, .PContact=&PContact, .NContact=&NContact, .ff=&ff, .gg=&gg,.dd=&dd, ._free=(freeVdmClassFunction)&ModelVarBOOL_free
 

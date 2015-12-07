@@ -10,23 +10,23 @@ extern "C"
 #include <glib.h>
 }
 
-static GHashTable *table;
+//static GHashTable *table;
 
-static void add_data(void)
-{
-	gchar *key;
-	gchar *value;
-
-	key = g_new(gchar, 1);
-	value = g_new(gchar, 1);
-
-	printf("Input the key ");
-	scanf("%s", key);
-	printf("Input the value ");
-	scanf("%s", value);
-
-	g_hash_table_insert(table, g_strdup(key), g_strdup(value));
-}
+//static void add_data(void)
+//{
+//	gchar *key;
+//	gchar *value;
+//
+//	key = g_new(gchar, 1);
+//	value = g_new(gchar, 1);
+//
+//	printf("Input the key ");
+//	scanf("%s", key);
+//	printf("Input the value ");
+//	scanf("%s", value);
+//
+//	g_hash_table_insert(table, g_strdup(key), g_strdup(value));
+//}
 
 static void print_data(int *key, int *value)
 {

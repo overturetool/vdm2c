@@ -11,6 +11,8 @@
 #include <assert.h>
 #include "VdmSet.h"
 
+#define SET_SEQ(seq,index,val) {struct Collection* col =(struct Collection*) seq->value.ptr;col->value[index-1] =clone(val);}
+
 struct TypedValue* newSeq(size_t size);
 struct TypedValue* newSeqWithValues(size_t size,TVP* elements);
 

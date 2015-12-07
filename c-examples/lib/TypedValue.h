@@ -84,14 +84,20 @@ struct ClassType
 	void* value;
 	int classId;
 	unsigned int* refs;
-	freeVdmClassFunction freeClass;
+	freeVdmClassFunction freeClass;//TODO move to global map
 };
 
+typedef bool (*vdmRecordEqualityFunction)(TVP a, TVP b);
+#define ASSERT_CHECK_RECORD(s) assert(s->type == VDM_RECORD && "Value is not a record")
+#define RECORD_FIELD_ACCESS(record,recordType,field,var) TVP var = NULL;{ASSERT_CHECK_RECORD(record);UNWRAP_RECORD(ar,record);var=clone(((recordType)ar)->field);}
+#define RECORD_FIELD_SET(record,recordType,field,value) {ASSERT_CHECK_RECORD(record);UNWRAP_RECORD(ar,record);((recordType)ar)->field=clone(value);}
 struct RecordType
 {
 	void* value;
 	int recordId;
-	freeVdmClassFunction freeRecord;
+	freeVdmClassFunction freeRecord;//TODO move to global map
+	vdmRecordEqualityFunction equalFun; //TODO move to global map
+	struct TypedValue* (*cloneFun)(TVP self);
 };
 
 struct TypedValue* newTypeValue(vdmtype type, TypedValueType value);

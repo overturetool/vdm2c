@@ -11,6 +11,10 @@
 #include "../Globals.h"
 #include "../lib/TypedValue.h"
 
+//#define UNWRAP_R(var,map) struct Map* var = (struct Map*)map->value.ptr
+
+#define RECORD_R1 struct R1*
+
 struct R1
 {
 	//needs if to identify it
@@ -23,6 +27,5 @@ struct R1
 
 
 TVP mk_R1();
-void freeR1(struct R1* self);
 
 #endif /* RECORDS_R1_H_ */

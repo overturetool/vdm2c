@@ -15,6 +15,6 @@
 bool patternMatchBind(TVP patternBind, TVP value);
 
 //for match value
-bool patternMatch(TVP patternBind, TVP value);
+//bool patternMatch(TVP patternBind, TVP value);
 
 #endif /* LIB_PATTERNBINDMATCH_H_ */
