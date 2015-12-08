@@ -20,6 +20,7 @@ cmake -DCMAKE_BUILD_TYPE=Debug .
 ## Compiler tool dependencies
 * glib
  * gettext - this is not present on OSX so install it with:
+ 
 ```bash
 brew install gettext
 brew link --force gettext
