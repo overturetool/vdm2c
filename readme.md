@@ -12,6 +12,7 @@ After successful checkout run:
 
 * for release `cmake .`
 * for debug 
+
 ```bash
 cmake -DCMAKE_BUILD_TYPE=Debug .
 ```
