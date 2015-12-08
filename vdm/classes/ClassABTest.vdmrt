@@ -1,0 +1,30 @@
+class ClassABTest is subclass of TestCase
+
+operations
+
+public testA:()==>()
+testA()==(
+
+let a : A = new A()
+in
+	(
+		a.print();
+		assertTrue(a.sum()=4);
+	)
+
+);
+
+
+public testB:()==>()
+testB()==(
+
+let a : B = new B()
+in
+	(
+		a.print();
+		assertTrue(a.sum()=9);
+	)
+
+);
+
+end ClassABTest

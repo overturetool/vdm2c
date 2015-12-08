@@ -1,0 +1,20 @@
+class B is subclass of A
+
+instance variables
+
+field2 : int := 5;
+
+operations
+
+public print:()==>()
+print()==(
+IO`println(field1);
+IO`println(" ");
+IO`println(field2);
+);
+
+
+public sum : ()==>int
+sum()==return field1+field2;
+
+end B

@@ -1,0 +1,17 @@
+class A
+
+instance variables
+
+protected field1 : int := 4;
+
+
+operations
+
+public print:()==>()
+print()==IO`println(field1);
+
+
+public sum : ()==>int
+sum()==return field1;
+
+end A

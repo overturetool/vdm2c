@@ -41,3 +41,8 @@ https://bjornarnelid.wordpress.com/2014/03/10/how-to-get-started-with-google-tes
 3. Change the *Compiler Command Pattern* to `(.*gcc)|(.*[gc]\+\+)|(.*cc)|(clang)`
 
 Source: https://developer.mozilla.org/en-US/docs/Eclipse_CDT
+
+
+# Class mapping
+
+http://www.pvv.ntnu.no/~hakonhal/main.cgi/c/classes/
