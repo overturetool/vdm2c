@@ -10,8 +10,10 @@ To check out the sources see the gitlab guide for the project.
 
 After successful checkout run:
 
-* for release `cmake .`
-* for debug 
+1. `git submodule update --init`
+2. Either:
+ * for release `cmake .`
+ * for debug 
 
 ```bash
 cmake -DCMAKE_BUILD_TYPE=Debug .
