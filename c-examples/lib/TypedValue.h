@@ -129,6 +129,8 @@ struct TypedValue* newCollection(size_t size, vdmtype type);
 
 struct TypedValue* clone(struct TypedValue* x);
 bool equals(struct TypedValue* a, struct TypedValue* b);
+TVP vdmEquals(struct TypedValue* a, struct TypedValue* b);
+TVP vdmInEquals(struct TypedValue* a, struct TypedValue* b);
 bool collectionEqual(TVP col1,TVP col2);
 
 void recursiveFree(struct TypedValue* ptr);

@@ -312,3 +312,9 @@ void recursiveFree(struct TypedValue* ptr)
 	//free typedvalue
 	free(ptr);
 }
+
+TVP vdmEquals(struct TypedValue* a, struct TypedValue* b)
+{	return newBool(equals(a,b));}
+
+TVP vdmInEquals(struct TypedValue* a, struct TypedValue* b)
+{	return newBool(!equals(a,b));}

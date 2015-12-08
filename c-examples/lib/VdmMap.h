@@ -25,7 +25,20 @@ struct TypedValue* newMap();
 void vdmMapAdd(TVP map,TVP key, TVP value);
 
 //VDM map operators
+TVP vdmMapDom(TVP map);
+TVP vdmMapRng(TVP map);
+TVP vdmMapMunion(TVP map1, TVP map2);
+TVP vdmMapOverride(TVP map1, TVP map2);
+TVP vdmMapMerge(TVP set);
+TVP vdmMapDomRestrictTo(TVP set,TVP map);
+TVP vdmMapDomRestrictBy(TVP set,TVP map);
+TVP vdmMapRngRestrictTo(TVP set,TVP map);
+TVP vdmMapRngRestrictBy(TVP set,TVP map);
 TVP vdmMapApply(TVP map, TVP key);
+TVP vdmMapInverse(TVP map);
+
+bool vdmMapEquals(TVP map1, TVP map2);
+
 
 guint vdm_typedvalue_hash(gconstpointer v);
 gboolean vdm_typedvalue_equal(gconstpointer v1, gconstpointer v2);
