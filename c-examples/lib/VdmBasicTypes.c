@@ -219,6 +219,8 @@ TVP vdmLessOrEqual(TVP a,TVP b)
 {	ASSERT_CHECK_NUMERIC(a);
 	ASSERT_CHECK_NUMERIC(b);
 
-	//FIXME: not implemented
-	return NULL;
+	double av = toDouble(a);
+	double bv=toDouble(b);
+
+	return newBool(av<=bv);
 }

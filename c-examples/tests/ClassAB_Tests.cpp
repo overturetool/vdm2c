@@ -14,7 +14,7 @@ TEST(A, _new)
 	TVP c=A._new();//ModelVarBOOL._newB(true);
 	UNWRAP_CLASS_A(l,c);
 
-	l->print(l);
+//	l->print(l);
 
 	TVP res = l->sum(l);
 
@@ -37,7 +37,7 @@ TEST(B, _new)
 
 	UNWRAP_CLASS_A(la,castToA);
 
-		la->print(la);
+//		la->print(la);
 
 		TVP res = la->sum(la);
 

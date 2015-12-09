@@ -1,0 +1,16 @@
+class ExpressionSetTest is subclass of TestCase
+operations
+
+public testsetInset : () ==>()
+testsetInset()== assertTrue(setInset());
+
+
+
+functions
+
+
+
+setInset: () -> bool
+setInset()== 1 in set {1};
+
+end ExpressionSetTest

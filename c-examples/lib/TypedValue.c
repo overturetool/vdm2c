@@ -104,6 +104,7 @@ struct TypedValue* clone(struct TypedValue* x)
 	case VDM_REAL:
 	case VDM_QUOTE:
 	{
+		//encoded as values so the initial copy line handles these
 		break;
 	}
 	case VDM_MAP:

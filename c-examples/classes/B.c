@@ -26,7 +26,7 @@ static void print(ACLASS base)
 	BCLASS this=
 			  (void *)base-offsetof(struct B, A);
 	//Loose translation
-	printf("%d %d",base->field1->value.intVal,this->field2->value.intVal);
+	//printf("%d %d",base->field1->value.intVal,this->field2->value.intVal);
 }
 
 static TVP sum(ACLASS base)
