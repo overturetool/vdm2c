@@ -32,7 +32,7 @@ static void print(ACLASS this)
 
 static TVP sum(ACLASS this)
 {
-	return clone(this->field1);
+	return vdmClone(this->field1);
 }
 
 void A_init(ACLASS this)

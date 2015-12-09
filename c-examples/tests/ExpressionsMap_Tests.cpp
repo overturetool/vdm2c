@@ -41,7 +41,7 @@ TVP mapApply()
 	TVP tmp4 = newBool(equals(tmp2,tmp3));
 
 
-	res = clone(tmp4);
+	res = vdmClone(tmp4);
 	vdmFree(tmp4);
 	vdmFree(tmp3);
 	vdmFree(tmp2);

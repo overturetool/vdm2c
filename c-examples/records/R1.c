@@ -36,28 +36,28 @@ bool equalsR1(TVP a, TVP b)
 	equals(arr->c,brr->c);
 }
 
-TVP cloneR1(TVP self)
+TVP vdmCloneR1(TVP self)
 {
 	ASSERT_CHECK_RECORD(self);
 
 	UNWRAP_RECORD(tmp,self);
 
-	TVP cloneValue = mk_R1();
+	TVP vdmCloneValue = mk_R1();
 
-	UNWRAP_RECORD(tmp2,cloneValue);
+	UNWRAP_RECORD(tmp2,vdmCloneValue);
 
 	UNWRAP_R1(selfR,tmp);
-	UNWRAP_R1(cloneR,tmp2);
+	UNWRAP_R1(vdmCloneR,tmp2);
 
 	//copy record struct
-	*cloneR = *selfR;
+	*vdmCloneR = *selfR;
 
 	//copy fields
-	cloneR->a = clone(cloneR->a);
-	cloneR->b = clone(cloneR->b);
-	cloneR->c = clone(cloneR->c);
+	vdmCloneR->a = vdmClone(vdmCloneR->a);
+	vdmCloneR->b = vdmClone(vdmCloneR->b);
+	vdmCloneR->c = vdmClone(vdmCloneR->c);
 
-	return cloneValue;
+	return vdmCloneValue;
 }
 
 
@@ -67,8 +67,8 @@ TVP mk_R1()
 	ptr->recordId=RECORD_ID_R1;
 	ptr->freeRecord = &freeR1;
 	ptr->equalFun=&equalsR1;
-	ptr->cloneFun=&cloneR1;
-	ptr->value =(struct R1*) malloc(sizeof(struct R1));
+	ptr->vdmCloneFun=&vdmCloneR1;
+	ptr->value =(struct R1*) calloc(1,sizeof(struct R1));
 	return newTypeValue(VDM_RECORD, (TypedValueType
 			)
 			{	.ptr = ptr});

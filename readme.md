@@ -28,6 +28,20 @@ brew install gettext
 brew link --force gettext
 ```
 
+### Install glib
+
+* ubuntu
+
+```bash
+sudo apt-get install libglib2.0
+```
+
+* OSX
+
+```bash
+brew install glib
+```
+
 # Using Eclipse
 
 Please install: CDT + *C/C++ Unit Testing Support*
@@ -73,3 +87,23 @@ Therefore:
 http://www.pvv.ntnu.no/~hakonhal/main.cgi/c/classes/
 
 
+# Other debugging related stuff
+
+## Core dump in terminal only
+
+Enable the core to be dumped by:
+
+```bash
+ulimit -c unlimited
+```
+
+on linux it will be in the folder of the application and on OSX in `/cores/`
+
+# Compiler -- platform dependent stuff
+
+Remember that:
+
+* `malloc` allocated space in memory with random stuff - it may be 0 but we dont know. We know that linx and OSX e.g. OSX may choose 0 memory where linux may choose random memory, but it is random :-)
+* `calloc` allocated space in memory that is 0 
+
+Why is this importsnt: Well `free` only frees if `ptr != NULL`  

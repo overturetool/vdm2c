@@ -16,7 +16,7 @@ TVP letIdentifierExp()
 	{
 		TVP a = newBool(true);
 
-		TVP ret = clone(a);
+		TVP ret = vdmClone(a);
 
 		//clean local malloc
 		recursiveFree(a);
@@ -33,7 +33,7 @@ TVP letIdentifierDontExp()
 		TVP dont_1 = newBool(true);
 
 		TVP tmp1 = newBool(true);
-		TVP ret = clone(tmp1);
+		TVP ret = vdmClone(tmp1);
 
 		//clean local malloc
 		recursiveFree(dont_1);
@@ -54,7 +54,7 @@ TVP letPatternMatch1()
 
 		TVP tmp3 = newBool(true);
 
-		TVP ret = clone(tmp3);
+		TVP ret = vdmClone(tmp3);
 		recursiveFree(tmp1);
 		recursiveFree(tmp2);
 		recursiveFree(tmp3);
@@ -118,7 +118,7 @@ TVP letFilter1Exp()
 			if( patternMatchBind(tmp2,tmp1))
 			{
 				TVP tmp3= newBool(true);
-				res = clone(tmp3);
+				res = vdmClone(tmp3);
 				recursiveFree(tmp3);
 				return res;
 			} else
@@ -151,7 +151,7 @@ TVP ifExp()
 		TVP tmp3 = newBool(true);
 		TVP tmp4 = newBool(false);
 		TVP tmp5 = newBool(tmp3->value.boolVal ||tmp4->value.boolVal);
-		res = clone(tmp5);
+		res = vdmClone(tmp5);
 
 		//local scope cleanup
 		recursiveFree(tmp5);
@@ -161,7 +161,7 @@ TVP ifExp()
 	} else
 	{
 		TVP tmp3 = newBool(true);
-		res = clone(tmp3);
+		res = vdmClone(tmp3);
 
 		//local scope cleanup
 		recursiveFree(tmp3);

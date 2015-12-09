@@ -65,7 +65,7 @@ TVP recordR1()
 	vdmFree(tmp3);
 
 	//let r2 = r;
-	TVP r2 = clone(r);
+	TVP r2 = vdmClone(r);
 
 //	mk_R1(-,-,b)=r
 	TVP tmp4 = mk_R1();
@@ -79,7 +79,7 @@ TVP recordR1()
 
 	TVP tmp7 =newBool( tmp5->value.boolVal || tmp6->value.boolVal || b->value.boolVal);
 
-	TVP res = clone(tmp7);
+	TVP res = vdmClone(tmp7);
 	vdmFree(tmp7);
 	vdmFree(tmp6);
 	vdmFree(tmp5);

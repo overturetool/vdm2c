@@ -89,15 +89,15 @@ struct ClassType
 
 typedef bool (*vdmRecordEqualityFunction)(TVP a, TVP b);
 #define ASSERT_CHECK_RECORD(s) assert(s->type == VDM_RECORD && "Value is not a record")
-#define RECORD_FIELD_ACCESS(record,recordType,field,var) TVP var = NULL;{ASSERT_CHECK_RECORD(record);UNWRAP_RECORD(ar,record);var=clone(((recordType)ar)->field);}
-#define RECORD_FIELD_SET(record,recordType,field,value) {ASSERT_CHECK_RECORD(record);UNWRAP_RECORD(ar,record);((recordType)ar)->field=clone(value);}
+#define RECORD_FIELD_ACCESS(record,recordType,field,var) TVP var = NULL;{ASSERT_CHECK_RECORD(record);UNWRAP_RECORD(ar,record);var=vdmClone(((recordType)ar)->field);}
+#define RECORD_FIELD_SET(record,recordType,field,value) {ASSERT_CHECK_RECORD(record);UNWRAP_RECORD(ar,record);((recordType)ar)->field=vdmClone(value);}
 struct RecordType
 {
 	void* value;
 	int recordId;
 	freeVdmClassFunction freeRecord;//TODO move to global map
 	vdmRecordEqualityFunction equalFun; //TODO move to global map
-	struct TypedValue* (*cloneFun)(TVP self);
+	struct TypedValue* (*vdmCloneFun)(TVP self);
 };
 
 struct TypedValue* newTypeValue(vdmtype type, TypedValueType value);
@@ -127,7 +127,7 @@ struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction
 struct TypedValue* newCollectionWithValues(vdmtype type,size_t size,TVP* elements);
 struct TypedValue* newCollection(size_t size, vdmtype type);
 
-struct TypedValue* clone(struct TypedValue* x);
+struct TypedValue* vdmClone(struct TypedValue* x);
 bool equals(struct TypedValue* a, struct TypedValue* b);
 TVP vdmEquals(struct TypedValue* a, struct TypedValue* b);
 TVP vdmInEquals(struct TypedValue* a, struct TypedValue* b);

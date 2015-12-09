@@ -39,7 +39,7 @@ struct TypedValue* newSetWithValues(size_t size, TVP* elements)
 
 	for (int i = 0; i < size; i++)
 	{
-		TVP v= clone(elements[i]); // set binding
+		TVP v= vdmClone(elements[i]); // set binding
 
 		if(count>=bufsize)
 		{

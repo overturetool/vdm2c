@@ -8,7 +8,7 @@ extern "C"
 }
 
 
-TEST(Expression_Boolean, minusExp)
+TEST(Expression_Numeric, minusExp)
 {
 //	TVP t = newBool(false);
 //

@@ -77,7 +77,7 @@ TEST(Expression_Set, setComprehension)
 					size+=(DEFAULT_SET_COMP_BUFFER_STEPSIZE*sizeof(struct TypedValue*));
 					buf = (struct TypedValue**)realloc(buf,size);
 				}
-				TVP element = clone(v); // exp, the clone here will be inside any expression
+				TVP element = vdmClone(v); // exp, the vdmClone here will be inside any expression
 				buf[count++]=element;
 			}
 			if(cond!=NULL)

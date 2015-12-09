@@ -25,7 +25,7 @@ void vdmMapAdd(TVP map,TVP key, TVP value)
 
 	UNWRAP_MAP(m,map);
 
-	g_hash_table_insert(m->table, clone(key), clone(value));
+	g_hash_table_insert(m->table, vdmClone(key), vdmClone(value));
 
 }
 
@@ -71,7 +71,7 @@ guint vdm_typedvalue_hash(gconstpointer v)
 //
 //			for (int i = 0; i < cptr->size; i++)
 //			{
-//				ptr->value[i] = clone(cptr->value[i]);
+//				ptr->value[i] = vdmClone(cptr->value[i]);
 //			}
 //
 //			tmp->value.ptr = ptr;
