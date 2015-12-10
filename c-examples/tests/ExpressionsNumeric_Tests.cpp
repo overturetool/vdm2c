@@ -32,6 +32,19 @@ TEST(Expression_Numeric, absExp)
 	vdmFree(res);
 }
 
+
+TEST(Expression_Numeric, floorExp)
+{
+	TVP t = newReal(5.6);
+
+	assert(t->type == VDM_REAL && "Value is not a real");
+	TVP res = vdmFloor(t);
+	EXPECT_EQ(5,res->value.doubleVal);
+
+	vdmFree(t);
+	vdmFree(res);
+}
+
 TEST(Expression_Numeric, sumExp)
 {
 	TVP t1 = newInt(5);
@@ -62,15 +75,30 @@ TEST(Expression_Numeric, differenceExp)
 	vdmFree(res);
 }
 
+TEST(Expression_Numeric, productExp)
+{
+	TVP t1 = newReal(6);
+	TVP t2 = newReal(7);
+
+	assert(t1->type == VDM_REAL && "Value is not a real");
+	assert(t2->type == VDM_REAL && "Value is not a real");
+	TVP res = vdmProduct(t1,t2);
+	EXPECT_EQ(42,res->value.doubleVal);
+
+	vdmFree(t1);
+	vdmFree(t2);
+	vdmFree(res);
+}
+
 TEST(Expression_Numeric, divisionExp)
 {
-	TVP t1 = newInt(16);
-	TVP t2 = newInt(4);
+	TVP t1 = newInt(32);
+	TVP t2 = newInt(8);
 
 	assert(t1->type == VDM_INT && "Value is not a integer");
 	assert(t2->type == VDM_INT && "Value is not a integer");
-	TVP res = vdmDiv(t1,t2);
-	EXPECT_EQ(4,res->value.intVal);
+	TVP res = vdmDivision(t1,t2);
+	EXPECT_EQ(4,res->value.doubleVal);
 
 	vdmFree(t1);
 	vdmFree(t2);
@@ -157,12 +185,12 @@ TEST(Expression_Numeric, equalExp)
 TEST(Expression_Numeric, notEqualExp)
 {
 	TVP t1 = newReal(8);
-	TVP t2 = newReal(8);
+	TVP t2 = newReal(9);
 
 	assert(t1->type == VDM_REAL && "Value is not a real");
 	assert(t2->type == VDM_REAL && "Value is not a real");
 	TVP res = vdmNotEqual(t1,t2);
-	EXPECT_EQ(false,res->value.boolVal);
+	EXPECT_EQ(true,res->value.boolVal);
 
 	vdmFree(t1);
 	vdmFree(t2);
@@ -184,7 +212,7 @@ TEST(Expression_Numeric, greaterExp)
 	vdmFree(res);
 }
 
-TEST(Expression_Numeric, greaterOrEqual1Exp)
+TEST(Expression_Numeric, greaterOrEqualExp1)
 {
 	TVP t1 = newReal(8);
 	TVP t2 = newReal(6);
@@ -199,7 +227,7 @@ TEST(Expression_Numeric, greaterOrEqual1Exp)
 	vdmFree(res);
 }
 
-TEST(Expression_Numeric, greaterOrEqual2Exp)
+TEST(Expression_Numeric, greaterOrEqualExp2)
 {
 	TVP t1 = newReal(8);
 	TVP t2 = newReal(8);
@@ -229,14 +257,14 @@ TEST(Expression_Numeric, lessExp)
 	vdmFree(res);
 }
 
-TEST(Expression_Numeric, lessOrEqual1Exp)
+TEST(Expression_Numeric, lessOrEqualExp1)
 {
-	TVP t1 = newReal(28);
+	TVP t1 = newReal(18);
 	TVP t2 = newReal(23);
 
 	assert(t1->type == VDM_REAL && "Value is not a real");
 	assert(t2->type == VDM_REAL && "Value is not a real");
-	TVP res = vdmGreaterOrEqual(t1,t2);
+	TVP res = vdmLessOrEqual(t1,t2);
 	EXPECT_EQ(true,res->value.boolVal);
 
 	vdmFree(t1);
@@ -244,14 +272,14 @@ TEST(Expression_Numeric, lessOrEqual1Exp)
 	vdmFree(res);
 }
 
-TEST(Expression_Numeric, lessOrEqual2Exp)
+TEST(Expression_Numeric, lessOrEqualExp2)
 {
 	TVP t1 = newReal(11);
 	TVP t2 = newReal(11);
 
 	assert(t1->type == VDM_REAL && "Value is not a real");
 	assert(t2->type == VDM_REAL && "Value is not a real");
-	TVP res = vdmGreaterOrEqual(t1,t2);
+	TVP res = vdmLessOrEqual(t1,t2);
 	EXPECT_EQ(true,res->value.boolVal);
 
 	vdmFree(t1);
