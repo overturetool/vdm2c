@@ -1,58 +1,118 @@
-class ExpressionNumericTest
+class ExpressionNumericTest is subclass of TestCase
+
+operations
+
+public testunaryMinusExp : () ==>()
+testunaryMinusExp()== assertTrue(unaryMinusExp());
+
+public testabsExp : () ==>()
+testabsExp()== assertTrue(absExp());
+
+public testfloorExp : () ==>()
+testfloorExp()== assertTrue(floorExp());
+
+public testsumExp : () ==>()
+testsumExp()== assertTrue(sumExp());
+
+public testdifferenceExp : () ==>()
+testdifferenceExp()== assertTrue(differenceExp());
+
+public testremainderExp : () ==>()
+testremainderExp()== assertTrue(remainderExp());
+
+public testdivisionExp : () ==>()
+testdivisionExp()== assertTrue(divisionExp());
+
+public testintDivisionExp : () ==>()
+testintDivisionExp()== assertTrue(intDivisionExp());
+
+public testmodExp : () ==>()
+testmodExp()== assertTrue(modExp());
+
+public testpowerExp : () ==>()
+testpowerExp()== assertTrue(powerExp());
+
+public testlessthanExp : () ==>()
+testlessthanExp()== assertTrue(lessthanExp());
+
+public testgreaterThanExp : () ==>()
+testgreaterThanExp()== assertTrue(greaterThanExp());
+
+public testlessEqualExp1 : () ==>()
+testlessEqualExp1()== assertTrue(lessEqualExp1());
+
+public testlessEqualExp2 : () ==>()
+testlessEqualExp2()== assertTrue(lessEqualExp2());
+
+public testgreaterEqualExp1 : () ==>()
+testgreaterEqualExp1()== assertTrue(greaterEqualExp1());
+
+public testgreaterEqualExp2 : () ==>()
+testgreaterEqualExp2()== assertTrue(greaterEqualExp2());
+
+public testequalExp : () ==>()
+testequalExp()== assertTrue(notEqualExp());
+
+public testnotEqualExp : () ==>()
+testnotEqualExp()== assertTrue(notEqualExp());
+
 functions
 
-
 unaryMinusExp: () -> bool
-unaryMinusExp()== not false;
+unaryMinusExp()== -5=-5;
 
 absExp: () -> bool
-absExp()== false and false;
+absExp()== abs(-5)=5;
 
 floorExp: () -> bool
-floorExp()== true or false;
-
+floorExp()== floor 5.6 = 5;
 
 sumExp: () -> bool
-sumExp()== true => false;
+sumExp()== 5+4=9;
 
 differenceExp: () -> bool
-differenceExp()== true <=> false;
+differenceExp()== 5-4=1;
 
 productExp: () -> bool
-productExp()== false = false;
-
+productExp()== 6*7=42;
 
 divisionExp: () -> bool
-divisionExp()== true <> false;
+divisionExp()== 32/8=4;
 
 intDivisionExp: () -> bool
-intDivisionExp()== true <> false;
+intDivisionExp()== 20 div 4 = 5;
 
 remainderExp: () -> bool
-remainderExp()== true <> false;
+remainderExp()== 20 rem 6 = 2;
 
 modExp: () -> bool
-modExp()== true <> false;
+modExp()== 23 mod 6=5;
 
 powerExp: () -> bool
-powerExp()== true <> false;
+powerExp()== 4**3=64;
 
 lessthanExp: () -> bool
-lessthanExp()== true <> false;
+lessthanExp()== 12<18;
 
 greaterThanExp: () -> bool
-greaterThanExp()== true <> false;
+greaterThanExp()== 12>6;
 
-lessEqualExp: () -> bool
-lessEqualExp()== true <> false;
+lessEqualExp1: () -> bool
+lessEqualExp1()== 18<=23;
 
-greaterEqualExp: () -> bool
-greaterEqualExp()== true <> false;
+lessEqualExp2: () -> bool
+lessEqualExp2()== 11<=11;
+
+greaterEqualExp1: () -> bool
+greaterEqualExp1()== 8>=6;
+
+greaterEqualExp2: () -> bool
+greaterEqualExp2()== 8>=8;
 
 equalExp: () -> bool
-equalExp()== true <> false;
+equalExp()== 6=6;
 
 notEqualExp: () -> bool
-notEqualExp()== true <> false;
+notEqualExp()== 8<>9;
 
 end ExpressionNumericTest
