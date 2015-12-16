@@ -8,6 +8,8 @@
 #include "A.h"
 #include <stdio.h>
 
+
+
 void A_free_fields(struct A *this)
 {
 	//free class struct
@@ -16,18 +18,17 @@ void A_free_fields(struct A *this)
 
 static void A_free(struct A *this)
 {
-	--this->_refs;
-	if (this->_refs < 1)
+	--this->_A_refs;
+	if (this->_A_refs < 1)
 	{
 		A_free_fields(this);
 		free(this);
 	}
 }
 
-static void print(ACLASS this)
+static TVP calc(ACLASS this,TVP x, TVP y)
 {
-	//Loose translation
-	printf("%d",this->field1->value.intVal);
+	return vdmSum(x,y);
 }
 
 static TVP sum(ACLASS this)
@@ -35,28 +36,69 @@ static TVP sum(ACLASS this)
 	return vdmClone(this->field1);
 }
 
-void A_init(ACLASS this)
+
+
+struct VTable VTableArrayForA[] =
 {
-	*this = (struct A
-	)
-	{	._id = CLASS_ID_A_ID, ._refs = 0};
+    /*
+    Vtable entry virtual function sum.
+    */
+    { 0, 0, (VirtualFunctionPointer) calc },
 
-	//functions
-	this->print = &print;
-	this->sum = &sum;
+    /*
+    This vtable entry invokes the base class's
+    MoveTo method.
+    */
+    { 0, 0, (VirtualFunctionPointer) sum },
 
-	//All fields must be initialized
-	this->field1 = newInt(4);
+    /* Entry for the virtual destructor */
+//    { 0, 0, (VirtualFunctionPointer) Shape_Destructor }
+};
+
+ACLASS A_Constructor(ACLASS this_ptr)
+{
+
+	if(this_ptr==NULL)
+	{
+		this_ptr = (ACLASS) malloc(sizeof(struct A));
+	}
+
+	if(this_ptr!=NULL)
+	{
+		this_ptr->_A_id = CLASS_ID_A_ID;
+		this_ptr->_A_refs = 0;
+		this_ptr->_A_pVTable=VTableArrayForA;
+
+		this_ptr->field1= newInt(4);
+	}
+
+	return this_ptr;
 }
+
+//void A_init(ACLASS this)
+//{
+//	*this = (struct A
+//	)
+//	{	._id = CLASS_ID_A_ID, ._refs = 0};
+//
+//	//functions
+////	this->print = &print;
+//	this->sum = &sum;
+//
+//	//All fields must be initialized
+//	this->field1 = newInt(4);
+//}
 
 static TVP new()
 {
-	ACLASS ptr = (ACLASS) malloc(sizeof(struct A));
-
-	A_init(ptr);
+//	ACLASS ptr = (ACLASS) malloc(sizeof(struct A));
+//
+//	A_init(ptr);
 //	return ptr;
+	ACLASS ptr=A_Constructor(NULL);
+
 	return newTypeValue(VDM_CLASS, (TypedValueType)
-			{	.ptr=newClassValue(ptr->_id, &ptr->_refs, (freeVdmClassFunction)&A_free, ptr)});
+			{	.ptr=newClassValue(ptr->_A_id, &ptr->_A_refs, (freeVdmClassFunction)&A_free, ptr)});
 }
 
 const struct AClass A =

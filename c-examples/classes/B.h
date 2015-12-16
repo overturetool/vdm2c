@@ -11,23 +11,31 @@
 #include "../Globals.h"
 #include "../lib/TypedValue.h"
 #include "A.h"
-
+#include "C.h"
 
 #define BCLASS struct B*
 #define UNWRAP_CLASS_B(var,cls) BCLASS var=NULL;{UNWRAP_CLASS(localB,cls); var = (BCLASS)localB->value;};
 
+#define CLASS_B_sum2 2
+
 struct B
 {
-	struct A A;
-	//needs if to identify it
-	int _id ;
-	//needs refsCount for garbage collection
-	unsigned int _refs;
-	//--------- class fields
+	//---- A ----
+	VDM_CLASS_BASE_DEFINITIONS(A);
 
+	TVP field1;
+	//-----end A ----
+
+
+	// ---- C ----
+	VDM_CLASS_BASE_DEFINITIONS(C);
+
+	TVP field1c;
+
+	//---- end C----
+
+	VDM_CLASS_BASE_DEFINITIONS(B);
 	TVP field2;
-//	void (*print)(struct B *self);
-//	TVP (*sum)(struct B *self);
 };
 
 void B_free(struct B *self);
@@ -35,6 +43,6 @@ void B_free(struct B *self);
 extern const struct BClass
 {
 	TVP (*_new)();
-} B;
+}B;
 
 #endif /* CLASSES_B_H_ */

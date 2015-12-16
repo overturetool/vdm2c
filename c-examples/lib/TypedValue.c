@@ -77,16 +77,7 @@ struct TypedValue* newCollectionWithValues(vdmtype type, size_t size, TVP* eleme
 	return product;
 }
 
-struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction freeClass, void* value)
-{
-	struct ClassType* ptr = (struct ClassType*) malloc(sizeof(struct ClassType));
-	ptr->classId = id;
-	ptr->value = value;
-	ptr->freeClass = freeClass;
-	ptr->refs = refs;
-	(*refs)++;
-	return ptr;
-}
+
 
 struct TypedValue* vdmClone(struct TypedValue* x)
 {

@@ -177,7 +177,7 @@ TVP vdmDivision(TVP a,TVP b)
 	return newReal(av/bv);
 }
 
-long divi(double lv, double rv)
+static long divi(double lv, double rv)
 {
 	/*
 	 * There is often confusion on how integer division, remainder and modulus work on negative numbers. In fact,

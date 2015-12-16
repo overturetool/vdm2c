@@ -84,8 +84,10 @@ Therefore:
 
 ## Class mapping
 
-http://www.pvv.ntnu.no/~hakonhal/main.cgi/c/classes/
-
+* http://www.pvv.ntnu.no/~hakonhal/main.cgi/c/classes/
+* http://www.eventhelix.com/RealtimeMantra/basics/ComparingCPPAndCPerformance2.htm#.VmbPCuODFBc
+* http://www.go4expert.com/articles/virtual-table-vptr-multiple-inheritance-t16616/
+* http://www.go4expert.com/articles/virtual-table-vptr-t16544/
 
 # Other debugging related stuff
 
@@ -107,3 +109,11 @@ Remember that:
 * `calloc` allocated space in memory that is 0 
 
 Why is this importsnt: Well `free` only frees if `ptr != NULL`  
+
+
+# C/C++ language related stuff
+
+* http://stackoverflow.com/questions/3523145/pointer-arithmetic-for-void-pointer-in-c
+* https://www.cs.uaf.edu/2010/fall/cs301/lecture/10_15_struct_and_class.html
+
+

@@ -8,7 +8,8 @@ testA()==(
 let a : A = new A()
 in
 	(
-		a.print();
+		
+		assertTrue(a.calc(1,2)=3);
 		assertTrue(a.sum()=4);
 	)
 
@@ -18,12 +19,19 @@ in
 public testB:()==>()
 testB()==(
 
-let a : B = new B()
+let b : B = new B()
 in
 	(
-		a.print();
+		assertTrue(b.calc(1,2)=-1);
+		assertTrue(b.sum()=9);
+		
+		let a : A = b
+		in
+		(
+		assertTrue(a.calc(1,2)=-1);
 		assertTrue(a.sum()=9);
-	)
+		);
+	);
 
 );
 

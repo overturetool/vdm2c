@@ -7,8 +7,8 @@ protected field1 : int := 4;
 
 operations
 
-public print:()==>()
-print()==IO`println(field1);
+public calc:int*int==>real
+calc(x,y)==return x+y;
 
 
 public sum : ()==>int

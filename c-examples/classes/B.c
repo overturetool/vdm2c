@@ -11,55 +11,104 @@
 
  void B_free(struct B *this)
 {
-	--this->_refs;
-	if (this->_refs < 1)
+	--this->_B_refs;
+	if (this->_B_refs < 1)
 	{
-		A_free_fields(&this->A);//super
+//		A_free_fields(&this->A);//super
 		//free class struct
 		vdmFree(this->field2);
 		free(this);
 	}
 }
 
-static void print(ACLASS base)
+
+
+static TVP calc(ACLASS this,TVP x, TVP y)
 {
-	BCLASS this=
-			  (void *)base-offsetof(struct B, A);
-	//Loose translation
-	//printf("%d %d",base->field1->value.intVal,this->field2->value.intVal);
+	return vdmProduct(x,y);
 }
 
 static TVP sum(ACLASS base)
 {
-	BCLASS this=
-				  (void *)base-offsetof(struct B, A);
+	BCLASS this=(BCLASS)base;
+				  //(void *)base-offsetof(struct B, A);
 
 	//Loose translation
 	return newInt(base->field1->value.intVal+this->field2->value.intVal);
 }
 
+static TVP sum2(BCLASS this)
+{
+	//Loose translation
+	return newInt(this->field2->value.intVal);
+}
+
+struct VTable VTableArrayForB[] =
+{
+    /*
+    Vtable entry virtual function sum.
+    */
+    { 0, 0, (VirtualFunctionPointer) calc },
+
+    /*
+    This vtable entry invokes the base class's
+    MoveTo method.
+    */
+    { 0, 0, (VirtualFunctionPointer) sum },
+
+	{ 0, 0, (VirtualFunctionPointer) sum2 },
+
+    /* Entry for the virtual destructor */
+//    { 0, 0, (VirtualFunctionPointer) Shape_Destructor }
+};
+
+#define GET_STRUCT_FIELD_PTR(tname,ptr,fieldname) (( (void*) (  ((unsigned char*)ptr) + offsetof(struct tname, fieldname) )  ))
+BCLASS B_Constructor(BCLASS this_ptr)
+{
+
+	if(this_ptr==NULL)
+	{
+		this_ptr = (BCLASS) malloc(sizeof(struct B));
+	}
+
+	if(this_ptr!=NULL)
+	{
+
+		//init base A
+		A_Constructor((ACLASS)GET_STRUCT_FIELD_PTR(B,this_ptr,_A_pVTable));
+
+		//init base C
+		C_Constructor((CCLASS)GET_STRUCT_FIELD_PTR(B,this_ptr,_C_pVTable));
+
+		//replace vTable
+		this_ptr->_A_pVTable = VTableArrayForB;
+		this_ptr->_B_pVTable = VTableArrayForB;//this_ptr->_A_pVTable;
+
+		this_ptr->field2 = newInt(5);
+	}
+
+	return this_ptr;
+}
+
 static TVP new()
 {
-	BCLASS ptr = (BCLASS) malloc(sizeof(struct B));
-	*ptr = (struct B
-	)
-	{	._id = CLASS_ID_B_ID, ._refs = 0};
-
+	BCLASS ptr = B_Constructor(NULL);
 	//super
-	A_init(&ptr->A);
+//	A_Constructor(&ptr->A);
 //	TVP baseTvp= A._new();
 //	UNWRAP_CLASS_A(base,baseTvp);
 //	ptr->A = base;
 	//FIXME memory leak from TVP and classtype
 
 	//functions - change A's methods
-	ptr->A.print = &print;
-	ptr->A.sum = &sum;
+//	ptr->A.print = &print;
+//	ptr->A.sum = &sum;
 
 	//All fields must be initialized
-	ptr->field2 = newInt(5);
+
+//	ptr->sum2 = &sum2;
 //	return ptr;
-	return newTypeValue(VDM_CLASS, (TypedValueType){.ptr=newClassValue(ptr->_id, &ptr->_refs, (freeVdmClassFunction)&B_free, ptr)});
+	return newTypeValue(VDM_CLASS, (TypedValueType){.ptr=newClassValue(ptr->_B_id, &ptr->_B_refs, (freeVdmClassFunction)&B_free, ptr)});
 }
 
 

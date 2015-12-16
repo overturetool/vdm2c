@@ -6,12 +6,8 @@ field2 : int := 5;
 
 operations
 
-public print:()==>()
-print()==(
-IO`println(field1);
-IO`println(" ");
-IO`println(field2);
-);
+public calc:int*int==>real
+calc(x,y)==return x-y;
 
 
 public sum : ()==>int
