@@ -23,6 +23,10 @@
 struct A
 {
 	VDM_CLASS_BASE_DEFINITIONS(A);
+	/*vtable
+	 * calc
+	 * sum
+	 * */
 
 	TVP field1;
 

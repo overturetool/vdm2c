@@ -23,6 +23,12 @@
 struct C
 {
 	VDM_CLASS_BASE_DEFINITIONS(C);
+	/*vtable
+	 * calc
+	 * sum
+	 * sum2
+	 * getField1
+	 * */
 
 	TVP field1c;
 

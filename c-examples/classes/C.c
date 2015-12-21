@@ -26,7 +26,7 @@ static void C_free(struct C *this)
 	}
 }
 
-static TVP calc(CCLASS this,TVP x, TVP y)
+static TVP C_calc(CCLASS this,TVP x, TVP y)
 {
 	TVP res =  vdmSum(x,y);
 	TVP ret = vdmSum(res,this->field1c);
@@ -34,7 +34,7 @@ static TVP calc(CCLASS this,TVP x, TVP y)
 	return ret;
 }
 
-static TVP getField1(CCLASS this)
+static TVP C_getField1(CCLASS this)
 {
 	return vdmClone(this->field1c);
 }
@@ -46,13 +46,13 @@ struct VTable VTableCrrayForC[] =
     /*
     Vtable entry virtual function sum.
     */
-    { 0, 0, (VirtualFunctionPointer) calc },
+    { 0, 0, (VirtualFunctionPointer) C_calc },
 
     /*
     This vtable entry invokes the base class's
     MoveTo method.
     */
-    { 0, 0, (VirtualFunctionPointer) getField1 },
+    { 0, 0, (VirtualFunctionPointer) C_getField1 },
 
     /* Entry for the virtual destructor */
 //    { 0, 0, (VirtualFunctionPointer) Shape_Destructor }

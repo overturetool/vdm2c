@@ -26,12 +26,12 @@ static void A_free(struct A *this)
 	}
 }
 
-static TVP calc(ACLASS this,TVP x, TVP y)
+static TVP A_calc(ACLASS this,TVP x, TVP y)
 {
 	return vdmSum(x,y);
 }
 
-static TVP sum(ACLASS this)
+static TVP A_sum(ACLASS this)
 {
 	return vdmClone(this->field1);
 }
@@ -43,13 +43,13 @@ struct VTable VTableArrayForA[] =
     /*
     Vtable entry virtual function sum.
     */
-    { 0, 0, (VirtualFunctionPointer) calc },
+    { 0, 0, (VirtualFunctionPointer) A_calc },
 
     /*
     This vtable entry invokes the base class's
     MoveTo method.
     */
-    { 0, 0, (VirtualFunctionPointer) sum },
+    { 0, 0, (VirtualFunctionPointer) A_sum },
 
     /* Entry for the virtual destructor */
 //    { 0, 0, (VirtualFunctionPointer) Shape_Destructor }

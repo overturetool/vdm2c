@@ -22,6 +22,10 @@ struct B
 {
 	//---- A ----
 	VDM_CLASS_BASE_DEFINITIONS(A);
+	/*vtable
+	 * calc --CLASS_A_calc
+	 * sum  -- CLASS_A_sum
+	 * */
 
 	TVP field1;
 	//-----end A ----
@@ -29,12 +33,22 @@ struct B
 
 	// ---- C ----
 	VDM_CLASS_BASE_DEFINITIONS(C);
+	/*vtable
+	 * calc		--CLASS_C_calc
+	 * getField1--CLASS_C_getField1
+	 * */
 
 	TVP field1c;
 
 	//---- end C----
 
 	VDM_CLASS_BASE_DEFINITIONS(B);
+	/*vtable
+	 * calc
+	 * sum
+	 * sum2
+	 * getField1
+	 * */
 	TVP field2;
 };
 

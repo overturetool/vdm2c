@@ -23,12 +23,12 @@
 
 
 
-static TVP calc(ACLASS this,TVP x, TVP y)
+static TVP B_calc(ACLASS this,TVP x, TVP y)
 {
 	return vdmProduct(x,y);
 }
 
-static TVP sum(ACLASS base)
+static TVP B_sum(ACLASS base)
 {
 	BCLASS this=(BCLASS)base;
 				  //(void *)base-offsetof(struct B, A);
@@ -37,10 +37,15 @@ static TVP sum(ACLASS base)
 	return newInt(base->field1->value.intVal+this->field2->value.intVal);
 }
 
-static TVP sum2(BCLASS this)
+static TVP B_sum2(BCLASS this)
 {
 	//Loose translation
 	return newInt(this->field2->value.intVal);
+}
+
+static TVP B_getField1(BCLASS this)
+{
+	return vdmClone(this->field1c);
 }
 
 struct VTable VTableArrayForB[] =
@@ -48,15 +53,16 @@ struct VTable VTableArrayForB[] =
     /*
     Vtable entry virtual function sum.
     */
-    { 0, 0, (VirtualFunctionPointer) calc },
+    { 0, 0, (VirtualFunctionPointer) B_calc },
 
     /*
     This vtable entry invokes the base class's
     MoveTo method.
     */
-    { 0, 0, (VirtualFunctionPointer) sum },
+    { 0, 0, (VirtualFunctionPointer) B_sum },
 
-	{ 0, 0, (VirtualFunctionPointer) sum2 },
+	{ 0, 0, (VirtualFunctionPointer) B_sum2 },
+	{ 0, 0, (VirtualFunctionPointer) B_getField1 },
 
     /* Entry for the virtual destructor */
 //    { 0, 0, (VirtualFunctionPointer) Shape_Destructor }
