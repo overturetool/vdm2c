@@ -13,7 +13,7 @@
 void C_free_fields(struct C *this)
 {
 	//free class struct
-	vdmFree(this->field1c);
+	vdmFree(this->m_C_field1c);
 }
 
 static void C_free(struct C *this)
@@ -29,14 +29,14 @@ static void C_free(struct C *this)
 static TVP C_calc(CCLASS this,TVP x, TVP y)
 {
 	TVP res =  vdmSum(x,y);
-	TVP ret = vdmSum(res,this->field1c);
+	TVP ret = vdmSum(res,this->m_C_field1c);
 	vdmFree(res);
 	return ret;
 }
 
 static TVP C_getField1(CCLASS this)
 {
-	return vdmClone(this->field1c);
+	return vdmClone(this->m_C_field1c);
 }
 
 
@@ -72,7 +72,7 @@ CCLASS C_Constructor(CCLASS this_ptr)
 		this_ptr->_C_refs = 0;
 		this_ptr->_C_pVTable=VTableCrrayForC;
 
-		this_ptr->field1c= newReal(12.34);
+		this_ptr->m_C_field1c= newReal(12.34);
 	}
 
 	return this_ptr;

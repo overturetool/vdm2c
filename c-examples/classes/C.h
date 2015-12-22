@@ -30,7 +30,7 @@ struct C
 	 * getField1
 	 * */
 
-	TVP field1c;
+	TVP m_C_field1c;
 
 };
 

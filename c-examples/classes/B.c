@@ -16,7 +16,7 @@
 	{
 //		A_free_fields(&this->A);//super
 		//free class struct
-		vdmFree(this->field2);
+		vdmFree(this->m_B_field2);
 		free(this);
 	}
 }
@@ -34,18 +34,18 @@ static TVP B_sum(ACLASS base)
 				  //(void *)base-offsetof(struct B, A);
 
 	//Loose translation
-	return newInt(base->field1->value.intVal+this->field2->value.intVal);
+	return newInt(base->m_A_field1->value.intVal+this->m_B_field2->value.intVal);
 }
 
 static TVP B_sum2(BCLASS this)
 {
 	//Loose translation
-	return newInt(this->field2->value.intVal);
+	return newInt(this->m_B_field2->value.intVal);
 }
 
 static TVP B_getField1(BCLASS this)
 {
-	return vdmClone(this->field1c);
+	return vdmClone(this->m_C_field1c);
 }
 
 struct VTable VTableArrayForB[] =
@@ -90,7 +90,7 @@ BCLASS B_Constructor(BCLASS this_ptr)
 		this_ptr->_A_pVTable = VTableArrayForB;
 		this_ptr->_B_pVTable = VTableArrayForB;//this_ptr->_A_pVTable;
 
-		this_ptr->field2 = newInt(5);
+		this_ptr->m_B_field2 = newInt(5);
 	}
 
 	return this_ptr;

@@ -28,7 +28,7 @@ struct A
 	 * sum
 	 * */
 
-	TVP field1;
+	TVP m_A_field1;
 
 };
 

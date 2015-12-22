@@ -9,29 +9,8 @@ extern "C"
 #include <stdio.h>
 }
 
-/**
- * Class handling macros for calling functions and obtaining fields
- */
-
-//Obtain a struct field
-#define GET_STRUCT_FIELD(tname,ptr,fieldtype,fieldname) (*( (fieldtype*) (  ((unsigned char*)ptr) + offsetof(struct tname, fieldname) )  ))
-
-//Obtain VTable function
-#define GET_VTABLE_FUNC(thisTypeName,funcTname,ptr,id)   GET_STRUCT_FIELD(thisTypeName,ptr,struct VTable*,_##funcTname##_pVTable)[id].pFunc
-
-/*Cast to class pointer by moving it forward to the class specific VTable
- * Note that we only adjust the pointer if a subtype is given (i.e. not the type of it self)
- */
-#define CLASS_CAST(ptr,from,to) ((unsigned char*)ptr) + (typeid(from)==typeid(to)?0: offsetof(struct from, _##to##_pVTable))
-
-//Call function from VTable and change ptr to the correct offset. With obtional arguments
-//#define CCCALL(thisTypeName,funcTname,ptr,id,...) GET_VTABLE_FUNC( thisTypeName,funcTname,ptr,id)(CLASS_CAST(ptr,thisTypeName,funcTname), ## __VA_ARGS__)
-
-#define CALL_FUNC(thisTypeName,funcTname,classValue,id, args... )     GET_VTABLE_FUNC( thisTypeName,funcTname,TO_CLASS_PTR(classValue,thisTypeName),id)(CLASS_CAST(TO_CLASS_PTR(classValue,thisTypeName),thisTypeName,funcTname), ## args)
-
-#define TO_CLASS_PTR(tv,type) ((struct type *) ( ((struct ClassType*)tv->value.ptr)->value))
-//
-
+namespace
+{
 /**
  * Utility methods
  */
@@ -47,6 +26,58 @@ void checkFreeDouble(const char* name, double expected, TVP value)
 	printf("%s is %f\n",name,value->value.doubleVal);
 	EXPECT_EQ (expected,value->value.doubleVal);
 	vdmFree(value);
+}
+
+/*
+ * Private stuff
+ */
+TEST(A, A_sum)
+{
+	TVP c=A._new();
+	UNWRAP_CLASS_A(l, c);
+	ACLASS this_ptr = l;
+
+	TVP res = NULL;
+	//in class
+
+	res = GET_FIELD_PTR(A,A,this_ptr,field1);
+
+	//out class
+
+	EXPECT_EQ (4,res->value.intVal);
+
+	vdmFree(res);
+	vdmFree(c);
+}
+
+TEST(B, B_sum)
+{
+	TVP c=B._new();
+	UNWRAP_CLASS_B(l, c);
+	BCLASS this_ptr = l;
+
+	TVP res = NULL;
+	//in class
+
+	TVP tmp1 = GET_FIELD_PTR(B,A,this_ptr,field1);
+	EXPECT_EQ (4,tmp1->value.intVal);
+
+	TVP tmp2 = GET_FIELD_PTR(B,B,this_ptr,field2);
+	EXPECT_EQ (5,tmp2->value.intVal);
+
+	res = vdmSum(tmp1,tmp2);
+
+	vdmFree(tmp1);
+	vdmFree(tmp2);
+
+	//return newInt(base->m_A_field1->value.intVal+this->m_B_field2->value.intVal);
+
+	//out class
+
+	EXPECT_EQ (9,res->value.doubleVal);
+
+	vdmFree(res);
+	vdmFree(c);
 }
 
 /**
@@ -65,7 +96,7 @@ TEST(A, _new)
 	checkFreeInt("calculation sum",4,CALL_FUNC(A,A,c,CLASS_A_sum));
 
 	UNWRAP_CLASS_A(l, c);
-	EXPECT_EQ (4,l->field1->value.intVal);
+	EXPECT_EQ (4,l->m_A_field1->value.intVal);
 
 	vdmFree(a);
 	vdmFree(b);
@@ -84,11 +115,11 @@ TEST(B, _new)
 	checkFreeInt("calculation sum",9, CALL_FUNC( B,A,c,CLASS_A_sum));
 
 	UNWRAP_CLASS_B(l,c);
-	EXPECT_EQ (4,l->field1->value.intVal);
+	EXPECT_EQ (4,l->m_A_field1->value.intVal);
 
 	checkFreeInt("calculation sum2",5, CALL_FUNC(B, B,c,CLASS_B_sum2));
 
-	EXPECT_EQ (5,l->field2->value.intVal);
+	EXPECT_EQ (5,l->m_B_field2->value.intVal);
 
 	vdmFree(a);
 	vdmFree(b);
@@ -106,6 +137,29 @@ TEST(B, _newAsA)
 	checkFreeDouble("calculation sum",4,CALL_FUNC(B,A,c,CLASS_A_calc,a,b));
 
 	checkFreeInt("calculation sum",9,CALL_FUNC(B,A,c,CLASS_A_sum));
+
+	vdmFree(a);
+	vdmFree(b);
+	vdmFree(c);
+
+}
+
+TEST(B, fieldTestAsA)
+{
+	TVP c=B._new();
+
+	TVP a = newInt(1);
+	TVP b = newInt(4);
+
+	checkFreeInt("check field1 of B as A",4, GET_FIELD(B,A,c,field1));
+
+	checkFreeDouble("check field1c of B as C",12.34, GET_FIELD(B,C,c,field1c));
+
+	checkFreeInt("check field2 of B as B",5, GET_FIELD(B,B,c,field2));
+
+//	checkFreeDouble("calculation sum",4,CALL_FUNC(B,A,c,CLASS_A_calc,a,b));
+
+//	checkFreeInt("calculation sum",9,CALL_FUNC(B,A,c,CLASS_A_sum));
 
 	vdmFree(a);
 	vdmFree(b);
@@ -145,7 +199,7 @@ TEST(C, _new)
 	printf("field one with macro is: %f\n",f1->value.doubleVal);
 
 	UNWRAP_CLASS_C(l,c);
-	EXPECT_EQ (12.34,l->field1c->value.doubleVal);
+	EXPECT_EQ (12.34,l->m_C_field1c->value.doubleVal);
 
 	vdmFree(a);
 	vdmFree(b);
@@ -153,3 +207,4 @@ TEST(C, _new)
 
 }
 
+}

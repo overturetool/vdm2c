@@ -13,7 +13,7 @@
 void A_free_fields(struct A *this)
 {
 	//free class struct
-	vdmFree(this->field1);
+	vdmFree(this->m_A_field1);
 }
 
 static void A_free(struct A *this)
@@ -33,7 +33,7 @@ static TVP A_calc(ACLASS this,TVP x, TVP y)
 
 static TVP A_sum(ACLASS this)
 {
-	return vdmClone(this->field1);
+	return vdmClone(this->m_A_field1);
 }
 
 
@@ -69,7 +69,7 @@ ACLASS A_Constructor(ACLASS this_ptr)
 		this_ptr->_A_refs = 0;
 		this_ptr->_A_pVTable=VTableArrayForA;
 
-		this_ptr->field1= newInt(4);
+		this_ptr->m_A_field1= newInt(4);
 	}
 
 	return this_ptr;

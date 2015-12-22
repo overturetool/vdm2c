@@ -27,7 +27,7 @@ struct B
 	 * sum  -- CLASS_A_sum
 	 * */
 
-	TVP field1;
+	TVP m_A_field1;
 	//-----end A ----
 
 
@@ -38,7 +38,7 @@ struct B
 	 * getField1--CLASS_C_getField1
 	 * */
 
-	TVP field1c;
+	TVP m_C_field1c;
 
 	//---- end C----
 
@@ -49,7 +49,7 @@ struct B
 	 * sum2
 	 * getField1
 	 * */
-	TVP field2;
+	TVP m_B_field2;
 };
 
 void B_free(struct B *self);
