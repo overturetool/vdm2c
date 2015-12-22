@@ -36,41 +36,41 @@ bool typeoftest(int id)
 		break;
 
 	case 2:
-		printf("A = B:", i);
+		printf("A = B:");
 		i = SAME_ARGS(A, B);
 		printf(" %s\n", i ? "true" : "false");
 		i = !i;
 		break;
 	case 3:
-		printf("A = B:", i);
+		printf("A = B:");
 		i = SAME_ARGS(A, B);
 		printf(" %s\n", i ? "true" : "false");
 		i = !i;
 		break;
 	case 4:
-		printf("A = A:", i);
+		printf("A = A:");
 		i = SAME_ARGS(A, A);
 		printf(" %s\n", i ? "true" : "false");
 		break;
 	case 5:
-		printf("C = A:", i);
-		i = !SAME_ARGS(C, A);
+		printf("C = A:");
+		i = SAME_ARGS(C, A);
 		printf(" %s\n", i ? "true" : "false");
 		i = !i;
 		break;
 	case 6:
-		printf("C = C:", i);
+		printf("C = C:");
 		i = SAME_ARGS(C, C);
 		printf(" %s\n", i ? "true" : "false");
 		break;
 	case 7:
-		printf("C = B:", i);
-		i = !SAME_ARGS(C, B);
+		printf("C = B:");
+		i = SAME_ARGS(C, B);
 		printf(" %s\n", i ? "true" : "false");
 		i = !i;
 		break;
 	case 8:
-		printf("B = B:", i);
+		printf("B = B:");
 		i = SAME_ARGS(B, B);
 		printf(" %s\n", i ? "true" : "false");
 
