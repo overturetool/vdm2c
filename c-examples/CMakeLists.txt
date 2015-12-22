@@ -36,7 +36,7 @@ SET(CMAKE_VERBOSE_MAKEFILE ON)
 #set(CMAKE_CXX_FLAGS_DEBUG " -O0 -g3 -Wall")
 
 
-file(GLOB C_FILES *.c classes/*.c lib/*.c records/*.c)
+file(GLOB C_FILES *.c classes/*.c lib/*.c records/*.c tests/*.c)
 file(GLOB CPP_FILES tests/*.cpp)
 
 add_executable(${PROJECT_NAME} ${C_FILES} ${CPP_FILES})
