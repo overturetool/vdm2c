@@ -25,7 +25,7 @@ extern "C"
 #define CLASS_CAST(ptr,from,to) ((unsigned char*)ptr) + (typeid(from)==typeid(to)?0: offsetof(struct from, _##to##_pVTable))
 
 //Call function from VTable and change ptr to the correct offset. With obtional arguments
-#define CCCALL(thisTypeName,funcTname,ptr,id,...) GET_VTABLE_FUNC( thisTypeName,funcTname,ptr,id)(CLASS_CAST(ptr,thisTypeName,funcTname), ## __VA_ARGS__))
+//#define CCCALL(thisTypeName,funcTname,ptr,id,...) GET_VTABLE_FUNC( thisTypeName,funcTname,ptr,id)(CLASS_CAST(ptr,thisTypeName,funcTname), ## __VA_ARGS__)
 
 #define CALL_FUNC(thisTypeName,funcTname,classValue,id, args... )     GET_VTABLE_FUNC( thisTypeName,funcTname,TO_CLASS_PTR(classValue,thisTypeName),id)(CLASS_CAST(TO_CLASS_PTR(classValue,thisTypeName),thisTypeName,funcTname), ## args)
 
@@ -56,7 +56,6 @@ void checkFreeDouble(const char* name, double expected, TVP value)
 TEST(A, _new)
 {
 	TVP c=A._new();
-	UNWRAP_CLASS_A(l, c);
 
 	TVP a = newInt(1);
 	TVP b = newInt(4);
@@ -65,6 +64,7 @@ TEST(A, _new)
 
 	checkFreeInt("calculation sum",4,CALL_FUNC(A,A,c,CLASS_A_sum));
 
+	UNWRAP_CLASS_A(l, c);
 	EXPECT_EQ (4,l->field1->value.intVal);
 
 	vdmFree(a);
@@ -75,7 +75,6 @@ TEST(A, _new)
 TEST(B, _new)
 {
 	TVP c=B._new();
-	UNWRAP_CLASS_B(l,c);
 
 	TVP a = newInt(1);
 	TVP b = newInt(4);
@@ -84,6 +83,7 @@ TEST(B, _new)
 
 	checkFreeInt("calculation sum",9, CALL_FUNC( B,A,c,CLASS_A_sum));
 
+	UNWRAP_CLASS_B(l,c);
 	EXPECT_EQ (4,l->field1->value.intVal);
 
 	checkFreeInt("calculation sum2",5, CALL_FUNC(B, B,c,CLASS_B_sum2));
@@ -99,7 +99,6 @@ TEST(B, _new)
 TEST(B, _newAsA)
 {
 	TVP c=B._new();
-	UNWRAP_CLASS_B(l,c);
 
 	TVP a = newInt(1);
 	TVP b = newInt(4);
@@ -117,25 +116,23 @@ TEST(B, _newAsA)
 TEST(B, _newAsC)
 {
 	TVP c=B._new();
-	UNWRAP_CLASS_B(l,c);
 
 	TVP a = newInt(1);
 	TVP b = newInt(4);
 
 	checkFreeDouble("calculation sum",17.34,CALL_FUNC(B,C,c,CLASS_C_calc,a,b));
 
-	checkFreeDouble("calculation field1c",12.34, CCCALL( B,C,l,CLASS_C_getField1);
+	checkFreeDouble("calculation field1c",12.34, CALL_FUNC( B,C,c,CLASS_C_getField1));
 
-			vdmFree(a);
-			vdmFree(b);
-			vdmFree(c);
+	vdmFree(a);
+	vdmFree(b);
+	vdmFree(c);
 
-		}
+}
 
 TEST(C, _new)
 {
 	TVP c=C._new();
-	UNWRAP_CLASS_C(l,c);
 
 	TVP a = newInt(1);
 	TVP b = newInt(4);
@@ -147,6 +144,7 @@ TEST(C, _new)
 	TVP f1 = CALL_FUNC(C,C,c,CLASS_C_getField1);
 	printf("field one with macro is: %f\n",f1->value.doubleVal);
 
+	UNWRAP_CLASS_C(l,c);
 	EXPECT_EQ (12.34,l->field1c->value.doubleVal);
 
 	vdmFree(a);
