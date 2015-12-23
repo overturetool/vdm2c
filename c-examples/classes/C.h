@@ -17,21 +17,16 @@
 #define CCLASS struct C*
 #define UNWRAP_CLASS_C(var,cls) CCLASS var=NULL;{UNWRAP_CLASS(localA,cls); var = (CCLASS)localA->value;};
 
-#define CLASS_C_calc 0
-#define CLASS_C_getField1 1
+#define CLASS_C_getField1 0
 
 struct C
 {
 	VDM_CLASS_BASE_DEFINITIONS(C);
 	/*vtable
-	 * calc
-	 * sum
-	 * sum2
 	 * getField1
 	 * */
 
-	TVP m_C_field1c;
-
+	VDM_CLASS_FIELD_DEFINITION(C,field1c);
 };
 
 

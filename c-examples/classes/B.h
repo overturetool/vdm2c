@@ -26,19 +26,16 @@ struct B
 	 * calc --CLASS_A_calc
 	 * sum  -- CLASS_A_sum
 	 * */
-
-	TVP m_A_field1;
+	VDM_CLASS_FIELD_DEFINITION(A,field1);
 	//-----end A ----
 
 
 	// ---- C ----
 	VDM_CLASS_BASE_DEFINITIONS(C);
 	/*vtable
-	 * calc		--CLASS_C_calc
 	 * getField1--CLASS_C_getField1
 	 * */
-
-	TVP m_C_field1c;
+	VDM_CLASS_FIELD_DEFINITION(C,field1c);
 
 	//---- end C----
 
@@ -47,9 +44,9 @@ struct B
 	 * calc
 	 * sum
 	 * sum2
-	 * getField1
+	 * getField2
 	 * */
-	TVP m_B_field2;
+	VDM_CLASS_FIELD_DEFINITION(B,field2);
 };
 
 void B_free(struct B *self);

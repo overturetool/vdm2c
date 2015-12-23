@@ -27,14 +27,14 @@ struct A
 	 * calc
 	 * sum
 	 * */
-
-	TVP m_A_field1;
+	VDM_CLASS_FIELD_DEFINITION(A,field1);
 
 };
 
 
 void A_free_fields(ACLASS);
 ACLASS A_Constructor(ACLASS);
+TVP A_calc(ACLASS i,TVP x, TVP y);
 
 
 extern const struct AClass

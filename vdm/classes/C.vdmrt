@@ -1,0 +1,14 @@
+class C
+instance variables
+
+field1c: real := 12.34;
+
+operations
+
+--public calc:int*int==>real
+--calc(x,y)==return x+y;
+
+public getField1c: ()==>int
+getField1c()==return field1c;
+
+end C

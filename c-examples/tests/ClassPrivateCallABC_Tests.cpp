@@ -65,15 +65,15 @@ TEST(ClassPrivateCallABC, B)
 	TVP b = newInt(4);
 
 	//on A
-	checkFreeDouble("calculation sum",4,CALL_FUNC_PTR(B,A,this_ptr,CLASS_A_calc,a,b));
-	checkFreeInt("calculation sum",9, CALL_FUNC_PTR( B,A,this_ptr,CLASS_A_sum));
+	checkFreeDouble("calculation B->A CLASS_A_calc",5,CALL_FUNC_PTR(B,A,this_ptr,CLASS_A_calc,a,b));
+	checkFreeDouble("calculation B->A CLASS_A_sum",9, CALL_FUNC_PTR( B,A,this_ptr,CLASS_A_sum));
 
 	//on C
-	checkFreeDouble("calculation calc",4,CALL_FUNC_PTR(B,A,this_ptr,CLASS_C_calc,a,b));
-	checkFreeInt("calculation getField1",9,CALL_FUNC_PTR(B,A,this_ptr,CLASS_C_getField1));
+//	checkFreeDouble("calculation calc",4,CALL_FUNC_PTR(B,A,this_ptr,CLASS_C_calc,a,b));
+	checkFreeDouble("calculation B->C CLASS_C_getField1",12.34,CALL_FUNC_PTR(B,C,this_ptr,CLASS_C_getField1));
 
 	//on B
-	checkFreeInt("calculation sum2",5, CALL_FUNC_PTR(B, B,this_ptr,CLASS_B_sum2));
+	checkFreeDouble("calculation B->B CLASS_B_sum2",9, CALL_FUNC_PTR(B, B,this_ptr,CLASS_B_sum2));
 
 	vdmFree(a);
 	vdmFree(b);

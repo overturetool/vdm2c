@@ -5,11 +5,9 @@
  *      Author: kel
  */
 
-
 #include "B.h"
 
-
- void B_free(struct B *this)
+void B_free(struct B *this)
 {
 	--this->_B_refs;
 	if (this->_B_refs < 1)
@@ -21,52 +19,63 @@
 	}
 }
 
-
-
-static TVP B_calc(ACLASS this,TVP x, TVP y)
+//static TVP B_calc(ACLASS this,TVP x, TVP y)
+//{
+//	return vdmProduct(x,y);
+//}
+static TVP B_sum(BCLASS this)
 {
-	return vdmProduct(x,y);
+	TVP tmp1 = GET_FIELD_PTR(B,A,this,field1);
+	TVP tmp2 = GET_FIELD_PTR(B,B,this,field2);
+	TVP ret = vdmSum(tmp1,tmp2);
+
+	vdmFree(tmp1);vdmFree(tmp2);
+	return ret;
+}
+//#define GET_STRUCT_FIELD(tname,ptr,fieldtype,fieldname) (*( (fieldtype*) (  ((unsigned char*)ptr) + offsetof(struct tname, fieldname) )  ))
+
+
+// A vtable ptr in B i know avtable is in B at a higher number
+// ptr - _A_VTable offset in B
+// ptr - offsetof(struct B, _A_pVTable)
+#define DOWNCAST(thisClassName, upCastClassName, ptr) (\
+		(struct upCastClassName *)\
+		(\
+((unsigned char*)ptr) - offsetof(struct upCastClassName, _##thisClassName##_pVTable)\
+		)\
+		)
+
+static TVP B_A_sum(ACLASS base)//override for A
+{
+	BCLASS this = DOWNCAST(A,B,base);
+
+	return B_sum(this);
+//	return newInt(1);
 }
 
-static TVP B_sum(ACLASS base)
-{
-	BCLASS this=(BCLASS)base;
-				  //(void *)base-offsetof(struct B, A);
 
-	//Loose translation
-	return newInt(base->m_A_field1->value.intVal+this->m_B_field2->value.intVal);
-}
 
 static TVP B_sum2(BCLASS this)
 {
-	//Loose translation
-	return newInt(this->m_B_field2->value.intVal);
+	TVP tmp1 = GET_FIELD_PTR(B,A,this,field1);
+	TVP tmp2 = GET_FIELD_PTR(B,B,this,field2);
+	TVP ret = vdmSum(tmp1,tmp2);// newInt(base->m_A_field1->value.intVal+this->m_B_field2->value.intVal);//newInt(this->m_B_field2->value.intVal);
+
+	vdmFree(tmp1);vdmFree(tmp2);
+	return ret;
 }
 
-static TVP B_getField1(BCLASS this)
+static TVP B_getField2(BCLASS this)
 {
-	return vdmClone(this->m_C_field1c);
+	return GET_FIELD_PTR(B,B,this,field2);
 }
 
 struct VTable VTableArrayForB[] =
 {
-    /*
-    Vtable entry virtual function sum.
-    */
-    { 0, 0, (VirtualFunctionPointer) B_calc },
-
-    /*
-    This vtable entry invokes the base class's
-    MoveTo method.
-    */
-    { 0, 0, (VirtualFunctionPointer) B_sum },
-
-	{ 0, 0, (VirtualFunctionPointer) B_sum2 },
-	{ 0, 0, (VirtualFunctionPointer) B_getField1 },
-
-    /* Entry for the virtual destructor */
-//    { 0, 0, (VirtualFunctionPointer) Shape_Destructor }
-};
+{ 0, 0, (VirtualFunctionPointer) A_calc },
+{ 0, 0, (VirtualFunctionPointer) B_sum },
+{ 0, 0, (VirtualFunctionPointer) B_sum2 },
+{ 0, 0, (VirtualFunctionPointer) B_getField2 }, };
 
 #define GET_STRUCT_FIELD_PTR(tname,ptr,fieldname) (( (void*) (  ((unsigned char*)ptr) + offsetof(struct tname, fieldname) )  ))
 BCLASS B_Constructor(BCLASS this_ptr)
@@ -87,8 +96,13 @@ BCLASS B_Constructor(BCLASS this_ptr)
 		C_Constructor((CCLASS)GET_STRUCT_FIELD_PTR(B,this_ptr,_C_pVTable));
 
 		//replace vTable
-		this_ptr->_A_pVTable = VTableArrayForB;
-		this_ptr->_B_pVTable = VTableArrayForB;//this_ptr->_A_pVTable;
+
+		struct VTable* tmp = this_ptr->_A_pVTable;
+		this_ptr->_A_pVTable = malloc(sizeof(struct VTable)*2);
+		memcpy(this_ptr->_A_pVTable, tmp, sizeof(struct VTable)*2);
+		this_ptr->_A_pVTable[CLASS_A_sum].pFunc = (VirtualFunctionPointer)B_A_sum;//override
+
+		this_ptr->_B_pVTable = VTableArrayForB;
 
 		this_ptr->m_B_field2 = newInt(5);
 	}
@@ -114,9 +128,9 @@ static TVP new()
 
 //	ptr->sum2 = &sum2;
 //	return ptr;
-	return newTypeValue(VDM_CLASS, (TypedValueType){.ptr=newClassValue(ptr->_B_id, &ptr->_B_refs, (freeVdmClassFunction)&B_free, ptr)});
+	return newTypeValue(VDM_CLASS, (TypedValueType)
+			{	.ptr=newClassValue(ptr->_B_id, &ptr->_B_refs, (freeVdmClassFunction)&B_free, ptr)});
 }
 
-
 const struct BClass B =
-{	._new = &new};
+{ ._new = &new };

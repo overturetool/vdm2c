@@ -49,6 +49,8 @@ struct VTable
 int _##className##_id;\
 unsigned int _##className##_refs
 
+#define VDM_CLASS_FIELD_DEFINITION(className, name) TVP m_##className##_##name
+
 /*-------------------------------------------------
  *
  * VDM encapsulation
@@ -83,7 +85,7 @@ struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction
  * Cast to class pointer by moving it forward to the class specific VTable
  * Note that we only adjust the pointer if a subtype is given (i.e. not the type of it self)
  */
-#define CLASS_CAST(ptr,from,to) ((unsigned char*)ptr) + (typeid(from)==typeid(to)?0: offsetof(struct from, _##to##_pVTable))
+#define CLASS_CAST(ptr,from,to) ((unsigned char*)ptr) + (SAME_ARGS(from,to)?0: offsetof(struct from, _##to##_pVTable))
 
 /*
  * Macro to obtain the (sub-)class specific field from a class struct
@@ -122,5 +124,12 @@ struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction
  */
 #define CALL_FUNC_PTR(thisTypeName,funcTname,ptr,id, args... )     GET_VTABLE_FUNC( thisTypeName,funcTname,ptr,id)(CLASS_CAST(ptr,thisTypeName,funcTname), ## args)
 
+
+// ############ UTILITIES #####################
+/*
+ * compare arguments. Techinically we wated: typeid(from)==typeid(to)
+ * but this is not valid C. However it can be ifdeed for C++. But the name compare if ok
+ */
+#define SAME_ARGS(x,y) #x==#y
 
 #endif /* LIB_VDMCLASS_H_ */
