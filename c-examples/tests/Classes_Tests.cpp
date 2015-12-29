@@ -3,7 +3,7 @@
 extern "C"
 {
 #include "lib/TypedValue.h"
-#include "classes/ModelVarBool.h"
+#include "classes/ModelVarBOOL.h"
 #include <stdio.h>
 }
 

@@ -28,6 +28,20 @@ brew install gettext
 brew link --force gettext
 ```
 
+### Install glib
+
+* ubuntu
+
+```bash
+sudo apt-get install libglib2.0
+```
+
+* OSX
+
+```bash
+brew install glib
+```
+
 # Using Eclipse
 
 Please install: CDT + *C/C++ Unit Testing Support*
@@ -70,6 +84,36 @@ Therefore:
 
 ## Class mapping
 
-http://www.pvv.ntnu.no/~hakonhal/main.cgi/c/classes/
+* http://www.pvv.ntnu.no/~hakonhal/main.cgi/c/classes/
+* http://www.eventhelix.com/RealtimeMantra/basics/ComparingCPPAndCPerformance2.htm#.VmbPCuODFBc
+* http://www.go4expert.com/articles/virtual-table-vptr-multiple-inheritance-t16616/
+* http://www.go4expert.com/articles/virtual-table-vptr-t16544/
+
+# Other debugging related stuff
+
+## Core dump in terminal only
+
+Enable the core to be dumped by:
+
+```bash
+ulimit -c unlimited
+```
+
+on linux it will be in the folder of the application and on OSX in `/cores/`
+
+# Compiler -- platform dependent stuff
+
+Remember that:
+
+* `malloc` allocated space in memory with random stuff - it may be 0 but we dont know. We know that linx and OSX e.g. OSX may choose 0 memory where linux may choose random memory, but it is random :-)
+* `calloc` allocated space in memory that is 0 
+
+Why is this importsnt: Well `free` only frees if `ptr != NULL`  
+
+
+# C/C++ language related stuff
+
+* http://stackoverflow.com/questions/3523145/pointer-arithmetic-for-void-pointer-in-c
+* https://www.cs.uaf.edu/2010/fall/cs301/lecture/10_15_struct_and_class.html
 
 

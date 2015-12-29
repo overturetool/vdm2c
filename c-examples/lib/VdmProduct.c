@@ -27,7 +27,7 @@ TVP productGet(TVP product, int index)
 	UNWRAP_PRODUCT(col,product);
 
 	assert(index-1>=0 && index-1<col->size && "invalid index");
-	return clone(col->value[index-1]);
+	return vdmClone(col->value[index-1]);
 }
 
 void productSet(TVP product, int index, TVP val)
@@ -43,7 +43,7 @@ void productSet(TVP product, int index, TVP val)
 	{
 		recursiveFree(old);
 	}
-	col->value[index-1]=clone(val);
+	col->value[index-1]=vdmClone(val);
 }
 
 //TVP productEqual(TVP product,TVP product2)

@@ -26,7 +26,7 @@ TVP seqHd(TVP seq)
 {
 	ASSERT_CHECK(seq);
 	UNWRAP_COLLECTION(col,seq);
-	return clone(col->value[0]);
+	return vdmClone(col->value[0]);
 }
 TVP seqTl(TVP seq)
 {
@@ -40,7 +40,7 @@ TVP seqTl(TVP seq)
 	//copy tail list
 	for (int i = 1; i < col->size; i++)
 	{
-		tail->value[i-1] = clone(col->value[i]);
+		tail->value[i-1] = vdmClone(col->value[i]);
 	}
 
 	return tailVal;
@@ -63,7 +63,7 @@ TVP seqElems(TVP seq)
 	//copy  list
 	for (int i = 0; i < col->size; i++)
 	{
-		elems->value[i] = clone(col->value[i]);
+		elems->value[i] = vdmClone(col->value[i]);
 	}
 
 	//FIXME this should have been done using set functions checking dublicates
@@ -101,13 +101,13 @@ TVP seqConc(TVP seq,TVP seq2)
 	//copy  list
 	for (int i = 0; i < col->size; i++)
 	{
-		concSeq->value[i] = clone(col->value[i]);
+		concSeq->value[i] = vdmClone(col->value[i]);
 	}
 
 	int offset = col->size;
 	for (int i = 0; i < col2->size; i++)
 	{
-		concSeq->value[i+offset] = clone(col2->value[i]);
+		concSeq->value[i+offset] = vdmClone(col2->value[i]);
 	}
 
 	return concVal;
@@ -126,7 +126,7 @@ TVP seqReverse(TVP seq)
 	//copy  list
 	for (int i = 0; i < col->size; i++)
 	{
-		elems->value[i] = clone(col->value[offset-i]);
+		elems->value[i] = vdmClone(col->value[offset-i]);
 	}
 
 	return elemsVal;
@@ -143,7 +143,7 @@ TVP seqIndex(TVP seq,TVP indexVal) //VDM uses 1 based index
 	UNWRAP_COLLECTION(col,seq);
 
 	assert(index-1>=0 && index-1<col->size && "invalid index");
-	return clone(col->value[index-1]);
+	return vdmClone(col->value[index-1]);
 }
 TVP seqEqual(TVP seq,TVP seq2)
 {

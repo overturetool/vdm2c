@@ -5,7 +5,6 @@
 extern "C"
 {
 #include "lib/TypedValue.h"
-#include "classes/ModelVarBool.h"
 #include <stdio.h>
 #include <glib.h>
 }

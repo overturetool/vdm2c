@@ -8,8 +8,22 @@ testA()==(
 let a : A = new A()
 in
 	(
-		a.print();
+		
+		assertTrue(a.calc(4,1)=5);
 		assertTrue(a.sum()=4);
+	)
+
+);
+
+public testC:()==>()
+testC()==(
+
+let a : C = new C()
+in
+	(
+		
+		assertTrue(a.getField1c()=12.34);
+		assertTrue(a.field1c=12.34);
 	)
 
 );
@@ -18,12 +32,22 @@ in
 public testB:()==>()
 testB()==(
 
-let a : B = new B()
+let b : B = new B()
 in
 	(
-		a.print();
+		assertTrue(b.calc(1,4)=5);
+		assertTrue(b.sum()=9);
+		assertTrue(b.sum2()=9);
+		assertTrue(b.getField1c()=12.34);
+		assertTrue(b.fDub=999);  
+		
+		let a : A = b
+		in
+		(
+		assertTrue(a.calc(1,4)=5);
 		assertTrue(a.sum()=9);
-	)
+		);
+	);
 
 );
 

@@ -1,4 +1,4 @@
-class B is subclass of A
+class B is subclass of A,C
 
 instance variables
 
@@ -6,15 +6,16 @@ field2 : int := 5;
 
 operations
 
-public print:()==>()
-print()==(
-IO`println(field1);
-IO`println(" ");
-IO`println(field2);
-);
+--public calc:int*int==>real
+--calc(x,y)==return x-y;
 
 
 public sum : ()==>int
 sum()==return field1+field2;
 
+public sum2 : ()==>int
+sum2()==return field1+field2;
+
+public getField2: ()==>int
+getField2()==return field2;
 end B

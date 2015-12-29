@@ -12,7 +12,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include "VdmMap.h"
-
+#include "VdmClass.h"
 
 
 #define vdmFree recursiveFree
@@ -79,25 +79,19 @@ struct OptionalType
 	struct TypedValue value;
 };
 
-struct ClassType
-{
-	void* value;
-	int classId;
-	unsigned int* refs;
-	freeVdmClassFunction freeClass;//TODO move to global map
-};
+
 
 typedef bool (*vdmRecordEqualityFunction)(TVP a, TVP b);
 #define ASSERT_CHECK_RECORD(s) assert(s->type == VDM_RECORD && "Value is not a record")
-#define RECORD_FIELD_ACCESS(record,recordType,field,var) TVP var = NULL;{ASSERT_CHECK_RECORD(record);UNWRAP_RECORD(ar,record);var=clone(((recordType)ar)->field);}
-#define RECORD_FIELD_SET(record,recordType,field,value) {ASSERT_CHECK_RECORD(record);UNWRAP_RECORD(ar,record);((recordType)ar)->field=clone(value);}
+#define RECORD_FIELD_ACCESS(record,recordType,field,var) TVP var = NULL;{ASSERT_CHECK_RECORD(record);UNWRAP_RECORD(ar,record);var=vdmClone(((recordType)ar)->field);}
+#define RECORD_FIELD_SET(record,recordType,field,value) {ASSERT_CHECK_RECORD(record);UNWRAP_RECORD(ar,record);((recordType)ar)->field=vdmClone(value);}
 struct RecordType
 {
 	void* value;
 	int recordId;
 	freeVdmClassFunction freeRecord;//TODO move to global map
 	vdmRecordEqualityFunction equalFun; //TODO move to global map
-	struct TypedValue* (*cloneFun)(TVP self);
+	struct TypedValue* (*vdmCloneFun)(TVP self);
 };
 
 struct TypedValue* newTypeValue(vdmtype type, TypedValueType value);
@@ -117,7 +111,7 @@ struct TypedValue* newQuote(unsigned int x);
 
 // Class
 
-struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction freeClass, void* value);
+//struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction freeClass, void* value);
 
 //struct TypedValue* newInt(int x);
 //struct TypedValue* newDouble(double x);
@@ -127,7 +121,7 @@ struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction
 struct TypedValue* newCollectionWithValues(vdmtype type,size_t size,TVP* elements);
 struct TypedValue* newCollection(size_t size, vdmtype type);
 
-struct TypedValue* clone(struct TypedValue* x);
+struct TypedValue* vdmClone(struct TypedValue* x);
 bool equals(struct TypedValue* a, struct TypedValue* b);
 TVP vdmEquals(struct TypedValue* a, struct TypedValue* b);
 TVP vdmInEquals(struct TypedValue* a, struct TypedValue* b);

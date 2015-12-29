@@ -72,29 +72,20 @@ struct TypedValue* newCollectionWithValues(vdmtype type, size_t size, TVP* eleme
 
 	for (int i = 0; i < size; i++)
 	{
-		col->value[i]= clone(elements[i]);
+		col->value[i]= vdmClone(elements[i]);
 	}
 	return product;
 }
 
-struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction freeClass, void* value)
-{
-	struct ClassType* ptr = (struct ClassType*) malloc(sizeof(struct ClassType));
-	ptr->classId = id;
-	ptr->value = value;
-	ptr->freeClass = freeClass;
-	ptr->refs = refs;
-	(*refs)++;
-	return ptr;
-}
 
-struct TypedValue* clone(struct TypedValue* x)
+
+struct TypedValue* vdmClone(struct TypedValue* x)
 {
 
-	//clone struct
+	//vdmClone struct
 	struct TypedValue* tmp = newTypeValue(x->type, x->value);
 
-	//FIXME clone any pointers
+	//FIXME vdmClone any pointers
 	switch (tmp->type)
 	{
 	case VDM_BOOL:
@@ -124,7 +115,7 @@ struct TypedValue* clone(struct TypedValue* x)
 
 		for (int i = 0; i < cptr->size; i++)
 		{
-			ptr->value[i] = clone(cptr->value[i]);
+			ptr->value[i] = vdmClone(cptr->value[i]);
 		}
 
 		tmp->value.ptr = ptr;
@@ -138,7 +129,7 @@ struct TypedValue* clone(struct TypedValue* x)
 		ASSERT_CHECK_RECORD(tmp);
 
 		UNWRAP_RECORD(record, tmp);
-		return record->cloneFun(tmp);
+		return record->vdmCloneFun(tmp);
 	}
 	case VDM_CLASS:
 	{
