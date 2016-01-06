@@ -39,7 +39,7 @@ in
 		assertTrue(b.sum()=9);
 		assertTrue(b.sum2()=9);
 		assertTrue(b.getField1c()=12.34);
-		assertTrue(b.fDub=999);  
+--		assertTrue(b.fDub=999);  
 		
 		let a : A = b
 		in
