@@ -2,7 +2,7 @@ class C
 instance variables
 
 public field1c: real := 12.34;
-public fDub : int :=111;
+--public fDub : int :=111;
 
 operations
 
