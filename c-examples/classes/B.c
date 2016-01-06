@@ -13,17 +13,11 @@ void B_free(struct B *this)
 	--this->_B_refs;
 	if (this->_B_refs < 1)
 	{
-//		A_free_fields(&this->A);//super
-		//free class struct
 		vdmFree(this->m_B_field2);
 		free(this);
 	}
 }
 
-//static TVP B_calc(ACLASS this,TVP x, TVP y)
-//{
-//	return vdmProduct(x,y);
-//}
 static TVP B_sum(BCLASS this)
 {
 	TVP tmp1 = GET_FIELD_PTR(B,A,this,field1);
@@ -33,34 +27,20 @@ static TVP B_sum(BCLASS this)
 	vdmFree(tmp1);vdmFree(tmp2);
 	return ret;
 }
-//#define GET_STRUCT_FIELD(tname,ptr,fieldtype,fieldname) (*( (fieldtype*) (  ((unsigned char*)ptr) + offsetof(struct tname, fieldname) )  ))
 
 
-// A vtable ptr in B i know avtable is in B at a higher number
-// ptr - _A_VTable offset in B
-// ptr - offsetof(struct B, _A_pVTable)
-#define DOWNCAST(thisClassName, upCastClassName, ptr) (\
-		(struct upCastClassName *)\
-		(\
-((unsigned char*)ptr) - offsetof(struct upCastClassName, _##thisClassName##_pVTable)\
-		)\
-		)
-
-static TVP B_A_sum(ACLASS base)//override for A
+static TVP B_A_sum(ACLASS base) //override for A
 {
-	BCLASS this = DOWNCAST(A,B,base);
+	BCLASS this = CLASS_DOWNCAST(A,B,base);
 
 	return B_sum(this);
-//	return newInt(1);
 }
-
-
 
 static TVP B_sum2(BCLASS this)
 {
 	TVP tmp1 = GET_FIELD_PTR(B,A,this,field1);
 	TVP tmp2 = GET_FIELD_PTR(B,B,this,field2);
-	TVP ret = vdmSum(tmp1,tmp2);// newInt(base->m_A_field1->value.intVal+this->m_B_field2->value.intVal);//newInt(this->m_B_field2->value.intVal);
+	TVP ret = vdmSum(tmp1,tmp2);
 
 	vdmFree(tmp1);vdmFree(tmp2);
 	return ret;
@@ -114,21 +94,6 @@ BCLASS B_Constructor(BCLASS this_ptr)
 static TVP new()
 {
 	BCLASS ptr = B_Constructor(NULL);
-	//super
-//	A_Constructor(&ptr->A);
-//	TVP baseTvp= A._new();
-//	UNWRAP_CLASS_A(base,baseTvp);
-//	ptr->A = base;
-	//FIXME memory leak from TVP and classtype
-
-	//functions - change A's methods
-//	ptr->A.print = &print;
-//	ptr->A.sum = &sum;
-
-	//All fields must be initialized
-
-//	ptr->sum2 = &sum2;
-//	return ptr;
 	return newTypeValue(VDM_CLASS, (TypedValueType)
 			{	.ptr=newClassValue(ptr->_B_id, &ptr->_B_refs, (freeVdmClassFunction)&B_free, ptr)});
 }

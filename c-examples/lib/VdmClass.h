@@ -88,6 +88,16 @@ struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction
 #define CLASS_CAST(ptr,from,to) ((unsigned char*)ptr) + (SAME_ARGS(from,to)?0: offsetof(struct from, _##to##_pVTable))
 
 /*
+ * Down-casting a super class pointer to the concrete class. i.e if A extends B and we have a 'b' pointer we can downcast it to an 'a'
+ */
+#define CLASS_DOWNCAST(thisClassName, upCastClassName, ptr) (\
+		(struct upCastClassName *)\
+		(\
+((unsigned char*)ptr) - offsetof(struct upCastClassName, _##thisClassName##_pVTable)\
+		)\
+		)
+
+/*
  * Macro to obtain the (sub-)class specific field from a class struct
  */
 #define GET_STRUCT_FIELD(tname,ptr,fieldtype,fieldname) (*( (fieldtype*) (  ((unsigned char*)ptr) + offsetof(struct tname, fieldname) )  ))
