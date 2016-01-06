@@ -98,5 +98,36 @@ TEST(B, fieldTestAsA)
 
 }
 
+TEST(B, testBFieldSet)
+{
+	TVP c=B._new();
+
+	TVP a = newInt(9);
+	SET_FIELD(B,A,c,field1,a);
+	vdmFree(a);
+
+	checkFreeInt("check field1 of B as A",9, GET_FIELD(B,A,c,field1));
+
+	a = newInt(0);
+	SET_FIELD(B,A,c,field1,a);
+	vdmFree(a);
+
+	checkFreeInt("check field1 of B as A",0, GET_FIELD(B,A,c,field1));
+
+	a = newInt(99);
+	SET_FIELD(B,B,c,field2,a);
+	vdmFree(a);
+
+	checkFreeInt("check field2 of B as B",99, GET_FIELD(B,B,c,field2));
+
+	a = newReal(99.99);
+	SET_FIELD(B,C,c,field1c,a);
+	vdmFree(a);
+
+	checkFreeDouble("check field1c of B as C",99.99, GET_FIELD(B,C,c,field1c));
+
+	vdmFree(c);
+
+}
 
 }

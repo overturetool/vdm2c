@@ -93,6 +93,11 @@ struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction
 #define GET_STRUCT_FIELD(tname,ptr,fieldtype,fieldname) (*( (fieldtype*) (  ((unsigned char*)ptr) + offsetof(struct tname, fieldname) )  ))
 
 /*
+ * Macro to set the (sub-)class specific field from a class struct
+ */
+#define SET_STRUCT_FIELD(tname,ptr,fieldtype,fieldname,newValue) (*( (fieldtype*) (  ((unsigned char*)ptr) + offsetof(struct tname, fieldname) )  )=vdmClone(newValue))
+
+/*
  * Macro to obtain the (sub-)class specific VTable from a class struct
  */
 #define GET_VTABLE_FUNC(thisTypeName,funcTname,ptr,id)   GET_STRUCT_FIELD(thisTypeName,ptr,struct VTable*,_##funcTname##_pVTable)[id].pFunc
@@ -106,6 +111,12 @@ struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction
  * Macro to obtain a field from a (sub-)class specific class struct. We clone to preserve value semantics and the rule of freeing
  */
 #define GET_FIELD(thisTypeName,fieldTypeName,classValue,fieldName) vdmClone(GET_STRUCT_FIELD(fieldTypeName,CLASS_CAST(TO_CLASS_PTR(classValue,thisTypeName),thisTypeName,fieldTypeName) ,struct TypedValue*,m_##fieldTypeName##_##fieldName))
+
+/*
+ * Macro to set a field from a (sub-)class specific class struct. We clone to preserve value semantics and the rule of freeing
+ */
+#define SET_FIELD(thisTypeName,fieldTypeName,classValue,fieldName,newValue) vdmClone(SET_STRUCT_FIELD(fieldTypeName,CLASS_CAST(TO_CLASS_PTR(classValue,thisTypeName),thisTypeName,fieldTypeName) ,struct TypedValue*,m_##fieldTypeName##_##fieldName,newValue))
+
 
 // old stuff
 

@@ -2,7 +2,7 @@ class B is subclass of A,C
 
 instance variables
 
-field2 : int := 5;
+public field2 : int := 5;
 
 operations
 

@@ -51,4 +51,18 @@ in
 
 );
 
+
+public testBFieldSet:()==>()
+testBFieldSet()==(
+dcl b1 : B := new B();
+--let b : B = new B()
+--in
+	(
+	
+		b1.field2 :=9;
+		assertTrue(b1.field2=9);
+	);
+
+);
+
 end ClassABTest

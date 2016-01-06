@@ -6,6 +6,7 @@
  */
 
 #include "B.h"
+#include <string.h>
 
 void B_free(struct B *this)
 {
