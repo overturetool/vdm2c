@@ -117,3 +117,7 @@ Why is this importsnt: Well `free` only frees if `ptr != NULL`
 * https://www.cs.uaf.edu/2010/fall/cs301/lecture/10_15_struct_and_class.html
 
 
+# C Macro
+
+* Compare arguments (`#a==#b`) http://stackoverflow.com/questions/33491170/whats-the-difference-in-the-and-in-the-following-c-code
+* Statements inline eval http://stackoverflow.com/questions/4712720/typechecking-macro-arguments-in-c

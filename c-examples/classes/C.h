@@ -15,7 +15,6 @@
 
 
 #define CCLASS struct C*
-#define UNWRAP_CLASS_C(var,cls) CCLASS var=NULL;{UNWRAP_CLASS(localA,cls); var = (CCLASS)localA->value;};
 
 #define CLASS_C_getField1 0
 

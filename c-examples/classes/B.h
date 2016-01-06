@@ -14,7 +14,6 @@
 #include "C.h"
 
 #define BCLASS struct B*
-#define UNWRAP_CLASS_B(var,cls) BCLASS var=NULL;{UNWRAP_CLASS(localB,cls); var = (BCLASS)localB->value;};
 
 #define CLASS_B_sum2 2
 

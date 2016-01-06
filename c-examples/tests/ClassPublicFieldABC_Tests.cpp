@@ -34,13 +34,11 @@ void checkFreeDouble(const char* name, double expected, TVP value)
 TEST(A, A_sum)
 {
 	TVP c=A._new();
-	UNWRAP_CLASS_A(l, c);
-	ACLASS this_ptr = l;
 
 	TVP res = NULL;
 	//in class
 
-	res = GET_FIELD_PTR(A,A,this_ptr,field1);
+	res = GET_FIELD(A,A,c,field1);
 
 	//out class
 
@@ -53,16 +51,14 @@ TEST(A, A_sum)
 TEST(B, B_sum)
 {
 	TVP c=B._new();
-	UNWRAP_CLASS_B(l, c);
-	BCLASS this_ptr = l;
 
 	TVP res = NULL;
 	//in class
 
-	TVP tmp1 = GET_FIELD_PTR(B,A,this_ptr,field1);
+	TVP tmp1 = GET_FIELD(B,A,c,field1);
 	EXPECT_EQ (4,tmp1->value.intVal);
 
-	TVP tmp2 = GET_FIELD_PTR(B,B,this_ptr,field2);
+	TVP tmp2 = GET_FIELD(B,B,c,field2);
 	EXPECT_EQ (5,tmp2->value.intVal);
 
 	res = vdmSum(tmp1,tmp2);
