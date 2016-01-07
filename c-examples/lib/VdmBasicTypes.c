@@ -124,15 +124,8 @@ TVP vdmFloor(TVP arg)
 {
 	ASSERT_CHECK_REAL(arg);
 
-	switch(arg->type)
-	{
-		case VDM_REAL:
-		return newReal(floor(arg->value.doubleVal));
-		default:
-		FATAL_ERROR("Invalid type");
-		return NULL;
-	}
-
+	//TODO: Why do we return a Real, when floor is int in VDM?
+	return newReal(floor(arg->value.doubleVal));
 }
 
 TVP vdmSum(TVP a,TVP b)
