@@ -34,13 +34,11 @@ void checkFreeDouble(const char* name, double expected, TVP value)
 TEST(A, A_sum)
 {
 	TVP c=A._new();
-	UNWRAP_CLASS_A(l, c);
-	ACLASS this_ptr = l;
 
 	TVP res = NULL;
 	//in class
 
-	res = GET_FIELD_PTR(A,A,this_ptr,field1);
+	res = GET_FIELD(A,A,c,field1);
 
 	//out class
 
@@ -53,16 +51,14 @@ TEST(A, A_sum)
 TEST(B, B_sum)
 {
 	TVP c=B._new();
-	UNWRAP_CLASS_B(l, c);
-	BCLASS this_ptr = l;
 
 	TVP res = NULL;
 	//in class
 
-	TVP tmp1 = GET_FIELD_PTR(B,A,this_ptr,field1);
+	TVP tmp1 = GET_FIELD(B,A,c,field1);
 	EXPECT_EQ (4,tmp1->value.intVal);
 
-	TVP tmp2 = GET_FIELD_PTR(B,B,this_ptr,field2);
+	TVP tmp2 = GET_FIELD(B,B,c,field2);
 	EXPECT_EQ (5,tmp2->value.intVal);
 
 	res = vdmSum(tmp1,tmp2);
@@ -102,5 +98,36 @@ TEST(B, fieldTestAsA)
 
 }
 
+TEST(B, testBFieldSet)
+{
+	TVP c=B._new();
+
+	TVP a = newInt(9);
+	SET_FIELD(B,A,c,field1,a);
+	vdmFree(a);
+
+	checkFreeInt("check field1 of B as A",9, GET_FIELD(B,A,c,field1));
+
+	a = newInt(0);
+	SET_FIELD(B,A,c,field1,a);
+	vdmFree(a);
+
+	checkFreeInt("check field1 of B as A",0, GET_FIELD(B,A,c,field1));
+
+	a = newInt(99);
+	SET_FIELD(B,B,c,field2,a);
+	vdmFree(a);
+
+	checkFreeInt("check field2 of B as B",99, GET_FIELD(B,B,c,field2));
+
+	a = newReal(99.99);
+	SET_FIELD(B,C,c,field1c,a);
+	vdmFree(a);
+
+	checkFreeDouble("check field1c of B as C",99.99, GET_FIELD(B,C,c,field1c));
+
+	vdmFree(c);
+
+}
 
 }

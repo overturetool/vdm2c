@@ -88,9 +88,24 @@ struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction
 #define CLASS_CAST(ptr,from,to) ((unsigned char*)ptr) + (SAME_ARGS(from,to)?0: offsetof(struct from, _##to##_pVTable))
 
 /*
+ * Down-casting a super class pointer to the concrete class. i.e if A extends B and we have a 'b' pointer we can downcast it to an 'a'
+ */
+#define CLASS_DOWNCAST(thisClassName, upCastClassName, ptr) (\
+		(struct upCastClassName *)\
+		(\
+((unsigned char*)ptr) - offsetof(struct upCastClassName, _##thisClassName##_pVTable)\
+		)\
+		)
+
+/*
  * Macro to obtain the (sub-)class specific field from a class struct
  */
 #define GET_STRUCT_FIELD(tname,ptr,fieldtype,fieldname) (*( (fieldtype*) (  ((unsigned char*)ptr) + offsetof(struct tname, fieldname) )  ))
+
+/*
+ * Macro to set the (sub-)class specific field from a class struct
+ */
+#define SET_STRUCT_FIELD(tname,ptr,fieldtype,fieldname,newValue) (*( (fieldtype*) (  ((unsigned char*)ptr) + offsetof(struct tname, fieldname) )  )=vdmClone(newValue))
 
 /*
  * Macro to obtain the (sub-)class specific VTable from a class struct
@@ -106,6 +121,12 @@ struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction
  * Macro to obtain a field from a (sub-)class specific class struct. We clone to preserve value semantics and the rule of freeing
  */
 #define GET_FIELD(thisTypeName,fieldTypeName,classValue,fieldName) vdmClone(GET_STRUCT_FIELD(fieldTypeName,CLASS_CAST(TO_CLASS_PTR(classValue,thisTypeName),thisTypeName,fieldTypeName) ,struct TypedValue*,m_##fieldTypeName##_##fieldName))
+
+/*
+ * Macro to set a field from a (sub-)class specific class struct. We clone to preserve value semantics and the rule of freeing
+ */
+#define SET_FIELD(thisTypeName,fieldTypeName,classValue,fieldName,newValue) vdmClone(SET_STRUCT_FIELD(fieldTypeName,CLASS_CAST(TO_CLASS_PTR(classValue,thisTypeName),thisTypeName,fieldTypeName) ,struct TypedValue*,m_##fieldTypeName##_##fieldName,newValue))
+
 
 // old stuff
 

@@ -3,7 +3,7 @@ class A
 instance variables
 
 protected field1 : int := 4;
-public fDub : int :=999;
+--public fDub : int :=999;
 
 
 operations

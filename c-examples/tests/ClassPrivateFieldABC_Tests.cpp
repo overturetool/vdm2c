@@ -17,8 +17,7 @@ namespace
 TEST(ClassPrivateFieldABC, A_sum)
 {
 	TVP c=A._new();
-	UNWRAP_CLASS_A(l, c);
-	ACLASS this_ptr = l;
+	ACLASS this_ptr = TO_CLASS_PTR(c,A);
 
 	TVP res = NULL;
 	//in class
@@ -36,8 +35,7 @@ TEST(ClassPrivateFieldABC, A_sum)
 TEST(ClassPrivateFieldABC, B_sum)
 {
 	TVP c=B._new();
-	UNWRAP_CLASS_B(l, c);
-	BCLASS this_ptr = l;
+	BCLASS this_ptr = TO_CLASS_PTR(c,B);;
 
 	TVP res = NULL;
 	//in class

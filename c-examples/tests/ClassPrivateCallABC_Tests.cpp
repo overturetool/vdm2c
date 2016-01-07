@@ -35,8 +35,7 @@ void checkFreeDouble(const char* name, double expected, TVP value)
 TEST(ClassPrivateCallABC, A_sum)
 {
 	TVP c=A._new();
-	UNWRAP_CLASS_A(l, c);
-	ACLASS this_ptr = l;
+	ACLASS this_ptr = TO_CLASS_PTR(c,A);
 
 	//in class
 
@@ -57,8 +56,7 @@ TEST(ClassPrivateCallABC, A_sum)
 TEST(ClassPrivateCallABC, B)
 {
 	TVP c=B._new();
-	UNWRAP_CLASS_B(l, c);
-	BCLASS this_ptr = l;
+	BCLASS this_ptr = TO_CLASS_PTR(c,B);
 
 	//in class
 	TVP a = newInt(1);

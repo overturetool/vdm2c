@@ -15,7 +15,6 @@
 
 
 #define ACLASS struct A*
-#define UNWRAP_CLASS_A(var,cls) ACLASS var=NULL;{UNWRAP_CLASS(localA,cls); var = (ACLASS)localA->value;};
 
 #define CLASS_A_calc 0
 #define CLASS_A_sum 1

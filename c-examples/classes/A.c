@@ -64,26 +64,8 @@ ACLASS A_Constructor(ACLASS this_ptr)
 	return this_ptr;
 }
 
-//void A_init(ACLASS this)
-//{
-//	*this = (struct A
-//	)
-//	{	._id = CLASS_ID_A_ID, ._refs = 0};
-//
-//	//functions
-////	this->print = &print;
-//	this->sum = &sum;
-//
-//	//All fields must be initialized
-//	this->field1 = newInt(4);
-//}
-
 static TVP new()
 {
-//	ACLASS ptr = (ACLASS) malloc(sizeof(struct A));
-//
-//	A_init(ptr);
-//	return ptr;
 	ACLASS ptr=A_Constructor(NULL);
 
 	return newTypeValue(VDM_CLASS, (TypedValueType)
