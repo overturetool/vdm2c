@@ -33,8 +33,6 @@ struct A
 
 void A_free_fields(ACLASS);
 ACLASS A_Constructor(ACLASS);
-TVP A_calc(ACLASS i,TVP x, TVP y);
-
 
 extern const struct AClass
 {

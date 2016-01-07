@@ -53,7 +53,7 @@ static TVP B_getField2(BCLASS this)
 
 struct VTable VTableArrayForB[] =
 {
-{ 0, 0, (VirtualFunctionPointer) A_calc },
+//{ 0, 0, (VirtualFunctionPointer) A_calc },
 { 0, 0, (VirtualFunctionPointer) B_sum },
 { 0, 0, (VirtualFunctionPointer) B_sum2 },
 { 0, 0, (VirtualFunctionPointer) B_getField2 }, };

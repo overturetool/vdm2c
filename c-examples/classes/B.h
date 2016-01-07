@@ -15,7 +15,7 @@
 
 #define BCLASS struct B*
 
-#define CLASS_B_sum2 2
+#define CLASS_B_sum2 1
 
 struct B
 {
