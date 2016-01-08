@@ -1,0 +1,8 @@
+#set( $sizeCall = "")
+#if ($XFormat.isStringType($node.getExp().getType()))
+	#set( $sizeCall = ".length()")
+#else
+	#set( $sizeCall = ".size()")
+#end
+##
+$XFormat.format($node.getExp())$sizeCall

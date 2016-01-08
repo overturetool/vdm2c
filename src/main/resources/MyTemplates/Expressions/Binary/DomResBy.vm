@@ -1,0 +1,4 @@
+#set( $left = $XFormat.format($node.getLeft()) )
+#set( $right = $XFormat.format($node.getRight()) )
+##
+MapUtil.domResBy(${left}, ${right})

@@ -1,0 +1,4 @@
+#set( $first = $XFormat.format($node.getFirst()) )
+#set( $last = $XFormat.format($node.getLast()) )
+##
+SetUtil.range(${first}, ${last})

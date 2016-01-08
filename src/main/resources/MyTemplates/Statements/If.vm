@@ -1,0 +1,16 @@
+if ( $XFormat.format($node.getIfExp()) )
+{
+	$XFormat.format($node.getThenStm())
+}
+#foreach( $stm in $node.getElseIf() )
+else if ( $XFormat.format($stm.getElseIf()) )
+{
+	$XFormat.format($stm.getThenStm())
+}
+#end
+#if ( !$XFormat.isNull($node.getElseStm()) )
+else
+{
+	$XFormat.format($node.getElseStm())
+}
+#end

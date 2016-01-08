@@ -1,0 +1,3 @@
+#set( $packagePrefix = $XFormat.getQuotePackagePrefix() )
+##
+${packagePrefix}${node.getValue()}Quote.getInstance()

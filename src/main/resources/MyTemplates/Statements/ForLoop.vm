@@ -1,0 +1,20 @@
+#set( $init = "" )
+#if ( !$XFormat.isNull($node.getInit()) )
+	#set( $init = $XFormat.format($node.getInit()) )
+#end
+##
+#set( $cond = "" )
+#if ( !$XFormat.isNull($node.getCond()) )
+	#set( $cond = $XFormat.format($node.getCond()) )
+#end
+##
+#set( $inc = "" )
+#if ( !$XFormat.isNull($node.getInc()) )
+	#set( $inc = $XFormat.format($node.getInc()) )
+#end
+##
+#set( $body = $XFormat.format($node.getBody()) )
+for(${init}; ${cond}; ${inc})
+{
+	${body}
+}

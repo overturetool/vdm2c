@@ -1,0 +1,7 @@
+#set( $exp = $XFormat.format($node.getExp()) )
+#set( $body = $XFormat.format($node.getBody()) )
+##
+while(${exp})
+{
+	${body}
+}

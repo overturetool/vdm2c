@@ -1,0 +1,1 @@
+$XFormat.format($node.getLeft(), true) == $XFormat.format($node.getRight(), false)

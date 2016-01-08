@@ -1,0 +1,9 @@
+#if ($XFormat.genDecl(${node}))
+	$node.getAccess() $XFormat.format(${node.getDecl()})
+#end
+##
+#set( $inv = $node.getInv())
+##
+#if (!$XFormat.isNull(${inv}))
+	$XFormat.format(${inv})
+#end

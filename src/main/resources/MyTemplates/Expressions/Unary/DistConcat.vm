@@ -1,0 +1,6 @@
+#set( $exp = $XFormat.format($node.getExp()) )
+#if ($XFormat.isStringType($node.getType()))
+	SeqUtil.distConcStrings($exp)
+#else
+	SeqUtil.distConc($exp)
+#end

@@ -1,0 +1,23 @@
+#set( $package = "")
+#set( $packageName = $node.getPackage())
+#if (!$XFormat.isNull($packageName))
+	#set( $package = "package ${packageName};")
+#end
+##
+#set( $templateTypes = "")
+#if ($node.getTemplateTypes().size() > 0)
+	#set( $templateTypes = $XFormat.formatTemplateTypes($node.getTemplateTypes()))
+#end
+##
+$package
+
+public interface $node.getName() $templateTypes
+{
+#foreach( $field in $node.getFields() )
+$XFormat.format($field)
+#end
+##
+#foreach( $methodSig in $node.getMethodSignatures() )
+$XFormat.format($methodSig)
+#end
+}

@@ -1,0 +1,10 @@
+#set( $args = $XFormat.formatArgs($node.getArgs()) )
+#set( $field = $node.getFieldName() )
+#set( $designator = $XFormat.format($node.getDesignator()) )
+##
+#set( $return = "")
+#if (!$XFormat.isVoidType($node.getType()))
+	#set( $return = "return ")
+#end
+##
+${return}${designator}.${field}(${args});

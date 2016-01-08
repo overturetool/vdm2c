@@ -1,0 +1,1 @@
+new Token($XFormat.format($node.getArg()))

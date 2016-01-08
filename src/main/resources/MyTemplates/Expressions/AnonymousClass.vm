@@ -1,0 +1,6 @@
+new $XFormat.format($node.getType())()
+{
+	#foreach( $method in $node.getMethods() )
+	$XFormat.format($method)
+	#end
+}
