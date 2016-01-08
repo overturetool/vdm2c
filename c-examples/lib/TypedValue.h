@@ -14,6 +14,10 @@
 #include "VdmMap.h"
 #include "VdmClass.h"
 
+//Eclipse hack
+#if !defined(va_arg)
+#define va_arg(ap,TVP) NULL //just for Eclipse must not be defined
+#endif
 
 #define vdmFree recursiveFree
 

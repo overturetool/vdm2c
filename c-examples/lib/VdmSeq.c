@@ -9,18 +9,34 @@
 
 #define ASSERT_CHECK(s) assert(s->type == VDM_SEQ && "Value is not a sequence")
 
-
 struct TypedValue* newSeq(size_t size)
 {
 	return newCollection(size, VDM_SEQ);
 }
 
-
-struct TypedValue* newSeqWithValues(size_t size,TVP* elements)
+struct TypedValue* newSeqWithValues(size_t size, TVP* elements)
 {
 	return newCollectionWithValues(VDM_SEQ,size,elements);
 }
 
+
+
+struct TypedValue* newSeqVar(size_t size, ...)
+{
+	TVP elements[size];
+
+	va_list ap;
+	va_start(ap, size);
+
+	for (int i = 0; i < size; i++)
+	{
+		TVP arg = va_arg(ap, TVP);
+		elements[i]=arg;
+	}
+	va_end(ap);
+
+	return newCollectionWithValues(VDM_SEQ,size,elements);
+}
 
 TVP seqHd(TVP seq)
 {

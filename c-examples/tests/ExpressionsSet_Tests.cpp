@@ -25,10 +25,8 @@ TVP newSet(int size, int* arr)
 
 TEST(Expression_Set, setInset)
 {
-	int arr[] =
-	{ 1 };
 	TVP el = newInt(1);
-	TVP t = newSet(1,arr);
+	TVP t = newSetVar(1,el);
 
 	TVP res = vdmSetMemberOf(t,el);
 
