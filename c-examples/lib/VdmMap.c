@@ -7,6 +7,8 @@
 
 #include "VdmMap.h"
 
+#include <stdio.h> //FIXME remove all printf!
+
 #define ASSERT_CHECK(s) assert(s->type == VDM_MAP && "Value is not a map")
 
 struct TypedValue* newMap()
@@ -42,7 +44,7 @@ TVP vdmMapApply(TVP map, TVP key)
 
 void print_iterator(gpointer item, gpointer prefix) {
 	TVP item2 = (TVP) item;
-	printf("%d \n", item2->value);
+	//FIXME you cannot print a union type like this printf("%d \n", item2->value);
 }
 void print_iterator_short(gpointer item) {
  printf("%s\n", item);
