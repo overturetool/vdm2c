@@ -1,4 +1,4 @@
-class ExpressionNumericTest is subclass of TestCase
+class ExpressionNumericTest is subclass of TestCase,ExpressionNumeric
 
 operations
 
@@ -56,63 +56,6 @@ testequalExp()== assertTrue(notEqualExp());
 public testnotEqualExp : () ==>()
 testnotEqualExp()== assertTrue(notEqualExp());
 
-functions
 
-unaryMinusExp: () -> bool
-unaryMinusExp()== -5=-5;
-
-absExp: () -> bool
-absExp()== abs(-5)=5;
-
-floorExp: () -> bool
-floorExp()== floor 5.6 = 5;
-
-sumExp: () -> bool
-sumExp()== 5+4=9;
-
-differenceExp: () -> bool
-differenceExp()== 5-4=1;
-
-productExp: () -> bool
-productExp()== 6*7=42;
-
-divisionExp: () -> bool
-divisionExp()== 32/8=4;
-
-intDivisionExp: () -> bool
-intDivisionExp()== 20 div 4 = 5;
-
-remainderExp: () -> bool
-remainderExp()== 20 rem 6 = 2;
-
-modExp: () -> bool
-modExp()== 23 mod 6=5;
-
-powerExp: () -> bool
-powerExp()== 4**3=64;
-
-lessthanExp: () -> bool
-lessthanExp()== 12<18;
-
-greaterThanExp: () -> bool
-greaterThanExp()== 12>6;
-
-lessEqualExp1: () -> bool
-lessEqualExp1()== 18<=23;
-
-lessEqualExp2: () -> bool
-lessEqualExp2()== 11<=11;
-
-greaterEqualExp1: () -> bool
-greaterEqualExp1()== 8>=6;
-
-greaterEqualExp2: () -> bool
-greaterEqualExp2()== 8>=8;
-
-equalExp: () -> bool
-equalExp()== 6=6;
-
-notEqualExp: () -> bool
-notEqualExp()== 8<>9;
 
 end ExpressionNumericTest

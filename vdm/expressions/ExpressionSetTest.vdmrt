@@ -1,4 +1,4 @@
-class ExpressionSetTest is subclass of TestCase
+class ExpressionSetTest is subclass of TestCase,ExpressionSet
 operations
 
 public testsetInset : () ==>()
@@ -6,11 +6,6 @@ testsetInset()== assertTrue(setInset());
 
 
 
-functions
 
-
-
-setInset: () -> bool
-setInset()== 1 in set {1};
 
 end ExpressionSetTest

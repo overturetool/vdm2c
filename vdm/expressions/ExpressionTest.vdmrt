@@ -1,4 +1,4 @@
-class ExpressionTest is subclass of TestCase
+class ExpressionTest is subclass of TestCase,Expression
 operations
 
 public testletExp : () ==>()
@@ -13,57 +13,6 @@ testletFilter1Exp()== assertTrue(letFilter1Exp());
 public testifExp : () ==>()
 testifExp()== assertTrue(ifExp());
 
-functions
 
-
-
---pattern identifier
---| match value
---| set enum pattern
---| set union pattern
---| seq enum pattern
---| seq conc pattern
---| map enumeration pattern
---| map muinon pattern
---| tuple pattern
---| record pattern
---| object pattern
-
-
-letIdentifierExp: () -> bool
-letIdentifierExp()== let a = true in a;
-
-letIdentifierDontExp: () -> bool
-letIdentifierDontExp()== let - = true in true;
-
-letPatternMatch1: ()-> bool
-letPatternMatch1()== let 1 = 1 in true;
-
-letPatternMatch2: ()-> bool
-letPatternMatch2()== let mk_(1,a) = mk_(1,2) in a=2;
-
-
---letPatternExp: () -> bool
---letPatternExp()== let a,b : in set{1} true in true;
-
--- let with tuble is pattern match
-
--- let with value on left side of assignment is filter
-letFilter1Exp: () -> bool
-letFilter1Exp()==
-let b = 2 in
- let 1 = b in true;
- 
-letPatternMatch3: ()-> bool
-letPatternMatch3()== let mk_(a,2) = mk_(1,2) in true;
-
-
-ifExp : ()-> bool
-ifExp()== 
-	if true or true 
-	then 
-		true or false 
-	else 
-		true;
 
 end ExpressionTest

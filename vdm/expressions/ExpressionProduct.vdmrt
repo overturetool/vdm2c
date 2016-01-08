@@ -1,0 +1,9 @@
+class ExpressionProduct
+functions
+
+
+
+
+protected productExp: () -> bool
+productExp()== mk_(1,2)= mk_(1,2);
+end ExpressionProduct
