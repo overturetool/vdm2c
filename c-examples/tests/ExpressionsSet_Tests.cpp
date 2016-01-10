@@ -108,3 +108,22 @@ TEST(Expression_Set, setComprehension)
 	vdmFree(S);
 	vdmFree(t);
 }
+
+TEST(Expression_Set, setAdd)
+{
+	TVP el = newInt(2);
+	TVP t = newSet(1);
+
+	int index = 0;
+
+	vdmSetAdd(t, &index, e1);
+
+
+	TVP res = vdmSetMemberOf(t,el);
+
+	EXPECT_EQ(true, res->value.boolVal);
+
+	vdmFree(res);
+	vdmFree(t);
+	vdmFree(el);
+}
