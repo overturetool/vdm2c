@@ -104,24 +104,24 @@ public class CGenMain
 
 		try
 		{
-			//List<SClassDefinition> ast = GeneralCodeGenUtils.consClassList(files, Dialect.VDM_RT);
-			
-			Settings.dialect=Dialect.VDM_RT;
-			
-//			TypeCheckResult<List<SClassDefinition>> vdm_ast = TypeCheckerUtil.typeCheckPp(file);
-//			
-//			List<SClassDefinition> res = vdm_ast.result;
-			
+			// List<SClassDefinition> ast = GeneralCodeGenUtils.consClassList(files, Dialect.VDM_RT);
+
+			Settings.dialect = Dialect.VDM_RT;
+
+			// TypeCheckResult<List<SClassDefinition>> vdm_ast = TypeCheckerUtil.typeCheckPp(file);
+			//
+			// List<SClassDefinition> res = vdm_ast.result;
+
 			TypeCheckResult<List<SClassDefinition>> res = TypeCheckerUtil.typeCheckRt(files);
-			
+
 			List<SClassDefinition> ast = res.result;
-			
+
 			CGen cGen = new CGen();
 
 			GeneratedData data = cGen.generateCFromVdm(ast, outputDir);
 			System.out.println("C code generated to folder: "
 					+ outputDir.getAbsolutePath());
-			
+
 			if (print)
 			{
 				for (GeneratedModule module : data.getClasses())

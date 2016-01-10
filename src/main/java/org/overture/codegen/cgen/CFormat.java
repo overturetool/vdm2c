@@ -43,24 +43,25 @@ public class CFormat
 	private MergeVisitor mergeVisitor;
 	private IRInfo info;
 	private int number = 0;
-	
+
 	private long nextClassId = 0;
-	private Map<String,Long> classIds = new HashMap<String,Long>();
-	
+	private Map<String, Long> classIds = new HashMap<String, Long>();
+
 	public String getClassId(String name)
 	{
-		if(classIds.containsKey(name))
-			return classIds.get(name).toString();;
-		
+		if (classIds.containsKey(name))
+			return classIds.get(name).toString();
+		;
+
 		Long id = nextClassId;
 		classIds.put(name, id);
 		nextClassId++;
 		return id.toString();
-		
+
 	}
 
 	public static final String UTILS_FILE = "Utils";
-	
+
 	public String getNumber()
 	{
 		number = number + 1;
@@ -69,10 +70,10 @@ public class CFormat
 	}
 
 	public CFormat(IRInfo info)
-	{		
+	{
 		TemplateStructure ts = new TemplateStructure("MyTemplates");
 		CTemplateManager tm = new CTemplateManager(ts);
-		
+
 		TemplateCallable[] templateCallables = new TemplateCallable[] {
 				new TemplateCallable("CFormat", this) };
 		this.mergeVisitor = new MergeVisitor(tm, templateCallables);
@@ -276,11 +277,12 @@ public class CFormat
 	{
 		STypeCG leftNodeType = node.getLeft().getType();
 
-		if (leftNodeType instanceof SSeqTypeCG || leftNodeType instanceof SSetTypeCG || leftNodeType instanceof SMapTypeCG)
+		if (leftNodeType instanceof SSeqTypeCG
+				|| leftNodeType instanceof SSetTypeCG
+				|| leftNodeType instanceof SMapTypeCG)
 		{
 			return handleCollectionComparison(node);
-		}
-		else
+		} else
 		{
 			return handleEquals(node);
 		}
@@ -292,7 +294,7 @@ public class CFormat
 		ANotUnaryExpCG transformed = transNotEquals(node);
 		return formatNotUnary(transformed.getExp());
 	}
-	
+
 	public String formatNotUnary(SExpCG exp) throws AnalysisException
 	{
 		String formattedExp = format(exp, false);
@@ -302,7 +304,7 @@ public class CFormat
 
 		return doNotWrap ? "!" + formattedExp : "!(" + formattedExp + ")";
 	}
-	
+
 	private ANotUnaryExpCG transNotEquals(ANotEqualsBinaryExpCG notEqual)
 	{
 		ANotUnaryExpCG notUnary = new ANotUnaryExpCG();
@@ -318,7 +320,8 @@ public class CFormat
 		// Replace the "notEqual" expression with the transformed expression
 		INode parent = notEqual.parent();
 
-		// It may be the case that the parent is null if we execute e.g. [1] <> [1] in isolation
+		// It may be the case that the parent is null if we execute e.g. [1] <>
+		// [1] in isolation
 		if (parent != null)
 		{
 			parent.replaceChild(notEqual, notUnary);
@@ -334,9 +337,11 @@ public class CFormat
 		return String.format("%s.equals(%s, %s)", UTILS_FILE, format(valueType.getLeft()), format(valueType.getRight()));
 	}
 
-	private String handleCollectionComparison(SBinaryExpCG node) throws AnalysisException
+	private String handleCollectionComparison(SBinaryExpCG node)
+			throws AnalysisException
 	{
-		// In VDM the types of the equals are compatible when the AST passes the type check
+		// In VDM the types of the equals are compatible when the AST passes the
+		// type check
 		SExpCG leftNode = node.getLeft();
 		SExpCG rightNode = node.getRight();
 
@@ -353,7 +358,7 @@ public class CFormat
 		return UTILS_FILE + ".equals(" + format(node.getLeft()) + ", "
 				+ format(node.getRight()) + ")";
 	}
-	
+
 	private boolean isEmptyCollection(STypeCG type)
 	{
 		if (type instanceof SSeqTypeCG)
@@ -375,7 +380,7 @@ public class CFormat
 
 		return false;
 	}
-	
+
 	public String getTVPtype()
 	{
 		return "TVP";

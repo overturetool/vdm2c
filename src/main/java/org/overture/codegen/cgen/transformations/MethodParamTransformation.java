@@ -44,9 +44,9 @@ public class MethodParamTransformation extends DepthFirstAnalysisAdaptor
 			AIntNumericBasicTypeCG ty = new AIntNumericBasicTypeCG();
 
 			// Get enclosing class
-			//AClassDeclCG classname = node.getAncestor(AClassDeclCG.class);
+			// AClassDeclCG classname = node.getAncestor(AClassDeclCG.class);
 
-			//INode vdmclass = classname.getSourceNode().getVdmNode();
+			// INode vdmclass = classname.getSourceNode().getVdmNode();
 			/*
 			 * if (vdmclass instanceof AClassClassDefinition) { AClassClassDefinition vdm = (AClassClassDefinition)
 			 * vdmclass; System.out.println("For method: " + node.getName() + " in class: " + vdm.getName());

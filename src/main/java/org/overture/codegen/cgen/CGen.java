@@ -77,10 +77,12 @@ public class CGen extends CodeGenBase
 		// Generate IR to syntax (generate code)
 
 		GeneratedData data = new GeneratedData();
-		
+
 		// Add generated code to 'data'
-		// templateManager = new TemplateManager(new TemplateStructure("MyTemplates"));
-		// MergeVisitor mergeVisitor = new MergeVisitor(templateManager, new TemplateCallable[]{new
+		// templateManager = new TemplateManager(new
+		// TemplateStructure("MyTemplates"));
+		// MergeVisitor mergeVisitor = new MergeVisitor(templateManager, new
+		// TemplateCallable[]{new
 		// TemplateCallable("CGh", new CGHelper())});
 
 		CFormat my_formatter = new CFormat(generator.getIRInfo());
@@ -130,7 +132,7 @@ public class CGen extends CodeGenBase
 			/*
 			 * try { classCg.apply(my_formatter.GetMergeVisitor(), writer); GeneratedModule generatedModule = new
 			 * GeneratedModule(status.getIrNodeName(), classCg, writer.toString());
-			 * generatedModule.setTransformationWarnings(status.getTransformationWarnings());
+			 * generatedModule.setTransformationWarnings(status. getTransformationWarnings());
 			 * generated.add(generatedModule); for (IrNodeInfo m :
 			 * my_formatter.GetMergeVisitor().getUnsupportedInTargLang()) { System.out.println(m.toString()); } for
 			 * (Exception m : my_formatter.GetMergeVisitor().getMergeErrors()) { System.out.println(m.toString()); } }
@@ -172,8 +174,8 @@ public class CGen extends CodeGenBase
 		return node == null;
 	}
 
-	<T> T getField(Object obj, String name) throws IllegalArgumentException,
-			IllegalAccessException
+	<T> T getField(Object obj, String name)
+			throws IllegalArgumentException, IllegalAccessException
 	{
 		for (Field f : obj.getClass().getDeclaredFields())
 		{
@@ -188,8 +190,8 @@ public class CGen extends CodeGenBase
 	}
 
 	@SuppressWarnings("unchecked")
-	private void generateClassHeader(ADefaultClassDeclCG cl, CFormat my_formatter,
-			File output_dir) throws IOException,
+	private void generateClassHeader(ADefaultClassDeclCG cl,
+			CFormat my_formatter, File output_dir) throws IOException,
 					org.overture.codegen.cgast.analysis.AnalysisException
 	{
 
@@ -224,8 +226,8 @@ public class CGen extends CodeGenBase
 
 	private void printClass(ADefaultClassDeclCG cl, CFormat my_formatter,
 			File output_dir)
-			throws org.overture.codegen.cgast.analysis.AnalysisException,
-			IOException
+					throws org.overture.codegen.cgast.analysis.AnalysisException,
+					IOException
 	{
 		StringWriter writer = new StringWriter();
 		cl.apply(my_formatter.GetMergeVisitor(), writer);

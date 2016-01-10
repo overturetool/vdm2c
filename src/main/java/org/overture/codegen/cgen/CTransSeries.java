@@ -45,15 +45,15 @@ public class CTransSeries
 	{
 		// Data and functionality to support the transformations
 		IRInfo irInfo = codeGen.getIRGenerator().getIRInfo();
-		//TempVarPrefixes varPrefixes = codeGen.getTempVarPrefixes();
+		// TempVarPrefixes varPrefixes = codeGen.getTempVarPrefixes();
 		ITempVarGen nameGen = irInfo.getTempVarNameGen();
-		//TraceNames traceNamePrefixes = codeGen.getTracePrefixes();
+		// TraceNames traceNamePrefixes = codeGen.getTracePrefixes();
 		TransAssistantCG transAssistant = codeGen.getTransAssistant();
 		// IPostCheckCreator postCheckCreator = new JavaPostCheckCreator(POST_CHECK_METHOD_NAME);
 
 		VdmBasicTypesCppTrans typeTrans = new VdmBasicTypesCppTrans(transAssistant);
-//		VdmSetCppTrans setTrans = new VdmSetCppTrans(transAssistant);
-//		VdmSeqCppTrans seqTrans = new VdmSeqCppTrans(transAssistant);
+		// VdmSetCppTrans setTrans = new VdmSetCppTrans(transAssistant);
+		// VdmSeqCppTrans seqTrans = new VdmSeqCppTrans(transAssistant);
 
 		// Construct the transformations
 		FuncTrans funcTransformation = new FuncTrans(transAssistant);
@@ -62,7 +62,8 @@ public class CTransSeries
 		AssignStmTrans assignTransformation = new AssignStmTrans(transAssistant);
 		// PrePostTransformation prePostTransformation = new PrePostTransformation(irInfo);
 		// IfExpTransformation ifExpTransformation = new IfExpTransformation(transAssistant);
-//		FunctionValueTransformation funcValueTransformation = new FunctionValueTransformation(irInfo, transAssistant, functionValueAssistant, INTERFACE_NAME_PREFIX, TEMPLATE_TYPE_PREFIX, EVAL_METHOD_PREFIX, PARAM_NAME_PREFIX);
+		// FunctionValueTransformation funcValueTransformation = new FunctionValueTransformation(irInfo, transAssistant,
+		// functionValueAssistant, INTERFACE_NAME_PREFIX, TEMPLATE_TYPE_PREFIX, EVAL_METHOD_PREFIX, PARAM_NAME_PREFIX);
 		// ILanguageIterator langIterator = new JavaLanguageIterator(transAssistant, nameGen, varPrefixes);
 		// TransformationVisitor transVisitor = new TransformationVisitor(irInfo, classes, varPrefixes, transAssistant,
 		// consExists1CounterData(), langIterator, TERNARY_IF_EXP_NAME_PREFIX, CASES_EXP_RESULT_NAME_PREFIX,
@@ -75,7 +76,7 @@ public class CTransSeries
 		// transAssistant, FUNC_RESULT_NAME_PREFIX, new JavaValueSemanticsTag(false));
 		// IsExpTransformation isExpTransformation = new IsExpTransformation(irInfo, transAssistant,
 		// IS_EXP_SUBJECT_NAME_PREFIX);
-		//SeqConversionTransformation seqConversionTransformation = new SeqConversionTransformation(transAssistant);
+		// SeqConversionTransformation seqConversionTransformation = new SeqConversionTransformation(transAssistant);
 		// TracesTransformation tracesTransformation = new TracesTransformation(irInfo, classes, transAssistant,
 		// varPrefixes, traceNamePrefixes, langIterator, new JavaCallStmToStringBuilder());
 		// UnionTypeTransformation unionTypeTransformation = new UnionTypeTransformation(transAssistant, irInfo,
@@ -101,7 +102,7 @@ public class CTransSeries
 		List<DepthFirstAnalysisAdaptor> transformations = new LinkedList<DepthFirstAnalysisAdaptor>();
 
 		// transformations.add(typeTrans);
-//		transformations.add(setTrans);
+		// transformations.add(setTrans);
 		// transformations.add(seqTrans);
 		// transformations.add(assignTransformation);
 
@@ -111,7 +112,7 @@ public class CTransSeries
 		transformations.add(funcTransformation);
 		// transformations.add(prePostTransformation);
 		// transformations.add(ifExpTransformation);
-//		transformations.add(funcValueTransformation);
+		// transformations.add(funcValueTransformation);
 		// transformations.add(transVisitor);
 		// transformations.add(tracesTransformation);
 		// transformations.add(patternTransformation);
@@ -123,7 +124,7 @@ public class CTransSeries
 		// transformations.add(concurrencytransform);
 		// transformations.add(mutexTransform);
 		// transformations.add(mainclassTransform);
-//		transformations.add(seqConversionTransformation);
+		// transformations.add(seqConversionTransformation);
 		// transformations.add(instanceVarPPEval);
 		// transformations.add(recTransformation);
 
