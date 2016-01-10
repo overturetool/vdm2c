@@ -10,39 +10,39 @@
 \#include "lib/VdmSet.h"
 \#include "lib/VdmSeq.h"
 
-\#define CLASS_ID_$CFormat.getClassName($node)_ID $CFormat.getClassId($CFormat.getClassName($node))
+\#define CLASS_ID_$CFormat.getClassHeaderName($node)_ID $CFormat.getClassId($CFormat.getClassHeaderName($node))
 
-\#define $CFormat.getClassName($node)CLASS struct $CFormat.getClassName($node)*
+\#define $CFormat.getClassHeaderName($node)CLASS struct $CFormat.getClassHeaderName($node)*
 
 
 // The table
 
 #foreach( $method in $node.getMethods() )
-#if(!$method.getIsConstructor())\#define CLASS_$CFormat.getClassName($node)_$method.getName() $CFormat.getNumber();
+#if(!$method.getIsConstructor())\#define CLASS_$CFormat.getClassHeaderName($node)_$method.getName() $CFormat.getNumber();
 #end
 #end
 
-struct $CFormat.getClassName($node)
+struct $CFormat.getClassHeaderName($node)
 {
-	VDM_CLASS_BASE_DEFINITIONS($CFormat.getClassName($node));
+	VDM_CLASS_BASE_DEFINITIONS($CFormat.getClassHeaderName($node));
 	/*vtable
 	 * calc
 	 * sum
 	 * */
 	 
 	#foreach( $field in $node.getFields() )
-VDM_CLASS_FIELD_DEFINITION($CFormat.getClassName($node),$field.getName());
+VDM_CLASS_FIELD_DEFINITION($CFormat.getClassHeaderName($node),$field.getName());
 	#end
 
 };
 
 
-void $CFormat.getClassName($node)_free_fields($CFormat.getClassName($node)CLASS);
-$CFormat.getClassName($node)CLASS $CFormat.getClassName($node)_Constructor($CFormat.getClassName($node)CLASS);
+void $CFormat.getClassHeaderName($node)_free_fields($CFormat.getClassHeaderName($node)CLASS);
+$CFormat.getClassHeaderName($node)CLASS $CFormat.getClassHeaderName($node)_Constructor($CFormat.getClassHeaderName($node)CLASS);
 
-extern const struct $CFormat.getClassName($node)Class
+extern const struct $CFormat.getClassHeaderName($node)Class
 {
 	TVP (*_new)();
-} $CFormat.getClassName($node);
+} $CFormat.getClassHeaderName($node);
 
-#endif /* CLASSES_$CFormat.getClassName($node)_H_ */
+#endif /* CLASSES_$CFormat.getClassHeaderName($node)_H_ */
