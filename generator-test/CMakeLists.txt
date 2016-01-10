@@ -41,6 +41,7 @@ file(GLOB C_FILES ../c-examples/*.c  ../c-examples/lib/*.c ../c-examples/tests/*
 #file(GLOB CPP_FILES ../c-examples/tests/*.cpp)
 
 #file(GLOB CPP_FILES ../c-examples/tests/ClassATest.cpp ../c-examples/tests/ClassCTest.cpp)
+file(GLOB CPP_FILES tests/*.cpp)
 
 SET(EXT_C_FILES  CACHE PATH "location of external generates c files")
 
@@ -64,7 +65,7 @@ message(STATUS "C_GEN_FILES:  ${C_GEN_FILES}")
 
 add_executable(${PROJECT_NAME} ${C_FILES} ${C_GEN_FILES} ${CPP_FILES})
 
-include_directories(../c-examples/)
+include_directories(../c-examples/;${EXT_C_FILES})
 
 include_directories(${gtest_SOURCE_DIR}/include)
 INCLUDE_DIRECTORIES(

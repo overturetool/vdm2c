@@ -39,7 +39,7 @@ TEST(Expression_Seq, seqHd)
 	{ 1, 2 };
 	TVP t = newSequence(2,arr);
 
-	TVP res = seqHd(t);
+	TVP res = vdmSeqHd(t);
 
 	EXPECT_EQ(1, res->value.intVal);
 
@@ -54,7 +54,7 @@ TEST(Expression_Seq, seqTl)
 	{ 1, 2 };
 	TVP t = newSequence(2,arr);
 
-	TVP res = seqTl(t);
+	TVP res = vdmSeqTl(t);
 
 	struct Collection* col = (struct Collection*) res->value.ptr;
 
@@ -70,7 +70,7 @@ TEST(Expression_Seq, seqLen)
 	{ 1, 2 };
 	TVP t = newSequence(2,arr);
 
-	TVP res = seqLen(t);
+	TVP res = vdmSeqLen(t);
 
 	EXPECT_EQ(2, res->value.intVal);
 	recursiveFree(res);
@@ -98,7 +98,7 @@ TEST(Expression_Seq, seqInds)
 	{ 1, 2 };
 	TVP t = newSequence(2,arr);
 
-	TVP res = seqInds(t);
+	TVP res = vdmSeqInds(t);
 
 	EXPECT_EQ(VDM_SET, res->type);
 	struct Collection* col = (struct Collection*) res->value.ptr;
@@ -123,7 +123,7 @@ TEST(Expression_Seq, seqConc)
 	{ 2 };
 	TVP t2 = newSequence(1,arr2);
 
-	TVP res = seqConc(t,t2);
+	TVP res = vdmSeqConc(t,t2);
 
 	struct Collection* col = (struct Collection*) res->value.ptr;
 
@@ -142,7 +142,7 @@ TEST(Expression_Seq, seqReverse)
 	{ 1, 2 };
 	TVP t = newSequence(2,arr);
 
-	TVP res = seqReverse(t);
+	TVP res = vdmSeqReverse(t);
 
 	struct Collection* col = (struct Collection*) res->value.ptr;
 
@@ -175,7 +175,7 @@ TEST(Expression_Seq, seqIndex)
 	TVP t = newSequence(2,arr);
 
 	TVP index = newInt(2);
-	TVP res = seqIndex(t,index);
+	TVP res = vdmSeqIndex(t,index);
 
 	EXPECT_EQ(2, res->value.intVal);
 	recursiveFree(res);
@@ -194,7 +194,7 @@ TEST(Expression_Seq, seqEqual)
 	{ 1 };
 	TVP t2 = newSequence(1,arr2);
 
-	TVP res = seqEqual(t,t2);
+	TVP res = vdmSeqEqual(t,t2);
 
 	EXPECT_EQ(true, res->value.boolVal);
 	recursiveFree(res);
@@ -213,7 +213,7 @@ TEST(Expression_Seq, seqInEqual)
 	{ 2 };
 	TVP t2 = newSequence(1,arr2);
 
-	TVP res = seqEqual(t,t2);
+	TVP res = vdmSeqInEqual(t,t2);
 
 	EXPECT_EQ(true, res->value.boolVal);
 	recursiveFree(res);

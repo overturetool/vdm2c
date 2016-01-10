@@ -22,9 +22,9 @@ bool patternMatchBind(TVP patternBind, TVP value)
 		//this is match value
 		return equals(patternBind,value);
 
-		case VDM_OPTIONAL:
-		//TODO not sure what should happen here
-		break;
+//		case VDM_OPTIONAL:
+//		//TODO not sure what should happen here
+//		break;
 
 		case VDM_SET:
 		break;
