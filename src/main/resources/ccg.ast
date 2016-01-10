@@ -1,0 +1,19 @@
+Packages
+
+base org.overture.cgc.extast.node;
+analysis org.overture.cgc.extast.analysis;
+
+Tokens
+
+Abstract Syntax Tree
+
+CG = #decl
+    ;
+
+
+#decl {-> package='org.overture.cgc.extast.declarations'}
+       = {classHeader}
+    	[name]:java_String
+    	[fields]:CG.#decl.field*
+    	[methods]:CG.#decl.method*
+       ;
