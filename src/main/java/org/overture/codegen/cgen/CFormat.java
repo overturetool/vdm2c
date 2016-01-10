@@ -15,8 +15,6 @@ import org.overture.codegen.cgast.SStmCG;
 import org.overture.codegen.cgast.STypeCG;
 import org.overture.codegen.cgast.analysis.AnalysisException;
 import org.overture.codegen.cgast.declarations.ADefaultClassDeclCG;
-//import org.overture.codegen.cgast.
-import org.overture.codegen.cgast.declarations.AClassHeaderDeclCG;
 import org.overture.codegen.cgast.declarations.AFieldDeclCG;
 import org.overture.codegen.cgast.declarations.AFormalParamLocalParamCG;
 import org.overture.codegen.cgast.declarations.AMethodDeclCG;
@@ -37,6 +35,7 @@ import org.overture.codegen.merging.TemplateCallable;
 import org.overture.codegen.merging.TemplateManager;
 import org.overture.codegen.merging.TemplateStructure;
 import org.overture.codegen.utils.GeneralUtils;
+//import org.overture.codegen.cgast.
 
 public class CFormat
 {
@@ -390,8 +389,8 @@ public class CFormat
 		return cl.getName().toString();
 	}
 
-	public String getClassHeaderName(AClassHeaderDeclCG ch)
-	{
-		return ch.getName().toString();
-	}
+//	public String getClassHeaderName(AClassHeaderDeclCG ch)
+//	{
+//		return ch.getName().toString();
+//	}
 }

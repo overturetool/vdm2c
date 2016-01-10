@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -13,14 +15,15 @@ import org.overture.ast.definitions.SClassDefinition;
 import org.overture.codegen.cgast.INode;
 import org.overture.codegen.cgast.analysis.DepthFirstAnalysisAdaptor;
 import org.overture.codegen.cgast.declarations.ADefaultClassDeclCG;
-import org.overture.codegen.cgast.declarations.AClassHeaderDeclCG;
 import org.overture.codegen.cgast.declarations.AFieldDeclCG;
 import org.overture.codegen.cgast.declarations.AMethodDeclCG;
 import org.overture.codegen.cgast.declarations.AModuleDeclCG;
 import org.overture.codegen.ir.CodeGenBase;
 import org.overture.codegen.ir.IRStatus;
-import org.overture.codegen.ir.IrNodeInfo;
 import org.overture.codegen.logging.Logger;
+import org.overture.codegen.merging.MergeVisitor;
+import org.overture.codegen.merging.TemplateManager;
+import org.overture.codegen.merging.TemplateStructure;
 import org.overture.codegen.trans.assistants.TransAssistantCG;
 import org.overture.codegen.trans.funcvalues.FuncValAssistant;
 import org.overture.codegen.utils.GeneratedData;
@@ -66,8 +69,6 @@ public class CGen extends CodeGenBase
 		List<ADefaultClassDeclCG> classes = getClassDecls(classStatuses);
 		FuncValAssistant functionValueAssistant = new FuncValAssistant();
 
-		
-		
 		// Transform IR
 		CTransSeries xTransSeries = new CTransSeries(this);
 		List<DepthFirstAnalysisAdaptor> transformations = xTransSeries.consAnalyses(classes, functionValueAssistant);
@@ -126,27 +127,15 @@ public class CGen extends CodeGenBase
 			}
 
 			/*
-			try
-			{
-				classCg.apply(my_formatter.GetMergeVisitor(), writer);
-
-				GeneratedModule generatedModule = new GeneratedModule(status.getIrNodeName(), classCg, writer.toString());
-				generatedModule.setTransformationWarnings(status.getTransformationWarnings());
-				generated.add(generatedModule);
-				for (IrNodeInfo m : my_formatter.GetMergeVisitor().getUnsupportedInTargLang())
-				{
-					System.out.println(m.toString());
-				}
-				for (Exception m : my_formatter.GetMergeVisitor().getMergeErrors())
-				{
-					System.out.println(m.toString());
-				}
-			} catch (org.overture.codegen.cgast.analysis.AnalysisException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		*/
+			 * try { classCg.apply(my_formatter.GetMergeVisitor(), writer); GeneratedModule generatedModule = new
+			 * GeneratedModule(status.getIrNodeName(), classCg, writer.toString());
+			 * generatedModule.setTransformationWarnings(status.getTransformationWarnings());
+			 * generated.add(generatedModule); for (IrNodeInfo m :
+			 * my_formatter.GetMergeVisitor().getUnsupportedInTargLang()) { System.out.println(m.toString()); } for
+			 * (Exception m : my_formatter.GetMergeVisitor().getMergeErrors()) { System.out.println(m.toString()); } }
+			 * catch (org.overture.codegen.cgast.analysis.AnalysisException e) { // TODO Auto-generated catch block
+			 * e.printStackTrace(); }
+			 */
 		}
 
 		data.setClasses(generated);
@@ -167,28 +156,43 @@ public class CGen extends CodeGenBase
 		return classDecls;
 	}
 
-	@SuppressWarnings("unchecked")
-	private AClassHeaderDeclCG createClassHeader(ADefaultClassDeclCG ch)
-	{
-		AClassHeaderDeclCG res = new AClassHeaderDeclCG();
-
-		res.setMethods((List<? extends AMethodDeclCG>) ch.getMethods().clone());
-
-		return res;
-	}
+	// @SuppressWarnings("unchecked")
+	// private AClassHeaderDeclCG createClassHeader(ADefaultClassDeclCG ch)
+	// {
+	// AClassHeaderDeclCG res = new AClassHeaderDeclCG();
+	//
+	// res.setMethods((List<? extends AMethodDeclCG>) ch.getMethods().clone());
+	//
+	// return res;
+	// }
 
 	public boolean isNull(INode node)
 	{
 		return node == null;
 	}
 
+	<T> T getField(Object obj, String name) throws IllegalArgumentException,
+			IllegalAccessException
+	{
+		for (Field f : obj.getClass().getDeclaredFields())
+		{
+			if (f.getName().equals(name))
+			{
+				f.setAccessible(true);
+				return (T) f.get(obj);
+			}
+		}
+
+		return null;
+	}
+
 	@SuppressWarnings("unchecked")
-	private void generateClassHeader(ADefaultClassDeclCG cl, CFormat my_formatter,
-			File output_dir) throws IOException,
-					org.overture.codegen.cgast.analysis.AnalysisException
+	private void generateClassHeader(ADefaultClassDeclCG cl,
+			CFormat my_formatter, File output_dir) throws IOException,
+			org.overture.codegen.cgast.analysis.AnalysisException
 	{
 
-		AClassHeaderDeclCG ch = new AClassHeaderDeclCG();
+		ADefaultClassDeclCG ch = new ADefaultClassDeclCG();
 
 		for (AFieldDeclCG fi : cl.getFields())
 		{
@@ -206,7 +210,32 @@ public class CGen extends CodeGenBase
 
 		ch.setName(cl.getName().toString());
 		StringWriter writer = new StringWriter();
-		ch.apply(my_formatter.GetMergeVisitor(), writer);
+		
+		//override template manager - code gen does not provide extension methods to allow this, so we do it the hard way.
+		try
+		{
+			MergeVisitor getMergeVisitor = my_formatter.GetMergeVisitor();
+
+			String cache = null;
+			TemplateManager templateManager = getField(getMergeVisitor, "templates");
+			HashMap<Class<? extends INode>, String> nodeTemplateFileNames = getField(templateManager, "nodeTemplateFileNames");
+			TemplateStructure templateStructure = getField(templateManager, "templateStructure");
+
+			cache = nodeTemplateFileNames.get(ch.getClass());
+			nodeTemplateFileNames.put(ch.getClass(), templateStructure.DECL_PATH
+					+ "ClassHeader");
+			ch.apply(getMergeVisitor, writer);
+			nodeTemplateFileNames.put(ch.getClass(), cache);
+
+		} catch (IllegalArgumentException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		output_dir.mkdirs();
 
@@ -219,8 +248,8 @@ public class CGen extends CodeGenBase
 
 	private void printClass(ADefaultClassDeclCG cl, CFormat my_formatter,
 			File output_dir)
-					throws org.overture.codegen.cgast.analysis.AnalysisException,
-					IOException
+			throws org.overture.codegen.cgast.analysis.AnalysisException,
+			IOException
 	{
 		StringWriter writer = new StringWriter();
 		cl.apply(my_formatter.GetMergeVisitor(), writer);
