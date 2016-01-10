@@ -56,6 +56,39 @@ struct TypedValue* newSetWithValues(size_t size, TVP* elements)
 	return res;
 }
 
+struct TypedValue* newSetVar(size_t size, ...)
+{
+
+	 va_list ap;
+	  va_start(ap, size);
+
+	  int count = 0;
+
+	int bufsize = DEFAULT_SET_COMP_BUFFER;
+	struct TypedValue** value = (struct TypedValue**) calloc(bufsize, sizeof(struct TypedValue*));
+
+	for (int i = 0; i < size; i++)
+	{
+		TVP arg = va_arg(ap, TVP);
+		TVP v= vdmClone(arg); // set binding
+
+		if(count>=bufsize)
+		{
+			//buffer too small add memory chunk
+			bufsize+=(DEFAULT_SET_COMP_BUFFER_STEPSIZE*sizeof(struct TypedValue*));
+			value = (struct TypedValue**)realloc(value,bufsize);
+		}
+		vdmSetAdd(value,&count,v);
+
+	}
+
+	va_end(ap);
+
+	TVP res = newCollectionWithValues(VDM_SET,count,value);
+	free(value);
+	return res;
+}
+
 TVP vdmSetMemberOf(TVP set, TVP element)
 {
 	ASSERT_CHECK(set);

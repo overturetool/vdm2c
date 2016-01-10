@@ -3,12 +3,13 @@ class A
 instance variables
 
 protected field1 : int := 4;
+--public fDub : int :=999;
 
 
 operations
 
-public print:()==>()
-print()==IO`println(field1);
+public calc:int*int==>real
+calc(x,y)==return x+y;
 
 
 public sum : ()==>int

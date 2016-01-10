@@ -9,6 +9,7 @@
 #define LIB_VDMMAP_H_
 
 #include "TypedValue.h"
+#include "VdmSet.h"
 #include <glib.h>
 
 #include <assert.h>
@@ -38,7 +39,7 @@ TVP vdmMapApply(TVP map, TVP key);
 TVP vdmMapInverse(TVP map);
 
 bool vdmMapEquals(TVP map1, TVP map2);
-
+bool vdmMapInEquals(TVP map1, TVP map2);
 
 guint vdm_typedvalue_hash(gconstpointer v);
 gboolean vdm_typedvalue_equal(gconstpointer v1, gconstpointer v2);

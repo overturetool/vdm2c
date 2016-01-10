@@ -5,63 +5,98 @@
  *      Author: kel
  */
 
-
 #include "B.h"
+#include <string.h>
 
-
- void B_free(struct B *this)
+void B_free(struct B *this)
 {
-	--this->_refs;
-	if (this->_refs < 1)
+	--this->_B_refs;
+	if (this->_B_refs < 1)
 	{
-		A_free_fields(&this->A);//super
-		//free class struct
-		vdmFree(this->field2);
+		vdmFree(this->m_B_field2);
 		free(this);
 	}
 }
 
-static void print(ACLASS base)
+static TVP B_sum(BCLASS this)
 {
-	BCLASS this=
-			  (void *)base-offsetof(struct B, A);
-	//Loose translation
-	//printf("%d %d",base->field1->value.intVal,this->field2->value.intVal);
+	TVP tmp1 = GET_FIELD_PTR(B,A,this,field1);
+	TVP tmp2 = GET_FIELD_PTR(B,B,this,field2);
+	TVP ret = vdmSum(tmp1,tmp2);
+
+	vdmFree(tmp1);vdmFree(tmp2);
+	return ret;
 }
 
-static TVP sum(ACLASS base)
-{
-	BCLASS this=
-				  (void *)base-offsetof(struct B, A);
 
-	//Loose translation
-	return newInt(base->field1->value.intVal+this->field2->value.intVal);
+static TVP B_A_sum(ACLASS base) //override for A
+{
+	BCLASS this = CLASS_DOWNCAST(A,B,base);
+
+	return B_sum(this);
+}
+
+static TVP B_sum2(BCLASS this)
+{
+	TVP tmp1 = GET_FIELD_PTR(B,A,this,field1);
+	TVP tmp2 = GET_FIELD_PTR(B,B,this,field2);
+	TVP ret = vdmSum(tmp1,tmp2);
+
+	vdmFree(tmp1);vdmFree(tmp2);
+	return ret;
+}
+
+static TVP B_getField2(BCLASS this)
+{
+	return GET_FIELD_PTR(B,B,this,field2);
+}
+
+struct VTable VTableArrayForB[] =
+{
+//{ 0, 0, (VirtualFunctionPointer) A_calc },
+{ 0, 0, (VirtualFunctionPointer) B_sum },
+{ 0, 0, (VirtualFunctionPointer) B_sum2 },
+{ 0, 0, (VirtualFunctionPointer) B_getField2 }, };
+
+#define GET_STRUCT_FIELD_PTR(tname,ptr,fieldname) (( (void*) (  ((unsigned char*)ptr) + offsetof(struct tname, fieldname) )  ))
+BCLASS B_Constructor(BCLASS this_ptr)
+{
+
+	if(this_ptr==NULL)
+	{
+		this_ptr = (BCLASS) malloc(sizeof(struct B));
+	}
+
+	if(this_ptr!=NULL)
+	{
+
+		//init base A
+		A_Constructor((ACLASS)GET_STRUCT_FIELD_PTR(B,this_ptr,_A_pVTable));
+
+		//init base C
+		C_Constructor((CCLASS)GET_STRUCT_FIELD_PTR(B,this_ptr,_C_pVTable));
+
+		//replace vTable
+
+		struct VTable* tmp = this_ptr->_A_pVTable;
+		this_ptr->_A_pVTable = malloc(sizeof(struct VTable)*2);
+		memcpy(this_ptr->_A_pVTable, tmp, sizeof(struct VTable)*2);
+		this_ptr->_A_pVTable[CLASS_A_sum].pFunc = (VirtualFunctionPointer)B_A_sum;//override
+
+		this_ptr->_B_pVTable = VTableArrayForB;
+
+		this_ptr->m_B_field2 = newInt(5);
+	}
+
+	return this_ptr;
 }
 
 static TVP new()
 {
-	BCLASS ptr = (BCLASS) malloc(sizeof(struct B));
-	*ptr = (struct B
-	)
-	{	._id = CLASS_ID_B_ID, ._refs = 0};
-
-	//super
-	A_init(&ptr->A);
-//	TVP baseTvp= A._new();
-//	UNWRAP_CLASS_A(base,baseTvp);
-//	ptr->A = base;
-	//FIXME memory leak from TVP and classtype
-
-	//functions - change A's methods
-	ptr->A.print = &print;
-	ptr->A.sum = &sum;
-
-	//All fields must be initialized
-	ptr->field2 = newInt(5);
-//	return ptr;
-	return newTypeValue(VDM_CLASS, (TypedValueType){.ptr=newClassValue(ptr->_id, &ptr->_refs, (freeVdmClassFunction)&B_free, ptr)});
+	BCLASS ptr = B_Constructor(NULL);
+	return newTypeValue(VDM_CLASS, (TypedValueType)
+			{	.ptr=newClassValue(ptr->_B_id, &ptr->_B_refs, (freeVdmClassFunction)&B_free, ptr)});
 }
 
-
 const struct BClass B =
-{	._new = &new};
+{ ._new = &new };

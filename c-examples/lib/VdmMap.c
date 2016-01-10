@@ -7,6 +7,8 @@
 
 #include "VdmMap.h"
 
+#include <stdio.h> //FIXME remove all printf!
+
 #define ASSERT_CHECK(s) assert(s->type == VDM_MAP && "Value is not a map")
 
 struct TypedValue* newMap()
@@ -19,7 +21,7 @@ struct TypedValue* newMap()
 			{ .ptr = ptr });
 }
 
-void vdmMapAdd(TVP map,TVP key, TVP value)
+void vdmMapAdd(TVP map, TVP key, TVP value)
 {
 	ASSERT_CHECK(map);
 
@@ -29,12 +31,332 @@ void vdmMapAdd(TVP map,TVP key, TVP value)
 
 }
 
+
+// TODO: Apply does not work, if they key is not found
 TVP vdmMapApply(TVP map, TVP key)
 {
 	ASSERT_CHECK(map);
 	UNWRAP_MAP(m,map);
 
 	return (TVP) g_hash_table_lookup(m->table, key);
+}
+
+
+void print_iterator(gpointer item, gpointer prefix) {
+	TVP item2 = (TVP) item;
+	//FIXME you cannot print a union type like this printf("%d \n", item2->value);
+}
+void print_iterator_short(gpointer item) {
+ printf("%s\n", item);
+}
+
+int getGreater(int a, int b){
+	if(a>b) return a;
+	else return b;
+}
+
+TVP vdmMapDom(TVP map)
+{
+	//Assert map
+	ASSERT_CHECK(map);
+
+	// Get map size
+	UNWRAP_MAP(m,map);
+	int set_size = g_hash_table_size(m->table);
+
+	GList* dom = g_hash_table_get_keys(m->table), *iterator = NULL;;
+
+	TVP arr[set_size];
+
+	int i;
+	for (iterator = dom, i=0; iterator; iterator = iterator->next,i++)
+		 arr[i]=(TVP) iterator->data;
+
+	TVP res = newSetWithValues(set_size, arr);
+
+	//TODO: Free necessary variables
+	g_list_free(dom);
+
+	return newSetWithValues(set_size, arr);
+}
+
+TVP vdmMapRng(TVP map)
+{
+	//Assert map
+	ASSERT_CHECK(map);
+
+	// Get map size
+	UNWRAP_MAP(m,map);
+	int set_size = g_hash_table_size(m->table);
+
+	GList* dom = g_hash_table_get_values(m->table), *iterator = NULL;;
+
+	TVP arr[set_size];
+
+	int i;
+	for (iterator = dom, i=0; iterator; iterator = iterator->next,i++)
+		 arr[i]=(TVP) iterator->data;
+
+	TVP res = newSetWithValues(set_size, arr);
+
+	//TODO: Free necessary variables
+	g_list_free(dom);
+
+	return newSetWithValues(set_size, arr);
+}
+
+TVP vdmMapMunion(TVP map1, TVP map2)
+{
+	// Create a new map
+	TVP map = newMap();
+
+	//Assert map
+	ASSERT_CHECK(map1);
+	ASSERT_CHECK(map2);
+
+	// Assert that they are compatible, by using Set libary
+
+	TVP map1_dom = vdmMapDom(map1);
+	UNWRAP_COLLECTION(d1,map1_dom);
+
+	// Add key/val for map1
+	for (int i=0; i<d1->size; i++){
+		TVP key = d1->value[i];
+		TVP val = vdmMapApply(map1,key);
+		vdmMapAdd(map,key,val);
+	}
+
+	TVP map2_dom = vdmMapDom(map2);
+	UNWRAP_COLLECTION(d2,map2_dom);
+
+	// Add key/val for map2
+	for (int i=0; i<d2->size; i++){
+		TVP key = d2->value[i];
+		TVP val = vdmMapApply(map2,key);
+		vdmMapAdd(map,key,val);
+	}
+
+	return map;
+}
+
+TVP vdmMapOverride(TVP map1, TVP map2)
+{
+	// Create a new map
+	TVP map = newMap();
+
+	//Assert map
+	ASSERT_CHECK(map1);
+	ASSERT_CHECK(map2);
+
+	// TODO: Assert that they are compatible, by using Set library
+
+	TVP map1_dom = vdmMapDom(map1);
+	UNWRAP_COLLECTION(d1,map1_dom);
+
+	// Add key/val for map1
+	for (int i=0; i<d1->size; i++){
+		TVP key = d1->value[i];
+		TVP val = vdmMapApply(map1,key);
+		vdmMapAdd(map,key,val);
+	}
+
+	TVP map2_dom = vdmMapDom(map2);
+	UNWRAP_COLLECTION(d2,map2_dom);
+
+	// Add key/val for map2
+	for (int i=0; i<d2->size; i++){
+		TVP key = d2->value[i];
+		TVP val = vdmMapApply(map2,key);
+		vdmMapAdd(map,key,val);
+	}
+
+	return map;
+}
+
+TVP vdmMapMerge(TVP set)
+{
+// TODO unwrap set, creat a new map to return and set munion on it. Then return it
+
+	TVP map = newMap();
+
+	UNWRAP_COLLECTION(s,set);
+
+	for(int i=0; i<s->size; i++)
+		map = vdmMapMunion(map,s->value[i]);
+
+	return map;
+}
+
+TVP vdmMapDomRestrictTo(TVP set,TVP map)
+{
+	// TODO: Check also for Set
+	ASSERT_CHECK(map);
+
+	TVP map_res = newMap();
+
+	TVP map_dom = vdmMapDom(map);
+	UNWRAP_COLLECTION(m,map_dom);
+
+	for(int i=0; i<m->size;i++){
+		TVP key = m->value[i];
+		if(vdmSetMemberOf(set,key)->value.boolVal){
+			TVP val = vdmMapApply(map,key);
+			vdmMapAdd(map_res,key,val);
+		}
+	}
+
+	return map_res;
+}
+
+TVP vdmMapDomRestrictBy(TVP set,TVP map)
+{
+	// TODO: Check also for Set
+	ASSERT_CHECK(map);
+
+	TVP map_res = newMap();
+
+	TVP map_dom = vdmMapDom(map);
+	UNWRAP_COLLECTION(m,map_dom);
+
+	for(int i=0; i<m->size;i++){
+		TVP key = m->value[i];
+		if(!vdmSetMemberOf(set,key)->value.boolVal){ // TODO: Use vdmNotSetMember of when implemented
+			TVP val = vdmMapApply(map,key);
+			vdmMapAdd(map_res,key,val);
+		}
+	}
+
+	return map_res;
+}
+
+TVP vdmMapRngRestrictTo(TVP set,TVP map)
+{
+	// TODO: Check also for Set
+	ASSERT_CHECK(map);
+
+	TVP map_res = newMap();
+
+	TVP map_dom = vdmMapDom(map);
+	UNWRAP_COLLECTION(m,map_dom);
+
+	for(int i=0; i<m->size;i++){
+		TVP key = m->value[i];
+		TVP val = vdmMapApply(map,key);
+		if(vdmSetMemberOf(set,val)->value.boolVal){ // TODO: Use vdmNotSetMember of when implemented
+			vdmMapAdd(map_res,key,val);
+		}
+	}
+
+	return map_res;
+}
+
+
+TVP vdmMapRngRestrictBy(TVP set,TVP map)
+{
+	// TODO: Check also for Set
+	ASSERT_CHECK(map);
+
+	TVP map_res = newMap();
+
+	TVP map_dom = vdmMapDom(map);
+	UNWRAP_COLLECTION(m,map_dom);
+
+	for(int i=0; i<m->size;i++){
+		TVP key = m->value[i];
+		TVP val = vdmMapApply(map,key);
+		if(!vdmSetMemberOf(set,val)->value.boolVal){ // TODO: Use vdmNotSetMember of when implemented
+			vdmMapAdd(map_res,key,val);
+		}
+	}
+
+	return map_res;
+}
+
+TVP vdmMapInverse(TVP map){
+
+	ASSERT_CHECK(map);
+
+	TVP map_res = newMap();
+
+	TVP map_dom = vdmMapDom(map);
+	UNWRAP_COLLECTION(m,map_dom);
+
+	for(int i=0; i<m->size;i++){
+		TVP key = m->value[i];
+		TVP val = vdmMapApply(map,key);
+		vdmMapAdd(map_res,val,key);
+	}
+
+	return map_res;
+}
+
+bool vdmMapEquals(TVP map1, TVP map2){
+
+	//Assert map
+	ASSERT_CHECK(map1);
+	ASSERT_CHECK(map2);
+
+	bool eq = true;
+
+	TVP map1_dom = vdmMapDom(map1);
+	UNWRAP_COLLECTION(m1,map1_dom);
+
+	TVP map2_dom = vdmMapDom(map2);
+	UNWRAP_COLLECTION(m2,map2_dom);
+
+	if(m1->size!=m2->size)
+		return false;
+
+	// Add key/val for map1
+	for (int i=0; i<m1->size; i++){
+		TVP key1 = m1->value[i];
+		TVP val1 = vdmMapApply(map1,key1);
+
+		TVP key2 = m2->value[i];
+		TVP val2 = vdmMapApply(map2,key2);
+
+		if(!equals(key1,key2) || !equals(val1,val2)){
+			eq = false;
+			break;
+		}
+	}
+
+	return eq;
+
+}
+
+bool vdmMapInEquals(TVP map1, TVP map2){
+
+	//Assert map
+	ASSERT_CHECK(map1);
+	ASSERT_CHECK(map2);
+
+	bool not_eq = true;
+
+	TVP map1_dom = vdmMapDom(map1);
+	UNWRAP_COLLECTION(m1,map1_dom);
+
+	TVP map2_dom = vdmMapDom(map2);
+	UNWRAP_COLLECTION(m2,map2_dom);
+
+	if(m1->size!=m2->size)
+		return true;
+
+	for (int i=0; i<m1->size; i++){
+		TVP key1 = m1->value[i];
+		TVP val1 = vdmMapApply(map1,key1);
+
+		TVP key2 = m2->value[i];
+		TVP val2 = vdmMapApply(map2,key2);
+
+		if(equals(key1,key2) && equals(val1,val2)){
+			not_eq = false;
+			break;
+		}
+	}
+
+	return not_eq;
+
 }
 
 guint vdm_typedvalue_hash(gconstpointer v)

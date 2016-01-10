@@ -1,0 +1,8 @@
+class ExpressionSet
+functions
+
+
+
+protected setInset: () -> bool
+setInset()== 1 in set {1};
+end ExpressionSet

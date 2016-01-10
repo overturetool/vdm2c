@@ -124,15 +124,8 @@ TVP vdmFloor(TVP arg)
 {
 	ASSERT_CHECK_REAL(arg);
 
-	switch(arg->type)
-	{
-		case VDM_REAL:
-		return newReal(floor(arg->value.doubleVal));
-		default:
-		FATAL_ERROR("Invalid type");
-		return NULL;
-	}
-
+	//TODO: Why do we return a Real, when floor is int in VDM?
+	return newReal(floor(arg->value.doubleVal));
 }
 
 TVP vdmSum(TVP a,TVP b)
@@ -177,7 +170,7 @@ TVP vdmDivision(TVP a,TVP b)
 	return newReal(av/bv);
 }
 
-long divi(double lv, double rv)
+static long divi(double lv, double rv)
 {
 	/*
 	 * There is often confusion on how integer division, remainder and modulus work on negative numbers. In fact,

@@ -1,15 +1,10 @@
-class ExpressionMapTest is subclass of TestCase
+class ExpressionMapTest is subclass of TestCase,ExpressionMap
 operations
 
 public testmapApply : () ==>()
 testmapApply()== assertTrue(mapApply());
 
 
-functions
-
-
-mapApply: () -> bool
-mapApply()== {1|->2,3|->4}(1)=2;
 
 
 

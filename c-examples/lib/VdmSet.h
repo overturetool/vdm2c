@@ -10,8 +10,20 @@
 
 #include "TypedValue.h"
 
+#include <stdio.h>
+
+/*
+ * Create new empty set
+ */
 struct TypedValue* newSet(size_t size);
+/*
+ * Create new set from array of elements
+ */
 struct TypedValue* newSetWithValues(size_t size,TVP* elements);
+/*
+ * Create new set from variadic list of elements
+ */
+struct TypedValue* newSetVar(size_t size,...);
 
 TVP vdmSetMemberOf(TVP set, TVP element);
 TVP vdmSetNotMemberOf(TVP set, TVP element);

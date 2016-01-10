@@ -12,8 +12,12 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include "VdmMap.h"
+#include "VdmClass.h"
 
-
+//Eclipse hack
+#if !defined(va_arg)
+#define va_arg(ap,TVP) NULL //just for Eclipse must not be defined
+#endif
 
 #define vdmFree recursiveFree
 
@@ -79,13 +83,7 @@ struct OptionalType
 	struct TypedValue value;
 };
 
-struct ClassType
-{
-	void* value;
-	int classId;
-	unsigned int* refs;
-	freeVdmClassFunction freeClass;//TODO move to global map
-};
+
 
 typedef bool (*vdmRecordEqualityFunction)(TVP a, TVP b);
 #define ASSERT_CHECK_RECORD(s) assert(s->type == VDM_RECORD && "Value is not a record")
@@ -117,7 +115,7 @@ struct TypedValue* newQuote(unsigned int x);
 
 // Class
 
-struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction freeClass, void* value);
+//struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction freeClass, void* value);
 
 //struct TypedValue* newInt(int x);
 //struct TypedValue* newDouble(double x);

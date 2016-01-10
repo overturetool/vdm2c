@@ -16,8 +16,9 @@ cmake_install.cmake
 install_manifest.txt
 CTestTestfile.cmake
 Testing/
-
+Debug/
 
 # Project files
 c-examples/c-examples
 vdm/generated
+generator-test/generator-test

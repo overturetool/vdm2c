@@ -10,28 +10,29 @@
 
 #include "../Globals.h"
 #include "../lib/TypedValue.h"
+#include "../lib/VdmClass.h"
+#include "../lib/VdmBasicTypes.h"
 
 
 #define ACLASS struct A*
-#define UNWRAP_CLASS_A(var,cls) ACLASS var=NULL;{UNWRAP_CLASS(localA,cls); var = (ACLASS)localA->value;};
+
+#define CLASS_A_calc 0
+#define CLASS_A_sum 1
 
 struct A
 {
-	//needs if to identify it
-	int _id ;
-	//needs refsCount for garbage collection
-	unsigned int _refs;
-	//--------- class fields
+	VDM_CLASS_BASE_DEFINITIONS(A);
+	/*vtable
+	 * calc
+	 * sum
+	 * */
+	VDM_CLASS_FIELD_DEFINITION(A,field1);
 
-	TVP field1;
-	void (*print)(struct A *self);
-	TVP (*sum)(struct A *self);
 };
 
 
-void A_free_fields(struct A *self);
-void A_init(struct A *self);
-
+void A_free_fields(ACLASS);
+ACLASS A_Constructor(ACLASS);
 
 extern const struct AClass
 {
