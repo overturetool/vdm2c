@@ -9,6 +9,7 @@ import java.util.Map;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.overture.ast.definitions.AInstanceVariableDefinition;
 import org.overture.ast.expressions.AVariableExp;
+import org.overture.cgc.extast.declarations.AClassHeaderDeclCG;
 import org.overture.codegen.cgast.INode;
 import org.overture.codegen.cgast.SExpCG;
 import org.overture.codegen.cgast.SStmCG;
@@ -32,7 +33,6 @@ import org.overture.codegen.ir.IRInfo;
 import org.overture.codegen.logging.Logger;
 import org.overture.codegen.merging.MergeVisitor;
 import org.overture.codegen.merging.TemplateCallable;
-import org.overture.codegen.merging.TemplateManager;
 import org.overture.codegen.merging.TemplateStructure;
 import org.overture.codegen.utils.GeneralUtils;
 //import org.overture.codegen.cgast.
@@ -69,11 +69,13 @@ public class CFormat
 	}
 
 	public CFormat(IRInfo info)
-	{
-		TemplateManager templateManager = new TemplateManager(new TemplateStructure("MyTemplates"));
+	{		
+		TemplateStructure ts = new TemplateStructure("MyTemplates");
+		CTemplateManager tm = new CTemplateManager(ts);
+		
 		TemplateCallable[] templateCallables = new TemplateCallable[] {
 				new TemplateCallable("CFormat", this) };
-		this.mergeVisitor = new MergeVisitor(templateManager, templateCallables);
+		this.mergeVisitor = new MergeVisitor(tm, templateCallables);
 		this.info = info;
 	}
 
@@ -389,8 +391,8 @@ public class CFormat
 		return cl.getName().toString();
 	}
 
-//	public String getClassHeaderName(AClassHeaderDeclCG ch)
-//	{
-//		return ch.getName().toString();
-//	}
+	public String getClassHeaderName(AClassHeaderDeclCG ch)
+	{
+		return ch.getName().toString();
+	}
 }

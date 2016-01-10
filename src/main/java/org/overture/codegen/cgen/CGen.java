@@ -77,7 +77,7 @@ public class CGen extends CodeGenBase
 		// Generate IR to syntax (generate code)
 
 		GeneratedData data = new GeneratedData();
-
+		
 		// Add generated code to 'data'
 		// templateManager = new TemplateManager(new TemplateStructure("MyTemplates"));
 		// MergeVisitor mergeVisitor = new MergeVisitor(templateManager, new TemplateCallable[]{new
@@ -188,12 +188,12 @@ public class CGen extends CodeGenBase
 	}
 
 	@SuppressWarnings("unchecked")
-	private void generateClassHeader(ADefaultClassDeclCG cl,
-			CFormat my_formatter, File output_dir) throws IOException,
-			org.overture.codegen.cgast.analysis.AnalysisException
+	private void generateClassHeader(ADefaultClassDeclCG cl, CFormat my_formatter,
+			File output_dir) throws IOException,
+					org.overture.codegen.cgast.analysis.AnalysisException
 	{
 
-		ADefaultClassDeclCG ch = new ADefaultClassDeclCG();
+		AClassHeaderDeclCG ch = new AClassHeaderDeclCG();
 
 		for (AFieldDeclCG fi : cl.getFields())
 		{
@@ -211,32 +211,7 @@ public class CGen extends CodeGenBase
 
 		ch.setName(cl.getName().toString());
 		StringWriter writer = new StringWriter();
-		
-		//override template manager - code gen does not provide extension methods to allow this, so we do it the hard way.
-		try
-		{
-			MergeVisitor getMergeVisitor = my_formatter.GetMergeVisitor();
-
-			String cache = null;
-			TemplateManager templateManager = getField(getMergeVisitor, "templates");
-			HashMap<Class<? extends INode>, String> nodeTemplateFileNames = getField(templateManager, "nodeTemplateFileNames");
-			TemplateStructure templateStructure = getField(templateManager, "templateStructure");
-
-			cache = nodeTemplateFileNames.get(ch.getClass());
-			nodeTemplateFileNames.put(ch.getClass(), templateStructure.DECL_PATH
-					+ "ClassHeader");
-			ch.apply(getMergeVisitor, writer);
-			nodeTemplateFileNames.put(ch.getClass(), cache);
-
-		} catch (IllegalArgumentException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalAccessException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		ch.apply(my_formatter.GetMergeVisitor(), writer);
 
 		output_dir.mkdirs();
 
