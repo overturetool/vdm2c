@@ -1,1 +1,1 @@
-seqLen($CFormat.format($node.getExp()))
+vdmSeqLen($CFormat.format($node.getExp()))

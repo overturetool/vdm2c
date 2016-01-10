@@ -18,7 +18,7 @@
 // The table
 
 #foreach( $method in $node.getMethods() )
-#if(!$method.getIsConstructor())\#define CLASS_$CFormat.getClassHeaderName($node)_$method.getName() $CFormat.getNumber();
+#if(!$method.getIsConstructor())\#define CLASS_$CFormat.getClassHeaderName($node)_$method.getName() $CFormat.getNumber()
 #end
 #end
 
