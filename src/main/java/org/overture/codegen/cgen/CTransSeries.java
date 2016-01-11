@@ -14,6 +14,7 @@ import java.util.List;
 import org.overture.codegen.cgast.analysis.DepthFirstAnalysisAdaptor;
 import org.overture.codegen.cgast.declarations.ADefaultClassDeclCG;
 import org.overture.codegen.cgen.transformations.ExtractRetValTrans;
+import org.overture.codegen.cgen.transformations.FieldIdentifierToFieldGetApplyTrans;
 import org.overture.codegen.cgen.transformations.MethodParamTransformation;
 //import org.overture.codegen.trans.TempVarPrefixes;
 import org.overture.codegen.trans.assistants.TransAssistantCG;
@@ -92,6 +93,7 @@ public class CTransSeries
 
 		transformations.add(new MethodParamTransformation(transAssistant));
 		transformations.add(new ExtractRetValTrans(transAssistant));
+		transformations.add(new FieldIdentifierToFieldGetApplyTrans(transAssistant));
 
 		return transformations;
 	}
