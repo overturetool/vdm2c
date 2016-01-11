@@ -3,14 +3,8 @@ package org.overture.codegen.cgen.transformations;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.overture.ast.definitions.AClassClassDefinition;
-import org.overture.ast.definitions.PDefinition;
-import org.overture.ast.node.INode;
-import org.overture.ast.types.AIntNumericBasicType;
-import org.overture.codegen.cgast.STypeCG;
 import org.overture.codegen.cgast.analysis.AnalysisException;
 import org.overture.codegen.cgast.analysis.DepthFirstAnalysisAdaptor;
-import org.overture.codegen.cgast.declarations.ADefaultClassDeclCG;
 import org.overture.codegen.cgast.declarations.AFormalParamLocalParamCG;
 import org.overture.codegen.cgast.declarations.AMethodDeclCG;
 import org.overture.codegen.cgast.patterns.AIdentifierPatternCG;
@@ -20,15 +14,16 @@ import org.overture.codegen.trans.assistants.TransAssistantCG;
 public class MethodParamTransformation extends DepthFirstAnalysisAdaptor
 {
 
-	private TransAssistantCG transformationAssistant;
+//	private TransAssistantCG transformationAssistant;
 
 	public MethodParamTransformation(TransAssistantCG transformationAssistant)
 	{
-		this.transformationAssistant = transformationAssistant;
+//		this.transformationAssistant = transformationAssistant;
 	}
 
 	// @SuppressWarnings("unchecked")
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void caseAMethodDeclCG(AMethodDeclCG node) throws AnalysisException
 	{

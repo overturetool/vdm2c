@@ -1,32 +1,23 @@
 package org.overture.codegen.cgen;
 
 /*
-import static org.overture.codegen.ir.CodeGenBase.EVAL_METHOD_PREFIX;
-import static org.overture.codegen.ir.CodeGenBase.INTERFACE_NAME_PREFIX;
-import static org.overture.codegen.ir.CodeGenBase.PARAM_NAME_PREFIX;
-import static org.overture.codegen.ir.CodeGenBase.TEMPLATE_TYPE_PREFIX;
+ import static org.overture.codegen.ir.CodeGenBase.EVAL_METHOD_PREFIX;
+ import static org.overture.codegen.ir.CodeGenBase.INTERFACE_NAME_PREFIX;
+ import static org.overture.codegen.ir.CodeGenBase.PARAM_NAME_PREFIX;
+ import static org.overture.codegen.ir.CodeGenBase.TEMPLATE_TYPE_PREFIX;
 
-import static org.overture.codegen.ir.CodeGenBase;
-*/
+ import static org.overture.codegen.ir.CodeGenBase;
+ */
 import java.util.LinkedList;
 import java.util.List;
 
 import org.overture.codegen.cgast.analysis.DepthFirstAnalysisAdaptor;
 import org.overture.codegen.cgast.declarations.ADefaultClassDeclCG;
+import org.overture.codegen.cgen.transformations.ExtractRetValTrans;
 import org.overture.codegen.cgen.transformations.MethodParamTransformation;
-import org.overture.codegen.cgen.transformations.VdmBasicTypesCppTrans;
-import org.overture.codegen.cgen.transformations.VdmSeqCppTrans;
-import org.overture.codegen.cgen.transformations.VdmSetCppTrans;
-import org.overture.codegen.ir.IRInfo;
-import org.overture.codegen.ir.ITempVarGen;
-import org.overture.codegen.traces.TraceNames;
-import org.overture.codegen.trans.AssignStmTrans;
-import org.overture.codegen.trans.CallObjStmTrans;
-import org.overture.codegen.trans.SeqConvTrans;
 //import org.overture.codegen.trans.TempVarPrefixes;
 import org.overture.codegen.trans.assistants.TransAssistantCG;
 import org.overture.codegen.trans.funcvalues.FuncValAssistant;
-import org.overture.codegen.trans.funcvalues.FuncValTrans;
 import org.overture.codegen.trans.letexps.FuncTrans;
 
 public class CTransSeries
@@ -44,22 +35,25 @@ public class CTransSeries
 			FuncValAssistant functionValueAssistant)
 	{
 		// Data and functionality to support the transformations
-		IRInfo irInfo = codeGen.getIRGenerator().getIRInfo();
+		// IRInfo irInfo = codeGen.getIRGenerator().getIRInfo();
 		// TempVarPrefixes varPrefixes = codeGen.getTempVarPrefixes();
-		ITempVarGen nameGen = irInfo.getTempVarNameGen();
+		// ITempVarGen nameGen = irInfo.getTempVarNameGen();
 		// TraceNames traceNamePrefixes = codeGen.getTracePrefixes();
 		TransAssistantCG transAssistant = codeGen.getTransAssistant();
 		// IPostCheckCreator postCheckCreator = new JavaPostCheckCreator(POST_CHECK_METHOD_NAME);
 
-		VdmBasicTypesCppTrans typeTrans = new VdmBasicTypesCppTrans(transAssistant);
+		// Set up order of transformations
+		List<DepthFirstAnalysisAdaptor> transformations = new LinkedList<DepthFirstAnalysisAdaptor>();
+
+		// VdmBasicTypesCppTrans typeTrans = new VdmBasicTypesCppTrans(transAssistant);
 		// VdmSetCppTrans setTrans = new VdmSetCppTrans(transAssistant);
 		// VdmSeqCppTrans seqTrans = new VdmSeqCppTrans(transAssistant);
 
 		// Construct the transformations
-		FuncTrans funcTransformation = new FuncTrans(transAssistant);
+		transformations.add(new FuncTrans(transAssistant));
 		// DivideTransformation divideTrans = new DivideTransformation(irInfo);
-		CallObjStmTrans callObjTransformation = new CallObjStmTrans(irInfo);
-		AssignStmTrans assignTransformation = new AssignStmTrans(transAssistant);
+		// CallObjStmTrans callObjTransformation = new CallObjStmTrans(irInfo);
+		// AssignStmTrans assignTransformation = new AssignStmTrans(transAssistant);
 		// PrePostTransformation prePostTransformation = new PrePostTransformation(irInfo);
 		// IfExpTransformation ifExpTransformation = new IfExpTransformation(transAssistant);
 		// FunctionValueTransformation funcValueTransformation = new FunctionValueTransformation(irInfo, transAssistant,
@@ -96,40 +90,8 @@ public class CTransSeries
 
 		/* C transformations */
 
-		MethodParamTransformation methodTransformation = new MethodParamTransformation(transAssistant);
-
-		// Set up order of transformations
-		List<DepthFirstAnalysisAdaptor> transformations = new LinkedList<DepthFirstAnalysisAdaptor>();
-
-		// transformations.add(typeTrans);
-		// transformations.add(setTrans);
-		// transformations.add(seqTrans);
-		// transformations.add(assignTransformation);
-
-		// transformations.add(divideTrans);
-
-		// transformations.add(callObjTransformation);
-		transformations.add(funcTransformation);
-		// transformations.add(prePostTransformation);
-		// transformations.add(ifExpTransformation);
-		// transformations.add(funcValueTransformation);
-		// transformations.add(transVisitor);
-		// transformations.add(tracesTransformation);
-		// transformations.add(patternTransformation);
-		// transformations.add(preCheckTransformation);
-		// transformations.add(postCheckTransformation);
-		// transformations.add(isExpTransformation);
-		// transformations.add(unionTypeTransformation);
-		// transformations.add(javaToStringTransformation);
-		// transformations.add(concurrencytransform);
-		// transformations.add(mutexTransform);
-		// transformations.add(mainclassTransform);
-		// transformations.add(seqConversionTransformation);
-		// transformations.add(instanceVarPPEval);
-		// transformations.add(recTransformation);
-
-		/* C transformations */
-		transformations.add(methodTransformation);
+		transformations.add(new MethodParamTransformation(transAssistant));
+		transformations.add(new ExtractRetValTrans(transAssistant));
 
 		return transformations;
 	}

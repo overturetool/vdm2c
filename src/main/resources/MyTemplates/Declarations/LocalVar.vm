@@ -10,6 +10,6 @@
 ##
 #set( $pattern = $CFormat.format($node.getPattern()) )
 ##
-$CFormat.formatMetaData($node.getMetaData())##
+##$CFormat.formatMetaData($node.getMetaData())##
 ##
 ${final} $CFormat.format($node.getType()) $pattern = $CFormat.format($node.getExp())${end}

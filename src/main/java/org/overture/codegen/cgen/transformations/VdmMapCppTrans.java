@@ -23,13 +23,12 @@ import org.overture.codegen.cgast.statements.AMapSeqUpdateStmCG;
 import org.overture.codegen.cgast.types.AMapMapTypeCG;
 import org.overture.codegen.cgen.ConstructionUtils;
 import org.overture.codegen.trans.assistants.BaseTransformationAssistant;
-import org.overture.codegen.trans.assistants.TransAssistantCG;
 
 public class VdmMapCppTrans extends DepthFirstAnalysisAdaptor
 {
 
 	private BaseTransformationAssistant baseAssistant;
-	private TransAssistantCG trans;
+//	private TransAssistantCG trans;
 
 	public VdmMapCppTrans(BaseTransformationAssistant baseAss)
 	{

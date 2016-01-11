@@ -6,13 +6,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.lang.reflect.Field;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.overture.cgc.extast.declarations.AClassHeaderDeclCG;
 import org.overture.ast.analysis.AnalysisException;
 import org.overture.ast.definitions.SClassDefinition;
+import org.overture.cgc.extast.declarations.AClassHeaderDeclCG;
 import org.overture.codegen.cgast.INode;
 import org.overture.codegen.cgast.analysis.DepthFirstAnalysisAdaptor;
 import org.overture.codegen.cgast.declarations.ADefaultClassDeclCG;
@@ -22,9 +21,6 @@ import org.overture.codegen.cgast.declarations.AModuleDeclCG;
 import org.overture.codegen.ir.CodeGenBase;
 import org.overture.codegen.ir.IRStatus;
 import org.overture.codegen.logging.Logger;
-import org.overture.codegen.merging.MergeVisitor;
-import org.overture.codegen.merging.TemplateManager;
-import org.overture.codegen.merging.TemplateStructure;
 import org.overture.codegen.trans.assistants.TransAssistantCG;
 import org.overture.codegen.trans.funcvalues.FuncValAssistant;
 import org.overture.codegen.utils.GeneratedData;
@@ -112,7 +108,7 @@ public class CGen extends CodeGenBase
 
 		for (IRStatus<ADefaultClassDeclCG> status : IRStatus.extract(statuses, ADefaultClassDeclCG.class))
 		{
-			StringWriter writer = new StringWriter();
+			// StringWriter writer = new StringWriter();
 			ADefaultClassDeclCG classCg = status.getIrNode();
 
 			try
@@ -174,8 +170,9 @@ public class CGen extends CodeGenBase
 		return node == null;
 	}
 
-	<T> T getField(Object obj, String name)
-			throws IllegalArgumentException, IllegalAccessException
+	@SuppressWarnings("unchecked")
+	<T> T getField(Object obj, String name) throws IllegalArgumentException,
+			IllegalAccessException
 	{
 		for (Field f : obj.getClass().getDeclaredFields())
 		{
@@ -192,7 +189,7 @@ public class CGen extends CodeGenBase
 	@SuppressWarnings("unchecked")
 	private void generateClassHeader(ADefaultClassDeclCG cl,
 			CFormat my_formatter, File output_dir) throws IOException,
-					org.overture.codegen.cgast.analysis.AnalysisException
+			org.overture.codegen.cgast.analysis.AnalysisException
 	{
 
 		AClassHeaderDeclCG ch = new AClassHeaderDeclCG();
@@ -226,8 +223,8 @@ public class CGen extends CodeGenBase
 
 	private void printClass(ADefaultClassDeclCG cl, CFormat my_formatter,
 			File output_dir)
-					throws org.overture.codegen.cgast.analysis.AnalysisException,
-					IOException
+			throws org.overture.codegen.cgast.analysis.AnalysisException,
+			IOException
 	{
 		StringWriter writer = new StringWriter();
 		cl.apply(my_formatter.GetMergeVisitor(), writer);
