@@ -75,7 +75,7 @@ public class CFormat
 		CTemplateManager tm = new CTemplateManager(ts);
 
 		TemplateCallable[] templateCallables = new TemplateCallable[] {
-				new TemplateCallable("CFormat", this) };
+				new TemplateCallable("CFormat", this),new TemplateCallable("String", new String()) };
 		this.mergeVisitor = new MergeVisitor(tm, templateCallables);
 		this.info = info;
 	}
