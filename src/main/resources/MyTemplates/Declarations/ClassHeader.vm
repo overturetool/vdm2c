@@ -1,7 +1,7 @@
 // The template for class header
 
-#ifndef CLASSES_A_H_
-\#define CLASSES_A_H_
+#ifndef CLASSES_$CFormat.getClassHeaderName($node)_H_
+\#define CLASSES_$CFormat.getClassHeaderName($node)_H_
 
 \#include "Globals.h"
 \#include "lib/TypedValue.h"
@@ -9,6 +9,9 @@
 \#include "lib/VdmBasicTypes.h"
 \#include "lib/VdmSet.h"
 \#include "lib/VdmSeq.h"
+#foreach( $super in $node.getFlattenedSupers() )
+\#include "$String.format("%s.h",$super.getName().toString())"
+#end
 
 \#define CLASS_ID_$CFormat.getClassHeaderName($node)_ID $CFormat.getClassId($CFormat.getClassHeaderName($node))
 
