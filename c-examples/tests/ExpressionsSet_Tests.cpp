@@ -110,7 +110,7 @@ TEST(Expression_Set, setComprehension)
 TEST(Expression_Set, setAdd)
 {
 	TVP e1 = newInt(2);
-	TVP t = newSet(sizeof(int));
+	TVP t = newSet(1);
 	TVP res;
 	int index = 1;
 
