@@ -13,6 +13,7 @@
 #include "../lib/VdmClass.h"
 #include "../lib/VdmBasicTypes.h"
 
+#define CLASS_ID_C_ID 126
 
 #define CCLASS struct C*
 

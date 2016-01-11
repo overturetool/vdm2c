@@ -9,13 +9,13 @@
 #define GLOBALS_H_
 
 //classes
-#define CLASS_ID_ModelVarBOOL_ID 123
-#define CLASS_ID_A_ID 124
-#define CLASS_ID_B_ID 125
-#define CLASS_ID_C_ID 126
+//#define CLASS_ID_ModelVarBOOL_ID 123
+//#define CLASS_ID_A_ID 124
+//#define CLASS_ID_B_ID 125
+//#define CLASS_ID_C_ID 126
 
 //records
-#define RECORD_ID_R1 1
+//#define RECORD_ID_R1 1
 
 
 #define TVP struct TypedValue*
