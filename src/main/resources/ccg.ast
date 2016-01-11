@@ -14,6 +14,11 @@ CG = #decl
 #decl {-> package='org.overture.cgc.extast.declarations'}
        = {classHeader}
     	[name]:java_String
-    	[fields]:CG.#decl.field*
+    	(originalDef):CG.#decl.#Class
+		[flattenedSupers]:CG.#decl.classHeader*
+		[state]:CG.#decl.classState
     	[methods]:CG.#decl.method*
+    	| {classState} [fields]:CG.#decl.field* //not sure why it cannot compile as a graph field
        ;
+     
+       

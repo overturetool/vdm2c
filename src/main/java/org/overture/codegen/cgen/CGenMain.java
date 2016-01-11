@@ -115,6 +115,12 @@ public class CGenMain
 
 			TypeCheckResult<List<SClassDefinition>> res = TypeCheckerUtil.typeCheckRt(files);
 
+			if (!res.errors.isEmpty())
+			{
+				System.err.println(res.getErrorString());
+				return;
+			}
+
 			List<SClassDefinition> ast = res.result;
 
 			CGen cGen = new CGen();

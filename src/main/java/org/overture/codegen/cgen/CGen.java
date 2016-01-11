@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.lang.reflect.Field;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -15,8 +14,6 @@ import org.overture.cgc.extast.declarations.AClassHeaderDeclCG;
 import org.overture.codegen.cgast.INode;
 import org.overture.codegen.cgast.analysis.DepthFirstAnalysisAdaptor;
 import org.overture.codegen.cgast.declarations.ADefaultClassDeclCG;
-import org.overture.codegen.cgast.declarations.AFieldDeclCG;
-import org.overture.codegen.cgast.declarations.AMethodDeclCG;
 import org.overture.codegen.cgast.declarations.AModuleDeclCG;
 import org.overture.codegen.ir.CodeGenBase;
 import org.overture.codegen.ir.IRStatus;
@@ -106,6 +103,26 @@ public class CGen extends CodeGenBase
 			}
 		}
 
+		statuses.addAll(new ClassHeaderGenerator().generateClassHeaders(IRStatus.extract(statuses, ADefaultClassDeclCG.class)));
+
+		for (IRStatus<AClassHeaderDeclCG> status : IRStatus.extract(statuses, AClassHeaderDeclCG.class))
+		{
+			// StringWriter writer = new StringWriter();
+			AClassHeaderDeclCG header = status.getIrNode();
+			try
+			{
+				writeFile(header, header.getName(), "h", my_formatter, outputFolder);
+			} catch (org.overture.codegen.cgast.analysis.AnalysisException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
 		for (IRStatus<ADefaultClassDeclCG> status : IRStatus.extract(statuses, ADefaultClassDeclCG.class))
 		{
 			// StringWriter writer = new StringWriter();
@@ -113,8 +130,9 @@ public class CGen extends CodeGenBase
 
 			try
 			{
-				printClass(classCg, my_formatter, outputFolder);
-				generateClassHeader(classCg, my_formatter, outputFolder);
+				writeFile(classCg, classCg.getName(), "c", my_formatter, outputFolder);
+				// printClass(classCg, my_formatter, outputFolder);
+				// generateClassHeader(classCg, my_formatter, outputFolder);
 			} catch (org.overture.codegen.cgast.analysis.AnalysisException e1)
 			{
 				// TODO Auto-generated catch block
@@ -125,16 +143,6 @@ public class CGen extends CodeGenBase
 				e1.printStackTrace();
 			}
 
-			/*
-			 * try { classCg.apply(my_formatter.GetMergeVisitor(), writer); GeneratedModule generatedModule = new
-			 * GeneratedModule(status.getIrNodeName(), classCg, writer.toString());
-			 * generatedModule.setTransformationWarnings(status. getTransformationWarnings());
-			 * generated.add(generatedModule); for (IrNodeInfo m :
-			 * my_formatter.GetMergeVisitor().getUnsupportedInTargLang()) { System.out.println(m.toString()); } for
-			 * (Exception m : my_formatter.GetMergeVisitor().getMergeErrors()) { System.out.println(m.toString()); } }
-			 * catch (org.overture.codegen.cgast.analysis.AnalysisException e) { // TODO Auto-generated catch block
-			 * e.printStackTrace(); }
-			 */
 		}
 
 		data.setClasses(generated);
@@ -155,87 +163,34 @@ public class CGen extends CodeGenBase
 		return classDecls;
 	}
 
-	// @SuppressWarnings("unchecked")
-	// private AClassHeaderDeclCG createClassHeader(ADefaultClassDeclCG ch)
-	// {
-	// AClassHeaderDeclCG res = new AClassHeaderDeclCG();
-	//
-	// res.setMethods((List<? extends AMethodDeclCG>) ch.getMethods().clone());
-	//
-	// return res;
-	// }
-
 	public boolean isNull(INode node)
 	{
 		return node == null;
 	}
 
-	@SuppressWarnings("unchecked")
-	<T> T getField(Object obj, String name) throws IllegalArgumentException,
-			IllegalAccessException
-	{
-		for (Field f : obj.getClass().getDeclaredFields())
-		{
-			if (f.getName().equals(name))
-			{
-				f.setAccessible(true);
-				return (T) f.get(obj);
-			}
-		}
-
-		return null;
-	}
-
-	@SuppressWarnings("unchecked")
-	private void generateClassHeader(ADefaultClassDeclCG cl,
-			CFormat my_formatter, File output_dir) throws IOException,
-			org.overture.codegen.cgast.analysis.AnalysisException
-	{
-
-		AClassHeaderDeclCG ch = new AClassHeaderDeclCG();
-
-		for (AFieldDeclCG fi : cl.getFields())
-		{
-			fi.getAccess();
-			fi.getInitial();
-		}
-
-		ch.setMethods((List<? extends AMethodDeclCG>) cl.getMethods().clone());
-		ch.setFields((List<? extends AFieldDeclCG>) cl.getFields().clone());
-		for (AMethodDeclCG m : ch.getMethods())
-		{
-			m.setBody(null);
-			// m.getSourceNode().getVdmNode();
-		}
-
-		ch.setName(cl.getName().toString());
-		StringWriter writer = new StringWriter();
-		ch.apply(my_formatter.GetMergeVisitor(), writer);
-
-		output_dir.mkdirs();
-
-		// Print the class
-		File file = new File(output_dir, cl.getName() + ".h");
-		BufferedWriter output = new BufferedWriter(new FileWriter(file));
-		output.write(writer.toString());
-		output.close();
-	}
-
-	private void printClass(ADefaultClassDeclCG cl, CFormat my_formatter,
-			File output_dir)
+	private void writeFile(INode node, String name, String extension,
+			CFormat my_formatter, File output_dir)
 			throws org.overture.codegen.cgast.analysis.AnalysisException,
 			IOException
 	{
-		StringWriter writer = new StringWriter();
-		cl.apply(my_formatter.GetMergeVisitor(), writer);
+		StringWriter writer = emitCode(node, my_formatter);
 
 		output_dir.mkdirs();
 
-		// Print the class
-		File file = new File(output_dir, cl.getName() + ".c");
+		String fileName = name + (extension == null ? "" : "." + extension);
+
+		File file = new File(output_dir, fileName);
 		BufferedWriter output = new BufferedWriter(new FileWriter(file));
 		output.write(writer.toString());
 		output.close();
+	}
+
+	private StringWriter emitCode(INode node, CFormat my_formatter)
+			throws org.overture.codegen.cgast.analysis.AnalysisException
+	{
+		StringWriter writer = new StringWriter();
+		node.apply(my_formatter.GetMergeVisitor(), writer);// Why StringWriter?
+		return writer;
 	}
 
 }

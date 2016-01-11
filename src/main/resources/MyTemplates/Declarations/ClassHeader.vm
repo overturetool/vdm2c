@@ -24,16 +24,10 @@
 
 struct $CFormat.getClassHeaderName($node)
 {
-	VDM_CLASS_BASE_DEFINITIONS($CFormat.getClassHeaderName($node));
-	/*vtable
-	 * calc
-	 * sum
-	 * */
-	 
-	#foreach( $field in $node.getFields() )
-VDM_CLASS_FIELD_DEFINITION($CFormat.getClassHeaderName($node),$field.getName());
-	#end
-
+#foreach( $super in $node.getFlattenedSupers() )
+	$CFormat.format($super.getState())
+#end
+	$CFormat.format($node.getState())
 };
 
 

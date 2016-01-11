@@ -27,6 +27,12 @@ public class CExamplesTest
 	}
 	
 	@Test
+	public void b()
+	{
+		CGenMain.main(new String[] {"-dest",outputFolder, getPath("classes/A.vdmrt"),getPath("classes/C.vdmrt"),getPath("classes/B.vdmrt") });
+	}
+	
+	@Test
 	public void Numeric()
 	{
 		CGenMain.main(new String[] {"-dest",outputFolder, getPath("expressions/ExpressionNumeric.vdmrt") });
