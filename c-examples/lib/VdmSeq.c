@@ -38,13 +38,13 @@ struct TypedValue* newSeqVar(size_t size, ...)
 	return newCollectionWithValues(VDM_SEQ,size,elements);
 }
 
-TVP seqHd(TVP seq)
+TVP vdmSeqHd(TVP seq)
 {
 	ASSERT_CHECK(seq);
 	UNWRAP_COLLECTION(col,seq);
 	return vdmClone(col->value[0]);
 }
-TVP seqTl(TVP seq)
+TVP vdmSeqTl(TVP seq)
 {
 	ASSERT_CHECK(seq);
 	UNWRAP_COLLECTION(col,seq);
@@ -61,13 +61,13 @@ TVP seqTl(TVP seq)
 
 	return tailVal;
 }
-TVP seqLen(TVP seq)
+TVP vdmSeqLen(TVP seq)
 {
 	ASSERT_CHECK(seq);
 	UNWRAP_COLLECTION(col,seq);
 	return newInt(col->size);
 }
-TVP seqElems(TVP seq)
+TVP vdmSeqElems(TVP seq)
 {
 	ASSERT_CHECK(seq);
 	UNWRAP_COLLECTION(col,seq);
@@ -86,7 +86,7 @@ TVP seqElems(TVP seq)
 
 	return elemsVal;
 }
-TVP seqInds(TVP seq)
+TVP vdmSeqInds(TVP seq)
 {
 	ASSERT_CHECK(seq);
 	UNWRAP_COLLECTION(col,seq);
@@ -103,7 +103,7 @@ TVP seqInds(TVP seq)
 
 	return indsVal;
 }
-TVP seqConc(TVP seq,TVP seq2)
+TVP vdmSeqConc(TVP seq,TVP seq2)
 {
 	ASSERT_CHECK(seq);
 	ASSERT_CHECK(seq2);
@@ -111,7 +111,7 @@ TVP seqConc(TVP seq,TVP seq2)
 	UNWRAP_COLLECTION(col2,seq2);
 
 	//malloc
-	TVP concVal = newSet(col->size+col2->size);
+	TVP concVal = newSeq(col->size+col2->size);
 	UNWRAP_COLLECTION(concSeq,concVal);
 
 	//copy  list
@@ -129,7 +129,7 @@ TVP seqConc(TVP seq,TVP seq2)
 	return concVal;
 }
 
-TVP seqReverse(TVP seq)
+TVP vdmSeqReverse(TVP seq)
 {
 	ASSERT_CHECK(seq);
 	UNWRAP_COLLECTION(col,seq);
@@ -150,7 +150,7 @@ TVP seqReverse(TVP seq)
 
 //TVP seqMod(TVP seq,TVP seq);
 
-TVP seqIndex(TVP seq,TVP indexVal) //VDM uses 1 based index
+TVP vdmSeqIndex(TVP seq,TVP indexVal) //VDM uses 1 based index
 {
 	ASSERT_CHECK(seq);
 	assert((indexVal->type == VDM_INT||indexVal->type == VDM_INT1) && "index is not a int");
@@ -161,14 +161,14 @@ TVP seqIndex(TVP seq,TVP indexVal) //VDM uses 1 based index
 	assert(index-1>=0 && index-1<col->size && "invalid index");
 	return vdmClone(col->value[index-1]);
 }
-TVP seqEqual(TVP seq,TVP seq2)
+TVP vdmSeqEqual(TVP seq,TVP seq2)
 {
 	ASSERT_CHECK(seq);
 	ASSERT_CHECK(seq2);
 
 	return newBool(collectionEqual(seq,seq2));
 }
-TVP seqInEqual(TVP seq,TVP seq2)
+TVP vdmSeqInEqual(TVP seq,TVP seq2)
 {
 	ASSERT_CHECK(seq);
 	ASSERT_CHECK(seq2);

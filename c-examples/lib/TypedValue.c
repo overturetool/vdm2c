@@ -121,9 +121,9 @@ struct TypedValue* vdmClone(struct TypedValue* x)
 		tmp->value.ptr = ptr;
 		break;
 	}
-	case VDM_OPTIONAL:
-		//TODO
-		break;
+//	case VDM_OPTIONAL:
+//		//TODO
+//		break;
 	case VDM_RECORD:
 	{
 		ASSERT_CHECK_RECORD(tmp);
@@ -189,10 +189,10 @@ bool equals(struct TypedValue* a, struct TypedValue* b)
 		//FIXME
 		return collectionEqual(a, b);
 	}
-	case VDM_OPTIONAL:
-	{
-		break;
-	}
+//	case VDM_OPTIONAL:
+//	{
+//		break;
+//	}
 	case VDM_RECORD:
 	{
 		ASSERT_CHECK_RECORD(a);
@@ -230,7 +230,7 @@ bool collectionEqual(TVP col1,TVP col2)
 
 	for (int i = 0; i < aCol->size; i++)
 	{
-		match &= equals(aCol->value[i],aCol->value[i]);
+		match &= equals(aCol->value[i],bCol->value[i]);
 	}
 	return match;
 }
@@ -270,9 +270,9 @@ void recursiveFree(struct TypedValue* ptr)
 		ptr->value.ptr = NULL;
 		break;
 	}
-	case VDM_OPTIONAL:
-		//TODO
-		break;
+//	case VDM_OPTIONAL:
+//		//TODO
+//		break;
 	case VDM_RECORD:
 	{
 		//handle smart pointer

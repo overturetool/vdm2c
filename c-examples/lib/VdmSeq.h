@@ -26,16 +26,16 @@ struct TypedValue* newSeqWithValues(size_t size,TVP* elements);
  */
 struct TypedValue* newSeqVar(size_t size,...);
 
-TVP seqHd(TVP seq);
-TVP seqTl(TVP seq);
-TVP seqLen(TVP seq);
-TVP seqElems(TVP seq);
-TVP seqInds(TVP seq);
-TVP seqConc(TVP seq,TVP seq2);
-TVP seqReverse(TVP seq);
+TVP vdmSeqHd(TVP seq);
+TVP vdmSeqTl(TVP seq);
+TVP vdmSeqLen(TVP seq);
+TVP vdmSeqElems(TVP seq);
+TVP vdmSeqInds(TVP seq);
+TVP vdmSeqConc(TVP seq,TVP seq2);
+TVP vdmSeqReverse(TVP seq);
 //TVP seqMod(TVP seq,TVP seq);
-TVP seqIndex(TVP seq,TVP index);
-TVP seqEqual(TVP seq,TVP seq2);
-TVP seqInEqual(TVP seq,TVP seq2);
+TVP vdmSeqIndex(TVP seq,TVP index);
+TVP vdmSeqEqual(TVP seq,TVP seq2);
+TVP vdmSeqInEqual(TVP seq,TVP seq2);
 
 #endif /* LIB_VDMSEQ_H_ */

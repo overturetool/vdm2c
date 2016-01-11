@@ -399,9 +399,9 @@ guint vdm_typedvalue_hash(gconstpointer v)
 //			tmp->value.ptr = ptr;
 			break;
 		}
-		case VDM_OPTIONAL:
-		//TODO
-		break;
+//		case VDM_OPTIONAL:
+//		//TODO
+//		break;
 		case VDM_RECORD:
 		{
 			//TODO duplicate (memcpy) and duplicate what ever any pointers points to except if a class

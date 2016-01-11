@@ -36,7 +36,7 @@ typedef enum
 	VDM_MAP,
 	VDM_PRODUCT,
 	VDM_QUOTE,
-	VDM_OPTIONAL,
+//	VDM_OPTIONAL, think we will handle this with a TVP == NULL
 	VDM_RECORD,
 	VDM_CLASS
 } vdmtype;
