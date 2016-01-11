@@ -16,7 +16,7 @@ void vdmSetAdd(struct TypedValue** value, int* index, TVP newValue)
 	bool found = false;
 	for (int i = 0; i < *index; i++)
 	{
-		found |=equals(value[i],newValue);
+		found |= equals(value[i],newValue);
 	}
 
 	if(!found)
@@ -59,10 +59,10 @@ struct TypedValue* newSetWithValues(size_t size, TVP* elements)
 struct TypedValue* newSetVar(size_t size, ...)
 {
 
-	 va_list ap;
-	  va_start(ap, size);
+	va_list ap;
+	va_start(ap, size);
 
-	  int count = 0;
+	int count = 0;
 
 	int bufsize = DEFAULT_SET_COMP_BUFFER;
 	struct TypedValue** value = (struct TypedValue**) calloc(bufsize, sizeof(struct TypedValue*));
