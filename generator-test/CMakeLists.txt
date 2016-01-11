@@ -41,7 +41,7 @@ file(GLOB C_FILES ../c-examples/*.c  ../c-examples/lib/*.c ../c-examples/tests/*
 #file(GLOB CPP_FILES ../c-examples/tests/*.cpp)
 
 #file(GLOB CPP_FILES ../c-examples/tests/ClassATest.cpp ../c-examples/tests/ClassCTest.cpp)
-file(GLOB CPP_FILES tests/*.cpp)
+#file(GLOB CPP_FILES tests/*.cpp)
 
 SET(EXT_C_FILES  CACHE PATH "location of external generates c files")
 
@@ -58,6 +58,11 @@ endif()
 if(${filename} MATCHES ".*C.c$")
 set(CPP_FILES ${CPP_FILES};../c-examples/tests/ClassCTest.cpp)
 endif()
+
+if(${filename} MATCHES ".*ExpressionSeq.c$")
+set(CPP_FILES ${CPP_FILES};tests/ExpressionsSeq_Tests.cpp)
+endif()
+
 endforeach()
 
 message(STATUS "CPP files: ${CPP_FILES}")
