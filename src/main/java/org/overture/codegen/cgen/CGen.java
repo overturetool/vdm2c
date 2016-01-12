@@ -15,6 +15,7 @@ import org.overture.codegen.cgast.INode;
 import org.overture.codegen.cgast.analysis.DepthFirstAnalysisAdaptor;
 import org.overture.codegen.cgast.declarations.ADefaultClassDeclCG;
 import org.overture.codegen.cgast.declarations.AModuleDeclCG;
+import org.overture.codegen.cgast.declarations.SClassDeclCG;
 import org.overture.codegen.ir.CodeGenBase;
 import org.overture.codegen.ir.IRStatus;
 import org.overture.codegen.logging.Logger;
@@ -29,7 +30,7 @@ public class CGen extends CodeGenBase
 	public GeneratedData generateCFromVdm(List<SClassDefinition> ast,
 			File outputFolder) throws AnalysisException
 	{
-		List<IRStatus<org.overture.codegen.cgast.INode>> statuses = new LinkedList<>();
+		final List<IRStatus<org.overture.codegen.cgast.INode>> statuses = new LinkedList<>();
 
 		// This is run pr. class
 		for (SClassDefinition node : ast)
@@ -78,7 +79,26 @@ public class CGen extends CodeGenBase
 		// TemplateCallable[]{new
 		// TemplateCallable("CGh", new CGHelper())});
 
-		CFormat my_formatter = new CFormat(generator.getIRInfo());
+		CFormat my_formatter = new CFormat(generator.getIRInfo(), new IHeaderFinder()
+		{
+			
+			@Override
+			public AClassHeaderDeclCG getHeader(SClassDeclCG def)
+			{
+				for (IRStatus<INode> irStatus : statuses)
+				{
+					if(irStatus.getIrNode() instanceof AClassHeaderDeclCG)
+					{
+						AClassHeaderDeclCG header = (AClassHeaderDeclCG) irStatus.getIrNode();
+						if(header.getOriginalDef()==def)
+						{
+							return header;
+						}
+					}
+				}
+				return null;
+			}
+		});
 
 		List<GeneratedModule> generated = new LinkedList<GeneratedModule>();
 

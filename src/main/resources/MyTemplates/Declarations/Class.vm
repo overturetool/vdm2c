@@ -51,6 +51,18 @@ $CFormat.getClassName($node)CLASS $CFormat.getClassName($node)_Constructor($CFor
 
 	if(this_ptr!=NULL)
 	{
+	
+	#set( $cname = $node.getName())
+	#foreach( $super in $CFormat.getHeader($node).getFlattenedSupers() )
+	
+		//init base $super.getName()
+	#set( $sname = $super.getName())
+	$String.format("%s_Constructor((%sCLASS)CLASS_CAST(this_ptr,%s,%s));",$sname,$sname,$cname,$sname);
+
+		//TODO vtable overload for $sname goes here.
+	#end
+	
+		// $cname init
 		this_ptr->_$CFormat.getClassName($node)_id = CLASS_ID_$CFormat.getClassName($node)_ID;
 		this_ptr->_$CFormat.getClassName($node)_refs = 0;
 		this_ptr->_$CFormat.getClassName($node)_pVTable=VTableArrayFor$CFormat.getClassName($node);

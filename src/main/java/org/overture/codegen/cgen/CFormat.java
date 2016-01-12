@@ -19,6 +19,7 @@ import org.overture.codegen.cgast.declarations.ADefaultClassDeclCG;
 import org.overture.codegen.cgast.declarations.AFieldDeclCG;
 import org.overture.codegen.cgast.declarations.AFormalParamLocalParamCG;
 import org.overture.codegen.cgast.declarations.AMethodDeclCG;
+import org.overture.codegen.cgast.declarations.SClassDeclCG;
 import org.overture.codegen.cgast.expressions.ABoolLiteralExpCG;
 import org.overture.codegen.cgast.expressions.AEqualsBinaryExpCG;
 import org.overture.codegen.cgast.expressions.AIdentifierVarExpCG;
@@ -40,6 +41,7 @@ import org.overture.codegen.utils.GeneralUtils;
 public class CFormat
 {
 
+	final IHeaderFinder headerFinder;
 	private MergeVisitor mergeVisitor;
 	private IRInfo info;
 	private int number = 0;
@@ -59,6 +61,11 @@ public class CFormat
 		return id.toString();
 
 	}
+	
+	public AClassHeaderDeclCG getHeader(SClassDeclCG def)
+	{
+		return headerFinder.getHeader(def);
+	}
 
 	public static final String UTILS_FILE = "Utils";
 
@@ -69,8 +76,9 @@ public class CFormat
 		return Integer.toString(number - 1);
 	}
 
-	public CFormat(IRInfo info)
+	public CFormat(IRInfo info, IHeaderFinder headerfinder)
 	{
+		this.headerFinder = headerfinder;
 		TemplateStructure ts = new TemplateStructure("MyTemplates");
 		CTemplateManager tm = new CTemplateManager(ts);
 
