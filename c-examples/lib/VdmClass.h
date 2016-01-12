@@ -85,7 +85,7 @@ struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction
  * Cast to class pointer by moving it forward to the class specific VTable
  * Note that we only adjust the pointer if a subtype is given (i.e. not the type of it self)
  */
-#define CLASS_CAST(ptr,from,to) ((unsigned char*)ptr) + (SAME_ARGS(from,to)?0: offsetof(struct from, _##to##_pVTable))
+#define CLASS_CAST(ptr,from,to) (((unsigned char*)ptr) + (SAME_ARGS(from,to)?0: offsetof(struct from, _##to##_pVTable)))
 
 /*
  * Down-casting a super class pointer to the concrete class. i.e if A extends B and we have a 'b' pointer we can downcast it to an 'a'
@@ -116,8 +116,6 @@ struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction
  * Macro to obtain a function from a (sub-)class specific VTable from a class struct
  */
 #define CALL_FUNC(thisTypeName,funcTname,classValue,id, args... )     GET_VTABLE_FUNC( thisTypeName,funcTname,TO_CLASS_PTR(classValue,thisTypeName),id)(CLASS_CAST(TO_CLASS_PTR(classValue,thisTypeName),thisTypeName,funcTname), ## args)
-
-//#define CALL_FUNC_VOID(thisTypeName,funcTname,classValue,id)     GET_VTABLE_FUNC( thisTypeName,funcTname,TO_CLASS_PTR(classValue,thisTypeName),id)(CLASS_CAST(TO_CLASS_PTR(classValue,thisTypeName),thisTypeName,funcTname))
 
 /*
  * Macro to obtain a field from a (sub-)class specific class struct. We clone to preserve value semantics and the rule of freeing
