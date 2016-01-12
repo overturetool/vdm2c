@@ -13,6 +13,7 @@
 #include "../lib/VdmClass.h"
 #include "../lib/VdmBasicTypes.h"
 
+#define CLASS_ID_A_ID 124
 
 #define ACLASS struct A*
 

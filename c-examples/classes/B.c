@@ -58,7 +58,6 @@ struct VTable VTableArrayForB[] =
 { 0, 0, (VirtualFunctionPointer) B_sum2 },
 { 0, 0, (VirtualFunctionPointer) B_getField2 }, };
 
-#define GET_STRUCT_FIELD_PTR(tname,ptr,fieldname) (( (void*) (  ((unsigned char*)ptr) + offsetof(struct tname, fieldname) )  ))
 BCLASS B_Constructor(BCLASS this_ptr)
 {
 
@@ -71,10 +70,10 @@ BCLASS B_Constructor(BCLASS this_ptr)
 	{
 
 		//init base A
-		A_Constructor((ACLASS)GET_STRUCT_FIELD_PTR(B,this_ptr,_A_pVTable));
+		A_Constructor((ACLASS)CLASS_CAST(this_ptr,B,A));
 
 		//init base C
-		C_Constructor((CCLASS)GET_STRUCT_FIELD_PTR(B,this_ptr,_C_pVTable));
+		C_Constructor((CCLASS)CLASS_CAST(this_ptr,B,C));
 
 		//replace vTable
 

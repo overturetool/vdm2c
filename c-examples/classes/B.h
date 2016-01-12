@@ -13,6 +13,8 @@
 #include "A.h"
 #include "C.h"
 
+#define CLASS_ID_B_ID 125
+
 #define BCLASS struct B*
 
 #define CLASS_B_sum2 1

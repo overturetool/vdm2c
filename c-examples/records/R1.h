@@ -13,6 +13,8 @@
 
 //#define UNWRAP_R(var,map) struct Map* var = (struct Map*)map->value.ptr
 
+#define RECORD_ID_R1 1
+
 #define RECORD_R1 struct R1*
 
 struct R1
