@@ -11,9 +11,10 @@
 #define DEFAULT_SET_COMP_BUFFER 2
 #define DEFAULT_SET_COMP_BUFFER_STEPSIZE 10
 
-void vdmSetAdd(struct TypedValue** value, int* index, TVP newValue)
+static void vdmSetAdd(struct TypedValue** value, int* index, TVP newValue)
 {
 	bool found = false;
+
 	for (int i = 0; i < *index; i++)
 	{
 		found |= equals(value[i],newValue);
@@ -21,14 +22,10 @@ void vdmSetAdd(struct TypedValue** value, int* index, TVP newValue)
 
 	if(!found)
 	{
-		value[*index]=newValue;
-		*index=(*index)+1;
+		//(*value)->value.intVal = 3;
+		value[*index] = newValue;
+		*index = (*index) + 1;
 	}
-}
-
-struct TypedValue* newSet(size_t size)
-{
-	return newCollection(size, VDM_SET);
 }
 
 struct TypedValue* newSetWithValues(size_t size, TVP* elements)

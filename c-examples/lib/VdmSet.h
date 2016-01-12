@@ -15,7 +15,7 @@
 /*
  * Create new empty set
  */
-struct TypedValue* newSet(size_t size);
+//struct TypedValue* newSet(size_t size);
 /*
  * Create new set from array of elements
  */
@@ -38,6 +38,6 @@ TVP vdmSetCard(TVP set);
 TVP vdmSetDunion(TVP set);
 TVP vdmSetDinter(TVP set);
 TVP vdmSetPower(TVP set);
-void vdmSetAdd(struct TypedValue** value, int* index, TVP newValue);
+//void vdmSetAdd(struct TypedValue** value, int* index, TVP newValue);
 
 #endif /* LIB_VDMSET_H_ */
