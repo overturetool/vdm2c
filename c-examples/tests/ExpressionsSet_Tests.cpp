@@ -120,7 +120,6 @@ TEST(Expression_Set, setComprehension)
 		EXPECT_EQ(2, buf[1]->value.intVal);
 		EXPECT_EQ(8, buf[2]->value.intVal);
 
-
 		comp = newSetWithValues(count, buf);
 
 		for (int i = 0; i < count; i++)
