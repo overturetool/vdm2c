@@ -11,6 +11,10 @@
 #define DEFAULT_SET_COMP_BUFFER 2
 #define DEFAULT_SET_COMP_BUFFER_STEPSIZE 10
 
+
+
+//Utility functions.
+//------------------------------------------------
 static void vdmSetAdd(struct TypedValue** value, int* index, TVP newValue)
 {
 	bool found = false;
@@ -27,6 +31,10 @@ static void vdmSetAdd(struct TypedValue** value, int* index, TVP newValue)
 		*index = (*index) + 1;
 	}
 }
+//End utility functions
+//------------------------------------------------
+
+
 
 struct TypedValue* newSetWithValues(size_t size, TVP* elements)
 {
@@ -104,6 +112,46 @@ TVP vdmSetMemberOf(TVP set, TVP element)
 
 
 
+TVP vdmSetNotMemberOf(TVP set, TVP element)
+{}
+
+
+
+TVP vdmSetUnion(TVP set1, TVP set2)
+{}
+
+
+
+TVP vdmSetInter(TVP set1, TVP set2)
+{}
+
+
+
+TVP vdmSetDifference(TVP set1, TVP set2)
+{}
+
+
+
+TVP vdmSetSubset(TVP set1, TVP set2)
+{}
+
+
+
+TVP vdmSetProperSubset(TVP set1, TVP set2)
+{}
+
+
+
+TVP vdmSetEquals(TVP set1, TVP set2)
+{}
+
+
+
+TVP vdmSetInEquals(TVP set1, TVP set2)
+{}
+
+
+
 TVP vdmSetCard(TVP set)
 {
 	ASSERT_CHECK(set);
@@ -112,3 +160,18 @@ TVP vdmSetCard(TVP set)
 	//This requires freeing somewhere;
 	return newInt(col->size);
 }
+
+
+
+TVP vdmSetDunion(TVP set)
+{}
+
+
+
+TVP vdmSetDinter(TVP set)
+{}
+
+
+
+TVP vdmSetPower(TVP set)
+{}
