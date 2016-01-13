@@ -40,3 +40,4 @@ extern const struct CClass
 } C;
 
 #endif /* CLCSSES_C_H_ */
+
