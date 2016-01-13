@@ -15,7 +15,8 @@ import org.overture.codegen.cgast.analysis.DepthFirstAnalysisAdaptor;
 import org.overture.codegen.cgast.declarations.ADefaultClassDeclCG;
 import org.overture.codegen.cgen.transformations.ExtractRetValTrans;
 import org.overture.codegen.cgen.transformations.FieldIdentifierToFieldGetApplyTrans;
-import org.overture.codegen.cgen.transformations.MethodParamTransformation;
+import org.overture.codegen.cgen.transformations.AddThisArgToMethodsTrans;
+import org.overture.codegen.cgen.transformations.CtorTrans;
 //import org.overture.codegen.trans.TempVarPrefixes;
 import org.overture.codegen.trans.assistants.TransAssistantCG;
 import org.overture.codegen.trans.funcvalues.FuncValAssistant;
@@ -91,7 +92,8 @@ public class CTransSeries
 
 		/* C transformations */
 
-		transformations.add(new MethodParamTransformation(transAssistant));
+		transformations.add(new AddThisArgToMethodsTrans(transAssistant));
+		transformations.add(new CtorTrans(transAssistant));
 		transformations.add(new ExtractRetValTrans(transAssistant));
 		transformations.add(new FieldIdentifierToFieldGetApplyTrans(transAssistant));
 

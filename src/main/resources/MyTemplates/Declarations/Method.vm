@@ -1,4 +1,4 @@
-static TVP $node.getName()($CFormat.format($node.getFormalParams()))#if($CFormat.isNull($node.getBody()));
+static $CFormat.format($node.getMethodType().getResult()) $node.getName()($CFormat.format($node.getFormalParams()))#if($CFormat.isNull($node.getBody()));
 #end
 #if(!$CFormat.isNull($node.getBody())){
 	$CFormat.format($node.getBody())

@@ -26,9 +26,9 @@ static void $CFormat.getClassName($node)_free(struct $CFormat.getClassName($node
 
 // The methods
 #foreach( $method in $node.getMethods() )
-#if(!$method.getIsConstructor())
+##if(!$method.getIsConstructor())
 $CFormat.format($method)
-#end
+##end
 #end
 
 // The table
