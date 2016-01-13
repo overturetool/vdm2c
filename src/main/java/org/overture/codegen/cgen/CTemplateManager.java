@@ -2,6 +2,7 @@ package org.overture.codegen.cgen;
 
 import org.overture.cgc.extast.declarations.AClassHeaderDeclCG;
 import org.overture.cgc.extast.declarations.AClassStateDeclCG;
+import org.overture.cgc.extast.statements.AExpStmCG;
 import org.overture.codegen.merging.TemplateManager;
 import org.overture.codegen.merging.TemplateStructure;
 
@@ -20,6 +21,8 @@ public class CTemplateManager extends TemplateManager
 				+ "ClassHeader");
 		nodeTemplateFileNames.put(AClassStateDeclCG.class, templateStructure.DECL_PATH
 				+ AClassStateDeclCG.class.getSimpleName());
+		nodeTemplateFileNames.put(AExpStmCG.class, templateStructure.STM_PATH
+				+ AExpStmCG.class.getSimpleName());
 	}
 
 }

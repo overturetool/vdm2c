@@ -8,8 +8,11 @@ Tokens
 Abstract Syntax Tree
 
 CG = #decl
+| #stm
     ;
 
+#stm {-> package='org.overture.cgc.extast.statements'}
+	= {exp} [exp]:CG.#exp;
 
 #decl {-> package='org.overture.cgc.extast.declarations'}
        = {classHeader}
