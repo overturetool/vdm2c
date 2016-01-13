@@ -100,7 +100,7 @@ TEST(Expression_Set, setComprehension)
 
 
 
-TEST(Expression_Set, setInset)
+TEST(Expression_Set, setInSet)
 {
 	const int numelems = 10;
 	TVP elem = newInt(INT_MAX);
@@ -133,6 +133,59 @@ TEST(Expression_Set, setInset)
 		free(res);
 		res = vdmSetMemberOf(set, randelemscpy[i]);
 		EXPECT_EQ(true, res->value.boolVal);
+	}
+
+	vdmFree(res);
+	vdmFree(set);
+
+	for(int i = 0; i < numelems; i++)
+	{
+		free(randelems[i]);
+		free(randelemscpy[i]);
+	}
+}
+
+
+
+TEST(Expression_Set, setNotInSet)
+{
+	const int numelems = 10;
+	TVP elem = newInt(INT_MAX);
+	TVP set = newSetVar(1, elem);
+	struct TypedValue *randelems[100], *randelemscpy[100];
+
+	//Make sure that we're checking for the value itself and not the newInt structure.
+	vdmFree(elem);
+	elem = newInt(INT_MAX);
+
+	TVP res = vdmSetNotMemberOf(set, elem);
+	EXPECT_EQ(false, res->value.boolVal);
+	vdmFree(elem);
+	vdmFree(res);
+
+	elem = newInt(INT_MAX - 1);
+	res = vdmSetNotMemberOf(set, elem);
+	EXPECT_EQ(true, res->value.boolVal);
+	vdmFree(elem);
+
+	for(int i = 0; i < numelems; i++)
+	{
+		randelems[i] = newInt(rand());
+	}
+
+	vdmFree(set);
+	set = newSetWithValues(numelems, randelems);
+
+	for(int i = 0; i < numelems; i++)
+	{
+		randelemscpy[i] = vdmClone(randelems[i]);
+	}
+
+	for(int i = 0; i < numelems; i++)
+	{
+		free(res);
+		res = vdmSetNotMemberOf(set, randelemscpy[i]);
+		EXPECT_EQ(false, res->value.boolVal);
 	}
 
 	vdmFree(res);

@@ -107,13 +107,18 @@ TVP vdmSetMemberOf(TVP set, TVP element)
 	{
 		found|= equals(col->value[i],element);
 	}
+
+	//Probably needs freeing somewhere.
 	return newBool(found);
 }
 
 
 
 TVP vdmSetNotMemberOf(TVP set, TVP element)
-{}
+{
+	//Probably needs freeing somewhere.
+	return newBool(!(vdmSetMemberOf(set, element))->value.boolVal);
+}
 
 
 
