@@ -13,6 +13,8 @@ extern "C"
 
 
 
+//Utility functions
+//------------------------------------------------
 //TODO use correct set construction
 static TVP newSet(int size, int* arr)
 {
@@ -25,51 +27,9 @@ static TVP newSet(int size, int* arr)
 
 	return newSetWithValues(size, value);
 }
+//End utility functions
+//------------------------------------------------
 
-TEST(Expression_Set, setInset)
-{
-	const int numelems = 10;
-	TVP elem = newInt(INT_MAX);
-	TVP set = newSetVar(1, elem);
-	struct TypedValue *randelems[100], *randelemscpy[100];
-
-	//Make sure that we're checking for the value itself and not the newInt structure.
-	vdmFree(elem);
-	elem = newInt(INT_MAX);
-
-	TVP res = vdmSetMemberOf(set, elem);
-	EXPECT_EQ(true, res->value.boolVal);
-	vdmFree(elem);
-
-	for(int i = 0; i < numelems; i++)
-	{
-		randelems[i] = newInt(rand());
-	}
-
-	vdmFree(set);
-	set = newSetWithValues(numelems, randelems);
-
-	for(int i = 0; i < numelems; i++)
-	{
-		randelemscpy[i] = vdmClone(randelems[i]);
-	}
-
-	for(int i = 0; i < numelems; i++)
-	{
-		free(res);
-		res = vdmSetMemberOf(set, randelemscpy[i]);
-		EXPECT_EQ(true, res->value.boolVal);
-	}
-
-	vdmFree(res);
-	vdmFree(set);
-
-	for(int i = 0; i < numelems; i++)
-	{
-		free(randelems[i]);
-		free(randelemscpy[i]);
-	}
-}
 
 //#define COMPREHENSION(exp,var,S,P)
 
@@ -136,4 +96,74 @@ TEST(Expression_Set, setComprehension)
 
 	vdmFree(S);
 	vdmFree(t);
+}
+
+
+
+TEST(Expression_Set, setInset)
+{
+	const int numelems = 10;
+	TVP elem = newInt(INT_MAX);
+	TVP set = newSetVar(1, elem);
+	struct TypedValue *randelems[100], *randelemscpy[100];
+
+	//Make sure that we're checking for the value itself and not the newInt structure.
+	vdmFree(elem);
+	elem = newInt(INT_MAX);
+
+	TVP res = vdmSetMemberOf(set, elem);
+	EXPECT_EQ(true, res->value.boolVal);
+	vdmFree(elem);
+
+	for(int i = 0; i < numelems; i++)
+	{
+		randelems[i] = newInt(rand());
+	}
+
+	vdmFree(set);
+	set = newSetWithValues(numelems, randelems);
+
+	for(int i = 0; i < numelems; i++)
+	{
+		randelemscpy[i] = vdmClone(randelems[i]);
+	}
+
+	for(int i = 0; i < numelems; i++)
+	{
+		free(res);
+		res = vdmSetMemberOf(set, randelemscpy[i]);
+		EXPECT_EQ(true, res->value.boolVal);
+	}
+
+	vdmFree(res);
+	vdmFree(set);
+
+	for(int i = 0; i < numelems; i++)
+	{
+		free(randelems[i]);
+		free(randelemscpy[i]);
+	}
+}
+
+
+
+TEST(Expression_Set, setCard)
+{
+	const int numelems = 5;
+	TVP elems[numelems] = {newInt(1), newInt(2), newInt(2), newInt(3), newInt(INT_MAX)};
+	TVP theset;
+
+	//Cardinality of empty set.
+	theset = newSetWithValues(0, NULL);
+	EXPECT_EQ(0, (vdmSetCard(theset))->value.intVal);
+	vdmFree(theset);
+
+	//Cardinality of non-empty set.
+	theset = newSetWithValues(numelems, elems);
+	EXPECT_EQ(numelems - 1, (vdmSetCard(theset))->value.intVal);
+	for(int i = 0; i < numelems; i++)
+	{
+		free(elems[i]);
+	}
+	vdmFree(theset);
 }

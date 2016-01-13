@@ -85,6 +85,8 @@ struct TypedValue* newSetVar(size_t size, ...)
 	return res;
 }
 
+
+
 TVP vdmSetMemberOf(TVP set, TVP element)
 {
 	ASSERT_CHECK(set);
@@ -100,3 +102,13 @@ TVP vdmSetMemberOf(TVP set, TVP element)
 	return newBool(found);
 }
 
+
+
+TVP vdmSetCard(TVP set)
+{
+	ASSERT_CHECK(set);
+	UNWRAP_COLLECTION(col, set);
+
+	//This requires freeing somewhere;
+	return newInt(col->size);
+}
