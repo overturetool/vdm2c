@@ -55,6 +55,10 @@ if(${filename} MATCHES ".*A.c$")
 set(CPP_FILES ${CPP_FILES};../c-examples/tests/ClassATest.cpp)
 endif()
 
+if(${filename} MATCHES ".*B.c$")
+set(CPP_FILES ${CPP_FILES};../c-examples/tests/ClassBTest.cpp)
+endif()
+
 if(${filename} MATCHES ".*C.c$")
 set(CPP_FILES ${CPP_FILES};../c-examples/tests/ClassCTest.cpp)
 endif()
