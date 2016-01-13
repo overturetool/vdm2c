@@ -36,15 +36,15 @@ struct TypedValue* newSetWithValues(size_t size, TVP* elements)
 
 	for (int i = 0; i < size; i++)
 	{
-		TVP v= vdmClone(elements[i]); // set binding
+		TVP v = vdmClone(elements[i]); // set binding
 
-		if(count>=bufsize)
+		if(count >= bufsize)
 		{
 			//buffer too small add memory chunk
 			bufsize+=(DEFAULT_SET_COMP_BUFFER_STEPSIZE*sizeof(struct TypedValue*));
 			value = (struct TypedValue**)realloc(value,bufsize);
 		}
-		vdmSetAdd(value,&count,v);
+		vdmSetAdd(value, &count,v);
 
 	}
 
@@ -76,7 +76,6 @@ struct TypedValue* newSetVar(size_t size, ...)
 			value = (struct TypedValue**)realloc(value,bufsize);
 		}
 		vdmSetAdd(value,&count,v);
-
 	}
 
 	va_end(ap);

@@ -6,10 +6,15 @@ extern "C"
 #include "lib/VdmSet.h"
 #include "lib/VdmBasicTypes.h"
 #include <stdio.h>
+
+//Maximum values have more recognizable hex representations.
+#include <limits.h>
 }
 
+
+
 //TODO use correct set construction
-TVP newSet(int size, int* arr)
+static TVP newSet(int size, int* arr)
 {
 	struct TypedValue** value = (struct TypedValue**) calloc(size, sizeof(struct TypedValue*));
 
@@ -23,17 +28,47 @@ TVP newSet(int size, int* arr)
 
 TEST(Expression_Set, setInset)
 {
-	TVP el = newInt(1);
-	TVP t = newSetVar(1,el);
+	const int numelems = 10;
+	TVP elem = newInt(INT_MAX);
+	TVP set = newSetVar(1, elem);
+	struct TypedValue *randelems[100], *randelemscpy[100];
 
-	TVP res = vdmSetMemberOf(t,el);
+	//Make sure that we're checking for the value itself and not the newInt structure.
+	vdmFree(elem);
+	elem = newInt(INT_MAX);
 
+	TVP res = vdmSetMemberOf(set, elem);
 	EXPECT_EQ(true, res->value.boolVal);
+	vdmFree(elem);
+
+	for(int i = 0; i < numelems; i++)
+	{
+		randelems[i] = newInt(rand());
+	}
+
+	vdmFree(set);
+	set = newSetWithValues(numelems, randelems);
+
+	for(int i = 0; i < numelems; i++)
+	{
+		randelemscpy[i] = vdmClone(randelems[i]);
+	}
+
+	for(int i = 0; i < numelems; i++)
+	{
+		free(res);
+		res = vdmSetMemberOf(set, randelemscpy[i]);
+		EXPECT_EQ(true, res->value.boolVal);
+	}
 
 	vdmFree(res);
-//
-	vdmFree(t);
-	vdmFree(el);
+	vdmFree(set);
+
+	for(int i = 0; i < numelems; i++)
+	{
+		free(randelems[i]);
+		free(randelemscpy[i]);
+	}
 }
 
 //#define COMPREHENSION(exp,var,S,P)
@@ -43,9 +78,8 @@ TEST(Expression_Set, setInset)
 
 TEST(Expression_Set, setComprehension)
 {
-	int arr[] =
-	{ 1, 1, 2, 8, 15 };
-	TVP S = newSet(5,arr); //Technically this isn't a set but we need this for testing
+	int arr[] = { 1, 1, 2, 8, 15 };
+	TVP S = newSet(5, arr); //Technically this isn't a set but we need this for testing
 	TVP t = newInt(10);
 
 	//{ exp | v in set S . P}
@@ -103,31 +137,4 @@ TEST(Expression_Set, setComprehension)
 
 	vdmFree(S);
 	vdmFree(t);
-}
-
-TEST(Expression_Set, setAdd)
-{
-	TVP e1 = newInt(3);
-	TVP t = newSetVar(1,e1);
-	TVP res;
-	int index = 0;
-
-	UNWRAP_COLLECTION(theCollection, t);
-
-	//achieves the same as unwrapping above.
-	//vdmSetAdd(((struct Collection*)(t->value.ptr))->value, &index, e1);
-	vdmFree(e1);
-	vdmFree(t);
-
-	/*
-	//We are looking for the same integer value.
-	vdmFree(e1);
-	e1 = newInt(INT_MAX);
-	res = vdmSetMemberOf(t, e1);
-
-	vdmFree(res);
-
-	//EXPECT_EQ(true, res->value.boolVal);
-	*/
-
 }
