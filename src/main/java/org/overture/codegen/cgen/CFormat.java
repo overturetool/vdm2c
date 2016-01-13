@@ -34,7 +34,7 @@ import org.overture.codegen.ir.IRInfo;
 import org.overture.codegen.logging.Logger;
 import org.overture.codegen.merging.MergeVisitor;
 import org.overture.codegen.merging.TemplateCallable;
-import org.overture.codegen.merging.TemplateStructure;
+import org.overture.codegen.merging.TemplateManager;
 import org.overture.codegen.utils.GeneralUtils;
 //import org.overture.codegen.cgast.
 
@@ -79,8 +79,7 @@ public class CFormat
 	public CFormat(IRInfo info, IHeaderFinder headerfinder)
 	{
 		this.headerFinder = headerfinder;
-		TemplateStructure ts = new TemplateStructure("MyTemplates");
-		CTemplateManager tm = new CTemplateManager(ts);
+		TemplateManager tm = new TemplateManager("c-templates");
 
 		TemplateCallable[] templateCallables = new TemplateCallable[] {
 				new TemplateCallable("CFormat", this),new TemplateCallable("String", new String()) };
