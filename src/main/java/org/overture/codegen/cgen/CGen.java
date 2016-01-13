@@ -30,6 +30,9 @@ public class CGen extends CodeGenBase
 	public GeneratedData generateCFromVdm(List<SClassDefinition> ast,
 			File outputFolder) throws AnalysisException
 	{
+		this.generator.computeDefTable(ast);
+		
+		
 		final List<IRStatus<org.overture.codegen.cgast.INode>> statuses = new LinkedList<>();
 
 		// This is run pr. class
