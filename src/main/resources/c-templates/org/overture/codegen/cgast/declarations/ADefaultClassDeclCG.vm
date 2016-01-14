@@ -84,6 +84,7 @@ static TVP new()
 			{	.ptr=newClassValue(ptr->_$CFormat.getClassName($node)_id, &ptr->_$CFormat.getClassName($node)_refs, (freeVdmClassFunction)&$CFormat.getClassName($node)_free, ptr)});
 }
 
+//Drepecated only there to support existing tests
 const struct $CFormat.getClassName($node)Class $CFormat.getClassName($node) =
 { ._new = &new };
 

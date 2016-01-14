@@ -3,6 +3,8 @@
 #ifndef CLASSES_$CFormat.getClassHeaderName($node)_H_
 \#define CLASSES_$CFormat.getClassHeaderName($node)_H_
 
+\#define VDM_CG
+
 \#include "Globals.h"
 \#include "lib/TypedValue.h"
 \#include "lib/VdmClass.h"
@@ -23,7 +25,7 @@
 \#define $CFormat.getClassHeaderName($node)CLASS struct $CFormat.getClassHeaderName($node)*
 
 
-// The table
+// The vtable ids
 
 #foreach( $method in $node.getMethods() )
 #if(!$method.getIsConstructor())\#define CLASS_$CFormat.getClassHeaderName($node)_$method.getName() $CFormat.getNumber()
