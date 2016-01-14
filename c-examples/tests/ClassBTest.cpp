@@ -104,4 +104,18 @@ TEST(ClassBTest, field1c)
 	vdmFree(c);
 }
 
+
+TEST(ClassBTest, ctor)
+{
+	TVP c=B_ctor(NULL);
+
+	TVP a = newReal(99.99);
+	SET_FIELD(B,C,c,field1c,a);
+	vdmFree(a);
+
+	checkFreeDouble("check field1c of C",99.99, GET_FIELD(B,C,c,field1c));
+
+	vdmFree(c);
+}
+
 }

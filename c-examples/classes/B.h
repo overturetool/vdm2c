@@ -50,6 +50,8 @@ struct B
 	VDM_CLASS_FIELD_DEFINITION(B,field2);
 };
 
+TVP B_ctor(BCLASS ptr);
+
 void B_free(struct B *self);
 
 extern const struct BClass
