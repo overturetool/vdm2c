@@ -220,3 +220,64 @@ TEST(Expression_Set, setCard)
 	}
 	vdmFree(theset);
 }
+
+
+
+TEST(Expression_set, setUnion)
+{
+	const int numelems1 = 101;
+	const int numelems2 = 97;
+	TVP randelems1[numelems1];
+	TVP randelems2[numelems2];
+	TVP set1;
+	TVP set2;
+	TVP unionset;
+	TVP res;
+
+	//Generate the random test value collections.
+	for(int i = 0; i < numelems1; i++)
+	{
+		randelems1[i] = newInt(rand());
+	}
+
+	for(int i = 0; i < numelems2; i++)
+	{
+		randelems2[i] = newInt(rand());
+	}
+
+	//Create the random test sets.
+	set1 = newSetWithValues(numelems1, randelems1);
+	set2 = newSetWithValues(numelems2, randelems2);
+	unionset = vdmSetUnion(set1, set2);
+
+	//Check membership of each test element in union.
+	for(int i = 0; i < numelems1; i++)
+	{
+		res = vdmSetMemberOf(unionset, randelems1[i]);
+		EXPECT_EQ(true, res->value.boolVal);
+		free(res);
+	}
+	for(int i = 0; i < numelems2; i++)
+	{
+		res = vdmSetMemberOf(unionset, randelems2[i]);
+		EXPECT_EQ(true, res->value.boolVal);
+		free(res);
+	}
+
+	//Ensure that there are no other elements.
+	EXPECT_EQ(true, ((struct Collection*)(unionset->value.ptr))->size == \
+				((struct Collection*)(set1->value.ptr))->size + \
+				((struct Collection*)(set2->value.ptr))->size);
+
+	vdmFree(set1);
+	vdmFree(set2);
+	vdmFree(unionset);
+	for(int i = 0; i < numelems1; i++)
+	{
+		vdmFree(randelems1[i]);
+	}
+	for(int i = 0; i < numelems2; i++)
+	{
+		vdmFree(randelems2[i]);
+	}
+}
