@@ -1,25 +1,25 @@
 // The template for class
-
-\#include $CFormat.getIncludeClassName($node)
+#set( $cname = $node.getName())
+\#include "$String.format("%s.h",$cname)"
 \#include <stdio.h>
 
 
 
 // Memory management methods
-void $CFormat.getClassName($node)_free_fields(struct $CFormat.getClassName($node) *this)
+void ${cname}_free_fields(struct ${cname} *this)
 {
 	//free class struct
 #foreach( $field in $node.getFields() )
-	vdmFree(this->m_$CFormat.getClassName($node)_$field.getName());
+	vdmFree(this->m_${cname}_$field.getName());
 #end
 }
 
-static void $CFormat.getClassName($node)_free(struct $CFormat.getClassName($node) *this)
+static void ${cname}_free(struct ${cname} *this)
 {
-	--this->_$CFormat.getClassName($node)_refs;
-	if (this->_$CFormat.getClassName($node)_refs < 1)
+	--this->_${cname}_refs;
+	if (this->_${cname}_refs < 1)
 	{
-		$CFormat.getClassName($node)_free_fields(this);
+		${cname}_free_fields(this);
 		free(this);
 	}
 }
@@ -32,7 +32,7 @@ $CFormat.format($method)
 #end
 
 // The table
-static struct VTable VTableArrayFor$CFormat.getClassName($node) [] =
+static struct VTable VTableArrayFor${cname} [] =
 {
 #foreach( $method in $node.getMethods() )
 #if(!$method.getIsConstructor()){ 0, 0, (VirtualFunctionPointer) $method.getName() },
@@ -41,12 +41,12 @@ static struct VTable VTableArrayFor$CFormat.getClassName($node) [] =
 };
 
 // The internal memory constructor
-$CFormat.getClassName($node)CLASS $CFormat.getClassName($node)_Constructor($CFormat.getClassName($node)CLASS this_ptr)
+${cname}CLASS ${cname}_Constructor(${cname}CLASS this_ptr)
 {
 
 	if(this_ptr==NULL)
 	{
-		this_ptr = ($CFormat.getClassName($node)CLASS) malloc(sizeof(struct $CFormat.getClassName($node)));
+		this_ptr = (${cname}CLASS) malloc(sizeof(struct ${cname}));
 	}
 
 	if(this_ptr!=NULL)
@@ -63,12 +63,12 @@ $CFormat.getClassName($node)CLASS $CFormat.getClassName($node)_Constructor($CFor
 	#end
 	
 		// $cname init
-		this_ptr->_$CFormat.getClassName($node)_id = CLASS_ID_$CFormat.getClassName($node)_ID;
-		this_ptr->_$CFormat.getClassName($node)_refs = 0;
-		this_ptr->_$CFormat.getClassName($node)_pVTable=VTableArrayFor$CFormat.getClassName($node);
+		this_ptr->_${cname}_id = CLASS_ID_${cname}_ID;
+		this_ptr->_${cname}_refs = 0;
+		this_ptr->_${cname}_pVTable=VTableArrayFor${cname};
 
 	#foreach( $field in $node.getFields() )
-	this_ptr->m_$CFormat.getClassName($node)_$field.getName()=#if($CFormat.isNull($field.getInitial())) NULL #else $CFormat.format($field.getInitial())#end;
+	this_ptr->m_${cname}_$field.getName()=#if($CFormat.isNull($field.getInitial())) NULL #else $CFormat.format($field.getInitial())#end;
 	#end
 }
 
@@ -78,14 +78,14 @@ $CFormat.getClassName($node)CLASS $CFormat.getClassName($node)_Constructor($CFor
 // Method for creating new "class"
 static TVP new()
 {
-	$CFormat.getClassName($node)CLASS ptr=$CFormat.getClassName($node)_Constructor(NULL);
+	${cname}CLASS ptr=${cname}_Constructor(NULL);
 
 	return newTypeValue(VDM_CLASS, (TypedValueType)
-			{	.ptr=newClassValue(ptr->_$CFormat.getClassName($node)_id, &ptr->_$CFormat.getClassName($node)_refs, (freeVdmClassFunction)&$CFormat.getClassName($node)_free, ptr)});
+			{	.ptr=newClassValue(ptr->_${cname}_id, &ptr->_${cname}_refs, (freeVdmClassFunction)&${cname}_free, ptr)});
 }
 
 //Drepecated only there to support existing tests
-const struct $CFormat.getClassName($node)Class $CFormat.getClassName($node) =
+const struct ${cname}Class ${cname} =
 { ._new = &new };
 
 

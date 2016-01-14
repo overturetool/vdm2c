@@ -31,8 +31,7 @@ public class CGen extends CodeGenBase
 			File outputFolder) throws AnalysisException
 	{
 		this.generator.computeDefTable(ast);
-		
-		
+
 		final List<IRStatus<org.overture.codegen.cgast.INode>> statuses = new LinkedList<>();
 
 		// This is run pr. class
@@ -48,14 +47,6 @@ public class CGen extends CodeGenBase
 			}
 
 		}
-
-		// By now we have the IR in 'statuses'
-
-		// List<GeneratedModule> generated = new LinkedList<GeneratedModule>();
-
-		// Event notification
-		// statuses = initialIrEvent(statuses);
-		// statuses = filter(statuses, generated);
 
 		this.transAssistant = new TransAssistantCG(generator.getIRInfo());
 
@@ -75,25 +66,18 @@ public class CGen extends CodeGenBase
 
 		GeneratedData data = new GeneratedData();
 
-		// Add generated code to 'data'
-		// templateManager = new TemplateManager(new
-		// TemplateStructure("MyTemplates"));
-		// MergeVisitor mergeVisitor = new MergeVisitor(templateManager, new
-		// TemplateCallable[]{new
-		// TemplateCallable("CGh", new CGHelper())});
-
 		CFormat my_formatter = new CFormat(generator.getIRInfo(), new IHeaderFinder()
 		{
-			
+
 			@Override
 			public AClassHeaderDeclCG getHeader(SClassDeclCG def)
 			{
 				for (IRStatus<INode> irStatus : statuses)
 				{
-					if(irStatus.getIrNode() instanceof AClassHeaderDeclCG)
+					if (irStatus.getIrNode() instanceof AClassHeaderDeclCG)
 					{
 						AClassHeaderDeclCG header = (AClassHeaderDeclCG) irStatus.getIrNode();
-						if(header.getOriginalDef()==def)
+						if (header.getOriginalDef() == def)
 						{
 							return header;
 						}
@@ -103,8 +87,7 @@ public class CGen extends CodeGenBase
 			}
 		});
 
-		List<GeneratedModule> generated = new LinkedList<GeneratedModule>();
-
+		// TODO: what is this?
 		for (DepthFirstAnalysisAdaptor trans : transformations)
 		{
 			for (IRStatus<ADefaultClassDeclCG> status : IRStatus.extract(statuses, ADefaultClassDeclCG.class))
@@ -126,33 +109,24 @@ public class CGen extends CodeGenBase
 			}
 		}
 
-		try
-		{
-			statuses.addAll(new ClassHeaderGenerator().generateClassHeaders(IRStatus.extract(statuses, ADefaultClassDeclCG.class)));
-		} catch (org.overture.codegen.cgast.analysis.AnalysisException e2)
-		{
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		}
+		generateClassHeaders(statuses);
 
-		for (IRStatus<AClassHeaderDeclCG> status : IRStatus.extract(statuses, AClassHeaderDeclCG.class))
-		{
-			// StringWriter writer = new StringWriter();
-			AClassHeaderDeclCG header = status.getIrNode();
-			try
-			{
-				writeFile(header, header.getName(), "h", my_formatter, outputFolder);
-			} catch (org.overture.codegen.cgast.analysis.AnalysisException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+		VTableGenerator.generate(IRStatus.extract(statuses, AClassHeaderDeclCG.class));
 
+		writeHeaders(outputFolder, statuses, my_formatter);
+
+		writeClasses(outputFolder, statuses, my_formatter);
+
+		List<GeneratedModule> generated = new LinkedList<GeneratedModule>();
+		data.setClasses(generated);
+
+		return data;
+	}
+
+	public void writeClasses(File outputFolder,
+			final List<IRStatus<org.overture.codegen.cgast.INode>> statuses,
+			CFormat my_formatter)
+	{
 		for (IRStatus<ADefaultClassDeclCG> status : IRStatus.extract(statuses, ADefaultClassDeclCG.class))
 		{
 			// StringWriter writer = new StringWriter();
@@ -174,10 +148,42 @@ public class CGen extends CodeGenBase
 			}
 
 		}
+	}
 
-		data.setClasses(generated);
+	public void writeHeaders(File outputFolder,
+			final List<IRStatus<org.overture.codegen.cgast.INode>> statuses,
+			CFormat my_formatter)
+	{
+		for (IRStatus<AClassHeaderDeclCG> status : IRStatus.extract(statuses, AClassHeaderDeclCG.class))
+		{
+			// StringWriter writer = new StringWriter();
+			AClassHeaderDeclCG header = status.getIrNode();
+			try
+			{
+				writeFile(header, header.getName(), "h", my_formatter, outputFolder);
+			} catch (org.overture.codegen.cgast.analysis.AnalysisException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
 
-		return data;
+	public void generateClassHeaders(
+			final List<IRStatus<org.overture.codegen.cgast.INode>> statuses)
+	{
+		try
+		{
+			statuses.addAll(new ClassHeaderGenerator().generateClassHeaders(IRStatus.extract(statuses, ADefaultClassDeclCG.class)));
+		} catch (org.overture.codegen.cgast.analysis.AnalysisException e2)
+		{
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
 	}
 
 	private List<ADefaultClassDeclCG> getClassDecls(
@@ -213,6 +219,13 @@ public class CGen extends CodeGenBase
 		BufferedWriter output = new BufferedWriter(new FileWriter(file));
 		output.write(writer.toString());
 		output.close();
+
+		// FIXME: remove once finished developing the basic stuff
+		if (System.getProperty("user.name").equals("kel"))
+		{
+			Runtime.getRuntime().exec("/usr/local/bin/clang-format -i -style='{BreakBeforeBraces: GNU}' "
+					+ file.getAbsolutePath());
+		}
 	}
 
 	private StringWriter emitCode(INode node, CFormat my_formatter)

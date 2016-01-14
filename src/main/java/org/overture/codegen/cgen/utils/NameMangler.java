@@ -59,6 +59,27 @@ public class NameMangler
 		System.out.println(method.getName() + " mangled to " + name);
 		return name;
 	}
+	
+	public static String getName(String mangledName)
+	{
+		if(mangledName.startsWith(preFix))
+		{
+			String tmp= mangledName.substring(preFix.length());
+			
+			
+		int index = 0;
+		while(Character.isDigit(tmp.charAt(index)))
+		{
+			index++;
+		}
+		int length = Integer.parseInt(tmp.substring(0,index));
+
+		return tmp.substring(index,index+ length);
+//			return mangledName.substring(preFix.length(),mangledName.in-preFix.length());
+		}
+		//unmangled
+		return mangledName;
+	}
 
 	private static class NameGenerator extends
 			DepthFirstAnalysisAdaptorAnswer<String>

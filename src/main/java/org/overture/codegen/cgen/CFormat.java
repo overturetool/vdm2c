@@ -34,7 +34,6 @@ import org.overture.codegen.merging.TemplateCallable;
 import org.overture.codegen.merging.TemplateManager;
 import org.overture.codegen.utils.GeneralUtils;
 
-
 public class CFormat
 {
 
@@ -46,16 +45,15 @@ public class CFormat
 	private long nextClassId = 0;
 	private Map<String, Long> classIds = new HashMap<String, Long>();
 
-	public String getClassId(String name)
+	public Long getClassId(String name)
 	{
 		if (classIds.containsKey(name))
-			return classIds.get(name).toString();
-		;
+			return classIds.get(name);
 
 		Long id = nextClassId;
 		classIds.put(name, id);
 		nextClassId++;
-		return id.toString();
+		return id;
 
 	}
 
@@ -206,7 +204,6 @@ public class CFormat
 	{
 		return node != null && node instanceof ADefaultClassDeclCG;
 	}
-
 
 	public String formatArgs(List<? extends SExpCG> exps)
 			throws AnalysisException
@@ -383,19 +380,9 @@ public class CFormat
 		return false;
 	}
 
-
-	public String getIncludeClassName(ADefaultClassDeclCG cl)
-	{
-		return "\"" + cl.getName().toString() + ".h\"";
-	}
-
-	public String getClassName(ADefaultClassDeclCG cl)
+	public String getClassName(SClassDeclCG cl)
 	{
 		return cl.getName().toString();
 	}
 
-	public String getClassHeaderName(AClassHeaderDeclCG ch)
-	{
-		return ch.getName().toString();
-	}
 }

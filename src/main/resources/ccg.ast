@@ -6,8 +6,8 @@ analysis org.overture.cgc.extast.analysis;
 Tokens
 
  // Wraps a string type so it can be used as a field type
-  ceString ='java:org.overture.codegen.cgen.ast.CGenClonableString';
-
+  eString ='java:org.overture.codegen.cgen.ast.CGenClonableString';
+eVtables ='java:org.overture.codegen.cgen.ast.Vtables';
 Abstract Syntax Tree
 
 CG = #decl
@@ -21,14 +21,16 @@ CG = #decl
 
 
 #decl {-> package='org.overture.cgc.extast.declarations'}
-       = {classHeader}
+	= 
+       {classHeader}
     	[name]:java_String
     	(originalDef):CG.#decl.#Class
 		[flattenedSupers]:CG.#decl.classHeader*
 		[state]:CG.#decl.classState
     	[methods]:CG.#decl.method*
-    	[includes]:ceString*
-    	| {classState} [fields]:CG.#decl.field* //not sure why it cannot compile as a graph field
+    	[includes]:eString*
+    	[vtable]:eVtables
+    | {classState} [fields]:CG.#decl.field* //not sure why it cannot compile as a graph field
        ;
      
        
