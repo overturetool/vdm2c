@@ -100,16 +100,16 @@ public class CFormat
 		return info.getAssistantManager().getTypeAssistant().isSeqType(exp);
 	}
 
-	public Boolean isClassType(AFormalParamLocalParamCG fp)
-	{
-		return fp.getTag() == "class";
-	}
-
-	public String getEnclosingClass(AFormalParamLocalParamCG fp)
-	{
-		return fp.getAncestor(ADefaultClassDeclCG.class).getName().toString()
-				+ "CLASS";
-	}
+//	public Boolean isClassType(AFormalParamLocalParamCG fp)
+//	{
+//		return fp.getTag() == "class";
+//	}
+//
+//	public String getEnclosingClass(AFormalParamLocalParamCG fp)
+//	{
+//		return fp.getAncestor(ADefaultClassDeclCG.class).getName().toString()
+//				+ "CLASS";
+//	}
 
 	public String format(SExpCG exp, boolean leftChild) throws AnalysisException
 	{
@@ -388,10 +388,10 @@ public class CFormat
 		return false;
 	}
 
-	public String getTVPtype()
-	{
-		return "TVP";
-	}
+//	public String getTVPtype()
+//	{
+//		return "TVP";
+//	}
 
 	public String getIncludeClassName(ADefaultClassDeclCG cl)
 	{

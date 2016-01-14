@@ -11,9 +11,11 @@ import org.overture.cgc.extast.declarations.AClassStateDeclCG;
 import org.overture.codegen.cgast.INode;
 import org.overture.codegen.cgast.declarations.ADefaultClassDeclCG;
 import org.overture.codegen.cgast.declarations.AFieldDeclCG;
+import org.overture.codegen.cgast.declarations.AFormalParamLocalParamCG;
 import org.overture.codegen.cgast.declarations.AMethodDeclCG;
 import org.overture.codegen.cgast.declarations.SClassDeclCG;
 import org.overture.codegen.cgast.name.ATokenNameCG;
+import org.overture.codegen.cgast.patterns.AIdentifierPatternCG;
 import org.overture.codegen.ir.IRStatus;
 import org.overture.codegen.ir.VdmNodeInfo;
 
@@ -40,17 +42,28 @@ public class ClassHeaderGenerator
 				fi.getAccess();
 				fi.getInitial();
 			}
-			
+
 			AClassStateDeclCG state = new AClassStateDeclCG();
 			state.setFields((List<? extends AFieldDeclCG>) classDef.getFields().clone());
-			
+
 			def.setState(state);
 
-			def.setMethods((List<? extends AMethodDeclCG>) classDef.getMethods().clone());
-			for (AMethodDeclCG m : def.getMethods())
+			// def.setMethods((List<? extends AMethodDeclCG>) classDef.getMethods().clone());
+			for (AMethodDeclCG m : classDef.getMethods())
 			{
-				m.setBody(null);
-				// m.getSourceNode().getVdmNode();
+				AMethodDeclCG copy = m.clone();
+				copy.setBody(null);
+				for (AFormalParamLocalParamCG formal : copy.getFormalParams())
+				{
+					if(formal.getPattern() instanceof AIdentifierPatternCG){
+						AIdentifierPatternCG pattern = (AIdentifierPatternCG) formal.getPattern();
+						if(pattern.getName().equals("this"))
+						{
+							pattern.setName("this_ptr");//.getModifiedName("self"));//new LexNameToken(pattern.getName().getModifiedName(classname), name, location));
+						}
+					}
+				}
+				def.getMethods().add(copy);
 			}
 
 			def.setName(classDef.getName().toString());
@@ -73,13 +86,13 @@ public class ClassHeaderGenerator
 
 			header.setFlattenedSupers(getSupers(new HeaderProvider()
 			{
-				
+
 				@Override
 				public AClassHeaderDeclCG get(String name)
 				{
 					for (AClassHeaderDeclCG header : classHeaders)
 					{
-						if(header.getName().equals(name))
+						if (header.getName().equals(name))
 						{
 							return header;
 						}

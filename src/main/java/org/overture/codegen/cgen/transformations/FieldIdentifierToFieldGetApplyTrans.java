@@ -1,19 +1,26 @@
 package org.overture.codegen.cgen.transformations;
 
+import static org.overture.codegen.cgen.transformations.CTransUtil.createIdentifier;
+import static org.overture.codegen.cgen.transformations.CTransUtil.exp2Stm;
+import static org.overture.codegen.cgen.transformations.CTransUtil.newApply;
+import static org.overture.codegen.cgen.transformations.CTransUtil.newDeclarationAssignment;
+
 import org.overture.ast.definitions.AClassClassDefinition;
 import org.overture.ast.definitions.AInheritedDefinition;
 import org.overture.ast.definitions.AInstanceVariableDefinition;
 import org.overture.ast.definitions.PDefinition;
 import org.overture.ast.expressions.AVariableExp;
-import org.overture.cgc.extast.statements.AExpStmCG;
-import org.overture.codegen.cgast.SExpCG;
-import org.overture.codegen.cgast.SStmCG;
+import org.overture.ast.statements.AIdentifierStateDesignator;
+import org.overture.codegen.cgast.INode;
 import org.overture.codegen.cgast.analysis.AnalysisException;
 import org.overture.codegen.cgast.analysis.DepthFirstAnalysisAdaptor;
+import org.overture.codegen.cgast.declarations.ADefaultClassDeclCG;
+import org.overture.codegen.cgast.declarations.AFieldDeclCG;
 import org.overture.codegen.cgast.declarations.AVarDeclCG;
+import org.overture.codegen.cgast.declarations.SClassDeclCG;
 import org.overture.codegen.cgast.expressions.AApplyExpCG;
 import org.overture.codegen.cgast.expressions.AIdentifierVarExpCG;
-import org.overture.codegen.cgast.patterns.AIdentifierPatternCG;
+import org.overture.codegen.cgast.name.ATokenNameCG;
 import org.overture.codegen.cgast.statements.AAssignmentStmCG;
 import org.overture.codegen.cgast.statements.ABlockStmCG;
 import org.overture.codegen.cgast.statements.AIdentifierStateDesignatorCG;
@@ -30,15 +37,6 @@ public class FieldIdentifierToFieldGetApplyTrans extends
 	public FieldIdentifierToFieldGetApplyTrans(TransAssistantCG assist)
 	{
 		this.assist = assist;
-	}
-
-	AIdentifierVarExpCG createIdentifier(String name,
-			org.overture.ast.node.INode derrivedFrom)
-	{
-		AIdentifierVarExpCG ident = new AIdentifierVarExpCG();
-		ident.setName(name);
-		ident.setSourceNode(new SourceNode(derrivedFrom));
-		return ident;
 	}
 
 	@Override
@@ -66,35 +64,44 @@ public class FieldIdentifierToFieldGetApplyTrans extends
 				fieldClassName = idef.getClassDefinition().getName().getName();
 			}
 
-			AApplyExpCG apply = new AApplyExpCG();
-
-			AIdentifierVarExpCG getFieldPtrMacroId = new AIdentifierVarExpCG();
-			getFieldPtrMacroId.setName("GET_FIELD_PTR");
-			getFieldPtrMacroId.setSourceNode(new SourceNode(node.getSourceNode().getVdmNode()));
-
-			apply.setRoot(getFieldPtrMacroId);
+			AApplyExpCG apply = newApply("GET_FIELD_PTR");
 			assist.replaceNodeWith(node, apply);
 
-			// AVariableExp var = vdmNode;
-			// String thisClassName = var.getVardef().getClassDefinition().getName().getName();
-			// String fieldClassName = thisClassName;
-
 			// add this type
-			apply.getArgs().add(createIdentifier(thisClassName, node.getSourceNode().getVdmNode()));
+			apply.getArgs().add(createIdentifier(thisClassName, SourceNode.copy(node.getSourceNode())));
 			// add field owner type
-			apply.getArgs().add(createIdentifier(fieldClassName, node.getSourceNode().getVdmNode()));
+			apply.getArgs().add(createIdentifier(fieldClassName, SourceNode.copy(node.getSourceNode())));
 			// add this
-			apply.getArgs().add(createIdentifier("this", node.getSourceNode().getVdmNode()));
+			apply.getArgs().add(createIdentifier("this", SourceNode.copy(node.getSourceNode())));
 			// add field name
 			apply.getArgs().add(node);
 		}
 	}
 
-	static SStmCG exp2stm(SExpCG exp)
+	String lookupFieldClass(SClassDeclCG node, String name)
 	{
-		AExpStmCG expstm = new AExpStmCG();
-		expstm.setExp(exp);
-		return expstm;
+		for (AFieldDeclCG f : node.getFields())
+		{
+			if (f.getName().equals(name))
+			{
+				return node.getName();
+			}
+		}
+
+		for (ATokenNameCG superName : node.getSuperNames())
+		{
+			for (SClassDeclCG def : assist.getInfo().getClasses())
+			{
+				if (def.getName().equals(superName))
+				{
+					String n = lookupFieldClass(def, name);
+					if (n != null)
+						return n;
+				}
+			}
+		}
+
+		return null;
 	}
 
 	@Override
@@ -103,79 +110,52 @@ public class FieldIdentifierToFieldGetApplyTrans extends
 	{
 		if (node.parent() instanceof AAssignmentStmCG)
 		{
+			// class
+						String thisClassName = node.getSourceNode().getVdmNode().getAncestor(AClassClassDefinition.class).getName().getName();// the
+																																				// containing
+						// field owner
+						String fieldClassName = lookupFieldClass(node.getAncestor(ADefaultClassDeclCG.class), node.getName());
+			
+			
+			
 			AAssignmentStmCG assignment = (AAssignmentStmCG) node.parent();
 			String name = assist.getInfo().getTempVarNameGen().nextVarName(fieldPrefix);
 
-			AIdentifierPatternCG id = new AIdentifierPatternCG();
-			id.setName(name);
-
-			AVarDeclCG retVar = new AVarDeclCG();
-			retVar.setType(assignment.getExp().getType().clone());
-			retVar.setPattern(id);
-			retVar.setSourceNode(assignment.getExp().getSourceNode());
-			retVar.setExp(assignment.getExp());
-
-			AIdentifierVarExpCG retVarOcc = new AIdentifierVarExpCG();
-			retVarOcc.setType(retVar.getType().clone());
-			retVarOcc.setName(name);
-			retVarOcc.setSourceNode(retVar.getSourceNode());
-			retVarOcc.setIsLocal(true);
-
-			// node.setExp(retVarOcc);
+			AVarDeclCG retVar = newDeclarationAssignment(name, assignment.getExp().getType().clone(), assignment.getExp(), assignment.getExp().getSourceNode());
 
 			ABlockStmCG replBlock = new ABlockStmCG();
+			replBlock.setScoped(true);
 			replBlock.getLocalDefs().add(retVar);
 
 			assist.replaceNodeWith(assignment, replBlock);
 
-			AApplyExpCG apply = new AApplyExpCG();
+			AApplyExpCG apply = newApply("SET_FIELD_PTR");// new AApplyExpCG();
+			apply.setSourceNode(SourceNode.copy(node.getSourceNode()));
 
-			AIdentifierVarExpCG getFieldPtrMacroId = new AIdentifierVarExpCG();
-			getFieldPtrMacroId.setName("SET_FIELD_PTR");
-			getFieldPtrMacroId.setSourceNode(new SourceNode(node.getSourceNode().getVdmNode()));
-
-			apply.setRoot(getFieldPtrMacroId);
-			// assist.replaceNodeWith(node, apply);
-
-			String thisClassName = node.getSourceNode().getVdmNode().getAncestor(AClassClassDefinition.class).getName().getName();// the
-																																	// containing
-			// class
-			String fieldClassName = node.getClassName();
-
-			// PDefinition vardef = node.getSourceNode().getVdmNode().getVardef();
-			// if (vardef instanceof AInstanceVariableDefinition)
-			// {
-			// fieldClassName = thisClassName;
-			// } else if (vardef instanceof AInheritedDefinition)
-			// {
-			// AInheritedDefinition idef = (AInheritedDefinition) vardef;
-			// fieldClassName = idef.getClassDefinition().getName().getName();
-			// }
+			
 
 			// add this type
-			apply.getArgs().add(createIdentifier(thisClassName, node.getSourceNode().getVdmNode()));
-			
+			apply.getArgs().add(createIdentifier(thisClassName, SourceNode.copy(node.getSourceNode())));
+
 			// add field owner type
-			apply.getArgs().add(createIdentifier(fieldClassName, node.getSourceNode().getVdmNode()));
+			apply.getArgs().add(createIdentifier(fieldClassName, SourceNode.copy(node.getSourceNode())));
 			// add this
-						apply.getArgs().add(createIdentifier("this", node.getSourceNode().getVdmNode()));
+			apply.getArgs().add(createIdentifier("this", SourceNode.copy(node.getSourceNode())));
 
 			// add field name
-			apply.getArgs().add(createIdentifier(node.getName(), node.getSourceNode().getVdmNode()));
+			apply.getArgs().add(createIdentifier(node.getName(), SourceNode.copy(node.getSourceNode())));
 
 			// add new value
-			apply.getArgs().add(retVarOcc.clone());
+			retVar.getSourceNode();
+			apply.getArgs().add(createIdentifier(name, SourceNode.copy(retVar.getSourceNode())));
 
-			AExpStmCG expstm = new AExpStmCG();
-			expstm.setExp(apply);
-
-			replBlock.getStatements().add(expstm);
+			replBlock.getStatements().add(exp2Stm(apply));
 
 			AApplyExpCG vdmFree = new AApplyExpCG();
-			vdmFree.setRoot(createIdentifier("vdmFree", node.getSourceNode().getVdmNode()));
-			vdmFree.getArgs().add(retVarOcc);
+			vdmFree.setRoot(createIdentifier("vdmFree", SourceNode.copy(node.getSourceNode())));
+			vdmFree.getArgs().add(createIdentifier(name, SourceNode.copy(retVar.getSourceNode())));
 
-			replBlock.getStatements().add(exp2stm(vdmFree));
+			replBlock.getStatements().add(exp2Stm(vdmFree));
 		}
 	}
 

@@ -33,7 +33,13 @@ struct $CFormat.getClassHeaderName($node)
 	$CFormat.format($node.getState())
 };
 
+/* public access functions*/
+#foreach( $method in $node.getMethods() )
+#if($method.getIsConstructor()|| $method.getIsStatic()) $CFormat.format($method.getMethodType().getResult()) $method.getName()($CFormat.format($method.getFormalParams()));
+#end
+#end
 
+/* internal use only*/
 void $CFormat.getClassHeaderName($node)_free_fields($CFormat.getClassHeaderName($node)CLASS);
 $CFormat.getClassHeaderName($node)CLASS $CFormat.getClassHeaderName($node)_Constructor($CFormat.getClassHeaderName($node)CLASS);
 

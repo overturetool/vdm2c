@@ -24,11 +24,11 @@ static void $CFormat.getClassName($node)_free(struct $CFormat.getClassName($node
 	}
 }
 
-// The methods
+// The methods but not constructors
 #foreach( $method in $node.getMethods() )
-##if(!$method.getIsConstructor())
+#if(!$method.getIsConstructor())
 $CFormat.format($method)
-##end
+#end
 #end
 
 // The table
@@ -40,7 +40,7 @@ static struct VTable VTableArrayFor$CFormat.getClassName($node) [] =
 #end
 };
 
-// The constructor
+// The internal memory constructor
 $CFormat.getClassName($node)CLASS $CFormat.getClassName($node)_Constructor($CFormat.getClassName($node)CLASS this_ptr)
 {
 
@@ -68,7 +68,7 @@ $CFormat.getClassName($node)CLASS $CFormat.getClassName($node)_Constructor($CFor
 		this_ptr->_$CFormat.getClassName($node)_pVTable=VTableArrayFor$CFormat.getClassName($node);
 
 	#foreach( $field in $node.getFields() )
-	this_ptr->m_$CFormat.getClassName($node)_$field.getName()= $CFormat.format($field.getInitial());
+	this_ptr->m_$CFormat.getClassName($node)_$field.getName()=#if($CFormat.isNull($field.getInitial())) $CFormat.format($field.getInitial())#else NULL#end;
 	#end
 }
 
@@ -86,3 +86,13 @@ static TVP new()
 
 const struct $CFormat.getClassName($node)Class $CFormat.getClassName($node) =
 { ._new = &new };
+
+
+
+// The VDM accessible constructor methods
+#foreach( $method in $node.getMethods() )
+#if($method.getIsConstructor())
+$CFormat.format($method)
+#end
+#end
+
