@@ -173,7 +173,31 @@ TVP vdmSetDifference(TVP set1, TVP set2)
 
 
 TVP vdmSetSubset(TVP set1, TVP set2)
-{}
+{
+	TVP res;
+
+	UNWRAP_COLLECTION(col1, set1);
+	UNWRAP_COLLECTION(col2, set2);
+
+	if(col1-> size > col2->size)
+	{
+		return newBool(false);
+	}
+
+	for(int i = 0; i < col1->size; i++)
+	{
+
+		res = vdmSetMemberOf(set2, (col1->value)[i]);
+		if(!res->value.boolVal)
+		{
+			free(res);
+			return newBool(false);
+		}
+		free(res);
+	}
+
+	return newBool(true);
+}
 
 
 
