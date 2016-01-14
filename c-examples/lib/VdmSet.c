@@ -202,7 +202,18 @@ TVP vdmSetSubset(TVP set1, TVP set2)
 
 
 TVP vdmSetProperSubset(TVP set1, TVP set2)
-{}
+{
+
+	UNWRAP_COLLECTION(col1, set1);
+	UNWRAP_COLLECTION(col2, set2);
+
+	if(col1->size >= col2->size)
+	{
+		return newBool(false);
+	}
+
+	return vdmSetSubset(set1, set2);
+}
 
 
 
@@ -212,7 +223,9 @@ TVP vdmSetEquals(TVP set1, TVP set2)
 
 
 TVP vdmSetNotEquals(TVP set1, TVP set2)
-{}
+{
+	//different sizes or not mutual subsets
+}
 
 
 

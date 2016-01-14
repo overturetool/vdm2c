@@ -316,7 +316,6 @@ TEST(Expression_set, setSubset)
 	//And a silly non-subset test.
 	vdmFree(set1);
 	vdmFree(set2);
-
 	set1 = newSetVar(1, newInt(1));
 	set2 = newSetVar(1, newInt(2));
 	res = vdmSetSubset(set1, set2);
@@ -330,3 +329,53 @@ TEST(Expression_set, setSubset)
 	vdmFree(set1);
 	vdmFree(set2);
 }
+
+
+
+TEST(Expression_set, setProperSubset)
+{
+	const int numelems1 = 101;
+	TVP randelems1[numelems1];
+	TVP set1;
+	TVP set2;
+	TVP res;
+
+	//Generate the random test value collections.
+	for(int i = 0; i < numelems1; i++)
+	{
+		randelems1[i] = newInt(rand());
+	}
+
+	//Create test set.
+	set1 = newSetWithValues(numelems1, randelems1);
+
+	//Set must not be a proper subset of itself.
+	res = vdmSetProperSubset(set1, set1);
+	EXPECT_EQ(false, res->value.boolVal);
+	vdmFree(res);
+
+	//Get corresponding collection of test set without duplicates.
+	UNWRAP_COLLECTION(setnodupscol, set1);
+	//Make this into a new but smaller set.
+	set2 = newSetWithValues(setnodupscol->size - 1, setnodupscol->value);
+	res = vdmSetProperSubset(set2, set1);
+	EXPECT_EQ(true, res->value.boolVal);
+	vdmFree(res);
+
+	//And a silly non-subset test.
+	vdmFree(set1);
+	vdmFree(set2);
+	set1 = newSetVar(1, newInt(1));
+	set2 = newSetVar(1, newInt(2), newInt(3));
+	res = vdmSetProperSubset(set1, set2);
+	EXPECT_EQ(false, res->value.boolVal);
+
+	for(int i = 0; i < numelems1; i++)
+	{
+		vdmFree(randelems1[i]);
+	}
+	vdmFree(set1);
+	vdmFree(set2);
+	vdmFree(res);
+}
+
