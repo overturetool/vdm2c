@@ -203,6 +203,8 @@ TVP vdmSetSubset(TVP set1, TVP set2)
 
 TVP vdmSetProperSubset(TVP set1, TVP set2)
 {
+	ASSERT_CHECK(set1);
+	ASSERT_CHECK(set2);
 
 	UNWRAP_COLLECTION(col1, set1);
 	UNWRAP_COLLECTION(col2, set2);
@@ -218,13 +220,29 @@ TVP vdmSetProperSubset(TVP set1, TVP set2)
 
 
 TVP vdmSetEquals(TVP set1, TVP set2)
-{}
+{
+	ASSERT_CHECK(set1);
+	ASSERT_CHECK(set2);
+
+	TVP res1;
+	TVP res2;
+	bool r;
+
+	res1 = vdmSetSubset(set1, set2);
+	res2 = vdmSetSubset(set2, set1);
+
+	r = res1->value.boolVal && res2->value.boolVal;
+	vdmFree(res1);
+	vdmFree(res2);
+
+	return newBool(r);
+}
 
 
 
 TVP vdmSetNotEquals(TVP set1, TVP set2)
 {
-	//different sizes or not mutual subsets
+
 }
 
 
