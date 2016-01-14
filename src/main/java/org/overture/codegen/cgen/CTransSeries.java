@@ -18,6 +18,7 @@ import org.overture.codegen.cgen.transformations.CtorTrans;
 import org.overture.codegen.cgen.transformations.DontcareParameterRenamingTrans;
 import org.overture.codegen.cgen.transformations.ExtractRetValTrans;
 import org.overture.codegen.cgen.transformations.FieldIdentifierToFieldGetApplyTrans;
+import org.overture.codegen.cgen.transformations.MangleMethodNamesTrans;
 import org.overture.codegen.cgen.transformations.NewRewriteTrans;
 //import org.overture.codegen.trans.TempVarPrefixes;
 import org.overture.codegen.trans.assistants.TransAssistantCG;
@@ -55,6 +56,7 @@ public class CTransSeries
 		/* C transformations */
 
 		transformations.add(new AddThisArgToMethodsTrans(transAssistant));
+		transformations.add(new MangleMethodNamesTrans(transAssistant));
 		
 		transformations.add(new ExtractRetValTrans(transAssistant));
 		transformations.add(new FieldIdentifierToFieldGetApplyTrans(transAssistant));
