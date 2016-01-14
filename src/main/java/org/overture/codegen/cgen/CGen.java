@@ -126,7 +126,14 @@ public class CGen extends CodeGenBase
 			}
 		}
 
-		statuses.addAll(new ClassHeaderGenerator().generateClassHeaders(IRStatus.extract(statuses, ADefaultClassDeclCG.class)));
+		try
+		{
+			statuses.addAll(new ClassHeaderGenerator().generateClassHeaders(IRStatus.extract(statuses, ADefaultClassDeclCG.class)));
+		} catch (org.overture.codegen.cgast.analysis.AnalysisException e2)
+		{
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
 
 		for (IRStatus<AClassHeaderDeclCG> status : IRStatus.extract(statuses, AClassHeaderDeclCG.class))
 		{

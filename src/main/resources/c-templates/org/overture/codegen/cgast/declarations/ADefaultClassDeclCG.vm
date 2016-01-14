@@ -68,7 +68,7 @@ $CFormat.getClassName($node)CLASS $CFormat.getClassName($node)_Constructor($CFor
 		this_ptr->_$CFormat.getClassName($node)_pVTable=VTableArrayFor$CFormat.getClassName($node);
 
 	#foreach( $field in $node.getFields() )
-	this_ptr->m_$CFormat.getClassName($node)_$field.getName()=#if($CFormat.isNull($field.getInitial())) $CFormat.format($field.getInitial())#else NULL#end;
+	this_ptr->m_$CFormat.getClassName($node)_$field.getName()=#if($CFormat.isNull($field.getInitial())) NULL #else $CFormat.format($field.getInitial())#end;
 	#end
 }
 

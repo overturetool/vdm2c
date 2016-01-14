@@ -36,6 +36,7 @@ import org.overture.codegen.merging.MergeVisitor;
 import org.overture.codegen.merging.TemplateCallable;
 import org.overture.codegen.merging.TemplateManager;
 import org.overture.codegen.utils.GeneralUtils;
+
 //import org.overture.codegen.cgast.
 
 public class CFormat
@@ -61,7 +62,7 @@ public class CFormat
 		return id.toString();
 
 	}
-	
+
 	public AClassHeaderDeclCG getHeader(SClassDeclCG def)
 	{
 		return headerFinder.getHeader(def);
@@ -82,7 +83,8 @@ public class CFormat
 		TemplateManager tm = new TemplateManager("c-templates");
 
 		TemplateCallable[] templateCallables = new TemplateCallable[] {
-				new TemplateCallable("CFormat", this),new TemplateCallable("String", new String()) };
+				new TemplateCallable("CFormat", this),
+				new TemplateCallable("String", new String()) };
 		this.mergeVisitor = new MergeVisitor(tm, templateCallables);
 		this.info = info;
 	}
@@ -95,23 +97,37 @@ public class CFormat
 		return writer.toString();
 	}
 
+	/**
+	 * This method is intended to be used for debugging. Changing the {@link #format(INode)} call in the template to
+	 * {@link #debug(INode)} make it possible to set a breakpoint here
+	 * 
+	 * @param node
+	 * @return
+	 * @throws AnalysisException
+	 */
+	public String debug(INode node) throws AnalysisException
+	{
+		return format(node);
+	}
+
 	public boolean isSeqType(SExpCG exp)
 	{
 		return info.getAssistantManager().getTypeAssistant().isSeqType(exp);
 	}
 
-//	public Boolean isClassType(AFormalParamLocalParamCG fp)
-//	{
-//		return fp.getTag() == "class";
-//	}
-//
-//	public String getEnclosingClass(AFormalParamLocalParamCG fp)
-//	{
-//		return fp.getAncestor(ADefaultClassDeclCG.class).getName().toString()
-//				+ "CLASS";
-//	}
+	// public Boolean isClassType(AFormalParamLocalParamCG fp)
+	// {
+	// return fp.getTag() == "class";
+	// }
+	//
+	// public String getEnclosingClass(AFormalParamLocalParamCG fp)
+	// {
+	// return fp.getAncestor(ADefaultClassDeclCG.class).getName().toString()
+	// + "CLASS";
+	// }
 
-	public String format(SExpCG exp, boolean leftChild) throws AnalysisException
+	public String format(SExpCG exp, boolean leftChild)
+			throws AnalysisException
 	{
 		String formattedExp = format(exp);
 
@@ -195,24 +211,6 @@ public class CFormat
 		return node != null && node instanceof ADefaultClassDeclCG;
 	}
 
-	public String getClassNameId(AIdentifierVarExpCG id)
-	{
-
-		org.overture.ast.node.INode vdm = id.getSourceNode().getVdmNode();
-
-		if (vdm instanceof AVariableExp
-				&& ((AVariableExp) vdm).getVardef() instanceof AInstanceVariableDefinition)
-		{
-			AVariableExp var = ((AVariableExp) vdm);
-			String cl = var.getVardef().getClassDefinition().getName().getName();
-			String fieldName = var.getName().getName().toString();
-			String bcl = cl;
-			return "GET_FIELD_PTR(" + cl + "," + bcl + "," + "this" + ","
-					+ fieldName + ")";
-		}
-
-		return id.getName().toString();
-	}
 
 	public String formatArgs(List<? extends SExpCG> exps)
 			throws AnalysisException
@@ -259,8 +257,9 @@ public class CFormat
 
 	public String escapeChar(char c)
 	{
-		return GeneralUtils.isEscapeSequence(c)
-				? StringEscapeUtils.escapeJavaScript(c + "") : c + "";
+		return GeneralUtils.isEscapeSequence(c) ? StringEscapeUtils.escapeJavaScript(c
+				+ "")
+				: c + "";
 	}
 
 	public List<AFieldDeclCG> getFieldsByAccess(List<AFieldDeclCG> fields,
@@ -388,10 +387,6 @@ public class CFormat
 		return false;
 	}
 
-//	public String getTVPtype()
-//	{
-//		return "TVP";
-//	}
 
 	public String getIncludeClassName(ADefaultClassDeclCG cl)
 	{

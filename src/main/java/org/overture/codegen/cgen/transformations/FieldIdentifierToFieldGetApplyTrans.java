@@ -10,8 +10,6 @@ import org.overture.ast.definitions.AInheritedDefinition;
 import org.overture.ast.definitions.AInstanceVariableDefinition;
 import org.overture.ast.definitions.PDefinition;
 import org.overture.ast.expressions.AVariableExp;
-import org.overture.ast.statements.AIdentifierStateDesignator;
-import org.overture.codegen.cgast.INode;
 import org.overture.codegen.cgast.analysis.AnalysisException;
 import org.overture.codegen.cgast.analysis.DepthFirstAnalysisAdaptor;
 import org.overture.codegen.cgast.declarations.ADefaultClassDeclCG;
@@ -111,13 +109,11 @@ public class FieldIdentifierToFieldGetApplyTrans extends
 		if (node.parent() instanceof AAssignmentStmCG)
 		{
 			// class
-						String thisClassName = node.getSourceNode().getVdmNode().getAncestor(AClassClassDefinition.class).getName().getName();// the
-																																				// containing
-						// field owner
-						String fieldClassName = lookupFieldClass(node.getAncestor(ADefaultClassDeclCG.class), node.getName());
-			
-			
-			
+			String thisClassName = node.getSourceNode().getVdmNode().getAncestor(AClassClassDefinition.class).getName().getName();// the
+																																	// containing
+			// field owner
+			String fieldClassName = lookupFieldClass(node.getAncestor(ADefaultClassDeclCG.class), node.getName());
+
 			AAssignmentStmCG assignment = (AAssignmentStmCG) node.parent();
 			String name = assist.getInfo().getTempVarNameGen().nextVarName(fieldPrefix);
 
@@ -131,8 +127,6 @@ public class FieldIdentifierToFieldGetApplyTrans extends
 
 			AApplyExpCG apply = newApply("SET_FIELD_PTR");// new AApplyExpCG();
 			apply.setSourceNode(SourceNode.copy(node.getSourceNode()));
-
-			
 
 			// add this type
 			apply.getArgs().add(createIdentifier(thisClassName, SourceNode.copy(node.getSourceNode())));

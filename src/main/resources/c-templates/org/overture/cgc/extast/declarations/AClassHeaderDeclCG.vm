@@ -13,6 +13,11 @@
 \#include "$String.format("%s.h",$super.getName().toString())"
 #end
 
+//include types used in the class
+#foreach( $typeName in $node.getIncludes() )
+\#include "$String.format("%s.h",$typeName)"
+#end
+
 \#define CLASS_ID_$CFormat.getClassHeaderName($node)_ID $CFormat.getClassId($CFormat.getClassHeaderName($node))
 
 \#define $CFormat.getClassHeaderName($node)CLASS struct $CFormat.getClassHeaderName($node)*

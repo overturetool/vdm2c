@@ -5,6 +5,9 @@ analysis org.overture.cgc.extast.analysis;
 
 Tokens
 
+ // Wraps a string type so it can be used as a field type
+  ceString ='java:org.overture.codegen.cgen.ast.CGenClonableString';
+
 Abstract Syntax Tree
 
 CG = #decl
@@ -24,6 +27,7 @@ CG = #decl
 		[flattenedSupers]:CG.#decl.classHeader*
 		[state]:CG.#decl.classState
     	[methods]:CG.#decl.method*
+    	[includes]:ceString*
     	| {classState} [fields]:CG.#decl.field* //not sure why it cannot compile as a graph field
        ;
      
