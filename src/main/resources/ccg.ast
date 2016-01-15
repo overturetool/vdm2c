@@ -31,6 +31,11 @@ CG = #decl
     	[includes]:eString*
     	[vtable]:eVtables
     | {classState} [fields]:CG.#decl.field* //not sure why it cannot compile as a graph field
+    | {array} [static]:java_Boolean [type]:CG.#type [name]:java_String [size]:java_Integer [initial]:struct*
        ;
-     
+       
+
+struct  {-> package='org.overture.cgc.extast.declarations'}
+	= {anonymous} [exp]:CG.#exp*	
+	;
        

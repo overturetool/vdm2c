@@ -1,5 +1,7 @@
 // The template for class
 #set( $cname = $node.getName())
+#set($header = $CFormat.getHeader($node))
+#set( $vtable = $header.getVtable())
 \#include "$String.format("%s.h",$cname)"
 \#include <stdio.h>
 
@@ -40,6 +42,11 @@ static struct VTable VTableArrayFor${cname} [] =
 #end
 };
 
+
+#foreach( $field in $CFormat.getHeader($node).getVtable().getOverrideVTableDeclarations() )
+$CFormat.format($field)
+#end
+
 // The internal memory constructor
 ${cname}CLASS ${cname}_Constructor(${cname}CLASS this_ptr)
 {
@@ -59,7 +66,21 @@ ${cname}CLASS ${cname}_Constructor(${cname}CLASS this_ptr)
 	#set( $sname = $super.getName())
 	$String.format("%s_Constructor((%sCLASS)CLASS_CAST(this_ptr,%s,%s));",$sname,$sname,$cname,$sname)
 
-		//TODO vtable overload for $sname goes here.
+		#if($CFormat.getHeader($node).getVtable().hasOverride($sname))
+			#set($tn = $vtable.getOverrideStaticTableName($sname))
+			if(! ${tn}[0].pFunc)
+			{
+				//obtain origitnal $sname VTable
+				memcpy( $tn, this_ptr->_${sname}_pVTable, sizeof( struct VTable) * $vtable.getOverrides($sname).size() );
+				
+				//install overrides
+				#foreach($entry in $vtable.getOverrides($sname).entrySet())
+					${tn}[$entry.getKey()].pFunc = (VirtualFunctionPointer)$entry.getValue(); //override
+				#end
+			}
+			this_ptr->_${sname}_pVTable = $tn;
+		#end
+		
 	#end
 	
 		// $cname init

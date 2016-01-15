@@ -1,11 +1,15 @@
 package org.overture.codegen.cgen;
 
+import static org.overture.codegen.cgen.transformations.CTransUtil.createIdentifier;
+import static org.overture.codegen.cgen.transformations.CTransUtil.newApply;
 import static org.overture.codegen.cgen.transformations.CTransUtil.newDeclarationAssignment;
-import static org.overture.codegen.cgen.transformations.CTransUtil.newTvpType;
+import static org.overture.codegen.cgen.transformations.CTransUtil.newExternalType;
+import static org.overture.codegen.cgen.transformations.CTransUtil.newIdentifierPattern;
+import static org.overture.codegen.cgen.transformations.CTransUtil.newReturnStm;
 
 import java.util.List;
-import java.util.Vector;
 import java.util.Map.Entry;
+import java.util.Vector;
 
 import org.overture.cgc.extast.declarations.AClassHeaderDeclCG;
 import org.overture.codegen.cgast.SDeclCG;
@@ -13,15 +17,12 @@ import org.overture.codegen.cgast.SExpCG;
 import org.overture.codegen.cgast.declarations.AFormalParamLocalParamCG;
 import org.overture.codegen.cgast.declarations.AMethodDeclCG;
 import org.overture.codegen.cgast.declarations.SClassDeclCG;
-import org.overture.codegen.cgast.expressions.ANullExpCG;
 import org.overture.codegen.cgast.statements.ABlockStmCG;
 import org.overture.codegen.cgen.ast.Vtables;
 import org.overture.codegen.cgen.ast.Vtables.VEntry;
 import org.overture.codegen.cgen.ast.Vtables.VEntryOverride;
 import org.overture.codegen.ir.IRStatus;
 import org.overture.codegen.ir.SourceNode;
-
-import static org.overture.codegen.cgen.transformations.CTransUtil.*;
 
 public class VTableGenerator
 {
@@ -119,7 +120,7 @@ public class VTableGenerator
 				{
 					if (superTable.hasMethod(entry))
 					{
-						currentTable.addSuperOverride(superHeader.getName(), superTable.getEntry(entry), entry);
+						currentTable.addSuperOverride(superHeader, superTable.getEntry(entry), entry);
 					}
 				}
 				System.out.println(currentTable);
