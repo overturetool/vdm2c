@@ -15,6 +15,9 @@ extern "C"
 #include <stdio.h>
 #include "ExpressionSeq.h"
 #include "lib/VdmClass.h"
+#ifdef VDM_CG
+#include "MethodNameMap.h"
+#endif
 }
 
 #define CHECK(methodId) TVP c=ExpressionSeq._new();\

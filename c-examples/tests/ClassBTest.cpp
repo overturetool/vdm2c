@@ -10,10 +10,14 @@
 extern "C"
 {
 #include "lib/TypedValue.h"
-#include "classes/A.h"
-#include "classes/B.h"
-#include "classes/C.h"
+#include "A.h"
+#include "B.h"
+#include "C.h"
 #include <stdio.h>
+
+#ifdef VDM_CG
+#include "MethodNameMap.h"
+#endif
 }
 
 namespace
@@ -68,7 +72,7 @@ TEST(ClassBTest, sum)
 	TVP a = newInt(1);
 	TVP b = newInt(4);
 
-//	checkFreeDouble("calculation sum",9,CALL_FUNC(B, A, c, CLASS_A_sum)	);//TODO overload test. This test is working but not supported by generator yet
+	checkFreeDouble("calculation sum",9,CALL_FUNC(B, A, c, CLASS_A_sum)	);//TODO overload test. This test is working but not supported by generator yet
 
 	vdmFree(a);
 	vdmFree(b);
@@ -107,7 +111,7 @@ TEST(ClassBTest, field1c)
 
 TEST(ClassBTest, ctor)
 {
-	TVP c=B_ctor(NULL);
+	TVP c=B._new();
 
 	TVP a = newReal(99.99);
 	SET_FIELD(B,C,c,field1c,a);

@@ -10,10 +10,14 @@
 extern "C"
 {
 #include "lib/TypedValue.h"
-#include "classes/A.h"
-#include "classes/B.h"
-#include "classes/C.h"
+#include "A.h"
+
+
 #include <stdio.h>
+
+#ifdef VDM_CG
+#include "MethodNameMap.h"
+#endif
 }
 
 namespace

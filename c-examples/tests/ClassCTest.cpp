@@ -10,10 +10,13 @@
 extern "C"
 {
 #include "lib/TypedValue.h"
-#include "classes/A.h"
-#include "classes/B.h"
-#include "classes/C.h"
+
+#include "C.h"
 #include <stdio.h>
+
+#ifdef VDM_CG
+#include "MethodNameMap.h"
+#endif
 }
 
 namespace
@@ -50,7 +53,7 @@ TEST(ClassCTest, _new)
 
 TEST(ClassCTest, field1c)
 {
-	TVP c=A._new();
+	TVP c=C._new();
 
 	TVP a = newReal(99.99);
 	SET_FIELD(C,C,c,field1c,a);
