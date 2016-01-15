@@ -242,7 +242,14 @@ TVP vdmSetEquals(TVP set1, TVP set2)
 
 TVP vdmSetNotEquals(TVP set1, TVP set2)
 {
+	TVP res;
+	bool tmp;
 
+	res = vdmSetEquals(set1, set2);
+	tmp = res->value.boolVal;
+	vdmFree(res);
+
+	return newBool(!tmp);
 }
 
 
