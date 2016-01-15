@@ -99,3 +99,22 @@ static TVP new()
 
 const struct BClass B =
 { ._new = &new };
+
+
+TVP B_ctor(BCLASS this)
+{
+	TVP buf = NULL;
+	if(this ==NULL)
+	{
+		//root call i.e. not called from other constructor
+		buf = new();
+		this = TO_CLASS_PTR(buf,B);
+	}
+
+	//ctor code
+
+	A_ctor( (ACLASS) CLASS_CAST(this,B,A) );
+	C_ctor( (CCLASS) CLASS_CAST(this,B,C));
+
+	return buf;
+}

@@ -31,6 +31,7 @@ struct A
 
 };
 
+TVP A_ctor(ACLASS ptr);
 
 void A_free_fields(ACLASS);
 ACLASS A_Constructor(ACLASS);

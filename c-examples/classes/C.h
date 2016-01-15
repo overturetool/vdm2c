@@ -29,6 +29,7 @@ struct C
 	VDM_CLASS_FIELD_DEFINITION(C,field1c);
 };
 
+TVP C_ctor(CCLASS ptr);
 
 void C_free_fields(CCLASS);
 CCLASS C_Constructor(CCLASS);
