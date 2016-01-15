@@ -26,7 +26,6 @@ static void vdmSetAdd(struct TypedValue** value, int* index, TVP newValue)
 
 	if(!found)
 	{
-		//(*value)->value.intVal = 3;
 		value[*index] = newValue;
 		*index = (*index) + 1;
 	}
@@ -163,7 +162,46 @@ TVP vdmSetUnion(TVP set1, TVP set2)
 
 
 TVP vdmSetInter(TVP set1, TVP set2)
-{}
+{
+	TVP testelem;
+	TVP inter;
+	TVP tmpset1;
+	TVP tmpset2;
+	TVP res;
+
+	UNWRAP_COLLECTION(col1, set1);
+	UNWRAP_COLLECTION(col2, set2);
+
+	if(col1->size == 0 || col2->size ==0)
+	{
+		return newSetWithValues(0, NULL);
+	}
+
+	inter = newSetWithValues(0, NULL);
+
+	for(int i = 0; i < col1->size; i++)
+	{
+		res = vdmSetMemberOf(set2, (col1->value)[i]);
+
+		if(res->value.boolVal)
+		{
+			//add to intersection set
+			tmpset1 = newSetVar(1, col1->value[i]);
+			tmpset2 = vdmSetUnion(inter, tmpset1);
+			vdmFree(inter);
+			inter = vdmSetUnion(tmpset2, tmpset1);
+			vdmFree(tmpset1);
+			vdmFree(tmpset2);
+			//TODO:  fix memory leak here on interset.
+			//vdmFree(inter);
+			//inter = tmpset2;
+			//vdmFree(tmpset2);
+			vdmFree(res);
+		}
+	}
+
+	return inter;
+}
 
 
 

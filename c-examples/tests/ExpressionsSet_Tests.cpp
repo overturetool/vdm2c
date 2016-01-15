@@ -94,6 +94,7 @@ TEST(Expression_Set, setComprehension)
 	UNWRAP_COLLECTION(col, comp);
 	EXPECT_EQ(3, col->size);
 
+	//Wrap up.
 	vdmFree(S);
 	vdmFree(t);
 }
@@ -135,9 +136,9 @@ TEST(Expression_Set, setInSet)
 		EXPECT_EQ(true, res->value.boolVal);
 	}
 
+	//Wrap up.
 	vdmFree(res);
 	vdmFree(set);
-
 	for(int i = 0; i < numelems; i++)
 	{
 		free(randelems[i]);
@@ -188,9 +189,9 @@ TEST(Expression_Set, setNotInSet)
 		EXPECT_EQ(false, res->value.boolVal);
 	}
 
+	//Wrap up.
 	vdmFree(res);
 	vdmFree(set);
-
 	for(int i = 0; i < numelems; i++)
 	{
 		free(randelems[i]);
@@ -214,6 +215,8 @@ TEST(Expression_Set, setCard)
 	//Cardinality of non-empty set.
 	theset = newSetWithValues(numelems, elems);
 	EXPECT_EQ(numelems - 1, (vdmSetCard(theset))->value.intVal);
+
+	//Wrap up.
 	for(int i = 0; i < numelems; i++)
 	{
 		free(elems[i]);
@@ -269,9 +272,72 @@ TEST(Expression_set, setUnion)
 				((struct Collection*)(set1->value.ptr))->size + \
 				((struct Collection*)(set2->value.ptr))->size);
 
+	//Wrap up.
 	vdmFree(set1);
 	vdmFree(set2);
 	vdmFree(unionset);
+	for(int i = 0; i < numelems1; i++)
+	{
+		vdmFree(randelems1[i]);
+	}
+	for(int i = 0; i < numelems2; i++)
+	{
+		vdmFree(randelems2[i]);
+	}
+}
+
+
+
+TEST(Expression_set, setIntersection)
+{
+	const int numelems1 = 101;
+	const int numelems2 = 97;
+	TVP randelems1[numelems1];
+	TVP randelems2[numelems2];
+	TVP set1;
+	TVP set2;
+	TVP interset;
+	TVP res;
+
+	//Generate the random test value collections.  Get random values modulo 100
+	//to overcome the stellar performance of the random number generator.
+	srand(time(0));
+	for(int i = 0; i < numelems1; i++)
+	{
+		randelems1[i] = newInt(rand() % 100);
+	}
+
+	for(int i = 0; i < numelems2; i++)
+	{
+		randelems2[i] = newInt(rand() % 100);
+	}
+
+	//Create the random test sets.
+	set1 = newSetWithValues(numelems1, randelems1);
+	set2 = newSetWithValues(numelems2, randelems2);
+	interset = vdmSetInter(set1, set2);
+	UNWRAP_COLLECTION(intercol, interset);
+
+	//Check that intersection is a subset of both sets.
+	for(int i = 0; i < intercol->size; i++)
+	{
+		res = vdmSetSubset(interset, set1);
+		EXPECT_EQ(true, res->value.boolVal);
+		free(res);
+		res = vdmSetSubset(interset, set2);
+		EXPECT_EQ(true, res->value.boolVal);
+		free(res);
+	}
+
+	//Ensure that intersection has at most as many elements as the smallest of the two sets.
+	UNWRAP_COLLECTION(col1, set1);
+	UNWRAP_COLLECTION(col2, set2);
+	EXPECT_EQ(true, (intercol->size <= col1->size) && (intercol->size <= col2->size));
+
+	//Wrap up.
+	vdmFree(set1);
+	vdmFree(set2);
+	vdmFree(interset);
 	for(int i = 0; i < numelems1; i++)
 	{
 		vdmFree(randelems1[i]);
@@ -322,6 +388,7 @@ TEST(Expression_set, setSubset)
 	EXPECT_EQ(false, res->value.boolVal);
 	vdmFree(res);
 
+	//Wrap up.
 	for(int i = 0; i < numelems1; i++)
 	{
 		vdmFree(randelems1[i]);
@@ -370,6 +437,7 @@ TEST(Expression_set, setProperSubset)
 	res = vdmSetProperSubset(set1, set2);
 	EXPECT_EQ(false, res->value.boolVal);
 
+	//Wrap up.
 	for(int i = 0; i < numelems1; i++)
 	{
 		vdmFree(randelems1[i]);
@@ -412,6 +480,7 @@ TEST(Expression_set, setEquality)
 	res = vdmSetEquals(set1, set2);
 	EXPECT_EQ(false, res->value.boolVal);
 
+	//Wrap up.
 	for(int i = 0; i < numelems1; i++)
 	{
 		vdmFree(randelems1[i]);
@@ -462,3 +531,51 @@ TEST(Expression_set, setInequality)
 	vdmFree(set2);
 	vdmFree(res);
 }
+
+
+/*
+ * A crude way to look for memory leaks using the OS resource monitor.
+TEST(Expression_set, setMemTest)
+{
+	const int numelems1 = 1000;
+	const int numelems2 = 1000;
+	TVP randelems1[numelems1];
+	TVP randelems2[numelems2];
+	TVP set1;
+	TVP set2;
+	TVP interset;
+
+	//Generate the random test value collections.
+	srand(time(0));
+
+	for(int numiter = 0; numiter < 5000; numiter++)
+	{
+		for(int i = 0; i < numelems1; i++)
+		{
+			randelems1[i] = newInt(rand());
+		}
+
+		for(int i = 0; i < numelems2; i++)
+		{
+			randelems2[i] = newInt(rand());
+		}
+
+		//Create the random test sets.
+		set1 = newSetWithValues(numelems1, randelems1);
+		set2 = newSetWithValues(numelems2, randelems2);
+		interset = vdmSetInter(set1, set2);
+
+		vdmFree(set1);
+		vdmFree(set2);
+		vdmFree(interset);
+		for(int i = 0; i < numelems1; i++)
+		{
+			vdmFree(randelems1[i]);
+		}
+		for(int i = 0; i < numelems2; i++)
+		{
+			vdmFree(randelems2[i]);
+		}
+	}
+}
+*/
