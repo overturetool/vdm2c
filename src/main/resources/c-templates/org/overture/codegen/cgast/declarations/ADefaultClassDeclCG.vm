@@ -57,7 +57,7 @@ ${cname}CLASS ${cname}_Constructor(${cname}CLASS this_ptr)
 	
 		//init base $super.getName()
 	#set( $sname = $super.getName())
-	$String.format("%s_Constructor((%sCLASS)CLASS_CAST(this_ptr,%s,%s));",$sname,$sname,$cname,$sname);
+	$String.format("%s_Constructor((%sCLASS)CLASS_CAST(this_ptr,%s,%s));",$sname,$sname,$cname,$sname)
 
 		//TODO vtable overload for $sname goes here.
 	#end
