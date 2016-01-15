@@ -23,6 +23,10 @@ public class ExtractRetValTrans extends DepthFirstAnalysisAdaptor
 	@Override
 	public void caseAReturnStmCG(AReturnStmCG node) throws AnalysisException
 	{
+		if(node.getExp()==null)
+		{
+			return;
+		}
 		// ret = clone(a)
 		// free block
 		// return ret
