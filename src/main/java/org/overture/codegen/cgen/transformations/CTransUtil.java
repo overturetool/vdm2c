@@ -31,6 +31,12 @@ public class CTransUtil
 //		return ident;
 //	}
 	
+	public static AIdentifierPatternCG newIdentifierPattern(String name){
+		AIdentifierPatternCG id = new AIdentifierPatternCG();
+		id.setName(name);
+		return id;
+	} 
+	
 	public static AIdentifierVarExpCG createIdentifier(String name,
 			SourceNode derrivedFrom)
 	{
