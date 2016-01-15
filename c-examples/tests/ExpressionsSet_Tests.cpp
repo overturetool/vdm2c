@@ -131,7 +131,7 @@ TEST(Expression_Set, setInSet)
 
 	for(int i = 0; i < numelems; i++)
 	{
-		free(res);
+		vdmFree(res);
 		res = vdmSetMemberOf(set, randelemscpy[i]);
 		EXPECT_EQ(true, res->value.boolVal);
 	}
@@ -141,8 +141,8 @@ TEST(Expression_Set, setInSet)
 	vdmFree(set);
 	for(int i = 0; i < numelems; i++)
 	{
-		free(randelems[i]);
-		free(randelemscpy[i]);
+		vdmFree(randelems[i]);
+		vdmFree(randelemscpy[i]);
 	}
 }
 
@@ -184,7 +184,7 @@ TEST(Expression_Set, setNotInSet)
 
 	for(int i = 0; i < numelems; i++)
 	{
-		free(res);
+		vdmFree(res);
 		res = vdmSetNotMemberOf(set, randelemscpy[i]);
 		EXPECT_EQ(false, res->value.boolVal);
 	}
@@ -219,7 +219,7 @@ TEST(Expression_Set, setCard)
 	//Wrap up.
 	for(int i = 0; i < numelems; i++)
 	{
-		free(elems[i]);
+		vdmFree(elems[i]);
 	}
 	vdmFree(theset);
 }
@@ -258,13 +258,13 @@ TEST(Expression_set, setUnion)
 	{
 		res = vdmSetMemberOf(unionset, randelems1[i]);
 		EXPECT_EQ(true, res->value.boolVal);
-		free(res);
+		vdmFree(res);
 	}
 	for(int i = 0; i < numelems2; i++)
 	{
 		res = vdmSetMemberOf(unionset, randelems2[i]);
 		EXPECT_EQ(true, res->value.boolVal);
-		free(res);
+		vdmFree(res);
 	}
 
 	//Ensure that there are no other elements.
@@ -319,15 +319,12 @@ TEST(Expression_set, setIntersection)
 	UNWRAP_COLLECTION(intercol, interset);
 
 	//Check that intersection is a subset of both sets.
-	for(int i = 0; i < intercol->size; i++)
-	{
-		res = vdmSetSubset(interset, set1);
-		EXPECT_EQ(true, res->value.boolVal);
-		free(res);
-		res = vdmSetSubset(interset, set2);
-		EXPECT_EQ(true, res->value.boolVal);
-		free(res);
-	}
+	res = vdmSetSubset(interset, set1);
+	EXPECT_EQ(true, res->value.boolVal);
+	vdmFree(res);
+	res = vdmSetSubset(interset, set2);
+	EXPECT_EQ(true, res->value.boolVal);
+	vdmFree(res);
 
 	//Ensure that intersection has at most as many elements as the smallest of the two sets.
 	UNWRAP_COLLECTION(col1, set1);
@@ -347,6 +344,64 @@ TEST(Expression_set, setIntersection)
 		vdmFree(randelems2[i]);
 	}
 }
+
+
+
+TEST(Expression_set, setDifference)
+{
+	const int numelems1 = 101;
+	const int numelems2 = 97;
+	TVP randelems1[numelems1];
+	TVP randelems2[numelems2];
+	TVP set1;
+	TVP set2;
+	TVP diffset;
+	TVP interset;
+	TVP res;
+
+	//Generate the random test value collections.  Get random values modulo 100
+	//to overcome the stellar performance of the random number generator.
+	srand(time(0));
+	for(int i = 0; i < numelems1; i++)
+	{
+		randelems1[i] = newInt(rand() % 100);
+	}
+
+	for(int i = 0; i < numelems2; i++)
+	{
+		randelems2[i] = newInt(rand() % 100);
+	}
+
+	//Create the random test sets.
+	set1 = newSetWithValues(numelems1, randelems1);
+	set2 = newSetWithValues(numelems2, randelems2);
+	diffset = vdmSetDifference(set1, set2);
+	UNWRAP_COLLECTION(diffcol, diffset);
+
+	//Check that the difference is a subset of the original set.
+	res = vdmSetSubset(diffset, set1);
+	EXPECT_EQ(true, res->value.boolVal);
+	vdmFree(res);
+
+	//Check that none of the elements in set2 is in the difference set.
+	interset = vdmSetInter(diffset, set2);
+	UNWRAP_COLLECTION(intercol, interset);
+	EXPECT_EQ(true, intercol->size == 0);
+
+	//Wrap up.
+	vdmFree(set1);
+	vdmFree(set2);
+	vdmFree(diffset);
+	for(int i = 0; i < numelems1; i++)
+	{
+		vdmFree(randelems1[i]);
+	}
+	for(int i = 0; i < numelems2; i++)
+	{
+		vdmFree(randelems2[i]);
+	}
+}
+
 
 
 TEST(Expression_set, setSubset)
