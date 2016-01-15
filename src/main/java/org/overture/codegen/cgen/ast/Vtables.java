@@ -55,7 +55,8 @@ public class Vtables
 
 	public static class VEntryOverride extends VEntry
 	{
-		final AMethodDeclCG override;
+		public final AMethodDeclCG override;
+		public AMethodDeclCG overrideProxy;
 
 		public VEntryOverride(String key, AMethodDeclCG method,
 				AMethodDeclCG override)
