@@ -723,6 +723,21 @@ TEST(Expression_Set, setDinter)
 }
 
 
+
+TEST(Expression_Set, setPower)
+{
+	TVP set1;
+	TVP set2;
+	TVP res;
+
+	set1 = newSetVar(3, newInt(1), newInt(2), newInt(3));
+	set2 = vdmSetPower(set1);
+
+	//set2 does not have the right size.
+	vdmFree(set1);
+	vdmFree(set2);
+}
+
 /*
  * A crude way to look for memory leaks using the OS resource monitor.
 TEST(Expression_set, setMemTest)

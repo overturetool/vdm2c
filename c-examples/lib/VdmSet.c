@@ -5,6 +5,7 @@
  *      Author: kel
  */
 #include <string.h>
+#include <math.h>
 #include "VdmSet.h"
 
 #define ASSERT_CHECK(s) assert(s->type == VDM_SET && "Value is not a set")
@@ -413,4 +414,90 @@ TVP vdmSetDinter(TVP set)
 
 
 TVP vdmSetPower(TVP set)
-{}
+{
+	bool *whichelems, carry;
+	TVP set1;
+	TVP set2;
+	TVP powerset;
+	TVP thissizeset;
+
+	ASSERT_CHECK(set);
+
+	UNWRAP_COLLECTION(col, set);
+
+	//Array of picks from whole collection col.
+	whichelems = (bool*)malloc(col->size * sizeof(bool));
+	for(int i = 0; i < col->size; i++)
+	{
+		whichelems[i] = false;
+	}
+
+	powerset = newSetVar(0, NULL);
+	carry = false;
+	for(int i = 1; i < pow(2, col->size); i++)
+	{
+		//Increment picks array.
+		if(!whichelems[0])
+		{
+			carry = false;
+			whichelems[0] = true;
+		}
+		else
+		{
+			carry = true;
+			whichelems[0] = false;
+		}
+
+		for(int k = 1; k < col->size; k++)
+		{
+			if(!whichelems[k])
+			{
+				if(!carry)
+				{
+				}
+				else
+				{
+					whichelems[k] = true;
+					carry = false;
+				}
+			}
+			else
+			{
+				if(!carry)
+				{
+				}
+				else
+				{
+					whichelems[k] = false;
+					carry = true;
+				}
+			}
+		}
+
+		thissizeset = newSetVar(0, NULL);
+		for(int j = 0; j < col->size; j++)
+		{
+			if(whichelems[j])
+			{
+				//Add element to set corresponding to current size.
+				set1 = newSetVar(1, (col->value)[j]);
+				set2 = vdmSetUnion(thissizeset, set1);
+				vdmFree(thissizeset);
+				thissizeset = set2;
+				vdmFree(set1);
+			}
+		}
+
+		set1 = newSetVar(1, thissizeset);
+		set2 = vdmSetUnion(powerset, thissizeset);
+		vdmFree(powerset);
+		powerset = set2;
+		vdmFree(set1);
+		vdmFree(thissizeset);
+	}
+
+	free(whichelems);
+
+	return powerset;
+}
+
