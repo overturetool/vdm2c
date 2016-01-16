@@ -201,31 +201,6 @@ TEST(Expression_Set, setNotInSet)
 
 
 
-TEST(Expression_Set, setCard)
-{
-	const int numelems = 5;
-	TVP elems[numelems] = {newInt(1), newInt(2), newInt(2), newInt(3), newInt(INT_MAX)};
-	TVP theset;
-
-	//Cardinality of empty set.
-	theset = newSetWithValues(0, NULL);
-	EXPECT_EQ(0, (vdmSetCard(theset))->value.intVal);
-	vdmFree(theset);
-
-	//Cardinality of non-empty set.
-	theset = newSetWithValues(numelems, elems);
-	EXPECT_EQ(numelems - 1, (vdmSetCard(theset))->value.intVal);
-
-	//Wrap up.
-	for(int i = 0; i < numelems; i++)
-	{
-		vdmFree(elems[i]);
-	}
-	vdmFree(theset);
-}
-
-
-
 TEST(Expression_set, setUnion)
 {
 	const int numelems1 = 101;
@@ -586,6 +561,106 @@ TEST(Expression_set, setInequality)
 	vdmFree(set2);
 	vdmFree(res);
 }
+
+
+
+TEST(Expression_Set, setCard)
+{
+	const int numelems = 5;
+	TVP elems[numelems] = {newInt(1), newInt(2), newInt(2), newInt(3), newInt(INT_MAX)};
+	TVP theset;
+
+	//Cardinality of empty set.
+	theset = newSetWithValues(0, NULL);
+	EXPECT_EQ(0, (vdmSetCard(theset))->value.intVal);
+	vdmFree(theset);
+
+	//Cardinality of non-empty set.
+	theset = newSetWithValues(numelems, elems);
+	EXPECT_EQ(numelems - 1, (vdmSetCard(theset))->value.intVal);
+
+	//Wrap up.
+	for(int i = 0; i < numelems; i++)
+	{
+		vdmFree(elems[i]);
+	}
+	vdmFree(theset);
+}
+
+
+
+TEST(Expression_Set, setDunion)
+{
+	const int numelems1 = 101;
+	TVP randelems1[numelems1];
+	TVP set1;
+	TVP set2;
+	TVP set3;
+	TVP set4;
+	TVP set5;
+	TVP res;
+
+	//Initialize main set of sets.
+	set3 = newSetVar(0, NULL);
+
+	//Generate the random test value collections.
+	for(int i = 0; i < numelems1; i++)
+	{
+		randelems1[i] = newInt(rand());
+
+		//A set containing one singleton set.
+		set1 = newSetVar(1, newSetVar(1, randelems1[i]));
+		set2 = vdmSetUnion(set3, set1);
+		vdmFree(set3);
+		set3 = set2;
+		vdmFree(set1);
+	}
+
+	set1 = vdmSetDunion(set3);
+	vdmFree(set3);
+
+	//Check that every element of the original singletons are in the union set.
+	for(int i = 0; i < numelems1; i++)
+	{
+		res = vdmSetMemberOf(set1, randelems1[i]);
+		EXPECT_EQ(true, res->value.boolVal);
+		vdmFree(res);
+	}
+
+	//Similar check but with non-singleton initial sets.
+	vdmFree(set1);
+	set1 = newSetVar(2, newInt(1), newInt(2));
+	set2 = newSetVar(3, newInt(3), newInt(4), newInt(5));
+	set3 = newSetVar(1, set1);
+	set4 = newSetVar(1, set2);
+	set5 = vdmSetUnion(set3, set4);
+	vdmFree(set1);
+	vdmFree(set2);
+	vdmFree(set3);
+	vdmFree(set4);
+	set1 = vdmSetDunion(set5);
+	vdmFree(set5);
+
+	//Check that the original sets are subsets of the distributed union set.
+	set2 = newSetVar(2, newInt(1), newInt(2));
+	set3 = newSetVar(3, newInt(3), newInt(4), newInt(5));
+	res = vdmSetSubset(set2, set1);
+	EXPECT_EQ(true, res->value.boolVal);
+	vdmFree(res);
+	res = vdmSetSubset(set3, set1);
+	EXPECT_EQ(true, res->value.boolVal);
+	vdmFree(res);
+
+	//Wrap up.
+	for(int i = 0; i < numelems1; i++)
+	{
+		vdmFree(randelems1[i]);
+	}
+	vdmFree(set1);
+	vdmFree(set2);
+	vdmFree(set3);
+}
+
 
 
 /*

@@ -113,7 +113,6 @@ TVP vdmSetMemberOf(TVP set, TVP element)
 		found|= equals(col->value[i],element);
 	}
 
-	//TODO:  Probably needs freeing somewhere.
 	return newBool(found);
 }
 
@@ -121,8 +120,15 @@ TVP vdmSetMemberOf(TVP set, TVP element)
 
 TVP vdmSetNotMemberOf(TVP set, TVP element)
 {
-	//TODO:  Probably needs freeing somewhere.
-	return newBool(!(vdmSetMemberOf(set, element))->value.boolVal);
+	TVP res;
+	bool resval;
+
+	res = vdmSetMemberOf(set, element);
+	resval = res->value.boolVal;
+
+	vdmFree(res);
+
+	return newBool(!resval);
 }
 
 
@@ -321,17 +327,42 @@ TVP vdmSetNotEquals(TVP set1, TVP set2)
 
 TVP vdmSetCard(TVP set)
 {
+	//TODO:  Insert more of these assertions where needed.
 	ASSERT_CHECK(set);
 	UNWRAP_COLLECTION(col, set);
 
-	//TODO:  This requires freeing somewhere;
 	return newInt(col->size);
 }
 
 
 
 TVP vdmSetDunion(TVP set)
-{}
+{
+	TVP unionset;
+	TVP set1;
+
+	//Preliminary checks.
+	ASSERT_CHECK(set);
+
+	UNWRAP_COLLECTION(col, set);
+	for(int i = 0; i < col->size; i++)
+	{
+		ASSERT_CHECK((col->value)[i]);
+	}
+
+	//Initialize final set.
+	unionset = newSetVar(0, NULL);
+
+	//Build union set.
+	for(int i = 0; i < col->size; i++)
+	{
+		set1 = vdmSetUnion(unionset, (col->value)[i]);
+		vdmFree(unionset);
+		unionset = set1;
+	}
+
+	return unionset;
+}
 
 
 
