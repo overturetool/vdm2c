@@ -123,6 +123,8 @@ TVP vdmSetNotMemberOf(TVP set, TVP element)
 	TVP res;
 	bool resval;
 
+	ASSERT_CHECK(set);
+
 	res = vdmSetMemberOf(set, element);
 	resval = res->value.boolVal;
 
@@ -136,6 +138,9 @@ TVP vdmSetNotMemberOf(TVP set, TVP element)
 TVP vdmSetUnion(TVP set1, TVP set2)
 {
 	TVP *newvalues;
+
+	ASSERT_CHECK(set1);
+	ASSERT_CHECK(set2);
 
 	UNWRAP_COLLECTION(col1, set1);
 	UNWRAP_COLLECTION(col2, set2);
@@ -174,6 +179,9 @@ TVP vdmSetInter(TVP set1, TVP set2)
 	TVP tmpset1;
 	TVP tmpset2;
 	TVP res;
+
+	ASSERT_CHECK(set1);
+	ASSERT_CHECK(set2);
 
 	UNWRAP_COLLECTION(col1, set1);
 	UNWRAP_COLLECTION(col2, set2);
@@ -214,6 +222,9 @@ TVP vdmSetDifference(TVP set1, TVP set2)
 	TVP tmpelem;
 	TVP res;
 
+	ASSERT_CHECK(set1);
+	ASSERT_CHECK(set2);
+
 	UNWRAP_COLLECTION(col1, set1);
 	UNWRAP_COLLECTION(col2, set2);
 
@@ -246,6 +257,9 @@ TVP vdmSetDifference(TVP set1, TVP set2)
 TVP vdmSetSubset(TVP set1, TVP set2)
 {
 	TVP res;
+
+	ASSERT_CHECK(set1);
+	ASSERT_CHECK(set2);
 
 	UNWRAP_COLLECTION(col1, set1);
 	UNWRAP_COLLECTION(col2, set2);
@@ -316,6 +330,9 @@ TVP vdmSetNotEquals(TVP set1, TVP set2)
 	TVP res;
 	bool tmp;
 
+	ASSERT_CHECK(set1);
+	ASSERT_CHECK(set2);
+
 	res = vdmSetEquals(set1, set2);
 	tmp = res->value.boolVal;
 	vdmFree(res);
@@ -327,7 +344,6 @@ TVP vdmSetNotEquals(TVP set1, TVP set2)
 
 TVP vdmSetCard(TVP set)
 {
-	//TODO:  Insert more of these assertions where needed.
 	ASSERT_CHECK(set);
 	UNWRAP_COLLECTION(col, set);
 
