@@ -663,6 +663,66 @@ TEST(Expression_Set, setDunion)
 
 
 
+TEST(Expression_Set, setDinter)
+{
+	TVP set1;
+	TVP set2;
+	TVP set3;
+	TVP set4;
+	TVP set5;
+	TVP res;
+
+	set1 = newSetVar(3, newInt(1), newInt(2), newInt(3));
+	set2 = newSetVar(3, newInt(2), newInt(3), newInt(4));
+	set3 = newSetVar(1, set1);
+	set4 = newSetVar(1, set2);
+	set5 = vdmSetUnion(set3, set4);
+	vdmFree(set1);
+	vdmFree(set2);
+	vdmFree(set3);
+	vdmFree(set4);
+	set1 = vdmSetDinter(set5);
+	vdmFree(set5);
+
+	//Check that intersecting the distributed intersection with each of the original sets results in the distributed intersection itself.
+	set2 = newSetVar(3, newInt(1), newInt(2), newInt(3));
+	set3 = newSetVar(3, newInt(2), newInt(3), newInt(4));
+	set4 = vdmSetInter(set1, set2);
+	set5 = vdmSetInter(set1, set2);
+
+	res = vdmSetEquals(set1, set4);
+	EXPECT_EQ(true, res->value.boolVal);
+	vdmFree(res);
+	res = vdmSetEquals(set1, set5);
+	EXPECT_EQ(true, res->value.boolVal);
+	vdmFree(res);
+	vdmFree(set2);
+	vdmFree(set3);
+	vdmFree(set4);
+	vdmFree(set5);
+
+	//A negative check by modifying one of the original sets.
+	set2 = newSetVar(3, newInt(1), newInt(6), newInt(3));
+	set3 = newSetVar(3, newInt(2), newInt(3), newInt(4));
+	set4 = vdmSetInter(set1, set2);
+	set5 = vdmSetInter(set1, set2);
+
+	res = vdmSetEquals(set1, set4);
+	EXPECT_EQ(false, res->value.boolVal);
+	vdmFree(res);
+	res = vdmSetEquals(set1, set5);
+	EXPECT_EQ(false, res->value.boolVal);
+	vdmFree(res);
+
+	//Wrap up.
+	vdmFree(set1);
+	vdmFree(set2);
+	vdmFree(set3);
+	vdmFree(set4);
+	vdmFree(set5);
+}
+
+
 /*
  * A crude way to look for memory leaks using the OS resource monitor.
 TEST(Expression_set, setMemTest)

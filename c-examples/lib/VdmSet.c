@@ -367,7 +367,32 @@ TVP vdmSetDunion(TVP set)
 
 
 TVP vdmSetDinter(TVP set)
-{}
+{
+	TVP interset;
+	TVP set1;
+
+	//Preliminary checks.
+	ASSERT_CHECK(set);
+
+	UNWRAP_COLLECTION(col, set);
+	for(int i = 0; i < col->size; i++)
+	{
+		ASSERT_CHECK((col->value)[i]);
+	}
+
+	//Initialize final set.
+	interset = vdmClone((col->value)[0]);
+
+	//Build intersection set.
+	for(int i = 1; i < col->size; i++)
+	{
+		set1 = vdmSetInter(interset, (col->value)[i]);
+		vdmFree(interset);
+		interset = set1;
+	}
+
+	return interset;
+}
 
 
 
