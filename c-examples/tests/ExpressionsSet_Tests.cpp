@@ -730,12 +730,49 @@ TEST(Expression_Set, setPower)
 	TVP set2;
 	TVP res;
 
-	set1 = newSetVar(3, newInt(1), newInt(2), newInt(3));
+	set1 = newSetVar(4, newInt(1), newInt(2), newInt(3), newInt(4));
 	set2 = vdmSetPower(set1);
 
-	//set2 does not have the right size.
+	UNWRAP_COLLECTION(col, set2);
+
+	//Set should have the right size.
+	EXPECT_EQ(true, col->size == pow(2, 4));
+	EXPECT_EQ(false, col->size == pow(2, 5));
+
+	//Power set should contain the subsets.  Only testing a few here.
+	vdmFree(set1);
+	set1 = newSetVar(0, NULL);
+	res = vdmSetMemberOf(set2, set1);
+	EXPECT_EQ(true, res->value.boolVal);
+	vdmFree(set1);
+	vdmFree(res);
+
+	set1 = newSetVar(1, newInt(3));
+	res = vdmSetMemberOf(set2, set1);
+	EXPECT_EQ(true, res->value.boolVal);
+	vdmFree(set1);
+	vdmFree(res);
+
+	set1 = newSetVar(4, newInt(1), newInt(2), newInt(3), newInt(4));
+	res = vdmSetMemberOf(set2, set1);
+	EXPECT_EQ(true, res->value.boolVal);
+	vdmFree(set1);
+	vdmFree(res);
+
+	set1 = newSetVar(2, newInt(2), newInt(3));
+	res = vdmSetMemberOf(set2, set1);
+	EXPECT_EQ(true, res->value.boolVal);
+	vdmFree(set1);
+	vdmFree(res);
+
+	set1 = newSetVar(2, newInt(2), newInt(5));
+	res = vdmSetMemberOf(set2, set1);
+	EXPECT_EQ(false, res->value.boolVal);
+
+	//Wrap up.
 	vdmFree(set1);
 	vdmFree(set2);
+	vdmFree(res);
 }
 
 /*

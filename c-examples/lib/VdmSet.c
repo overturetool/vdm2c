@@ -425,18 +425,53 @@ TVP vdmSetPower(TVP set)
 
 	UNWRAP_COLLECTION(col, set);
 
-	//Array of picks from whole collection col.
+	//This array is the key to generating all the combinations of elements.
+	//It represents a binary number with the same number of bits as the total
+	//number of elements in the source set.  Each location in this array
+	//corresponds to an index of the original collection.  Each time this binary
+	//number is incremented, the bit pattern changes, and is unique.  The indices
+	//into this array whose elements are true are the indices into the
+	//original collection whose elements are to be included into the
+	//current subset.  All subsets are formed in this way by incrementing the
+	//binary number represented by this array from 0 to (2 ^ ( |set| )).
 	whichelems = (bool*)malloc(col->size * sizeof(bool));
 	for(int i = 0; i < col->size; i++)
 	{
 		whichelems[i] = false;
 	}
 
+	//Initialize power set.
 	powerset = newSetVar(0, NULL);
+
+	//Needed for binary number addition.
 	carry = false;
-	for(int i = 1; i < pow(2, col->size); i++)
+	for(int i = 0; i <= pow(2, col->size); i++)
 	{
-		//Increment picks array.
+		thissizeset = newSetVar(0, NULL);
+		for(int j = 0; j < col->size; j++)
+		{
+			//Which elements are indicated by the bit pattern to be
+			//included in the current subset.
+			if(whichelems[j])
+			{
+				//Add element to set corresponding to current size.
+				set1 = newSetVar(1, (col->value)[j]);
+				set2 = vdmSetUnion(thissizeset, set1);
+				vdmFree(thissizeset);
+				thissizeset = set2;
+				vdmFree(set1);
+			}
+		}
+
+		//Add the current subset to the power set.
+		set1 = newSetVar(1, thissizeset);
+		set2 = vdmSetUnion(powerset, set1);
+		vdmFree(powerset);
+		powerset = set2;
+		vdmFree(set1);
+		vdmFree(thissizeset);
+
+		//Increment the binary number array.
 		if(!whichelems[0])
 		{
 			carry = false;
@@ -473,29 +508,9 @@ TVP vdmSetPower(TVP set)
 				}
 			}
 		}
-
-		thissizeset = newSetVar(0, NULL);
-		for(int j = 0; j < col->size; j++)
-		{
-			if(whichelems[j])
-			{
-				//Add element to set corresponding to current size.
-				set1 = newSetVar(1, (col->value)[j]);
-				set2 = vdmSetUnion(thissizeset, set1);
-				vdmFree(thissizeset);
-				thissizeset = set2;
-				vdmFree(set1);
-			}
-		}
-
-		set1 = newSetVar(1, thissizeset);
-		set2 = vdmSetUnion(powerset, thissizeset);
-		vdmFree(powerset);
-		powerset = set2;
-		vdmFree(set1);
-		vdmFree(thissizeset);
 	}
 
+	//Wrap up.
 	free(whichelems);
 
 	return powerset;
