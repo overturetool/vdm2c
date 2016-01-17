@@ -189,7 +189,6 @@ TVP vdmMapMerge(TVP set)
 
 TVP vdmMapDomRestrictTo(TVP set,TVP map)
 {
-	// TODO: Check also for Set
 	ASSERT_CHECK(map);
 
 	TVP map_res = newMap();
@@ -210,7 +209,6 @@ TVP vdmMapDomRestrictTo(TVP set,TVP map)
 
 TVP vdmMapDomRestrictBy(TVP set,TVP map)
 {
-	// TODO: Check also for Set
 	ASSERT_CHECK(map);
 
 	TVP map_res = newMap();
@@ -220,7 +218,7 @@ TVP vdmMapDomRestrictBy(TVP set,TVP map)
 
 	for(int i=0; i<m->size;i++){
 		TVP key = m->value[i];
-		if(!vdmSetMemberOf(set,key)->value.boolVal){ // TODO: Use vdmNotSetMember of when implemented
+		if(vdmSetNotMemberOf(set,key)->value.boolVal){
 			TVP val = vdmMapApply(map,key);
 			vdmMapAdd(map_res,key,val);
 		}
@@ -231,7 +229,6 @@ TVP vdmMapDomRestrictBy(TVP set,TVP map)
 
 TVP vdmMapRngRestrictTo(TVP set,TVP map)
 {
-	// TODO: Check also for Set
 	ASSERT_CHECK(map);
 
 	TVP map_res = newMap();
@@ -242,6 +239,7 @@ TVP vdmMapRngRestrictTo(TVP set,TVP map)
 	for(int i=0; i<m->size;i++){
 		TVP key = m->value[i];
 		TVP val = vdmMapApply(map,key);
+		//Is this missing a ! in front?  c.f. the TODO comment.
 		if(vdmSetMemberOf(set,val)->value.boolVal){ // TODO: Use vdmNotSetMember of when implemented
 			vdmMapAdd(map_res,key,val);
 		}
@@ -253,7 +251,6 @@ TVP vdmMapRngRestrictTo(TVP set,TVP map)
 
 TVP vdmMapRngRestrictBy(TVP set,TVP map)
 {
-	// TODO: Check also for Set
 	ASSERT_CHECK(map);
 
 	TVP map_res = newMap();
@@ -264,7 +261,7 @@ TVP vdmMapRngRestrictBy(TVP set,TVP map)
 	for(int i=0; i<m->size;i++){
 		TVP key = m->value[i];
 		TVP val = vdmMapApply(map,key);
-		if(!vdmSetMemberOf(set,val)->value.boolVal){ // TODO: Use vdmNotSetMember of when implemented
+		if(vdmSetNotMemberOf(set,val)->value.boolVal){
 			vdmMapAdd(map_res,key,val);
 		}
 	}
