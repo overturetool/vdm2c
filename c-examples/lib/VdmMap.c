@@ -143,12 +143,22 @@ TVP vdmMapOverride(TVP map1, TVP map2)
 {
 	// Create a new map
 	TVP map = newMap();
+	TVP dom1set;
+	TVP dom2set;
+	TVP res;
 
 	//Assert map
 	ASSERT_CHECK(map1);
 	ASSERT_CHECK(map2);
 
 	// TODO: Assert that they are compatible, by using Set library
+	dom1set = vdmMapDom(map1);
+	dom2set = vdmMapDom(map2);
+	res = vdmSetSubset(dom2set, dom1set);
+	//Make said assertion.
+	vdmFree(dom1set);
+	vdmFree(dom2set);
+	vdmFree(res);
 
 	TVP map1_dom = vdmMapDom(map1);
 	UNWRAP_COLLECTION(d1,map1_dom);
@@ -239,8 +249,7 @@ TVP vdmMapRngRestrictTo(TVP set,TVP map)
 	for(int i=0; i<m->size;i++){
 		TVP key = m->value[i];
 		TVP val = vdmMapApply(map,key);
-		//Is this missing a ! in front?  c.f. the TODO comment.
-		if(vdmSetMemberOf(set,val)->value.boolVal){ // TODO: Use vdmNotSetMember of when implemented
+		if(vdmSetMemberOf(set,val)->value.boolVal){
 			vdmMapAdd(map_res,key,val);
 		}
 	}
