@@ -15,7 +15,7 @@
 /*
  * Create new empty set
  */
-struct TypedValue* newSet(size_t size);
+//struct TypedValue* newSet(size_t size);
 /*
  * Create new set from array of elements
  */
@@ -33,7 +33,7 @@ TVP vdmSetDifference(TVP set1, TVP set2);
 TVP vdmSetSubset(TVP set1, TVP set2);
 TVP vdmSetProperSubset(TVP set1, TVP set2);
 TVP vdmSetEquals(TVP set1, TVP set2);
-TVP vdmSetInEquals(TVP set1, TVP set2);
+TVP vdmSetNotEquals(TVP set1, TVP set2);
 TVP vdmSetCard(TVP set);
 TVP vdmSetDunion(TVP set);
 TVP vdmSetDinter(TVP set);

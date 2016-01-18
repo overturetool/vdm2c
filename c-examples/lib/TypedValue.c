@@ -59,10 +59,8 @@ struct TypedValue* newCollection(size_t size, vdmtype type)
 {
 	struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
 	ptr->size = size;
-	ptr->value = (struct TypedValue**) calloc(size, sizeof(struct TypedValue*)); //I know this is slower thank malloc but better for products
-	return newTypeValue(type, (TypedValueType
-			)
-			{ .ptr = ptr });
+	ptr->value = (struct TypedValue**) calloc(size, sizeof(struct TypedValue*)); //I know this is slower than malloc but better for products
+	return newTypeValue(type, (TypedValueType){ .ptr = ptr });
 }
 
 struct TypedValue* newCollectionWithValues(vdmtype type, size_t size, TVP* elements)

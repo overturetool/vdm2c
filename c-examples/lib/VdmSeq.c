@@ -72,17 +72,7 @@ TVP vdmSeqElems(TVP seq)
 	ASSERT_CHECK(seq);
 	UNWRAP_COLLECTION(col,seq);
 
-	//malloc
-	TVP elemsVal = newSet(col->size);
-	struct Collection* elems = elemsVal->value.ptr;
-
-	//copy  list
-	for (int i = 0; i < col->size; i++)
-	{
-		elems->value[i] = vdmClone(col->value[i]);
-	}
-
-	//FIXME this should have been done using set functions checking dublicates
+	TVP elemsVal = newSetWithValues(col->size, elemsVal->value.ptr);
 
 	return elemsVal;
 }
@@ -91,15 +81,15 @@ TVP vdmSeqInds(TVP seq)
 	ASSERT_CHECK(seq);
 	UNWRAP_COLLECTION(col,seq);
 
-	//malloc
-	TVP indsVal = newSet(col->size);
-	UNWRAP_COLLECTION(inds,indsVal);
+	struct TypedValue** value = (struct TypedValue**) calloc(col->size, sizeof(struct TypedValue*));
 
 	//copy  list
 	for (int i = 0; i < col->size; i++)
 	{
-		inds->value[i] = newInt(i+1);
+		value[i] = newInt(i+1);
 	}
+
+	TVP indsVal = newSetWithValues(col->size, value);
 
 	return indsVal;
 }
