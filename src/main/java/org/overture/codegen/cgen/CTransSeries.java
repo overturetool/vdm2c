@@ -14,6 +14,7 @@ import java.util.List;
 import org.overture.codegen.cgast.analysis.DepthFirstAnalysisAdaptor;
 import org.overture.codegen.cgast.declarations.ADefaultClassDeclCG;
 import org.overture.codegen.cgen.transformations.AddThisArgToMethodsTrans;
+import org.overture.codegen.cgen.transformations.CallRewriteTrans;
 import org.overture.codegen.cgen.transformations.CtorTrans;
 import org.overture.codegen.cgen.transformations.DontcareParameterRenamingTrans;
 import org.overture.codegen.cgen.transformations.ExtractRetValTrans;
@@ -57,7 +58,8 @@ public class CTransSeries
 
 		transformations.add(new AddThisArgToMethodsTrans(transAssistant));
 		transformations.add(new MangleMethodNamesTrans(transAssistant));
-		
+	
+		transformations.add(new CallRewriteTrans(transAssistant));
 		transformations.add(new ExtractRetValTrans(transAssistant));
 		transformations.add(new FieldIdentifierToFieldGetApplyTrans(transAssistant));
 		transformations.add(new CtorTrans(transAssistant));

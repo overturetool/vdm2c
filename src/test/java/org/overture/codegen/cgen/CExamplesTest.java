@@ -40,6 +40,12 @@ public class CExamplesTest
 	}
 	
 	@Test
+	public void call()
+	{
+		CGenMain.main(new String[] {"-dest",outputFolder, getPath("classes/Call.vdmrt") });
+	}
+	
+	@Test
 	public void Numeric()
 	{
 		CGenMain.main(new String[] {"-dest",outputFolder, getPath("expressions/ExpressionNumeric.vdmrt") });
