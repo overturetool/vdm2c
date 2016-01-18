@@ -23,6 +23,7 @@ import org.overture.codegen.vdm2c.transformations.CtorTrans;
 import org.overture.codegen.vdm2c.transformations.DontcareParameterRenamingTrans;
 import org.overture.codegen.vdm2c.transformations.ExtractRetValTrans;
 import org.overture.codegen.vdm2c.transformations.FieldIdentifierToFieldGetApplyTrans;
+import org.overture.codegen.vdm2c.transformations.LiteralInstantiationRewriteTrans;
 import org.overture.codegen.vdm2c.transformations.MangleMethodNamesTrans;
 import org.overture.codegen.vdm2c.transformations.NewRewriteTrans;
 
@@ -65,6 +66,7 @@ public class CTransSeries
 		transformations.add(new CtorTrans(transAssistant));
 		transformations.add(new NewRewriteTrans(transAssistant));
 		transformations.add(new DontcareParameterRenamingTrans(transAssistant));
+		transformations.add(new LiteralInstantiationRewriteTrans(transAssistant));
 		return transformations;
 	}
 

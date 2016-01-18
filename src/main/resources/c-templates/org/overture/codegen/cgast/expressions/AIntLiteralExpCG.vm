@@ -1,1 +1,1 @@
-newInt($node.getValue())
+$node.getValue()
