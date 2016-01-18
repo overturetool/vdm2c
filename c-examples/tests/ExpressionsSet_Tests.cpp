@@ -741,19 +741,22 @@ TEST(Expression_Set, setPower)
 
 	//Power set should contain the subsets.  Only testing a few here.
 	vdmFree(set1);
+
+	//Should definitely contain the empty set and the original.
 	set1 = newSetVar(0, NULL);
 	res = vdmSetMemberOf(set2, set1);
 	EXPECT_EQ(true, res->value.boolVal);
 	vdmFree(set1);
 	vdmFree(res);
 
-	set1 = newSetVar(1, newInt(3));
+	set1 = newSetVar(4, newInt(1), newInt(2), newInt(3), newInt(4));
 	res = vdmSetMemberOf(set2, set1);
 	EXPECT_EQ(true, res->value.boolVal);
 	vdmFree(set1);
 	vdmFree(res);
 
-	set1 = newSetVar(4, newInt(1), newInt(2), newInt(3), newInt(4));
+	//And some others.
+	set1 = newSetVar(1, newInt(3));
 	res = vdmSetMemberOf(set2, set1);
 	EXPECT_EQ(true, res->value.boolVal);
 	vdmFree(set1);
@@ -774,6 +777,50 @@ TEST(Expression_Set, setPower)
 	vdmFree(set2);
 	vdmFree(res);
 }
+
+
+
+/*
+ * A crude way of testing how long it takes to generate a power set.
+TEST(Expression_Set, setPowerExperiment)
+{
+	const int numelems1 = 11;
+	TVP randelems1[numelems1];
+	TVP set1;
+	TVP set2;
+	TVP set3;
+	TVP res;
+
+	//Initialize main set of sets.
+	set3 = newSetVar(0, NULL);
+
+	//Generate the random test value collections.
+	for(int i = 0; i < numelems1; i++)
+	{
+		randelems1[i] = newInt(rand());
+
+		//A set containing one element.
+		set1 = newSetVar(1, randelems1[i]);
+		set2 = vdmSetUnion(set3, set1);
+		vdmFree(set3);
+		set3 = set2;
+		vdmFree(set1);
+	}
+	//Wrap up.
+	for(int i = 0; i < numelems1; i++)
+	{
+		vdmFree(randelems1[i]);
+	}
+
+	set2 = vdmSetPower(set3);
+
+	//Wrap up.
+	vdmFree(set2);
+	vdmFree(set3);
+}
+*/
+
+
 
 /*
  * A crude way to look for memory leaks using the OS resource monitor.
