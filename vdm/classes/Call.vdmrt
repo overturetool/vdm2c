@@ -1,0 +1,34 @@
+class Call1
+
+operations
+
+public op1 : int*char ==> bool
+op1(a,b) ==return a > 4;
+
+public op2 : int*char ==> bool
+op2(a,b) ==return a > 4;
+
+public op3 : int*char ==> ()
+op3(a,b) ==return;
+
+public op4 : int*char ==> ()
+op4(a,b) ==return ;
+
+public test : int*char==>()
+test(a,b)==(
+
+op3(a,b);
+op4(a,b);
+
+
+return;
+)
+
+
+end Call1
+
+
+class Call2
+
+
+end Call2
