@@ -116,6 +116,15 @@ Why is this importsnt: Well `free` only frees if `ptr != NULL`
 * http://stackoverflow.com/questions/3523145/pointer-arithmetic-for-void-pointer-in-c
 * https://www.cs.uaf.edu/2010/fall/cs301/lecture/10_15_struct_and_class.html
 
+* (main) http://www.eventhelix.com/RealtimeMantra/basics/ComparingCPPAndCPerformance2.htm#.VpmaslMrLUr
+* https://en.wikipedia.org/wiki/Virtual_method_table
+* http://www.go4expert.com/articles/virtual-table-vptr-multiple-inheritance-t16616/
+* http://www.go4expert.com/articles/virtual-table-vptr-t16544/
+* http://www.learncpp.com/cpp-tutorial/125-the-virtual-table/
+* (main-end) :-)
+
+* http://www.drdobbs.com/cpp/single-inheritance-classes-in-c/184406396?pgno=1
+* http://www.pvv.ntnu.no/~hakonhal/main.cgi/c/classes
 
 # C Macro
 
