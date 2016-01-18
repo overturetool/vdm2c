@@ -6,21 +6,21 @@ analysis org.overture.cgc.extast.analysis;
 Tokens
 
  // Wraps a string type so it can be used as a field type
-  eString ='java:org.overture.codegen.cgen.ast.CGenClonableString';
-eVtables ='java:org.overture.codegen.cgen.ast.Vtables';
+  eString ='java:org.overture.codegen.vdm2c.ast.CGenClonableString';
+eVtables ='java:org.overture.codegen.vdm2c.ast.Vtables';
 Abstract Syntax Tree
 
 CG = #decl
 //| #stm
     ;
 
-//#stm {-> package='org.overture.cgc.extast.statements'}
+//#stm {-> package='org.overture.codegen.vdm2c.extast.statements'}
 //	= {exp} [exp]:CG.#exp;
 	
 	
 
 
-#decl {-> package='org.overture.cgc.extast.declarations'}
+#decl {-> package='org.overture.codegen.vdm2c.extast.declarations'}
 	= 
        {classHeader}
     	[name]:java_String
@@ -35,7 +35,7 @@ CG = #decl
        ;
        
 
-struct  {-> package='org.overture.cgc.extast.declarations'}
+struct  {-> package='org.overture.codegen.vdm2c.extast.declarations'}
 	= {anonymous} [exp]:CG.#exp*	
 	;
        
