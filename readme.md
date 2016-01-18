@@ -18,6 +18,13 @@ After successful checkout run:
 ```bash
 cmake -DCMAKE_BUILD_TYPE=Debug .
 ```
+### Enabling generator tests
+
+To enable test for the vdm2c generator use the following property:
+
+```bash
+-DEXT_C_FILES=/path/to/vdm2c/target/test-cgen/CExamplesTest
+```
 
 ## Compiler tool dependencies
 * glib
