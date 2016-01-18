@@ -1,15 +1,15 @@
 package org.overture.codegen.vdm2c.transformations;
 
-import static org.overture.codegen.vdm2c.transformations.CTransUtil.addArgument;
-import static org.overture.codegen.vdm2c.transformations.CTransUtil.createIdentifier;
-import static org.overture.codegen.vdm2c.transformations.CTransUtil.exp2Stm;
-import static org.overture.codegen.vdm2c.transformations.CTransUtil.newApply;
-import static org.overture.codegen.vdm2c.transformations.CTransUtil.newAssignment;
-import static org.overture.codegen.vdm2c.transformations.CTransUtil.newCast;
-import static org.overture.codegen.vdm2c.transformations.CTransUtil.newDeclarationAssignment;
-import static org.overture.codegen.vdm2c.transformations.CTransUtil.newExternalType;
-import static org.overture.codegen.vdm2c.transformations.CTransUtil.newReturnStm;
-import static org.overture.codegen.vdm2c.transformations.CTransUtil.newTvpType;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.addArgument;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.createIdentifier;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.exp2Stm;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.newApply;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.newAssignment;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.newCast;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.newDeclarationAssignment;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.newExternalType;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.newReturnStm;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.newTvpType;
 
 import java.util.Collections;
 import java.util.LinkedList;

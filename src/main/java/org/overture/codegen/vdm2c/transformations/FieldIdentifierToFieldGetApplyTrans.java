@@ -1,9 +1,9 @@
 package org.overture.codegen.vdm2c.transformations;
 
-import static org.overture.codegen.vdm2c.transformations.CTransUtil.createIdentifier;
-import static org.overture.codegen.vdm2c.transformations.CTransUtil.exp2Stm;
-import static org.overture.codegen.vdm2c.transformations.CTransUtil.newApply;
-import static org.overture.codegen.vdm2c.transformations.CTransUtil.newDeclarationAssignment;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.createIdentifier;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.exp2Stm;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.newApply;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.newDeclarationAssignment;
 
 import org.overture.ast.definitions.AClassClassDefinition;
 import org.overture.ast.definitions.AInheritedDefinition;

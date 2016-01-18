@@ -1,11 +1,11 @@
 package org.overture.codegen.vdm2c;
 
-import static org.overture.codegen.vdm2c.transformations.CTransUtil.createIdentifier;
-import static org.overture.codegen.vdm2c.transformations.CTransUtil.newApply;
-import static org.overture.codegen.vdm2c.transformations.CTransUtil.newDeclarationAssignment;
-import static org.overture.codegen.vdm2c.transformations.CTransUtil.newExternalType;
-import static org.overture.codegen.vdm2c.transformations.CTransUtil.newIdentifierPattern;
-import static org.overture.codegen.vdm2c.transformations.CTransUtil.newReturnStm;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.createIdentifier;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.newApply;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.newDeclarationAssignment;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.newExternalType;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.newIdentifierPattern;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.newReturnStm;
 
 import java.util.List;
 import java.util.Map.Entry;

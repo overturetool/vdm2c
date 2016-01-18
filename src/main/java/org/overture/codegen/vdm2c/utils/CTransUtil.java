@@ -1,4 +1,4 @@
-package org.overture.codegen.vdm2c.transformations;
+package org.overture.codegen.vdm2c.utils;
 
 import java.util.Arrays;
 import java.util.LinkedList;

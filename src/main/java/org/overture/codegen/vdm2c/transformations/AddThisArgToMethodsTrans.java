@@ -1,8 +1,8 @@
 package org.overture.codegen.vdm2c.transformations;
 
-import static org.overture.codegen.vdm2c.transformations.CTransUtil.addArgument;
-import static org.overture.codegen.vdm2c.transformations.CTransUtil.newExternalType;
-import static org.overture.codegen.vdm2c.transformations.CTransUtil.newTvpType;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.addArgument;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.newExternalType;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.newTvpType;
 
 import org.overture.codegen.cgast.analysis.AnalysisException;
 import org.overture.codegen.cgast.analysis.DepthFirstAnalysisAdaptor;

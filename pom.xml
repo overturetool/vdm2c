@@ -9,7 +9,7 @@
 	</parent>
 
 	<groupId>org.overturetool.core.codegen</groupId>
-	<artifactId>cgen</artifactId>
+	<artifactId>vdm2c</artifactId>
 	<name>The C Code Generator</name>
 
 	<dependencies>

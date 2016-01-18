@@ -1,7 +1,7 @@
 package org.overture.codegen.vdm2c.transformations;
 
-import static org.overture.codegen.vdm2c.transformations.CTransUtil.createIdentifier;
-import static org.overture.codegen.vdm2c.transformations.CTransUtil.newApply;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.createIdentifier;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.newApply;
 
 import org.overture.codegen.cgast.SExpCG;
 import org.overture.codegen.cgast.analysis.AnalysisException;

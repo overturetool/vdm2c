@@ -1,8 +1,8 @@
 package org.overture.codegen.vdm2c.ast;
 
-import static org.overture.codegen.vdm2c.transformations.CTransUtil.createIdentifier;
-import static org.overture.codegen.vdm2c.transformations.CTransUtil.newCast;
-import static org.overture.codegen.vdm2c.transformations.CTransUtil.newExternalType;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.createIdentifier;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.newCast;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.newExternalType;
 
 import java.util.HashMap;
 import java.util.List;
