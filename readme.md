@@ -18,3 +18,17 @@ The translation is developed in two parts:
  * Library support for all operations that can be carried our on numbers, sets, seqs, maps etc.
  * Library support providing a number of macros to ease class encoding
 2. A translation of VDM into C using the above library
+
+
+# Notes
+
+# Name mangling
+
+https://en.wikipedia.org/wiki/Name_mangling
+http://www.avabodh.com/cxxin/namemangling.html
+
+# Eclipse editor for velocity
+
+* Remember to install `Eclipse 2.0 Style Plugin Support` before trying to install the editor *
+
+https://marketplace.eclipse.org/content/veloeclipse
