@@ -6,7 +6,7 @@ extern "C"
 #include "lib/VdmSet.h"
 #include "lib/VdmBasicTypes.h"
 #include <stdio.h>
-
+#include <math.h>
 //Maximum values have more recognizable hex representations.
 #include <limits.h>
 }
