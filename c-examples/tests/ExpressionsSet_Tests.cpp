@@ -781,7 +781,7 @@ TEST(Expression_Set, setPower)
 
 
 /*
- * A crude way of testing how long it takes to generate a power set.
+//A crude way of testing how long it takes to generate a power set.
 TEST(Expression_Set, setPowerExperiment)
 {
 	const int numelems1 = 11;
@@ -818,12 +818,10 @@ TEST(Expression_Set, setPowerExperiment)
 	vdmFree(set2);
 	vdmFree(set3);
 }
-*/
 
 
 
-/*
- * A crude way to look for memory leaks using the OS resource monitor.
+//A crude way to look for memory leaks using the OS resource monitor.
 TEST(Expression_set, setMemTest)
 {
 	const int numelems1 = 1000;
