@@ -80,16 +80,25 @@ TEST(Expression_Seq, seqLen)
 
 TEST(Expression_Seq, seqElems)
 {
-	//TODO
-//	int arr[]={1,2};
-//	TVP t = newSequence(2,arr);
+	int arr[] =
+	{ 1, 2 };
+	TVP t = newSequence(2,arr);
+
+	TVP a = newInt(1);
+	TVP b = newInt(2);
+	TVP elems = newSetVar(2, a,b);
+
+	TVP res = vdmSeqElems(t);
+
+	TVP tmp = vdmEquals(res,elems);
+	EXPECT_EQ(true, tmp->value.boolVal);
+	recursiveFree(res);
+	vdmFree(a);
+	vdmFree(b);
+	vdmFree(tmp);
+	vdmFree(elems);
 //
-//	TVP res = seqElems(t);
-//
-//	EXPECT_EQ (2,res->value.intVal);
-//	recursiveFree(res);
-////
-//	recursiveFree(t);
+	recursiveFree(t);
 }
 
 TEST(Expression_Seq, seqInds)

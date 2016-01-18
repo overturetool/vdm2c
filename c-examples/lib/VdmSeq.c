@@ -72,7 +72,7 @@ TVP vdmSeqElems(TVP seq)
 	ASSERT_CHECK(seq);
 	UNWRAP_COLLECTION(col,seq);
 
-	TVP elemsVal = newSetWithValues(col->size, elemsVal->value.ptr);
+	TVP elemsVal = newSetWithValues(col->size, col->value);
 
 	return elemsVal;
 }
