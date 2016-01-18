@@ -109,12 +109,37 @@ TVP vdmMapMunion(TVP map1, TVP map2)
 {
 	// Create a new map
 	TVP map = newMap();
+	TVP dom1set;
+	TVP dom2set;
+	TVP dominter;
+	TVP map1res;
+	TVP map2res;
+	TVP map1resrng;
+	TVP map2resrng;
+	TVP res;
 
 	//Assert map
 	ASSERT_CHECK(map1);
 	ASSERT_CHECK(map2);
 
-	// Assert that they are compatible, by using Set libary
+	//Ensure that maps are compatible.
+	dom1set = vdmMapDom(map1);
+	dom2set = vdmMapDom(map2);
+	dominter = vdmSetInter(dom1set, dom2set);
+	vdmFree(dom1set);
+	vdmFree(dom2set);
+	map1res = vdmMapDomRestrictTo(dominter, map1);
+	map2res = vdmMapDomRestrictTo(dominter, map2);
+	vdmFree(dominter);
+	map1resrng = vdmMapRng(map1res);
+	map2resrng = vdmMapRng(map2res);
+	vdmFree(map1res);
+	vdmFree(map2res);
+	res = vdmSetEquals(map1resrng, map2resrng);
+	vdmFree(map1resrng);
+	vdmFree(map2resrng);
+	assert(res->value.boolVal && "Maps not compatible.");
+	vdmFree(res);
 
 	TVP map1_dom = vdmMapDom(map1);
 	UNWRAP_COLLECTION(d1,map1_dom);
@@ -143,22 +168,10 @@ TVP vdmMapOverride(TVP map1, TVP map2)
 {
 	// Create a new map
 	TVP map = newMap();
-	TVP dom1set;
-	TVP dom2set;
-	TVP res;
 
 	//Assert map
 	ASSERT_CHECK(map1);
 	ASSERT_CHECK(map2);
-
-	// TODO: Assert that they are compatible, by using Set library
-	dom1set = vdmMapDom(map1);
-	dom2set = vdmMapDom(map2);
-	res = vdmSetSubset(dom2set, dom1set);
-	//Make said assertion.
-	vdmFree(dom1set);
-	vdmFree(dom2set);
-	vdmFree(res);
 
 	TVP map1_dom = vdmMapDom(map1);
 	UNWRAP_COLLECTION(d1,map1_dom);
