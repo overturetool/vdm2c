@@ -4,7 +4,7 @@
 
 extern "C"
 {
-#include "lib/TypedValue.h"
+#include "lib/Vdm.h"
 #include <stdio.h>
 #include <glib.h>
 }

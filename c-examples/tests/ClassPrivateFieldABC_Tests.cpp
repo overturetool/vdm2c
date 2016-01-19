@@ -2,7 +2,7 @@
 
 extern "C"
 {
-#include "lib/TypedValue.h"
+#include "lib/Vdm.h"
 #include "classes/A.h"
 #include "classes/B.h"
 #include "classes/C.h"

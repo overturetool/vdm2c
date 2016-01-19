@@ -9,7 +9,7 @@
 
 extern "C"
 {
-#include "lib/TypedValue.h"
+#include "lib/Vdm.h"
 #include "A.h"
 #include "B.h"
 #include "C.h"

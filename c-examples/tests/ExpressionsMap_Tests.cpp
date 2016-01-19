@@ -2,10 +2,7 @@
 
 extern "C"
 {
-#include "lib/TypedValue.h"
-
-#include "lib/VdmMap.h"
-#include "lib/VdmSet.h"
+#include "lib/Vdm.h"
 #include <stdio.h>
 }
 

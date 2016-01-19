@@ -2,8 +2,7 @@
 
 extern "C"
 {
-#include "lib/TypedValue.h"
-#include "lib/VdmBasicTypes.h"
+#include "lib/Vdm.h"
 #include <stdio.h>
 }
 

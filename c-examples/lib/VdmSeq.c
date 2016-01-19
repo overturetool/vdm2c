@@ -6,6 +6,7 @@
  */
 
 #include "VdmSeq.h"
+#include <assert.h>
 
 #define ASSERT_CHECK(s) assert(s->type == VDM_SEQ && "Value is not a sequence")
 

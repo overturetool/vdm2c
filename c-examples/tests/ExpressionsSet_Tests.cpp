@@ -2,9 +2,7 @@
 
 extern "C"
 {
-#include "lib/TypedValue.h"
-#include "lib/VdmSet.h"
-#include "lib/VdmBasicTypes.h"
+#include "lib/Vdm.h"
 #include <stdio.h>
 #include <math.h>
 //Maximum values have more recognizable hex representations.

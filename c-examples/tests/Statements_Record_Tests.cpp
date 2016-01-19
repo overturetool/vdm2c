@@ -4,11 +4,8 @@
 
 extern "C"
 {
-#include "lib/TypedValue.h"
-#include "lib/VdmProduct.h"
-#include "lib/PatternBindMatch.h"
+#include "lib/Vdm.h"
 #include "records/R1.h"
-#include "lib/VdmSeq.h"
 #include "records/R1.h"
 #include <stdio.h>
 }
