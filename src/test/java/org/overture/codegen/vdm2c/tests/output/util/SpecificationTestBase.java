@@ -33,7 +33,7 @@ public abstract class SpecificationTestBase extends ParamStandardTest<String>
 	protected static final String NAME_VIOLATION_INDICATOR = "*Name Violations*";
 	protected static final String QUOTE_INDICATOR = "*Quotes*";
 
-	protected static CGen vdmCodGen = new CGen();
+	protected static CGen vdmCodGen = new CGen(null);
 
 	public SpecificationTestBase(String nameParameter, String inputParameter,
 			String resultParameter)

@@ -123,9 +123,10 @@ public class CGenMain
 
 			List<SClassDefinition> ast = res.result;
 
-			CGen cGen = new CGen();
+			CGen cGen = new CGen(outputDir);
 
-			GeneratedData data = cGen.generateCFromVdm(ast, outputDir);
+			GeneratedData data = cGen.generate(CGen.filter(ast, org.overture.ast.node.INode.class));// .generateCFromVdm(ast,
+																									// outputDir);
 			System.out.println("C code generated to folder: "
 					+ outputDir.getAbsolutePath());
 

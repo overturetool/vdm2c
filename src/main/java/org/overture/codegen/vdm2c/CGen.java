@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Vector;
 
 import org.overture.ast.analysis.AnalysisException;
 import org.overture.ast.definitions.SClassDefinition;
@@ -26,6 +27,12 @@ import org.overture.codegen.vdm2c.extast.declarations.AClassHeaderDeclCG;
 
 public class CGen extends CodeGenBase
 {
+	final File outputFolder;
+
+	public CGen(File outputFolder)
+	{
+		this.outputFolder = outputFolder;
+	}
 
 	public GeneratedData generateCFromVdm(List<SClassDefinition> ast,
 			File outputFolder) throws AnalysisException
@@ -234,6 +241,37 @@ public class CGen extends CodeGenBase
 		StringWriter writer = new StringWriter();
 		node.apply(my_formatter.GetMergeVisitor(), writer);// Why StringWriter?
 		return writer;
+	}
+
+	@Override
+	protected GeneratedData genVdmToTargetLang(
+			List<org.overture.ast.node.INode> ast) throws AnalysisException
+	{
+		return generateCFromVdm(filter(ast, SClassDefinition.class), outputFolder);
+	}
+
+	/**
+	 * Generic filter method for AST lists. It works both up and down.
+	 * 
+	 * @param ast
+	 *            the list of input objects
+	 * @param clz
+	 *            the class which the returned list should be of
+	 * @return
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public static <T> List<T> filter(List ast, Class<T> clz)
+	{
+		List<T> filtered = new Vector<T>();
+		for (Object t : ast)
+		{
+			if (clz.isAssignableFrom(t.getClass()))
+			{
+				filtered.add((T) t);
+			}
+		}
+		return filtered;
+
 	}
 
 }
