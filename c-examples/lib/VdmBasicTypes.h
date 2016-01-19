@@ -8,7 +8,7 @@
 #ifndef LIB_VDMBASICTYPES_H_
 #define LIB_VDMBASICTYPES_H_
 
-#include "TypedValue.h"
+#include "Vdm.h"
 
 
 /*

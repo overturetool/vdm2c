@@ -5,7 +5,9 @@
  *      Author: kel
  */
 #include <string.h>
+#include <stdarg.h>
 #include <math.h>
+#include <assert.h>
 #include "VdmSet.h"
 
 #define ASSERT_CHECK(s) assert(s->type == VDM_SET && "Value is not a set")

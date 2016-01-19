@@ -5,6 +5,7 @@
  *      Author: kel
  */
 #include "R1.h"
+#include <assert.h>
 
 #define UNWRAP_R1(var,record) struct R1* var = (struct R1*)record;
 

@@ -8,11 +8,9 @@
 #ifndef TYPEDVALUE_H_
 #define TYPEDVALUE_H_
 
-#include "Globals.h"
 #include <stdlib.h>
 #include <stdbool.h>
-#include "VdmMap.h"
-#include "VdmClass.h"
+
 
 //Eclipse hack
 #if !defined(va_arg)
@@ -63,11 +61,14 @@ typedef union TypedValueType
 	unsigned int uintVal;
 } TypedValueType;
 
-struct TypedValue
+
+ struct TypedValue
 {
 	vdmtype type;
 	TypedValueType value;
 };
+
+#define TVP struct TypedValue*
 
 struct Collection
 {
@@ -75,7 +76,8 @@ struct Collection
 	int size;
 };
 
-
+#define UNWRAP_COLLECTION(var,collection) struct Collection* var = (struct Collection*)collection->value.ptr
+#define UNWRAP_PRODUCT(var,product) struct Collection* var = (struct Collection*)product->value.ptr
 
 struct OptionalType
 {
@@ -85,18 +87,7 @@ struct OptionalType
 
 
 
-typedef bool (*vdmRecordEqualityFunction)(TVP a, TVP b);
-#define ASSERT_CHECK_RECORD(s) assert(s->type == VDM_RECORD && "Value is not a record")
-#define RECORD_FIELD_ACCESS(record,recordType,field,var) TVP var = NULL;{ASSERT_CHECK_RECORD(record);UNWRAP_RECORD(ar,record);var=vdmClone(((recordType)ar)->field);}
-#define RECORD_FIELD_SET(record,recordType,field,value) {ASSERT_CHECK_RECORD(record);UNWRAP_RECORD(ar,record);((recordType)ar)->field=vdmClone(value);}
-struct RecordType
-{
-	void* value;
-	int recordId;
-	freeVdmClassFunction freeRecord;//TODO move to global map
-	vdmRecordEqualityFunction equalFun; //TODO move to global map
-	struct TypedValue* (*vdmCloneFun)(TVP self);
-};
+
 
 struct TypedValue* newTypeValue(vdmtype type, TypedValueType value);
 
@@ -113,13 +104,6 @@ struct TypedValue* newQuote(unsigned int x);
 // Complex
 
 
-// Class
-
-//struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction freeClass, void* value);
-
-//struct TypedValue* newInt(int x);
-//struct TypedValue* newDouble(double x);
-//struct TypedValue* newChar(char x);
 
 //utils
 struct TypedValue* newCollectionWithValues(vdmtype type,size_t size,TVP* elements);

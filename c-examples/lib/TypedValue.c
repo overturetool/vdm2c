@@ -6,6 +6,9 @@
  */
 
 #include "lib/TypedValue.h"
+#include "VdmMap.h"
+#include "VdmClass.h"
+#include "VdmRecord.h"
 
 struct TypedValue* newTypeValue(vdmtype type, TypedValueType value)
 {

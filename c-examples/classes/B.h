@@ -8,7 +8,6 @@
 #ifndef CLASSES_B_H_
 #define CLASSES_B_H_
 
-#include "../Globals.h"
 #include "../lib/TypedValue.h"
 #include "A.h"
 #include "C.h"

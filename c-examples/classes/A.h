@@ -8,7 +8,6 @@
 #ifndef CLASSES_A_H_
 #define CLASSES_A_H_
 
-#include "../Globals.h"
 #include "../lib/TypedValue.h"
 #include "../lib/VdmClass.h"
 #include "../lib/VdmBasicTypes.h"

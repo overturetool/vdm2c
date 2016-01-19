@@ -14,6 +14,7 @@
 
 #include <assert.h>
 
+#define UNWRAP_MAP(var,map) struct Map* var = (struct Map*)map->value.ptr
 
 struct Map
 {

@@ -11,6 +11,8 @@
 #include "TypedValue.h"
 #include<stddef.h>
 
+typedef void (*freeVdmClassFunction)(void*);
+
 typedef TVP (*VirtualFunctionPointer)(void * self, ...);
 //typedef void (*VirtualFunctionPointer)(void * self, ...);
 

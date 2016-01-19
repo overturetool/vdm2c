@@ -8,7 +8,7 @@
 #ifndef RECORDS_R1_H_
 #define RECORDS_R1_H_
 
-#include "../Globals.h"
+#include "../lib/Vdm.h"
 #include "../lib/TypedValue.h"
 
 //#define UNWRAP_R(var,map) struct Map* var = (struct Map*)map->value.ptr

@@ -4,7 +4,7 @@
  *  Created on: Dec 1, 2015
  *      Author: kel
  */
-
+#include <stdarg.h>
 #include "VdmSeq.h"
 #include <assert.h>
 
