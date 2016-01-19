@@ -18,6 +18,7 @@ import org.overture.codegen.cgast.statements.AExpStmCG;
 import org.overture.codegen.cgast.statements.AReturnStmCG;
 import org.overture.codegen.cgast.types.AExternalTypeCG;
 import org.overture.codegen.ir.SourceNode;
+import org.overture.codegen.vdm2c.extast.expressions.AMacroApplyExpCG;
 
 public class CTransUtil
 {
@@ -108,6 +109,15 @@ public class CTransUtil
 	public static AApplyExpCG newApply(String name, SExpCG... args)
 	{
 		AApplyExpCG apply = new AApplyExpCG();
+		apply.setRoot(createIdentifier(name, null));
+		if (args != null)
+			apply.setArgs(Arrays.asList(args));
+		return apply;
+	}
+	
+	public static AMacroApplyExpCG newMacroApply(String name, SExpCG... args)
+	{
+		AMacroApplyExpCG apply = new AMacroApplyExpCG();
 		apply.setRoot(createIdentifier(name, null));
 		if (args != null)
 			apply.setArgs(Arrays.asList(args));

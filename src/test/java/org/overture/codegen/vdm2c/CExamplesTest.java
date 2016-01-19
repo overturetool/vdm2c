@@ -33,7 +33,6 @@ public class CExamplesTest
 		CGenMain.main(new String[] {"-dest",outputFolder, getPath("classes/A.vdmrt"),getPath("classes/C.vdmrt"),getPath("classes/B.vdmrt") });
 	}
 	
-	
 	@Test
 	public void d()
 	{

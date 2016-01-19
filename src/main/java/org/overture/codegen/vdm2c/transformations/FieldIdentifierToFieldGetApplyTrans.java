@@ -2,7 +2,7 @@ package org.overture.codegen.vdm2c.transformations;
 
 import static org.overture.codegen.vdm2c.utils.CTransUtil.createIdentifier;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.exp2Stm;
-import static org.overture.codegen.vdm2c.utils.CTransUtil.newApply;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.newMacroApply;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newDeclarationAssignment;
 
 import org.overture.ast.definitions.AClassClassDefinition;
@@ -24,6 +24,7 @@ import org.overture.codegen.cgast.statements.ABlockStmCG;
 import org.overture.codegen.cgast.statements.AIdentifierStateDesignatorCG;
 import org.overture.codegen.ir.SourceNode;
 import org.overture.codegen.trans.assistants.TransAssistantCG;
+import org.overture.codegen.vdm2c.extast.expressions.AMacroApplyExpCG;
 
 public class FieldIdentifierToFieldGetApplyTrans extends
 		DepthFirstAnalysisAdaptor
@@ -62,7 +63,7 @@ public class FieldIdentifierToFieldGetApplyTrans extends
 				fieldClassName = idef.getClassDefinition().getName().getName();
 			}
 
-			AApplyExpCG apply = newApply("GET_FIELD_PTR");
+			AMacroApplyExpCG apply = newMacroApply("GET_FIELD_PTR");
 			assist.replaceNodeWith(node, apply);
 
 			// add this type
@@ -125,7 +126,7 @@ public class FieldIdentifierToFieldGetApplyTrans extends
 
 			assist.replaceNodeWith(assignment, replBlock);
 
-			AApplyExpCG apply = newApply("SET_FIELD_PTR");// new AApplyExpCG();
+			AMacroApplyExpCG apply = newMacroApply("SET_FIELD_PTR");// new AApplyExpCG();
 			apply.setSourceNode(SourceNode.copy(node.getSourceNode()));
 
 			// add this type

@@ -4,7 +4,7 @@
 #set( $vtable = $header.getVtable())
 \#include "$String.format("%s.h",$cname)"
 \#include <stdio.h>
-
+\#include <string.h>
 
 
 // Memory management methods

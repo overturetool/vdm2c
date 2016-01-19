@@ -11,8 +11,16 @@ eVtables ='java:org.overture.codegen.vdm2c.ast.Vtables';
 Abstract Syntax Tree
 
 CG = #decl
-//| #stm
+   | #stm
+   | #exp
     ;
+    
+    
+#exp {-> package='org.overture.codegen.vdm2c.extast.expressions'}
+    =	{macroApply} [root]:CG.#exp [args]:CG.#exp*
+	;
+
+
 
 //#stm {-> package='org.overture.codegen.vdm2c.extast.statements'}
 //	= {exp} [exp]:CG.#exp;
