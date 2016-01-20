@@ -19,6 +19,10 @@ The translation is developed in two parts:
  * Library support providing a number of macros to ease class encoding
 2. A translation of VDM into C using the above library
 
+### Running tests
+
+Please set this property to point to the tests in the repo: `git@gitlab.au.dk:into-cps/vdm2c-exploration.git`
+`-Dcexamples.path=/path/to/vdm2c-exploration/vdm`
 
 # Notes
 
