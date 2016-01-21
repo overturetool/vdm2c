@@ -24,10 +24,10 @@ EXPECT_EQ (true,res->value.boolVal);\
 vdmFree(res);\
 vdmFree(c)
 
-//TEST(Expression_Seq, forindex)
-//{
-//	CHECK();
-//}
+TEST(Expression_Seq, forindex)
+{
+	CHECK(CLASS_ExpressionForLoop__Z8forindexEV);
+}
 
 TEST(Expression_Seq, forset)
 {
