@@ -25,6 +25,7 @@ import org.overture.codegen.vdm2c.transformations.ExtractRetValTrans;
 import org.overture.codegen.vdm2c.transformations.FieldIdentifierToFieldGetApplyTrans;
 import org.overture.codegen.vdm2c.transformations.ForLoopTrans;
 import org.overture.codegen.vdm2c.transformations.LiteralInstantiationRewriteTrans;
+import org.overture.codegen.vdm2c.transformations.LogicTrans;
 import org.overture.codegen.vdm2c.transformations.MangleMethodNamesTrans;
 import org.overture.codegen.vdm2c.transformations.NewRewriteTrans;
 import org.overture.codegen.vdm2c.transformations.NumericTrans;
@@ -69,7 +70,8 @@ public class CTransSeries
 		 * - Rewrite e.g. 1 + 2 to vdmSum(1,2) instead.
 		 */
 		transformations.add(new NumericTrans(transAssistant));
-
+		transformations.add(new LogicTrans(transAssistant));
+		transformations.add(new LiteralInstantiationRewriteTrans(transAssistant));
 		/**
 		 * Phase #2 - Not defined yet.
 		 */
@@ -82,7 +84,7 @@ public class CTransSeries
 		transformations.add(new CtorTrans(transAssistant));
 		transformations.add(new NewRewriteTrans(transAssistant));
 		transformations.add(new DontcareParameterRenamingTrans(transAssistant));
-		transformations.add(new LiteralInstantiationRewriteTrans(transAssistant));
+		
 		transformations.add(new ForLoopTrans(transAssistant));
 
 		/**

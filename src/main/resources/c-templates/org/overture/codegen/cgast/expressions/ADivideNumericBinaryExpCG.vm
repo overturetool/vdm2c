@@ -1,1 +1,1 @@
-vdmDivision($CFormat.format($node.getLeft()), $CFormat.format($node.getRight()))
+$CFormat.format($node.getLeft()) / $CFormat.format($node.getRight())

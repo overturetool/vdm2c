@@ -7,6 +7,7 @@ import java.util.List;
 import org.overture.codegen.cgast.SExpCG;
 import org.overture.codegen.cgast.SStmCG;
 import org.overture.codegen.cgast.STypeCG;
+import org.overture.codegen.cgast.analysis.AnalysisException;
 import org.overture.codegen.cgast.declarations.AFormalParamLocalParamCG;
 import org.overture.codegen.cgast.declarations.AVarDeclCG;
 import org.overture.codegen.cgast.expressions.AApplyExpCG;
@@ -193,5 +194,22 @@ public class CTransUtil
 		exp.setRoot(array);
 		exp.setIndex(index);
 		return exp;
+	}
+	
+	
+	
+	public static AApplyExpCG rewriteToApply(IApplyAssistant assist,SExpCG node, String string, SExpCG... args) throws AnalysisException
+	{
+		AApplyExpCG apply = newApply(string);
+		apply.setSourceNode(SourceNode.copy(node.getSourceNode()));
+		apply.setType(node.getType());
+		assist.getAssist().replaceNodeWith(node, apply);
+		for (SExpCG arg : args)
+		{
+			apply.getArgs().add(arg);
+			if(arg!=node)
+			arg.apply(assist);
+		}
+		return apply;
 	}
 }
