@@ -23,9 +23,12 @@ import org.overture.codegen.vdm2c.transformations.CtorTrans;
 import org.overture.codegen.vdm2c.transformations.DontcareParameterRenamingTrans;
 import org.overture.codegen.vdm2c.transformations.ExtractRetValTrans;
 import org.overture.codegen.vdm2c.transformations.FieldIdentifierToFieldGetApplyTrans;
+import org.overture.codegen.vdm2c.transformations.ForLoopTrans;
 import org.overture.codegen.vdm2c.transformations.LiteralInstantiationRewriteTrans;
 import org.overture.codegen.vdm2c.transformations.MangleMethodNamesTrans;
 import org.overture.codegen.vdm2c.transformations.NewRewriteTrans;
+import org.overture.codegen.vdm2c.transformations.NumericTrans;
+import org.overture.codegen.vdm2c.transformations.RemoveCWrappersTrans;
 
 public class CTransSeries
 {
@@ -56,6 +59,10 @@ public class CTransSeries
 		transformations.add(new FuncTrans(transAssistant));
 
 		/* C transformations */
+		
+		//phase 1 - convert standard nodes to vdm c lib calls
+		transformations.add(new NumericTrans(transAssistant));
+		
 
 		transformations.add(new AddThisArgToMethodsTrans(transAssistant));
 		transformations.add(new MangleMethodNamesTrans(transAssistant));
@@ -67,6 +74,11 @@ public class CTransSeries
 		transformations.add(new NewRewriteTrans(transAssistant));
 		transformations.add(new DontcareParameterRenamingTrans(transAssistant));
 		transformations.add(new LiteralInstantiationRewriteTrans(transAssistant));
+		transformations.add(new ForLoopTrans(transAssistant));
+		
+		
+		transformations.add(new RemoveCWrappersTrans(transAssistant));
+		
 		return transformations;
 	}
 

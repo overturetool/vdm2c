@@ -115,6 +115,8 @@ public class FieldIdentifierToFieldGetApplyTrans extends
 	public void caseAIdentifierStateDesignatorCG(
 			AIdentifierStateDesignatorCG node) throws AnalysisException
 	{
+		if (node.getIsLocal())
+			return;
 		if (node.parent() instanceof AAssignmentStmCG)
 		{
 			// class

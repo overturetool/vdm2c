@@ -18,6 +18,9 @@ CG = #decl
     
 #exp {-> package='org.overture.codegen.vdm2c.extast.expressions'}
     =	{macroApply} [root]:CG.#exp [args]:CG.#exp*
+    |	{ptrDeref} [root]:CG.#exp [target]:CG.#exp
+    |	{c} [exp]:CG.#exp
+    |	{arrayIndex} [root]:CG.#exp [index]:CG.#exp
 	;
 
 
