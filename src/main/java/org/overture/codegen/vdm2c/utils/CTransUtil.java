@@ -13,6 +13,7 @@ import org.overture.codegen.cgast.declarations.AVarDeclCG;
 import org.overture.codegen.cgast.expressions.AApplyExpCG;
 import org.overture.codegen.cgast.expressions.ACastUnaryExpCG;
 import org.overture.codegen.cgast.expressions.AIdentifierVarExpCG;
+import org.overture.codegen.cgast.expressions.AIntLiteralExpCG;
 import org.overture.codegen.cgast.patterns.AIdentifierPatternCG;
 import org.overture.codegen.cgast.statements.AAssignToExpStmCG;
 import org.overture.codegen.cgast.statements.AExpStmCG;
@@ -120,7 +121,9 @@ public class CTransUtil
 		AApplyExpCG apply = new AApplyExpCG();
 		apply.setRoot(createIdentifier(name, null));
 		if (args != null)
+		{
 			apply.setArgs(Arrays.asList(args));
+		}
 		return apply;
 	}
 
@@ -129,7 +132,9 @@ public class CTransUtil
 		AMacroApplyExpCG apply = new AMacroApplyExpCG();
 		apply.setRoot(createIdentifier(name, null));
 		if (args != null)
+		{
 			apply.setArgs(Arrays.asList(args));
+		}
 		return apply;
 	}
 
@@ -187,7 +192,7 @@ public class CTransUtil
 		deref.setTarget(target);
 		return deref;
 	}
-	
+
 	public static SExpCG newArrayIndex(SExpCG array, SExpCG index)
 	{
 		AArrayIndexExpCG exp = new AArrayIndexExpCG();
@@ -195,10 +200,10 @@ public class CTransUtil
 		exp.setIndex(index);
 		return exp;
 	}
-	
-	
-	
-	public static AApplyExpCG rewriteToApply(IApplyAssistant assist,SExpCG node, String string, SExpCG... args) throws AnalysisException
+
+	public static AApplyExpCG rewriteToApply(IApplyAssistant assist,
+			SExpCG node, String string, SExpCG... args)
+			throws AnalysisException
 	{
 		AApplyExpCG apply = newApply(string);
 		apply.setSourceNode(SourceNode.copy(node.getSourceNode()));
@@ -207,9 +212,18 @@ public class CTransUtil
 		for (SExpCG arg : args)
 		{
 			apply.getArgs().add(arg);
-			if(arg!=node)
-			arg.apply(assist);
+			if (arg != node)
+			{
+				arg.apply(assist);
+			}
 		}
 		return apply;
+	}
+
+	public static SExpCG newIntLiteralExp(long i)
+	{
+		AIntLiteralExpCG exp = new AIntLiteralExpCG();
+		exp.setValue(i);
+		return exp;
 	}
 }

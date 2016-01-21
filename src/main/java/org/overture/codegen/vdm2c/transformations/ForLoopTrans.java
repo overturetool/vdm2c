@@ -1,12 +1,14 @@
 package org.overture.codegen.vdm2c.transformations;
 
 import static org.overture.codegen.vdm2c.utils.CTransUtil.createIdentifier;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.newApply;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newArrayIndex;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newAssignment;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newCExp;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newDeclarationAssignment;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newExternalType;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newIdentifier;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.newIntLiteralExp;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newMacroApply;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newPtrDeref;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newTvpType;
@@ -18,8 +20,10 @@ import org.overture.codegen.cgast.SPatternCG;
 import org.overture.codegen.cgast.SStmCG;
 import org.overture.codegen.cgast.analysis.AnalysisException;
 import org.overture.codegen.cgast.analysis.DepthFirstAnalysisAdaptor;
+import org.overture.codegen.cgast.expressions.ALessEqualNumericBinaryExpCG;
 import org.overture.codegen.cgast.expressions.ALessNumericBinaryExpCG;
 import org.overture.codegen.cgast.expressions.APlusNumericBinaryExpCG;
+import org.overture.codegen.cgast.expressions.SNumericBinaryExpCG;
 import org.overture.codegen.cgast.patterns.AIdentifierPatternCG;
 import org.overture.codegen.cgast.statements.ABlockStmCG;
 import org.overture.codegen.cgast.statements.AForAllStmCG;
@@ -47,9 +51,36 @@ public class ForLoopTrans extends DepthFirstAnalysisAdaptor
 	public void caseAForIndexStmCG(AForIndexStmCG node)
 			throws AnalysisException
 	{
-		// TODO Auto-generated method stub
-		super.caseAForIndexStmCG(node);
-		// node.get
+		String bindName = node.getVar();
+
+		ABlockStmCG replBlock = new ABlockStmCG();
+		replBlock.setScoped(true);
+
+		String indexName = getNewName();
+		replBlock.getLocalDefs().add(newDeclarationAssignment(indexName, newExternalType("int"), newApply("toInteger", node.getFrom()), null));
+
+		SNumericBinaryExpCG less = new ALessEqualNumericBinaryExpCG();
+		less.setLeft(newIdentifier(indexName, null));
+		less.setRight(newApply("toInteger", node.getTo()));
+
+		AWhileStmCG loop = new AWhileStmCG();
+		replBlock.getStatements().add(loop);
+		loop.setExp(newCExp(less));
+
+		ABlockStmCG whileBlock = new ABlockStmCG();
+		whileBlock.setScoped(true);
+		loop.setBody(whileBlock);
+		whileBlock.getLocalDefs().add(newDeclarationAssignment(bindName, newTvpType(), newApply("newInt", createIdentifier(indexName, null)), null));
+		whileBlock.getStatements().add(node.getBody());
+		whileBlock.getStatements().add(toStm(newApply("vdmFree", createIdentifier(bindName, null))));
+
+		APlusNumericBinaryExpCG pp = new APlusNumericBinaryExpCG();
+		pp.setLeft(createIdentifier(indexName, null));
+		pp.setRight(newApply("toInteger", node.getBy()));
+
+		whileBlock.getStatements().add(newAssignment(createIdentifier(indexName, null), pp));
+
+		assist.replaceNodeWith(node, replBlock);
 	}
 
 	@Override
@@ -79,7 +110,7 @@ public class ForLoopTrans extends DepthFirstAnalysisAdaptor
 		String colName = getNewName();
 		replBlock.getStatements().add(toStm(newMacroApply("UNWRAP_COLLECTION", newIdentifier(colName, SourceNode.copy(set.getSourceNode())), newIdentifier(setName, SourceNode.copy(set.getSourceNode())))));
 
-		ALessNumericBinaryExpCG less = new ALessNumericBinaryExpCG();
+		SNumericBinaryExpCG less = new ALessNumericBinaryExpCG();
 		less.setLeft(newIdentifier(indexName, null));
 		less.setRight(newPtrDeref(newIdentifier(colName, null), newIdentifier("size", null)));
 
@@ -95,7 +126,7 @@ public class ForLoopTrans extends DepthFirstAnalysisAdaptor
 
 		APlusNumericBinaryExpCG pp = new APlusNumericBinaryExpCG();
 		pp.setLeft(createIdentifier(indexName, null));
-		pp.setRight(createIdentifier("1", null));
+		pp.setRight(newIntLiteralExp(1));
 
 		whileBlock.getStatements().add(newAssignment(createIdentifier(indexName, null), pp));
 
