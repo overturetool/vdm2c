@@ -1,4 +1,4 @@
-class Call1
+class Call1 is subclass of Call2
 
 operations
 
@@ -22,7 +22,15 @@ op4(a,b);
 
 
 return;
-)
+);
+
+public test2 : int|char==>int
+test2(a)== return op(a);
+
+
+public op:int==>int
+op(-)==return 1;
+
 
 
 end Call1
@@ -30,5 +38,10 @@ end Call1
 
 class Call2
 
+operations
+
+
+public op:char==>int
+op(-)==return 2;
 
 end Call2
