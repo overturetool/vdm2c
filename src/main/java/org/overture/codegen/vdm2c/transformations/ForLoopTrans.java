@@ -1,27 +1,30 @@
 package org.overture.codegen.vdm2c.transformations;
 
-import static org.overture.codegen.vdm2c.utils.CTransUtil.*;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.createIdentifier;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.newArrayIndex;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.newAssignment;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.newCExp;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.newDeclarationAssignment;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.newExternalType;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.newIdentifier;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.newMacroApply;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.newPtrDeref;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.newTvpType;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.toStm;
 
-import org.overture.ast.expressions.ALessNumericBinaryExp;
-import org.overture.ast.expressions.APlusPlusBinaryExp;
 import org.overture.codegen.cgast.INode;
 import org.overture.codegen.cgast.SExpCG;
 import org.overture.codegen.cgast.SPatternCG;
 import org.overture.codegen.cgast.SStmCG;
 import org.overture.codegen.cgast.analysis.AnalysisException;
 import org.overture.codegen.cgast.analysis.DepthFirstAnalysisAdaptor;
-import org.overture.codegen.cgast.declarations.AMethodDeclCG;
-import org.overture.codegen.cgast.declarations.SClassDeclCG;
-import org.overture.codegen.cgast.expressions.AIdentifierVarExpCG;
 import org.overture.codegen.cgast.expressions.ALessNumericBinaryExpCG;
 import org.overture.codegen.cgast.expressions.APlusNumericBinaryExpCG;
 import org.overture.codegen.cgast.patterns.AIdentifierPatternCG;
 import org.overture.codegen.cgast.statements.ABlockStmCG;
 import org.overture.codegen.cgast.statements.AForAllStmCG;
 import org.overture.codegen.cgast.statements.AForIndexStmCG;
-import org.overture.codegen.cgast.statements.AForLoopStmCG;
 import org.overture.codegen.cgast.statements.AWhileStmCG;
-import org.overture.codegen.cgast.types.AVoidTypeCG;
 import org.overture.codegen.ir.SourceNode;
 import org.overture.codegen.trans.assistants.TransAssistantCG;
 
@@ -46,23 +49,24 @@ public class ForLoopTrans extends DepthFirstAnalysisAdaptor
 	{
 		// TODO Auto-generated method stub
 		super.caseAForIndexStmCG(node);
-//		node.get
+		// node.get
 	}
 
 	@Override
 	public void caseAForAllStmCG(AForAllStmCG node) throws AnalysisException
 	{
 		super.caseAForAllStmCG(node);
-		rewritetoCollectionLoop(node,node.getExp(),node.getPattern(),node.getBody());
+		rewritetoCollectionLoop(node, node.getExp(), node.getPattern(), node.getBody());
 	}
 
-	
-
-	void rewritetoCollectionLoop(INode source, SExpCG set, SPatternCG sPatternCG,SStmCG body)
+	void rewritetoCollectionLoop(INode source, SExpCG set,
+			SPatternCG sPatternCG, SStmCG body)
 	{
 		String bindName = null;
 		if (sPatternCG instanceof AIdentifierPatternCG)
+		{
 			bindName = ((AIdentifierPatternCG) sPatternCG).getName();
+		}
 
 		ABlockStmCG replBlock = new ABlockStmCG();
 		replBlock.setScoped(true);
@@ -88,13 +92,13 @@ public class ForLoopTrans extends DepthFirstAnalysisAdaptor
 		loop.setBody(whileBlock);
 		whileBlock.getLocalDefs().add(newDeclarationAssignment(bindName, newTvpType(), newArrayIndex(newPtrDeref(createIdentifier(colName, null), createIdentifier("value", null)), createIdentifier(indexName, null)), null));
 		whileBlock.getStatements().add(body);
-		
+
 		APlusNumericBinaryExpCG pp = new APlusNumericBinaryExpCG();
 		pp.setLeft(createIdentifier(indexName, null));
 		pp.setRight(createIdentifier("1", null));
-		
+
 		whileBlock.getStatements().add(newAssignment(createIdentifier(indexName, null), pp));
-		
+
 		assist.replaceNodeWith(source, replBlock);
 	}
 
