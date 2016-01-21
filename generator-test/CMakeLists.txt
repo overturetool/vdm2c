@@ -67,6 +67,10 @@ if(${filename} MATCHES ".*ExpressionSeq.c$")
 set(CPP_FILES ${CPP_FILES};tests/ExpressionsSeq_Tests.cpp)
 endif()
 
+if(${filename} MATCHES ".*ExpressionForLoop.c$")
+set(CPP_FILES ${CPP_FILES};tests/ExpressionsForloop_Tests.cpp)
+endif()
+
 endforeach()
 
 message(STATUS "CPP files: ${CPP_FILES}")
