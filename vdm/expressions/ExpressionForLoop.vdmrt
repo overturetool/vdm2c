@@ -1,0 +1,72 @@
+class ExpressionForLoop
+
+
+
+operations
+
+
+--public forindex : ()==>bool
+--forindex()==(
+--	dcl tmp :int :=0;
+--	for id= 1 to 10 by 2 do 
+--	tmp := tmp+id;
+--	return tmp=25;
+--);
+
+/*
+
+(
+int id=1;
+
+while(id + 2 < 10)
+(
+
+tmp:= tmp+id;
+
+id:= id+2;
+)
+
+free(id)
+
+)
+
+
+
+*/
+
+
+public forset : ()==>bool
+forset()==(
+	dcl tmp :int :=0;
+	for all s in set {1,2,3,2} do tmp := tmp+s;
+	return tmp=6;
+);
+
+
+public forseq : ()==>bool
+forseq()==(
+	dcl tmp :int :=0;
+	for  s in [1,2,3,4] do tmp := tmp+s;
+	return tmp=10;
+);
+
+/*
+
+TVP col = newSet/seqvar(4,1,2,3,4);
+(
+int index =0;
+
+while(index < vdmColSize(col)
+{
+TVP s = colIndex(index);
+
+tmp = tmp+s;
+
+index++;
+}
+)
+
+
+*/
+
+end ExpressionForLoop
