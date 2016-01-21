@@ -27,7 +27,7 @@
  *      Author: kel
  */
 
-#include "lib/TypedValue.h"
+#include "TypedValue.h"
 #include "VdmMap.h"
 #include "VdmClass.h"
 #include "VdmRecord.h"
