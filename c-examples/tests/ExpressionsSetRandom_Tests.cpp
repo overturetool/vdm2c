@@ -56,7 +56,7 @@ static TVP newSet(int size, int* arr)
 #define DEFAULT_SET_COMP_BUFFER 1
 #define DEFAULT_SET_COMP_BUFFER_STEPSIZE 10
 
-TEST(Expression_Set, setComprehension)
+TEST(Expression_SetRandom, setComprehension)
 {
 	int arr[] = { 1, 1, 2, 8, 15 };
 	TVP S = newSet(5, arr); //Technically this isn't a set but we need this for testing
@@ -121,7 +121,7 @@ TEST(Expression_Set, setComprehension)
 
 
 
-TEST(Expression_Set, setInSet)
+TEST(Expression_SetRandom, setInSet)
 {
 	const int numelems = 10;
 	TVP elem = newInt(INT_MAX);
@@ -168,7 +168,7 @@ TEST(Expression_Set, setInSet)
 
 
 
-TEST(Expression_Set, setNotInSet)
+TEST(Expression_SetRandom, setNotInSet)
 {
 	const int numelems = 10;
 	TVP elem = newInt(INT_MAX);
@@ -221,7 +221,7 @@ TEST(Expression_Set, setNotInSet)
 
 
 
-TEST(Expression_set, setUnion)
+TEST(Expression_SetRandom, setUnion)
 {
 	const int numelems1 = 101;
 	const int numelems2 = 97;
@@ -263,7 +263,7 @@ TEST(Expression_set, setUnion)
 	}
 
 	//Ensure that there are no other elements.
-	EXPECT_EQ(true, ((struct Collection*)(unionset->value.ptr))->size == \
+	EXPECT_EQ(true, ((struct Collection*)(unionset->value.ptr))->size <= \
 				((struct Collection*)(set1->value.ptr))->size + \
 				((struct Collection*)(set2->value.ptr))->size);
 
@@ -283,7 +283,7 @@ TEST(Expression_set, setUnion)
 
 
 
-TEST(Expression_set, setIntersection)
+TEST(Expression_SetRandom, setIntersection)
 {
 	const int numelems1 = 101;
 	const int numelems2 = 97;
@@ -342,7 +342,7 @@ TEST(Expression_set, setIntersection)
 
 
 
-TEST(Expression_set, setDifference)
+TEST(Expression_SetRandom, setDifference)
 {
 	const int numelems1 = 101;
 	const int numelems2 = 97;
@@ -399,7 +399,7 @@ TEST(Expression_set, setDifference)
 
 
 
-TEST(Expression_set, setSubset)
+TEST(Expression_SetRandom, setSubset)
 {
 	const int numelems1 = 101;
 	TVP randelems1[numelems1];
@@ -449,7 +449,7 @@ TEST(Expression_set, setSubset)
 
 
 
-TEST(Expression_set, setProperSubset)
+TEST(Expression_SetRandom, setProperSubset)
 {
 	const int numelems1 = 101;
 	TVP randelems1[numelems1];
@@ -499,7 +499,7 @@ TEST(Expression_set, setProperSubset)
 
 
 
-TEST(Expression_set, setEquality)
+TEST(Expression_SetRandom, setEquality)
 {
 	const int numelems1 = 101;
 	TVP randelems1[numelems1];
@@ -542,7 +542,7 @@ TEST(Expression_set, setEquality)
 
 
 
-TEST(Expression_set, setInequality)
+TEST(Expression_SetRandom, setInequality)
 {
 	const int numelems1 = 101;
 	TVP randelems1[numelems1];
@@ -584,7 +584,7 @@ TEST(Expression_set, setInequality)
 
 
 
-TEST(Expression_Set, setCard)
+TEST(Expression_SetRandom, setCard)
 {
 	const int numelems = 5;
 	TVP elems[numelems] = {newInt(1), newInt(2), newInt(2), newInt(3), newInt(INT_MAX)};
@@ -609,7 +609,7 @@ TEST(Expression_Set, setCard)
 
 
 
-TEST(Expression_Set, setDunion)
+TEST(Expression_SetRandom, setDunion)
 {
 	const int numelems1 = 101;
 	TVP randelems1[numelems1];
@@ -683,7 +683,7 @@ TEST(Expression_Set, setDunion)
 
 
 
-TEST(Expression_Set, setDinter)
+TEST(Expression_SetRandom, setDinter)
 {
 	TVP set1;
 	TVP set2;
@@ -744,7 +744,7 @@ TEST(Expression_Set, setDinter)
 
 
 
-TEST(Expression_Set, setPower)
+TEST(Expression_SetRandom, setPower)
 {
 	TVP set1;
 	TVP set2;
@@ -802,7 +802,7 @@ TEST(Expression_Set, setPower)
 
 /*
 //A crude way of testing how long it takes to generate a power set.
-TEST(Expression_Set, setPowerExperiment)
+TEST(Expression_SetRandom, setPowerExperiment)
 {
 	const int numelems1 = 11;
 	TVP randelems1[numelems1];
@@ -842,7 +842,7 @@ TEST(Expression_Set, setPowerExperiment)
 
 
 //A crude way to look for memory leaks using the OS resource monitor.
-TEST(Expression_set, setMemTest)
+TEST(Expression_SetRandom, setMemTest)
 {
 	const int numelems1 = 1000;
 	const int numelems2 = 1000;
