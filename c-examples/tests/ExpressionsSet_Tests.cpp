@@ -124,13 +124,13 @@ TEST(Expression_Set, setComprehension)
 TEST(Expression_Set, setInSet)
 {
 	const int numelems = 10;
-	TVP elem = newInt(INT_MAX);
+	TVP elem = newInt(3);
 	TVP set = newSetVar(1, elem);
 	struct TypedValue *randelems[100], *randelemscpy[100];
 
 	//Make sure that we're checking for the value itself and not the newInt structure.
 	vdmFree(elem);
-	elem = newInt(INT_MAX);
+	elem = newInt(3);
 
 	TVP res = vdmSetMemberOf(set, elem);
 	EXPECT_EQ(true, res->value.boolVal);
@@ -171,20 +171,20 @@ TEST(Expression_Set, setInSet)
 TEST(Expression_Set, setNotInSet)
 {
 	const int numelems = 10;
-	TVP elem = newInt(INT_MAX);
+	TVP elem = newInt(3);
 	TVP set = newSetVar(1, elem);
 	struct TypedValue *randelems[100], *randelemscpy[100];
 
 	//Make sure that we're checking for the value itself and not the newInt structure.
 	vdmFree(elem);
-	elem = newInt(INT_MAX);
+	elem = newInt(3);
 
 	TVP res = vdmSetNotMemberOf(set, elem);
 	EXPECT_EQ(false, res->value.boolVal);
 	vdmFree(elem);
 	vdmFree(res);
 
-	elem = newInt(INT_MAX - 1);
+	elem = newInt(2);
 	res = vdmSetNotMemberOf(set, elem);
 	EXPECT_EQ(true, res->value.boolVal);
 	vdmFree(elem);
@@ -587,7 +587,7 @@ TEST(Expression_Set, setInequality)
 TEST(Expression_Set, setCard)
 {
 	const int numelems = 5;
-	TVP elems[numelems] = {newInt(1), newInt(2), newInt(2), newInt(3), newInt(INT_MAX)};
+	TVP elems[numelems] = {newInt(1), newInt(2), newInt(2), newInt(3), newInt(11)};
 	TVP theset;
 
 	//Cardinality of empty set.
@@ -708,7 +708,7 @@ TEST(Expression_Set, setDinter)
 	set2 = newSetVar(3, newInt(1), newInt(2), newInt(3));
 	set3 = newSetVar(3, newInt(2), newInt(3), newInt(4));
 	set4 = vdmSetInter(set1, set2);
-	set5 = vdmSetInter(set1, set2);
+	set5 = vdmSetInter(set1, set3);
 
 	res = vdmSetEquals(set1, set4);
 	EXPECT_EQ(true, res->value.boolVal);
@@ -723,14 +723,9 @@ TEST(Expression_Set, setDinter)
 
 	//A negative check by modifying one of the original sets.
 	set2 = newSetVar(3, newInt(1), newInt(6), newInt(3));
-	set3 = newSetVar(3, newInt(2), newInt(3), newInt(4));
-	set4 = vdmSetInter(set1, set2);
-	set5 = vdmSetInter(set1, set2);
+	set3 = vdmSetInter(set1, set2);
 
-	res = vdmSetEquals(set1, set4);
-	EXPECT_EQ(false, res->value.boolVal);
-	vdmFree(res);
-	res = vdmSetEquals(set1, set5);
+	res = vdmSetEquals(set1, set3);
 	EXPECT_EQ(false, res->value.boolVal);
 	vdmFree(res);
 
@@ -738,8 +733,6 @@ TEST(Expression_Set, setDinter)
 	vdmFree(set1);
 	vdmFree(set2);
 	vdmFree(set3);
-	vdmFree(set4);
-	vdmFree(set5);
 }
 
 
