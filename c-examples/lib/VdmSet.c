@@ -334,35 +334,17 @@ TVP vdmSetEquals(TVP set1, TVP set2)
 	ASSERT_CHECK(set1);
 	ASSERT_CHECK(set2);
 
-	TVP res1;
-	TVP res2;
-	bool r;
-
-	res1 = vdmSetSubset(set1, set2);
-	res2 = vdmSetSubset(set2, set1);
-
-	r = res1->value.boolVal && res2->value.boolVal;
-	vdmFree(res1);
-	vdmFree(res2);
-
-	return newBool(r);
+	return vdmEquals(set1, set2);
 }
 
 
 
 TVP vdmSetNotEquals(TVP set1, TVP set2)
 {
-	TVP res;
-	bool tmp;
-
 	ASSERT_CHECK(set1);
 	ASSERT_CHECK(set2);
 
-	res = vdmSetEquals(set1, set2);
-	tmp = res->value.boolVal;
-	vdmFree(res);
-
-	return newBool(!tmp);
+	return vdmInEquals(set1, set2);
 }
 
 
