@@ -55,18 +55,27 @@ public class CTransSeries
 		// Set up order of transformations
 		List<DepthFirstAnalysisAdaptor> transformations = new LinkedList<DepthFirstAnalysisAdaptor>();
 
+		/**
+		 * Phase #0 - initial construction / merge of nodes<br/>
+		 * - Do weeding here
+		 */
 		// Construct the transformations
 		transformations.add(new FuncTrans(transAssistant));
 
 		/* C transformations */
-		
-		//phase 1 - convert standard nodes to vdm c lib calls
-		transformations.add(new NumericTrans(transAssistant));
-		
 
+		/**
+		 * Phase #1 - Rewrite all standard C nodes to match C 1-to-1<br/>
+		 * - Rewrite e.g. 1 + 2 to vdmSum(1,2) instead.
+		 */
+		transformations.add(new NumericTrans(transAssistant));
+
+		/**
+		 * Phase #2 - Not defined yet.
+		 */
 		transformations.add(new AddThisArgToMethodsTrans(transAssistant));
 		transformations.add(new MangleMethodNamesTrans(transAssistant));
-	
+
 		transformations.add(new CallRewriteTrans(transAssistant));
 		transformations.add(new ExtractRetValTrans(transAssistant));
 		transformations.add(new FieldIdentifierToFieldGetApplyTrans(transAssistant));
@@ -75,10 +84,12 @@ public class CTransSeries
 		transformations.add(new DontcareParameterRenamingTrans(transAssistant));
 		transformations.add(new LiteralInstantiationRewriteTrans(transAssistant));
 		transformations.add(new ForLoopTrans(transAssistant));
-		
-		
+
+		/**
+		 * Phase #X - Remove any temporary nodes
+		 */
 		transformations.add(new RemoveCWrappersTrans(transAssistant));
-		
+
 		return transformations;
 	}
 

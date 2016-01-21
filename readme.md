@@ -36,3 +36,7 @@ http://www.avabodh.com/cxxin/namemangling.html
 * Remember to install `Eclipse 2.0 Style Plugin Support` before trying to install the editor *
 
 https://marketplace.eclipse.org/content/veloeclipse
+
+# Transformation Rules
+
+All nodes that is shared between VDM and C must have a C plain C template. This means it **cannot** use the VDM library for code generation.
