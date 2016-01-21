@@ -56,4 +56,10 @@ public class CExamplesTest
 	{
 		CGenMain.main(new String[] {"-dest",outputFolder, getPath("expressions/ExpressionSeq.vdmrt") });
 	}
+	
+	@Test
+	public void Set()
+	{
+		CGenMain.main(new String[] {"-dest",outputFolder, getPath("expressions/ExpressionSetForCGTesting.vdmrt") });
+	}
 }

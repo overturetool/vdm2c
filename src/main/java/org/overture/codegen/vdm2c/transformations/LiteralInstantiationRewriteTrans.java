@@ -61,7 +61,7 @@ public class LiteralInstantiationRewriteTrans extends DepthFirstAnalysisAdaptor
 
 	public void caseARealLiteralExpCG(
 			org.overture.codegen.cgast.expressions.ARealLiteralExpCG node)
-			throws AnalysisException
+					throws AnalysisException
 	{
 		rewriteToApply(node, node.getValue(), "newReal");
 	};
