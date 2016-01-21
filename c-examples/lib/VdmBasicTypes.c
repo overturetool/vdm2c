@@ -31,7 +31,7 @@
 #include <math.h>
 
 #define ASSERT_CHECK_BOOL(s) assert(s->type == VDM_BOOL && "Value is not a boolean")
-#define ASSERT_CHECK_NUMERIC(s) assert((s->type == VDM_INT||s->type == VDM_INT1||s->type == VDM_REAL) && "Value is not numeric")
+#define ASSERT_CHECK_NUMERIC(s) assert((s->type == VDM_INT||s->type == VDM_NAT||s->type == VDM_NAT1||s->type == VDM_REAL||s->type == VDM_RAT) && "Value is not numeric")
 #define ASSERT_CHECK_REAL(s) assert((s->type ==  VDM_REAL) && "Value is not real")
 #define ASSERT_CHECK_INT(s) assert((s->type ==  VDM_INT) && "Value is not integer")
 
@@ -72,6 +72,21 @@ TVP vdmBiimplication(TVP a,TVP b)
 	return newBool((!a->value.boolVal || b->value.boolVal) && (!b->value.boolVal || a->value.boolVal));
 }
 
+bool isNumber(TVP val)
+{
+	switch(val->type)
+	{
+		case VDM_INT:
+		case VDM_NAT:
+		case VDM_NAT1:
+		case VDM_REAL:
+		case VDM_RAT:
+		return true;
+		default:
+		return false;
+	}
+}
+
 /*
  * Numeric
  *
@@ -83,9 +98,11 @@ double toDouble(TVP a)
 	switch(a->type)
 	{
 		case VDM_INT:
-		case VDM_INT1:
+		case VDM_NAT:
+		case VDM_NAT1:
 		return (double) a->value.intVal;
 		case VDM_REAL:
+		case VDM_RAT:
 		return a->value.doubleVal;
 		default:
 		FATAL_ERROR("Invalid type");
@@ -98,7 +115,8 @@ int toInteger(TVP a)
 	switch(a->type)
 	{
 		case VDM_INT:
-		case VDM_INT1:
+		case VDM_NAT:
+		case VDM_NAT1:
 		return a->value.intVal;
 		case VDM_REAL:
 		//return a->value.doubleVal;
@@ -115,7 +133,8 @@ TVP vdmMinus(TVP arg)
 	switch(arg->type)
 	{
 		case VDM_INT:
-		case VDM_INT1:
+		case VDM_NAT:
+		case VDM_NAT1:
 		return newInt(-arg->value.intVal);
 		case VDM_REAL:
 		return newReal(-arg->value.doubleVal);
@@ -132,7 +151,8 @@ TVP vdmAbs(TVP arg)
 	switch(arg->type)
 	{
 		case VDM_INT:
-		case VDM_INT1:
+		case VDM_NAT:
+		case VDM_NAT1:
 		return newInt(abs(arg->value.intVal));
 		case VDM_REAL:
 		return newReal(fabs(arg->value.doubleVal));
@@ -202,13 +222,12 @@ static long divi(double lv, double rv)
 	 * div y = floor(abs(x/y)) Note that the order of floor and abs on the right-hand side makes a difference, the
 	 * above example would yield -5 if we changed the order. This is because floor always yields a smaller (or
 	 * equal) integer, e.g. floor (14/3) is 4 while floor (-14/3) is -5.
-	*/
+	 */
 
 	if (lv / rv < 0)
 	{
 		return (long) -floor(fabs(lv / rv));
-	}
-	else
+	} else
 	{
 		return (long) floor(fabs(-lv / rv));
 	}
@@ -326,5 +345,4 @@ TVP vdmLessOrEqual(TVP a,TVP b)
 
 	return newBool(av<=bv);
 }
-
 
