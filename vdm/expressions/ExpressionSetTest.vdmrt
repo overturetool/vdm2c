@@ -2,10 +2,41 @@ class ExpressionSetTest is subclass of TestCase,ExpressionSet
 operations
 
 public testsetInset : () ==>()
-testsetInset()== assertTrue(setInset());
+testsetInset() == assertTrue(setInset());
 
+public testsetNotInSet : () ==> ()
+testsetNotInSet() == assertTrue(setNotInSet());
 
+public testsetUnion : () ==> ()
+testsetUnion() == assertTrue(setUnion());
 
+public testsetIntersection : () ==> ()
+testsetIntersection() == assertTrue(setIntersection());
 
+public testsetDifference : () ==> ()
+testsetDifference() == assertTrue(setDifference());
 
+public testsetSubset : () ==> ()
+testsetSubset() == assertTrue(setSubset());
+
+public testsetProperSubset : () ==> ()
+testsetProperSubset() == assertTrue(setProperSubset());
+
+public testsetEquality : () ==> ()
+testsetEquality() == assertTrue(setEquality());
+
+public testsetInequality : () ==> ()
+testsetInequality() == assertTrue(setInequality());
+
+public testsetCard : () ==> ()
+testsetCard() == assertTrue(setCard());
+
+public testsetDunion : () ==> ()
+testsetDunion() == assertTrue(setDunion());
+
+public testsetDinter : () ==> ()
+testsetDinter() == assertTrue(setDinter());
+
+public testsetPower : () ==> ()
+testsetPower() == assertTrue(setPower());
 end ExpressionSetTest

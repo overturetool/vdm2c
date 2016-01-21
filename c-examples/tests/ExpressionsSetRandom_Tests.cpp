@@ -56,7 +56,7 @@ static TVP newSet(int size, int* arr)
 #define DEFAULT_SET_COMP_BUFFER 1
 #define DEFAULT_SET_COMP_BUFFER_STEPSIZE 10
 
-TEST(Expression_Set, setComprehension)
+TEST(Expression_SetRandom, setComprehension)
 {
 	int arr[] = { 1, 1, 2, 8, 15 };
 	TVP S = newSet(5, arr); //Technically this isn't a set but we need this for testing
@@ -121,16 +121,16 @@ TEST(Expression_Set, setComprehension)
 
 
 
-TEST(Expression_Set, setInSet)
+TEST(Expression_SetRandom, setInSet)
 {
 	const int numelems = 10;
-	TVP elem = newInt(3);
+	TVP elem = newInt(INT_MAX);
 	TVP set = newSetVar(1, elem);
 	struct TypedValue *randelems[100], *randelemscpy[100];
 
 	//Make sure that we're checking for the value itself and not the newInt structure.
 	vdmFree(elem);
-	elem = newInt(3);
+	elem = newInt(INT_MAX);
 
 	TVP res = vdmSetMemberOf(set, elem);
 	EXPECT_EQ(true, res->value.boolVal);
@@ -138,7 +138,7 @@ TEST(Expression_Set, setInSet)
 
 	for(int i = 0; i < numelems; i++)
 	{
-		randelems[i] = newInt(i);
+		randelems[i] = newInt(rand());
 	}
 
 	vdmFree(set);
@@ -168,30 +168,30 @@ TEST(Expression_Set, setInSet)
 
 
 
-TEST(Expression_Set, setNotInSet)
+TEST(Expression_SetRandom, setNotInSet)
 {
 	const int numelems = 10;
-	TVP elem = newInt(3);
+	TVP elem = newInt(INT_MAX);
 	TVP set = newSetVar(1, elem);
 	struct TypedValue *randelems[100], *randelemscpy[100];
 
 	//Make sure that we're checking for the value itself and not the newInt structure.
 	vdmFree(elem);
-	elem = newInt(3);
+	elem = newInt(INT_MAX);
 
 	TVP res = vdmSetNotMemberOf(set, elem);
 	EXPECT_EQ(false, res->value.boolVal);
 	vdmFree(elem);
 	vdmFree(res);
 
-	elem = newInt(2);
+	elem = newInt(INT_MAX - 1);
 	res = vdmSetNotMemberOf(set, elem);
 	EXPECT_EQ(true, res->value.boolVal);
 	vdmFree(elem);
 
 	for(int i = 0; i < numelems; i++)
 	{
-		randelems[i] = newInt(i);
+		randelems[i] = newInt(rand());
 	}
 
 	vdmFree(set);
@@ -221,7 +221,7 @@ TEST(Expression_Set, setNotInSet)
 
 
 
-TEST(Expression_Set, setUnion)
+TEST(Expression_SetRandom, setUnion)
 {
 	const int numelems1 = 101;
 	const int numelems2 = 97;
@@ -235,12 +235,12 @@ TEST(Expression_Set, setUnion)
 	//Generate the random test value collections.
 	for(int i = 0; i < numelems1; i++)
 	{
-		randelems1[i] = newInt(i);
+		randelems1[i] = newInt(rand());
 	}
 
 	for(int i = 0; i < numelems2; i++)
 	{
-		randelems2[i] = newInt(i);
+		randelems2[i] = newInt(rand());
 	}
 
 	//Create the random test sets.
@@ -283,7 +283,7 @@ TEST(Expression_Set, setUnion)
 
 
 
-TEST(Expression_Set, setIntersection)
+TEST(Expression_SetRandom, setIntersection)
 {
 	const int numelems1 = 101;
 	const int numelems2 = 97;
@@ -299,12 +299,12 @@ TEST(Expression_Set, setIntersection)
 	srand(time(0));
 	for(int i = 0; i < numelems1; i++)
 	{
-		randelems1[i] = newInt((i * i) % 100);
+		randelems1[i] = newInt(rand() % 100);
 	}
 
 	for(int i = 0; i < numelems2; i++)
 	{
-		randelems2[i] = newInt((i * i) % 100);
+		randelems2[i] = newInt(rand() % 100);
 	}
 
 	//Create the random test sets.
@@ -342,7 +342,7 @@ TEST(Expression_Set, setIntersection)
 
 
 
-TEST(Expression_Set, setDifference)
+TEST(Expression_SetRandom, setDifference)
 {
 	const int numelems1 = 101;
 	const int numelems2 = 97;
@@ -359,12 +359,12 @@ TEST(Expression_Set, setDifference)
 	srand(time(0));
 	for(int i = 0; i < numelems1; i++)
 	{
-		randelems1[i] = newInt((i * i) % 100);
+		randelems1[i] = newInt(rand() % 100);
 	}
 
 	for(int i = 0; i < numelems2; i++)
 	{
-		randelems2[i] = newInt((i * i) % 100);
+		randelems2[i] = newInt(rand() % 100);
 	}
 
 	//Create the random test sets.
@@ -399,7 +399,7 @@ TEST(Expression_Set, setDifference)
 
 
 
-TEST(Expression_Set, setSubset)
+TEST(Expression_SetRandom, setSubset)
 {
 	const int numelems1 = 101;
 	TVP randelems1[numelems1];
@@ -410,7 +410,7 @@ TEST(Expression_Set, setSubset)
 	//Generate the random test value collections.
 	for(int i = 0; i < numelems1; i++)
 	{
-		randelems1[i] = newInt(i);
+		randelems1[i] = newInt(rand());
 	}
 
 	//Create test set.
@@ -449,7 +449,7 @@ TEST(Expression_Set, setSubset)
 
 
 
-TEST(Expression_Set, setProperSubset)
+TEST(Expression_SetRandom, setProperSubset)
 {
 	const int numelems1 = 101;
 	TVP randelems1[numelems1];
@@ -460,7 +460,7 @@ TEST(Expression_Set, setProperSubset)
 	//Generate the random test value collections.
 	for(int i = 0; i < numelems1; i++)
 	{
-		randelems1[i] = newInt(i);
+		randelems1[i] = newInt(rand());
 	}
 
 	//Create test set.
@@ -499,7 +499,7 @@ TEST(Expression_Set, setProperSubset)
 
 
 
-TEST(Expression_Set, setEquality)
+TEST(Expression_SetRandom, setEquality)
 {
 	const int numelems1 = 101;
 	TVP randelems1[numelems1];
@@ -510,7 +510,7 @@ TEST(Expression_Set, setEquality)
 	//Generate the random test value collections.
 	for(int i = 0; i < numelems1; i++)
 	{
-		randelems1[i] = newInt(i);
+		randelems1[i] = newInt(rand());
 	}
 
 	//Create test set.
@@ -542,7 +542,7 @@ TEST(Expression_Set, setEquality)
 
 
 
-TEST(Expression_Set, setInequality)
+TEST(Expression_SetRandom, setInequality)
 {
 	const int numelems1 = 101;
 	TVP randelems1[numelems1];
@@ -553,7 +553,7 @@ TEST(Expression_Set, setInequality)
 	//Generate the random test value collections.
 	for(int i = 0; i < numelems1; i++)
 	{
-		randelems1[i] = newInt(i);
+		randelems1[i] = newInt(rand());
 	}
 
 	//Create test set.
@@ -584,10 +584,10 @@ TEST(Expression_Set, setInequality)
 
 
 
-TEST(Expression_Set, setCard)
+TEST(Expression_SetRandom, setCard)
 {
 	const int numelems = 5;
-	TVP elems[numelems] = {newInt(1), newInt(2), newInt(2), newInt(3), newInt(11)};
+	TVP elems[numelems] = {newInt(1), newInt(2), newInt(2), newInt(3), newInt(INT_MAX)};
 	TVP theset;
 
 	//Cardinality of empty set.
@@ -609,7 +609,7 @@ TEST(Expression_Set, setCard)
 
 
 
-TEST(Expression_Set, setDunion)
+TEST(Expression_SetRandom, setDunion)
 {
 	const int numelems1 = 101;
 	TVP randelems1[numelems1];
@@ -626,7 +626,7 @@ TEST(Expression_Set, setDunion)
 	//Generate the random test value collections.
 	for(int i = 0; i < numelems1; i++)
 	{
-		randelems1[i] = newInt(i);
+		randelems1[i] = newInt(rand());
 
 		//A set containing one singleton set.
 		set1 = newSetVar(1, newSetVar(1, randelems1[i]));
@@ -683,7 +683,7 @@ TEST(Expression_Set, setDunion)
 
 
 
-TEST(Expression_Set, setDinter)
+TEST(Expression_SetRandom, setDinter)
 {
 	TVP set1;
 	TVP set2;
@@ -708,7 +708,7 @@ TEST(Expression_Set, setDinter)
 	set2 = newSetVar(3, newInt(1), newInt(2), newInt(3));
 	set3 = newSetVar(3, newInt(2), newInt(3), newInt(4));
 	set4 = vdmSetInter(set1, set2);
-	set5 = vdmSetInter(set1, set3);
+	set5 = vdmSetInter(set1, set2);
 
 	res = vdmSetEquals(set1, set4);
 	EXPECT_EQ(true, res->value.boolVal);
@@ -723,9 +723,14 @@ TEST(Expression_Set, setDinter)
 
 	//A negative check by modifying one of the original sets.
 	set2 = newSetVar(3, newInt(1), newInt(6), newInt(3));
-	set3 = vdmSetInter(set1, set2);
+	set3 = newSetVar(3, newInt(2), newInt(3), newInt(4));
+	set4 = vdmSetInter(set1, set2);
+	set5 = vdmSetInter(set1, set2);
 
-	res = vdmSetEquals(set1, set3);
+	res = vdmSetEquals(set1, set4);
+	EXPECT_EQ(false, res->value.boolVal);
+	vdmFree(res);
+	res = vdmSetEquals(set1, set5);
 	EXPECT_EQ(false, res->value.boolVal);
 	vdmFree(res);
 
@@ -733,11 +738,13 @@ TEST(Expression_Set, setDinter)
 	vdmFree(set1);
 	vdmFree(set2);
 	vdmFree(set3);
+	vdmFree(set4);
+	vdmFree(set5);
 }
 
 
 
-TEST(Expression_Set, setPower)
+TEST(Expression_SetRandom, setPower)
 {
 	TVP set1;
 	TVP set2;
@@ -790,3 +797,92 @@ TEST(Expression_Set, setPower)
 	vdmFree(set2);
 	vdmFree(res);
 }
+
+
+
+/*
+//A crude way of testing how long it takes to generate a power set.
+TEST(Expression_SetRandom, setPowerExperiment)
+{
+	const int numelems1 = 11;
+	TVP randelems1[numelems1];
+	TVP set1;
+	TVP set2;
+	TVP set3;
+	TVP res;
+
+	//Initialize main set of sets.
+	set3 = newSetVar(0, NULL);
+
+	//Generate the random test value collections.
+	for(int i = 0; i < numelems1; i++)
+	{
+		randelems1[i] = newInt(rand());
+
+		//A set containing one element.
+		set1 = newSetVar(1, randelems1[i]);
+		set2 = vdmSetUnion(set3, set1);
+		vdmFree(set3);
+		set3 = set2;
+		vdmFree(set1);
+	}
+	//Wrap up.
+	for(int i = 0; i < numelems1; i++)
+	{
+		vdmFree(randelems1[i]);
+	}
+
+	set2 = vdmSetPower(set3);
+
+	//Wrap up.
+	vdmFree(set2);
+	vdmFree(set3);
+}
+
+
+
+//A crude way to look for memory leaks using the OS resource monitor.
+TEST(Expression_SetRandom, setMemTest)
+{
+	const int numelems1 = 1000;
+	const int numelems2 = 1000;
+	TVP randelems1[numelems1];
+	TVP randelems2[numelems2];
+	TVP set1;
+	TVP set2;
+	TVP interset;
+
+	//Generate the random test value collections.
+	srand(time(0));
+
+	for(int numiter = 0; numiter < 5000; numiter++)
+	{
+		for(int i = 0; i < numelems1; i++)
+		{
+			randelems1[i] = newInt(rand());
+		}
+
+		for(int i = 0; i < numelems2; i++)
+		{
+			randelems2[i] = newInt(rand());
+		}
+
+		//Create the random test sets.
+		set1 = newSetWithValues(numelems1, randelems1);
+		set2 = newSetWithValues(numelems2, randelems2);
+		interset = vdmSetInter(set1, set2);
+
+		vdmFree(set1);
+		vdmFree(set2);
+		vdmFree(interset);
+		for(int i = 0; i < numelems1; i++)
+		{
+			vdmFree(randelems1[i]);
+		}
+		for(int i = 0; i < numelems2; i++)
+		{
+			vdmFree(randelems2[i]);
+		}
+	}
+}
+*/
