@@ -1,4 +1,4 @@
 #set( $element = $CFormat.format($node.getLeft()) )
 #set( $set = $CFormat.format($node.getRight()) )
 ##
-vdmInSet(${set}, ${element})
+vdmSetMemberOf(${set}, ${element})

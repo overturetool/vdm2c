@@ -1,2 +1,2 @@
 #set( $exp = $CFormat.format($node.getExp()) )
-vdmPower(${exp})
+vdmSetPower(${exp})
