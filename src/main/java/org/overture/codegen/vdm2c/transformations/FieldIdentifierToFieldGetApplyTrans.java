@@ -10,6 +10,9 @@ import org.overture.ast.definitions.AInheritedDefinition;
 import org.overture.ast.definitions.AInstanceVariableDefinition;
 import org.overture.ast.definitions.PDefinition;
 import org.overture.ast.expressions.AVariableExp;
+import org.overture.ast.node.INode;
+import org.overture.ast.types.AFunctionType;
+import org.overture.ast.types.AOperationType;
 import org.overture.codegen.cgast.analysis.AnalysisException;
 import org.overture.codegen.cgast.analysis.DepthFirstAnalysisAdaptor;
 import org.overture.codegen.cgast.declarations.ADefaultClassDeclCG;
@@ -45,10 +48,15 @@ public class FieldIdentifierToFieldGetApplyTrans extends
 		if (node.getIsLocal())
 			return;
 
-		if (node.getSourceNode().getVdmNode() instanceof AVariableExp)
+		INode vdmNode = node.getSourceNode().getVdmNode();
+		if (vdmNode instanceof AVariableExp )
 		{
-			AVariableExp varExp = (AVariableExp) node.getSourceNode().getVdmNode();
+			AVariableExp varExp = (AVariableExp) vdmNode;
 
+			if(varExp.getType() instanceof AFunctionType || varExp.getType() instanceof AOperationType)
+				return;
+			
+			
 			String thisClassName = varExp.getAncestor(AClassClassDefinition.class).getName().getName();// the containing
 																										// class
 			String fieldClassName = null;
@@ -107,6 +115,8 @@ public class FieldIdentifierToFieldGetApplyTrans extends
 	public void caseAIdentifierStateDesignatorCG(
 			AIdentifierStateDesignatorCG node) throws AnalysisException
 	{
+		if (node.getIsLocal())
+			return;
 		if (node.parent() instanceof AAssignmentStmCG)
 		{
 			// class

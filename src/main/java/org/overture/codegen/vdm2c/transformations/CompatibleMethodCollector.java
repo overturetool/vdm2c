@@ -9,6 +9,7 @@ import org.overture.ast.definitions.SClassDefinition;
 import org.overture.ast.definitions.SFunctionDefinition;
 import org.overture.ast.definitions.SFunctionDefinitionBase;
 import org.overture.ast.definitions.SOperationDefinition;
+import org.overture.ast.expressions.AApplyExp;
 import org.overture.ast.expressions.PExp;
 import org.overture.ast.node.INode;
 import org.overture.ast.statements.ACallStm;
@@ -64,6 +65,15 @@ public class CompatibleMethodCollector
 		} else if (node instanceof ACallStm)
 		{
 			LinkedList<PExp> cargs = ((ACallStm) node).getArgs();
+			List<PType> argTypes = new Vector<PType>();
+			for (PExp pExp : cargs)
+			{
+				argTypes.add(pExp.getType());
+			}
+			return argTypes;
+		}else if(node instanceof AApplyExp)
+		{
+			LinkedList<PExp> cargs = ((AApplyExp) node).getArgs();
 			List<PType> argTypes = new Vector<PType>();
 			for (PExp pExp : cargs)
 			{

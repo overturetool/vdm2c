@@ -1,60 +1,83 @@
 package org.overture.codegen.vdm2c;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.junit.Test;
-import org.overture.codegen.vdm2c.CGenMain;
+import org.overture.codegen.vdm2c.CMakeUtil.CMakeGenerateException;
+import org.overture.test.framework.ConditionalIgnoreMethodRule.ConditionalIgnore;
 
-public class CExamplesTest
+public class CExamplesTest extends BaseGeneratorTest
 {
-	static final String cexamplesBase = System.getProperty("cexamples.path");
-	static final String outputFolder = new File("target/test-cgen/"+CExamplesTest.class.getSimpleName().replace('/', File.separatorChar)).getAbsolutePath();
-
-	static String getPath(String rpath)
-	{
-		return new File(cexamplesBase, rpath.replace('/', File.separatorChar)).getAbsolutePath();
-	}
-
+	@ConditionalIgnore(condition = HasVdm.class)
 	@Test
 	public void a()
 	{
-		CGenMain.main(new String[] {"-dest",outputFolder, getPath("classes/A.vdmrt") });
+		CGenMain.main(new String[] { "-dest", outputFolder,
+				getPath("classes/A.vdmrt") });
 	}
-	
+
+	@ConditionalIgnore(condition = HasVdm.class)
 	@Test
 	public void c()
 	{
-		CGenMain.main(new String[] {"-dest",outputFolder, getPath("classes/C.vdmrt") });
+		CGenMain.main(new String[] { "-dest", outputFolder,
+				getPath("classes/C.vdmrt") });
 	}
-	
+
+	@ConditionalIgnore(condition = HasVdm.class)
 	@Test
 	public void b()
 	{
-		CGenMain.main(new String[] {"-dest",outputFolder, getPath("classes/A.vdmrt"),getPath("classes/C.vdmrt"),getPath("classes/B.vdmrt") });
+		CGenMain.main(new String[] { "-dest", outputFolder,
+				getPath("classes/A.vdmrt"), getPath("classes/C.vdmrt"),
+				getPath("classes/B.vdmrt") });
 	}
-	
+
+	@ConditionalIgnore(condition = HasVdm.class)
 	@Test
 	public void d()
 	{
-		CGenMain.main(new String[] {"-dest",outputFolder, getPath("classes/D.vdmrt"),getPath("classes/A.vdmrt") });
+		CGenMain.main(new String[] { "-dest", outputFolder,
+				getPath("classes/D.vdmrt"), getPath("classes/A.vdmrt") });
 	}
-	
+
+	@ConditionalIgnore(condition = HasVdm.class)
 	@Test
 	public void call()
 	{
-		CGenMain.main(new String[] {"-dest",outputFolder, getPath("classes/Call.vdmrt") });
+		CGenMain.main(new String[] { "-dest", outputFolder,
+				getPath("classes/Call.vdmrt") });
 	}
-	
+
+	@ConditionalIgnore(condition = HasVdm.class)
 	@Test
 	public void Numeric()
 	{
-		CGenMain.main(new String[] {"-dest",outputFolder, getPath("expressions/ExpressionNumeric.vdmrt") });
+		CGenMain.main(new String[] { "-dest", outputFolder,
+				getPath("expressions/ExpressionNumeric.vdmrt") });
 	}
-	
+
+	@ConditionalIgnore(condition = HasVdm.class)
 	@Test
 	public void Seq()
 	{
-		CGenMain.main(new String[] {"-dest",outputFolder, getPath("expressions/ExpressionSeq.vdmrt") });
+		CGenMain.main(new String[] { "-dest", outputFolder,
+				getPath("expressions/ExpressionSeq.vdmrt") });
+	}
+
+	@ConditionalIgnore(condition = HasVdm.class)
+	@Test
+	public void ExpressionForLoop() throws IOException, InterruptedException,
+			CMakeGenerateException
+	{
+		String outputFolder = new File("target/test-cgen/"
+				+ CExamplesTest.class.getSimpleName()
+				+ "/ExpressionForLoop".replace('/', File.separatorChar)).getAbsolutePath();
+
+		CGenMain.main(new String[] { "-dest", outputFolder,
+				getPath("expressions/ExpressionForLoop.vdmrt") });
+
 	}
 	
 	@Test

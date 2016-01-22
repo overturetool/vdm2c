@@ -9,24 +9,32 @@ import java.util.Vector;
 
 import org.overture.ast.definitions.PDefinition;
 import org.overture.ast.definitions.SClassDefinition;
+import org.overture.codegen.cgast.SExpCG;
 import org.overture.codegen.cgast.SStmCG;
 import org.overture.codegen.cgast.analysis.AnalysisException;
 import org.overture.codegen.cgast.analysis.DepthFirstAnalysisAdaptor;
 import org.overture.codegen.cgast.declarations.AMethodDeclCG;
 import org.overture.codegen.cgast.declarations.SClassDeclCG;
 import org.overture.codegen.cgast.expressions.AApplyExpCG;
+import org.overture.codegen.cgast.expressions.AIdentifierVarExpCG;
 import org.overture.codegen.cgast.statements.ACallObjectExpStmCG;
 import org.overture.codegen.cgast.statements.ACallObjectStmCG;
 import org.overture.codegen.cgast.statements.APlainCallStmCG;
 import org.overture.codegen.cgast.statements.AReturnStmCG;
+import org.overture.codegen.cgast.types.AMethodTypeCG;
 import org.overture.codegen.trans.assistants.TransAssistantCG;
+import org.overture.codegen.vdm2c.extast.expressions.AMacroApplyExpCG;
 
+/**
+ * See {@link https://github.com/overturetool/vdm2c/issues/1} for the full discussion on call semantics
+ * 
+ * @author kel
+ */
 public class CallRewriteTrans extends DepthFirstAnalysisAdaptor
 {
 	public TransAssistantCG assist;
 
 	final CompatibleMethodCollector methodCollector = new CompatibleMethodCollector();
-	
 
 	public CallRewriteTrans(TransAssistantCG assist)
 	{
@@ -51,17 +59,30 @@ public class CallRewriteTrans extends DepthFirstAnalysisAdaptor
 
 		List<AMethodDeclCG> resolvedMethods = lookupVdmFunOpToMethods(tmp);
 
-		//FIXME: we need to consider all methods not only the first one
-		AMethodDeclCG selectedMethos = resolvedMethods.get(0);
-		String thisType = cDef.getName();
-		String methodOwnerType = selectedMethos.getAncestor(SClassDeclCG.class).getName();
-		String thisArgs = "this";
-		String methodId = String.format("CLASS_%s_%s", methodOwnerType, selectedMethos.getName());
-
-		SStmCG apple =exp2Stm( newMacroApply("CALL_FUNC_PTR",  createIdentifier(thisType, null), createIdentifier(methodOwnerType, null), createIdentifier(thisArgs, null),createIdentifier(methodId, null)));
+		// FIXME: we need to consider all methods not only the first one
+		SStmCG apple = exp2Stm(createApply(resolvedMethods.get(0), cDef.getName(), node.getArgs()));
 
 		assist.replaceNodeWith(node, apple);
 
+	}
+
+	SExpCG createApply(AMethodDeclCG method, String thisName,
+			List<SExpCG> linkedList) throws AnalysisException
+	{
+		AMethodDeclCG selectedMethod = method;
+		String thisType = thisName;
+		String methodOwnerType = selectedMethod.getAncestor(SClassDeclCG.class).getName();
+		String thisArgs = "this";
+		String methodId = String.format("CLASS_%s_%s", methodOwnerType, selectedMethod.getName());
+
+		AMacroApplyExpCG apply = newMacroApply("CALL_FUNC_PTR", createIdentifier(thisType, null), createIdentifier(methodOwnerType, null), createIdentifier(thisArgs, null), createIdentifier(methodId, null));
+
+		for (SExpCG arg : linkedList)
+		{
+			arg.apply(THIS);
+			apply.getArgs().add(arg);
+		}
+		return apply;
 	}
 
 	List<AMethodDeclCG> lookupVdmFunOpToMethods(List<PDefinition> funOps)
@@ -93,13 +114,24 @@ public class CallRewriteTrans extends DepthFirstAnalysisAdaptor
 		return methods;
 	}
 
-
-
 	@Override
 	public void caseAApplyExpCG(AApplyExpCG node) throws AnalysisException
 	{
-		// TODO Auto-generated method stub
-		super.caseAApplyExpCG(node);
+		if (node.getRoot() instanceof AIdentifierVarExpCG)
+		{
+			AIdentifierVarExpCG root = (AIdentifierVarExpCG) node.getRoot();
+			if (root.getType() instanceof AMethodTypeCG)
+			{
+				// this is a call
+				String name = root.getName();
+				System.out.println();
+				SClassDeclCG cDef = node.getAncestor(SClassDeclCG.class);
+				List<PDefinition> tmp = methodCollector.collectCompatibleMethods((SClassDefinition) cDef.getSourceNode().getVdmNode(), name, node.getSourceNode().getVdmNode(), methodCollector.getArgTypes(node.getSourceNode().getVdmNode()));
+				System.out.println();
+				List<AMethodDeclCG> resolvedMethods = lookupVdmFunOpToMethods(tmp);
+				assist.replaceNodeWith(node, createApply(resolvedMethods.get(0), cDef.getName(), node.getArgs()));
+			}
+		}
 	}
 
 	@Override

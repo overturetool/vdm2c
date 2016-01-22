@@ -23,7 +23,7 @@ public class ExtractRetValTrans extends DepthFirstAnalysisAdaptor
 	@Override
 	public void caseAReturnStmCG(AReturnStmCG node) throws AnalysisException
 	{
-		if(node.getExp()==null)
+		if(node.getExp()==null||node.getExp().getType()==null)
 		{
 			return;
 		}
