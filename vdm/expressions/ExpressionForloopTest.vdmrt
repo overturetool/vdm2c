@@ -1,0 +1,14 @@
+class ExpressionForloopTest is subclass of TestCase,ExpressionForLoop
+operations
+
+public testforindex : () ==>()
+testforindex()== assertTrue(forindex());
+
+public testforset : () ==>()
+testforset()== assertTrue(forset());
+
+public testforseq : () ==>()
+testforseq()== assertTrue(forseq());
+
+
+end ExpressionForloopTest

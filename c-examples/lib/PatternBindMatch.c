@@ -39,9 +39,11 @@ bool patternMatchBind(TVP patternBind, TVP value)
 		case VDM_BOOL:
 		case VDM_CHAR:
 		case VDM_INT:
-		case VDM_INT1:
+		case VDM_NAT:
+		case VDM_NAT1:
 		case VDM_QUOTE:
 		case VDM_REAL:
+		case VDM_RAT:
 		//this is match value
 		return equals(patternBind,value);
 

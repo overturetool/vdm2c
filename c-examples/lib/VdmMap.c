@@ -406,14 +406,15 @@ guint vdm_typedvalue_hash(gconstpointer v)
 	switch(tv->type)
 	{
 		case VDM_INT:
-		case VDM_INT1:
-
+		case VDM_NAT1:
+		case VDM_NAT:
 		return g_int_hash(&tv->value.intVal);
 		case VDM_BOOL:
 		return g_int_hash(&tv->value.boolVal);
 		case VDM_CHAR:
 		return g_int_hash(&tv->value.charVal);
 		case VDM_REAL:
+		case VDM_RAT:
 		return g_double_hash(&tv->value.doubleVal);
 		case VDM_QUOTE:
 		return g_int_hash(&tv->value.uintVal);

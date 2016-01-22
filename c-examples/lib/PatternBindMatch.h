@@ -31,7 +31,7 @@
 #define LIB_PATTERNBINDMATCH_H_
 
 #include "TypedValue.h"
-#include "lib/VdmProduct.h"
+#include "VdmProduct.h"
 #include <assert.h>
 
 bool patternMatchBind(TVP patternBind, TVP value);

@@ -166,7 +166,7 @@ TVP vdmSeqReverse(TVP seq)
 TVP vdmSeqIndex(TVP seq,TVP indexVal) //VDM uses 1 based index
 {
 	ASSERT_CHECK(seq);
-	assert((indexVal->type == VDM_INT||indexVal->type == VDM_INT1) && "index is not a int");
+	assert((indexVal->type == VDM_INT||indexVal->type == VDM_NAT||indexVal->type == VDM_NAT1) && "index is not a int");
 
 	int index = indexVal->value.intVal;
 	UNWRAP_COLLECTION(col,seq);

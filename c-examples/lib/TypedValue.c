@@ -27,10 +27,11 @@
  *      Author: kel
  */
 
-#include "lib/TypedValue.h"
+#include "TypedValue.h"
 #include "VdmMap.h"
 #include "VdmClass.h"
 #include "VdmRecord.h"
+#include "VdmBasicTypes.h"
 
 struct TypedValue* newTypeValue(vdmtype type, TypedValueType value)
 {
@@ -47,12 +48,20 @@ struct TypedValue* newInt(int x)
 			)
 			{ .intVal = x });
 }
-struct TypedValue* newInt1(int x)
+struct TypedValue* newNat1(int x)
 {
-	return newTypeValue(VDM_INT1, (TypedValueType
+	return newTypeValue(VDM_NAT1, (TypedValueType
 			)
 			{ .intVal = x });
 }
+
+struct TypedValue* newNat(int x)
+{
+	return newTypeValue(VDM_NAT, (TypedValueType
+			)
+			{ .intVal = x });
+}
+
 struct TypedValue* newBool(bool x)
 {
 	return newTypeValue(VDM_BOOL, (TypedValueType
@@ -85,7 +94,9 @@ struct TypedValue* newCollection(size_t size, vdmtype type)
 	struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
 	ptr->size = size;
 	ptr->value = (struct TypedValue**) calloc(size, sizeof(struct TypedValue*)); //I know this is slower than malloc but better for products
-	return newTypeValue(type, (TypedValueType){ .ptr = ptr });
+	return newTypeValue(type, (TypedValueType
+			)
+			{ .ptr = ptr });
 }
 
 struct TypedValue* newCollectionWithValues(vdmtype type, size_t size, TVP* elements)
@@ -102,6 +113,25 @@ struct TypedValue* newCollectionWithValues(vdmtype type, size_t size, TVP* eleme
 
 
 
+int vdmCollectionSize(TVP collection)
+{
+	ASSERT_CHECK_COLLECTION(collection);
+	UNWRAP_COLLECTION(col,collection);
+	return col->size;
+}
+
+TVP vdmCollectionIndex(TVP collection,int index)
+{
+
+	ASSERT_CHECK_COLLECTION(collection);
+
+	UNWRAP_COLLECTION(col,collection);
+
+	assert(index>=0 && index<col->size && "invalid index");
+	return vdmClone(col->value[index]);
+
+}
+
 struct TypedValue* vdmClone(struct TypedValue* x)
 {
 
@@ -114,8 +144,10 @@ struct TypedValue* vdmClone(struct TypedValue* x)
 	case VDM_BOOL:
 	case VDM_CHAR:
 	case VDM_INT:
-	case VDM_INT1:
+	case VDM_NAT:
+	case VDM_NAT1:
 	case VDM_REAL:
+	case VDM_RAT:
 	case VDM_QUOTE:
 	{
 		//encoded as values so the initial copy line handles these
@@ -169,6 +201,10 @@ struct TypedValue* vdmClone(struct TypedValue* x)
 
 bool equals(struct TypedValue* a, struct TypedValue* b)
 {
+	if(isNumber(a)&& isNumber(b))
+	{
+		return toDouble(a)==toDouble(b);
+	}
 	if (a->type != b->type) //is this correct for optional types too
 	{
 		return false;
@@ -185,10 +221,12 @@ bool equals(struct TypedValue* a, struct TypedValue* b)
 		return a->value.charVal == b->value.charVal;
 	}
 	case VDM_INT:
-	case VDM_INT1:
+	case VDM_NAT:
+	case VDM_NAT1:
 	{
 		return a->value.intVal == b->value.intVal;
 	}
+	case VDM_RAT:
 	case VDM_REAL:
 	{
 		return a->value.doubleVal == b->value.doubleVal;
@@ -268,8 +306,10 @@ void recursiveFree(struct TypedValue* ptr)
 	case VDM_BOOL:
 	case VDM_CHAR:
 	case VDM_INT:
-	case VDM_INT1:
+	case VDM_NAT:
+	case VDM_NAT1:
 	case VDM_REAL:
+	case VDM_RAT:
 	case VDM_QUOTE:
 	{
 		break;

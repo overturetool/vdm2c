@@ -47,9 +47,11 @@
 typedef enum
 {
 	VDM_INT,
-	VDM_INT1,
+	VDM_NAT,
+	VDM_NAT1,
 	VDM_BOOL,
 	VDM_REAL,
+	VDM_RAT,
 	VDM_CHAR,
 	VDM_SET,
 	VDM_SEQ,
@@ -98,6 +100,10 @@ struct Collection
 	int size;
 };
 
+int vdmCollectionSize(TVP collection);
+TVP vdmCollectionIndex(TVP collection,int index);
+
+#define ASSERT_CHECK_COLLECTION(s) assert((s->type == VDM_SEQ || s->type == VDM_SET || s->type == VDM_PRODUCT) &&"Value is not a collection")
 #define UNWRAP_COLLECTION(var,collection) struct Collection* var = (struct Collection*)collection->value.ptr
 #define UNWRAP_PRODUCT(var,product) struct Collection* var = (struct Collection*)product->value.ptr
 
