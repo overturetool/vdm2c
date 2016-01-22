@@ -78,7 +78,7 @@ message(STATUS "C_GEN_FILES:  ${C_GEN_FILES}")
 
 add_executable(${PROJECT_NAME} ${C_FILES} ${C_GEN_FILES} ${CPP_FILES})
 
-include_directories(../c-examples/;${EXT_C_FILES})
+include_directories(../c-examples/;../c-examples/lib/;${EXT_C_FILES})
 
 include_directories(${gtest_SOURCE_DIR}/include)
 INCLUDE_DIRECTORIES(
