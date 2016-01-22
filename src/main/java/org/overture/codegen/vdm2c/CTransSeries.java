@@ -12,10 +12,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.overture.codegen.cgast.analysis.DepthFirstAnalysisAdaptor;
-import org.overture.codegen.cgast.declarations.ADefaultClassDeclCG;
 //import org.overture.codegen.trans.TempVarPrefixes;
 import org.overture.codegen.trans.assistants.TransAssistantCG;
-import org.overture.codegen.trans.funcvalues.FuncValAssistant;
 import org.overture.codegen.trans.letexps.FuncTrans;
 import org.overture.codegen.vdm2c.transformations.AddThisArgToMethodsTrans;
 import org.overture.codegen.vdm2c.transformations.CallRewriteTrans;
@@ -41,9 +39,7 @@ public class CTransSeries
 		this.codeGen = codeGen;
 	}
 
-	public List<DepthFirstAnalysisAdaptor> consAnalyses(
-			List<ADefaultClassDeclCG> classes,
-			FuncValAssistant functionValueAssistant)
+	public List<DepthFirstAnalysisAdaptor> consAnalyses()
 	{
 		// Data and functionality to support the transformations
 		// IRInfo irInfo = codeGen.getIRGenerator().getIRInfo();
