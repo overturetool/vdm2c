@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.Vector;
 
 import org.overture.ast.analysis.AnalysisException;
-import org.overture.ast.definitions.SClassDefinition;
 import org.overture.codegen.cgast.INode;
+import org.overture.codegen.cgast.PCG;
 import org.overture.codegen.cgast.analysis.DepthFirstAnalysisAdaptor;
 import org.overture.codegen.cgast.declarations.ADefaultClassDeclCG;
 import org.overture.codegen.cgast.declarations.AModuleDeclCG;
@@ -19,7 +19,6 @@ import org.overture.codegen.cgast.declarations.SClassDeclCG;
 import org.overture.codegen.ir.CodeGenBase;
 import org.overture.codegen.ir.IRStatus;
 import org.overture.codegen.logging.Logger;
-import org.overture.codegen.trans.assistants.TransAssistantCG;
 import org.overture.codegen.trans.funcvalues.FuncValAssistant;
 import org.overture.codegen.utils.GeneratedData;
 import org.overture.codegen.utils.GeneratedModule;
@@ -34,31 +33,11 @@ public class CGen extends CodeGenBase
 		this.outputFolder = outputFolder;
 	}
 
-	public GeneratedData generateCFromVdm(List<SClassDefinition> ast,
+	public GeneratedData generateCFromVdm(final List<IRStatus<PCG>> statuses,
 			File outputFolder) throws AnalysisException
 	{
-		this.generator.computeDefTable(ast);
-
-		final List<IRStatus<org.overture.codegen.cgast.INode>> statuses = new LinkedList<>();
-
-		// This is run pr. class
-		for (SClassDefinition node : ast)
-		{
-			// Try to produce the IR
-			IRStatus<org.overture.codegen.cgast.INode> status = generator.generateFrom(node);
-
-			// If it was successful, then status is different from null
-			if (status != null)
-			{
-				statuses.add(status);
-			}
-
-		}
-
-		this.transAssistant = new TransAssistantCG(generator.getIRInfo());
-
 		List<IRStatus<AModuleDeclCG>> moduleStatuses = IRStatus.extract(statuses, AModuleDeclCG.class);
-		List<IRStatus<org.overture.codegen.cgast.INode>> modulesAsNodes = IRStatus.extract(moduleStatuses);
+		List<IRStatus<PCG>> modulesAsNodes = IRStatus.extract(moduleStatuses);
 
 		List<IRStatus<ADefaultClassDeclCG>> classStatuses = IRStatus.extract(modulesAsNodes, ADefaultClassDeclCG.class);
 		classStatuses.addAll(IRStatus.extract(statuses, ADefaultClassDeclCG.class));
@@ -79,7 +58,7 @@ public class CGen extends CodeGenBase
 			@Override
 			public AClassHeaderDeclCG getHeader(SClassDeclCG def)
 			{
-				for (IRStatus<INode> irStatus : statuses)
+				for (IRStatus<PCG> irStatus : statuses)
 				{
 					if (irStatus.getIrNode() instanceof AClassHeaderDeclCG)
 					{
@@ -131,7 +110,7 @@ public class CGen extends CodeGenBase
 	}
 
 	public void writeClasses(File outputFolder,
-			final List<IRStatus<org.overture.codegen.cgast.INode>> statuses,
+			final List<IRStatus<PCG>> statuses,
 			CFormat my_formatter)
 	{
 		for (IRStatus<ADefaultClassDeclCG> status : IRStatus.extract(statuses, ADefaultClassDeclCG.class))
@@ -158,7 +137,7 @@ public class CGen extends CodeGenBase
 	}
 
 	public void writeHeaders(File outputFolder,
-			final List<IRStatus<org.overture.codegen.cgast.INode>> statuses,
+			final List<IRStatus<PCG>> statuses,
 			CFormat my_formatter)
 	{
 		for (IRStatus<AClassHeaderDeclCG> status : IRStatus.extract(statuses, AClassHeaderDeclCG.class))
@@ -181,7 +160,7 @@ public class CGen extends CodeGenBase
 	}
 
 	public void generateClassHeaders(
-			final List<IRStatus<org.overture.codegen.cgast.INode>> statuses)
+			final List<IRStatus<PCG>> statuses)
 	{
 		try
 		{
@@ -245,9 +224,9 @@ public class CGen extends CodeGenBase
 
 	@Override
 	protected GeneratedData genVdmToTargetLang(
-			List<org.overture.ast.node.INode> ast) throws AnalysisException
+			List<IRStatus<PCG>> irStatus) throws AnalysisException
 	{
-		return generateCFromVdm(filter(ast, SClassDefinition.class), outputFolder);
+		return generateCFromVdm(irStatus, outputFolder);
 	}
 
 	/**
