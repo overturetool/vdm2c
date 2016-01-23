@@ -6,17 +6,17 @@ protected notExp: () -> bool
 notExp()== not false;
 
 protected andExp: () -> bool
-andExp()== false and false;
+andExp()== true and true;
 
 protected orExp: () -> bool
 orExp()== true or false;
 
 
 protected implicationExp: () -> bool
-implicationExp()== true => false;
+implicationExp()== true => true;
 
 protected biimplicationExp: () -> bool
-biimplicationExp()== true <=> false;
+biimplicationExp()== false <=> false;
 
 protected equalityExp: () -> bool
 equalityExp()== false = false;

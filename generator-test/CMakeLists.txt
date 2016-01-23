@@ -67,6 +67,14 @@ if(${filename} MATCHES ".*ExpressionSeq.c$")
 set(CPP_FILES ${CPP_FILES};tests/ExpressionsSeq_Tests.cpp)
 endif()
 
+if(${filename} MATCHES ".*ExpressionSetForCGTesting.c$")
+set(CPP_FILES ${CPP_FILES};tests/ExpressionsSet_Tests.cpp)
+endif()
+
+if(${filename} MATCHES ".*ExpressionBoolean.c$")
+set(CPP_FILES ${CPP_FILES};tests/ExpressionsBoolean_Tests.cpp)
+endif()
+
 if(${filename} MATCHES ".*ExpressionForLoop.c$")
 set(CPP_FILES ${CPP_FILES};tests/ExpressionsForloop_Tests.cpp)
 endif()
