@@ -85,4 +85,10 @@ public class CExamplesTest extends BaseGeneratorTest
 	{
 		CGenMain.main(new String[] {"-dest",outputFolder, getPath("expressions/ExpressionSetForCGTesting.vdmrt") });
 	}
+	
+	@Test
+	public void Boolean()
+	{
+		CGenMain.main(new String[] {"-dest",outputFolder, getPath("expressions/ExpressionBoolean.vdmrt") });
+	}
 }
