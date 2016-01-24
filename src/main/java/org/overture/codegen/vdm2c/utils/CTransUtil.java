@@ -69,7 +69,7 @@ public class CTransUtil
 		AVarDeclCG retVar = new AVarDeclCG();
 		retVar.setType(varType);
 		retVar.setPattern(id);
-		retVar.setSourceNode(SourceNode.copy(derrivedFrom));
+		retVar.setSourceNode(derrivedFrom);
 		retVar.setExp(value);
 
 		AIdentifierVarExpCG retVarOcc = new AIdentifierVarExpCG();
@@ -94,7 +94,7 @@ public class CTransUtil
 	{
 		ACastUnaryExpCG cast = new ACastUnaryExpCG();
 		cast.setExp(newApply);
-		cast.setType(new AExternalTypeCG(null, false, null, string, null));
+		cast.setType(new AExternalTypeCG(null, null, null, false, null, string, null));
 		return cast;
 	}
 
@@ -113,7 +113,7 @@ public class CTransUtil
 	@SuppressWarnings("deprecation")
 	public static STypeCG newExternalType(String name)
 	{
-		return new AExternalTypeCG(null, false, null, name, null);
+		return new AExternalTypeCG(false, null, name, null);
 	}
 
 	public static AApplyExpCG newApply(String name, SExpCG... args)
@@ -206,7 +206,7 @@ public class CTransUtil
 			throws AnalysisException
 	{
 		AApplyExpCG apply = newApply(string);
-		apply.setSourceNode(SourceNode.copy(node.getSourceNode()));
+		apply.setSourceNode(node.getSourceNode());
 		apply.setType(node.getType());
 		assist.getAssist().replaceNodeWith(node, apply);
 		for (SExpCG arg : args)

@@ -10,7 +10,6 @@ import org.overture.codegen.cgast.declarations.AMethodDeclCG;
 import org.overture.codegen.cgast.declarations.SClassDeclCG;
 import org.overture.codegen.cgast.expressions.ANewExpCG;
 import org.overture.codegen.cgast.statements.ANewObjectDesignatorCG;
-import org.overture.codegen.ir.SourceNode;
 import org.overture.codegen.trans.assistants.TransAssistantCG;
 import org.overture.codegen.vdm2c.utils.NameMangler;
 
@@ -28,7 +27,7 @@ public class NewRewriteTrans extends DepthFirstAnalysisAdaptor
 	@Override
 	public void caseANewExpCG(ANewExpCG node) throws AnalysisException
 	{
-		node.getArgs().add(0, createIdentifier("NULL", SourceNode.copy(node.getSourceNode())));
+		node.getArgs().add(0, createIdentifier("NULL", node.getSourceNode()));
 
 		// FIXME this also need the call filtering on arguments
 		for (SClassDeclCG cDef : assist.getInfo().getClasses())

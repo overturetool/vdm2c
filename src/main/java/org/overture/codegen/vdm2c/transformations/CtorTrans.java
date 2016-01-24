@@ -58,7 +58,7 @@ public class CtorTrans extends DepthFirstAnalysisAdaptor
 			String bufName = "__buf";
 
 			AIfStmCG ifStm = new AIfStmCG();
-			ifStm.setIfExp(new AAddrEqualsBinaryExpCG(null, null, createIdentifier("this", null), new ANullExpCG()));
+			ifStm.setIfExp(new AAddrEqualsBinaryExpCG(null, null, null, null, createIdentifier("this", null), new ANullExpCG()));
 
 			ABlockStmCG initClassBlock = new ABlockStmCG();
 			initClassBlock.setScoped(true);

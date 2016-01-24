@@ -2,8 +2,8 @@ package org.overture.codegen.vdm2c.transformations;
 
 import static org.overture.codegen.vdm2c.utils.CTransUtil.createIdentifier;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.exp2Stm;
-import static org.overture.codegen.vdm2c.utils.CTransUtil.newMacroApply;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newDeclarationAssignment;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.newMacroApply;
 
 import org.overture.ast.definitions.AClassClassDefinition;
 import org.overture.ast.definitions.AInheritedDefinition;
@@ -25,7 +25,6 @@ import org.overture.codegen.cgast.name.ATokenNameCG;
 import org.overture.codegen.cgast.statements.AAssignmentStmCG;
 import org.overture.codegen.cgast.statements.ABlockStmCG;
 import org.overture.codegen.cgast.statements.AIdentifierStateDesignatorCG;
-import org.overture.codegen.ir.SourceNode;
 import org.overture.codegen.trans.assistants.TransAssistantCG;
 import org.overture.codegen.vdm2c.extast.expressions.AMacroApplyExpCG;
 
@@ -75,11 +74,11 @@ public class FieldIdentifierToFieldGetApplyTrans extends
 			assist.replaceNodeWith(node, apply);
 
 			// add this type
-			apply.getArgs().add(createIdentifier(thisClassName, SourceNode.copy(node.getSourceNode())));
+			apply.getArgs().add(createIdentifier(thisClassName, node.getSourceNode()));
 			// add field owner type
-			apply.getArgs().add(createIdentifier(fieldClassName, SourceNode.copy(node.getSourceNode())));
+			apply.getArgs().add(createIdentifier(fieldClassName, node.getSourceNode()));
 			// add this
-			apply.getArgs().add(createIdentifier("this", SourceNode.copy(node.getSourceNode())));
+			apply.getArgs().add(createIdentifier("this", node.getSourceNode()));
 			// add field name
 			apply.getArgs().add(node);
 		}
@@ -137,28 +136,28 @@ public class FieldIdentifierToFieldGetApplyTrans extends
 			assist.replaceNodeWith(assignment, replBlock);
 
 			AMacroApplyExpCG apply = newMacroApply("SET_FIELD_PTR");// new AApplyExpCG();
-			apply.setSourceNode(SourceNode.copy(node.getSourceNode()));
+			apply.setSourceNode(node.getSourceNode());
 
 			// add this type
-			apply.getArgs().add(createIdentifier(thisClassName, SourceNode.copy(node.getSourceNode())));
+			apply.getArgs().add(createIdentifier(thisClassName, node.getSourceNode()));
 
 			// add field owner type
-			apply.getArgs().add(createIdentifier(fieldClassName, SourceNode.copy(node.getSourceNode())));
+			apply.getArgs().add(createIdentifier(fieldClassName, node.getSourceNode()));
 			// add this
-			apply.getArgs().add(createIdentifier("this", SourceNode.copy(node.getSourceNode())));
+			apply.getArgs().add(createIdentifier("this", node.getSourceNode()));
 
 			// add field name
-			apply.getArgs().add(createIdentifier(node.getName(), SourceNode.copy(node.getSourceNode())));
+			apply.getArgs().add(createIdentifier(node.getName(), node.getSourceNode()));
 
 			// add new value
 			retVar.getSourceNode();
-			apply.getArgs().add(createIdentifier(name, SourceNode.copy(retVar.getSourceNode())));
+			apply.getArgs().add(createIdentifier(name, retVar.getSourceNode()));
 
 			replBlock.getStatements().add(exp2Stm(apply));
 
 			AApplyExpCG vdmFree = new AApplyExpCG();
-			vdmFree.setRoot(createIdentifier("vdmFree", SourceNode.copy(node.getSourceNode())));
-			vdmFree.getArgs().add(createIdentifier(name, SourceNode.copy(retVar.getSourceNode())));
+			vdmFree.setRoot(createIdentifier("vdmFree", node.getSourceNode()));
+			vdmFree.getArgs().add(createIdentifier(name, retVar.getSourceNode()));
 
 			replBlock.getStatements().add(exp2Stm(vdmFree));
 		}

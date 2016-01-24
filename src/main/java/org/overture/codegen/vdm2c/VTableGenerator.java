@@ -18,7 +18,6 @@ import org.overture.codegen.cgast.declarations.AMethodDeclCG;
 import org.overture.codegen.cgast.declarations.SClassDeclCG;
 import org.overture.codegen.cgast.statements.ABlockStmCG;
 import org.overture.codegen.ir.IRStatus;
-import org.overture.codegen.ir.SourceNode;
 import org.overture.codegen.vdm2c.ast.Vtables;
 import org.overture.codegen.vdm2c.ast.Vtables.VEntry;
 import org.overture.codegen.vdm2c.ast.Vtables.VEntryOverride;
@@ -60,7 +59,7 @@ public class VTableGenerator
 					for (AFormalParamLocalParamCG format : overrideProxy.getFormalParams())
 					{
 						// TODO: not sure what to do if we have something thats not an identifier pattern
-						args.add(createIdentifier(format.getPattern().toString(), SourceNode.copy(format.getSourceNode())));
+						args.add(createIdentifier(format.getPattern().toString(), format.getSourceNode()));
 					}
 
 					AFormalParamLocalParamCG thisArg = overrideProxy.getFormalParams().get(0);

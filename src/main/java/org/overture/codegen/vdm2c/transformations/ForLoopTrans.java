@@ -29,7 +29,6 @@ import org.overture.codegen.cgast.statements.ABlockStmCG;
 import org.overture.codegen.cgast.statements.AForAllStmCG;
 import org.overture.codegen.cgast.statements.AForIndexStmCG;
 import org.overture.codegen.cgast.statements.AWhileStmCG;
-import org.overture.codegen.ir.SourceNode;
 import org.overture.codegen.trans.assistants.TransAssistantCG;
 
 public class ForLoopTrans extends DepthFirstAnalysisAdaptor
@@ -104,11 +103,11 @@ public class ForLoopTrans extends DepthFirstAnalysisAdaptor
 
 		String setName = getNewName();
 		String indexName = getNewName();
-		replBlock.getLocalDefs().add(newDeclarationAssignment(setName, newTvpType(), set, SourceNode.copy(set.getSourceNode())));
+		replBlock.getLocalDefs().add(newDeclarationAssignment(setName, newTvpType(), set, set.getSourceNode()));
 		replBlock.getLocalDefs().add(newDeclarationAssignment(indexName, newExternalType("int"), createIdentifier("0", null), null));
-		replBlock.getStatements().add(toStm(newMacroApply("ASSERT_CHECK_COLLECTION", newIdentifier(setName, SourceNode.copy(set.getSourceNode())))));
+		replBlock.getStatements().add(toStm(newMacroApply("ASSERT_CHECK_COLLECTION", newIdentifier(setName, set.getSourceNode()))));
 		String colName = getNewName();
-		replBlock.getStatements().add(toStm(newMacroApply("UNWRAP_COLLECTION", newIdentifier(colName, SourceNode.copy(set.getSourceNode())), newIdentifier(setName, SourceNode.copy(set.getSourceNode())))));
+		replBlock.getStatements().add(toStm(newMacroApply("UNWRAP_COLLECTION", newIdentifier(colName, set.getSourceNode()), newIdentifier(setName, set.getSourceNode()))));
 
 		SNumericBinaryExpCG less = new ALessNumericBinaryExpCG();
 		less.setLeft(newIdentifier(indexName, null));
