@@ -79,4 +79,16 @@ public class CExamplesTest extends BaseGeneratorTest
 				getPath("expressions/ExpressionForLoop.vdmrt") });
 
 	}
+	
+	@Test
+	public void Set()
+	{
+		CGenMain.main(new String[] {"-dest",outputFolder, getPath("expressions/ExpressionSetForCGTesting.vdmrt") });
+	}
+	
+	@Test
+	public void Boolean()
+	{
+		CGenMain.main(new String[] {"-dest",outputFolder, getPath("expressions/ExpressionBoolean.vdmrt") });
+	}
 }

@@ -233,6 +233,11 @@ public class CGen extends CodeGenBase
 			Runtime.getRuntime().exec("/usr/local/bin/clang-format -i -style='{BreakBeforeBraces: GNU}' "
 					+ file.getAbsolutePath());
 		}
+		if (System.getProperty("user.name").equals("mot"))
+		{
+			Runtime.getRuntime().exec("clang-format -i -style='{BreakBeforeBraces:GNU}' '"
+					+ file.getAbsolutePath() + "'");
+		}
 	}
 
 	private StringWriter emitCode(INode node, CFormat my_formatter)
