@@ -31,7 +31,8 @@ public class ClassHeaderGenerator
 {
 	@SuppressWarnings("unchecked")
 	public Collection<? extends IRStatus<INode>> generateClassHeaders(
-			List<IRStatus<ADefaultClassDeclCG>> extract) throws AnalysisException
+			List<IRStatus<ADefaultClassDeclCG>> extract)
+			throws AnalysisException
 	{
 		final List<AClassHeaderDeclCG> classHeaders = new Vector<AClassHeaderDeclCG>();
 
@@ -78,13 +79,12 @@ public class ClassHeaderGenerator
 			}
 
 			List<CGenClonableString> includes = new Vector<CGenClonableString>();
-	
+
 			for (String typeName : collectIncludeTypes(classDef).keySet())
 			{
 				includes.add(new CGenClonableString(typeName));
 			}
 			header.setIncludes(includes);
-			
 
 			header.setName(classDef.getName().toString());
 
@@ -125,8 +125,8 @@ public class ClassHeaderGenerator
 		return list;
 	}
 
-	private Map<String, STypeCG> collectIncludeTypes(ADefaultClassDeclCG classDef)
-			throws AnalysisException
+	private Map<String, STypeCG> collectIncludeTypes(
+			final ADefaultClassDeclCG classDef) throws AnalysisException
 	{
 		final Map<String, STypeCG> types = new HashMap<String, STypeCG>();
 
@@ -153,8 +153,17 @@ public class ClassHeaderGenerator
 			{
 				addType(node.getName().getName(), node);
 			}
+
 		});
-		
+
+		for (ATokenNameCG s : classDef.getSuperNames())
+		{
+			AClassTypeCG ct = new AClassTypeCG();
+			ct.setName(s.getName());
+			if (!types.containsKey(s.getName()))
+				types.put(s.getName(), ct);
+		}
+
 		return types;
 	}
 
