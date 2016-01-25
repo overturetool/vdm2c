@@ -58,6 +58,13 @@ TVP vdmOr(TVP a,TVP b)
 	return newBool(a->value.boolVal || b->value.boolVal);
 }
 
+TVP vdmXor(TVP a,TVP b)
+{
+	ASSERT_CHECK_BOOL(a);
+	ASSERT_CHECK_BOOL(b);
+	return newBool((!(a->value.boolVal) && b->value.boolVal) || ((a->value.boolVal) && !(b->value.boolVal)));
+}
+
 TVP vdmImplies(TVP a,TVP b)
 {
 	ASSERT_CHECK_BOOL(a);

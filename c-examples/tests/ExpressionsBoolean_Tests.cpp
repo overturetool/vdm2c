@@ -71,6 +71,20 @@ TEST(Expression_Boolean, orExp)
 	vdmFree(t1);
 }
 
+TEST(Expression_Boolean, xorExp)
+{
+	TVP t = newBool(true);
+	TVP t1 = newBool(false);
+
+	assert(t->type == VDM_BOOL && "Value is not a bool");
+	assert(t1->type == VDM_BOOL && "Value is not a bool");
+	TVP res = vdmXor(t,t1);
+	EXPECT_EQ (true,res->value.boolVal);
+	vdmFree(res);
+
+	vdmFree(t);
+	vdmFree(t1);
+}
 
 TEST(Expression_Boolean, implicationExp)
 {

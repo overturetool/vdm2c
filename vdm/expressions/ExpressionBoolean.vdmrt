@@ -11,6 +11,8 @@ andExp()== true and true;
 protected orExp: () -> bool
 orExp()== true or false;
 
+--  Can not have a test for xor because it does not exist in VDM.
+--  It was implemented in the library for the sake of bi-implication.
 
 protected implicationExp: () -> bool
 implicationExp()== true => true;

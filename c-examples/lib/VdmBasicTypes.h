@@ -40,6 +40,7 @@
 TVP vdmNot(TVP arg);
 TVP vdmAnd(TVP a,TVP b);
 TVP vdmOr(TVP a,TVP b);
+TVP vdmXor(TVP a,TVP b);
 TVP vdmImplies(TVP a,TVP b);
 TVP vdmBiimplication(TVP a,TVP b);
 
