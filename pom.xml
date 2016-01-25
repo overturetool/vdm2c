@@ -87,7 +87,7 @@
 			<plugin>
 				<groupId>org.overturetool.astcreator</groupId>
 				<artifactId>astcreator-plugin</artifactId>
-				<version>${astcreator.version}</version>
+				<version>1.6.8</version>
 				<executions>
 					<execution>
 						<id>generate-ast</id>
@@ -103,7 +103,7 @@
 					<extendedName>C</extendedName>
 					<extendedTreeOnly>true</extendedTreeOnly>
 					<useSrcOutput>false</useSrcOutput>
-
+<suppressWarnings></suppressWarnings>
 					<extendedAstGroupId>org.overturetool.core.codegen</extendedAstGroupId>
 					<extendedAstArtifactId>ir</extendedAstArtifactId>
 				</configuration>

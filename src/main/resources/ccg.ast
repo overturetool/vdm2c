@@ -36,7 +36,7 @@ CG = #decl
        {classHeader}
     	[name]:java_String
     	(originalDef):CG.#decl.#Class
-		[flattenedSupers]:CG.#decl.classHeader*
+		(flattenedSupers):CG.#decl.classHeader*
 		[state]:CG.#decl.classState
     	[methods]:CG.#decl.method*
     	[includes]:eString*
