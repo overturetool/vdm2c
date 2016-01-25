@@ -790,3 +790,92 @@ TEST(Expression_Set, setPower)
 	vdmFree(set2);
 	vdmFree(res);
 }
+
+
+
+/*
+//A crude way of testing how long it takes to generate a power set.
+TEST(Expression_SetRandom, setPowerSpeedTest)
+{
+	const int numelems1 = 11;
+	TVP randelems1[numelems1];
+	TVP set1;
+	TVP set2;
+	TVP set3;
+	TVP res;
+
+	//Initialize main set of sets.
+	set3 = newSetVar(0, NULL);
+
+	//Generate the random test value collections.
+	for(int i = 0; i < numelems1; i++)
+	{
+		randelems1[i] = newInt(rand());
+
+		//A set containing one element.
+		set1 = newSetVar(1, randelems1[i]);
+		set2 = vdmSetUnion(set3, set1);
+		vdmFree(set3);
+		set3 = set2;
+		vdmFree(set1);
+	}
+	//Wrap up.
+	for(int i = 0; i < numelems1; i++)
+	{
+		vdmFree(randelems1[i]);
+	}
+
+	set2 = vdmSetPower(set3);
+
+	//Wrap up.
+	vdmFree(set2);
+	vdmFree(set3);
+}
+
+
+
+//A crude way to look for memory leaks using the OS resource monitor.
+TEST(Expression_SetRandom, setMemTest)
+{
+	const int numelems1 = 1000;
+	const int numelems2 = 1000;
+	TVP randelems1[numelems1];
+	TVP randelems2[numelems2];
+	TVP set1;
+	TVP set2;
+	TVP interset;
+
+	//Generate the random test value collections.
+	srand(time(0));
+
+	for(int numiter = 0; numiter < 5000; numiter++)
+	{
+		for(int i = 0; i < numelems1; i++)
+		{
+			randelems1[i] = newInt(rand());
+		}
+
+		for(int i = 0; i < numelems2; i++)
+		{
+			randelems2[i] = newInt(rand());
+		}
+
+		//Create the random test sets.
+		set1 = newSetWithValues(numelems1, randelems1);
+		set2 = newSetWithValues(numelems2, randelems2);
+		interset = vdmSetInter(set1, set2);
+
+		vdmFree(set1);
+		vdmFree(set2);
+		vdmFree(interset);
+		for(int i = 0; i < numelems1; i++)
+		{
+			vdmFree(randelems1[i]);
+		}
+		for(int i = 0; i < numelems2; i++)
+		{
+			vdmFree(randelems2[i]);
+		}
+	}
+}
+*/

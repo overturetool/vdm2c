@@ -421,103 +421,48 @@ TVP vdmSetDinter(TVP set)
 
 TVP vdmSetPower(TVP set)
 {
-	bool *whichelems, carry;
 	TVP set1;
-	TVP set2;
-	TVP powerset;
-	TVP thissizeset;
+		TVP set2;
+		TVP set3;
+		TVP powerset;
+		struct Collection *powercol;
+		int powercolsize;
 
-	ASSERT_CHECK(set);
+		ASSERT_CHECK(set);
 
-	UNWRAP_COLLECTION(col, set);
+		UNWRAP_COLLECTION(col, set);
 
-	//This array is the key to generating all the combinations of elements.
-	//It represents a binary number with the same number of bits as the total
-	//number of elements in the source set.  Each location in this array
-	//corresponds to an index of the original collection.  Each time this binary
-	//number is incremented, the bit pattern changes, and is unique.  The indices
-	//into this array whose elements are true are the indices into the
-	//original collection whose elements are to be included into the
-	//current subset.  All subsets are formed in this way by incrementing the
-	//binary number represented by this array from 0 to (2 ^ ( |set| )).
-	whichelems = (bool*)malloc(col->size * sizeof(bool));
-	for(int i = 0; i < col->size; i++)
-	{
-		whichelems[i] = false;
-	}
+		//Initialize powerset to contain the empty set.
+		powerset = newSetVar(0, NULL);
 
-	//Initialize power set.
-	powerset = newSetVar(0, NULL);
-
-	//Needed for binary number addition.
-	carry = false;
-	for(int i = 0; i <= pow(2, col->size); i++)
-	{
-		thissizeset = newSetVar(0, NULL);
-		for(int j = 0; j < col->size; j++)
-		{
-			//Which elements are indicated by the bit pattern to be
-			//included in the current subset.
-			if(whichelems[j])
-			{
-				//Add element to set corresponding to current size.
-				set1 = newSetVar(1, (col->value)[j]);
-				set2 = vdmSetUnion(thissizeset, set1);
-				vdmFree(thissizeset);
-				thissizeset = set2;
-				vdmFree(set1);
-			}
-		}
-
-		//Add the current subset to the power set.
-		set1 = newSetVar(1, thissizeset);
-		set2 = vdmSetUnion(powerset, set1);
-		vdmFree(powerset);
-		powerset = set2;
+		set1 = newSetVar(0, NULL);
+		set2 = newSetVar(1, set1);
 		vdmFree(set1);
-		vdmFree(thissizeset);
+		set1 = vdmSetUnion(powerset, set2);
+		vdmFree(set2);
+		vdmFree(powerset);
+		powerset = set1;
 
-		//Increment the binary number array.
-		if(!whichelems[0])
+		for(int i = 0; i < col->size; i++)
 		{
-			carry = false;
-			whichelems[0] = true;
-		}
-		else
-		{
-			carry = true;
-			whichelems[0] = false;
-		}
+			powercolsize = ((struct Collection*)powerset->value.ptr)->size;
+			for(int j = 0; j < powercolsize; j++)
+			{
+				powercol = (struct Collection*)powerset->value.ptr;
 
-		for(int k = 1; k < col->size; k++)
-		{
-			if(!whichelems[k])
-			{
-				if(!carry)
-				{
-				}
-				else
-				{
-					whichelems[k] = true;
-					carry = false;
-				}
-			}
-			else
-			{
-				if(!carry)
-				{
-				}
-				else
-				{
-					whichelems[k] = false;
-					carry = true;
-				}
+				set1 = newSetVar(1, (col->value)[i]);
+				set2 = vdmSetUnion((powercol->value)[j], set1);
+				vdmFree(set1);
+				set1 = newSetVar(1, set2);
+				vdmFree(set2);
+				set3 = vdmSetUnion(powerset, set1);
+				vdmFree(set1);
+				vdmFree(powerset);
+				powerset = set3;
 			}
 		}
-	}
 
-	//Wrap up.
-	free(whichelems);
+		return powerset;
 
 	return powerset;
 }
