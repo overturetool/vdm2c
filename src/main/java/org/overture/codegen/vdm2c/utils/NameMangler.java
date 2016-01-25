@@ -10,6 +10,7 @@ import org.overture.codegen.cgast.types.ACharBasicTypeCG;
 import org.overture.codegen.cgast.types.AClassTypeCG;
 import org.overture.codegen.cgast.types.AIntNumericBasicTypeCG;
 import org.overture.codegen.cgast.types.ARealNumericBasicTypeCG;
+import org.overture.codegen.cgast.types.ASeqSeqTypeCG;
 
 public class NameMangler
 {
@@ -118,6 +119,14 @@ public class NameMangler
 				throws AnalysisException
 		{
 			return charId;
+		}
+		
+		@Override
+		public String caseASeqSeqTypeCG(ASeqSeqTypeCG node)
+				throws AnalysisException
+		{
+			String name = node.getSeqOf().apply(THIS);
+			return String.format(seqId, name.length(),name);
 		}
 
 		@Override
