@@ -30,6 +30,7 @@ import org.overture.codegen.vdm2c.transformations.MangleMethodNamesTrans;
 import org.overture.codegen.vdm2c.transformations.NewRewriteTrans;
 import org.overture.codegen.vdm2c.transformations.NumericTrans;
 import org.overture.codegen.vdm2c.transformations.RemoveCWrappersTrans;
+import org.overture.codegen.vdm2c.transformations.SubClassResponsibilityMethodsTrans;
 
 public class CTransSeries
 {
@@ -86,6 +87,8 @@ public class CTransSeries
 		transformations.add(new DontcareParameterRenamingTrans(transAssistant));
 		
 		transformations.add(new ForLoopTrans(transAssistant));
+		
+		transformations.add(new SubClassResponsibilityMethodsTrans(transAssistant));
 
 		/**
 		 * Phase #X - Remove any temporary nodes
