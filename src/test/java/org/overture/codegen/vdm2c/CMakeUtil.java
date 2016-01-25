@@ -33,6 +33,17 @@ public class CMakeUtil
 
 		FileUtils.copyFile(new File("src/test/resources/DownloadProject.cmake"), new File(root, "DownloadProject.cmake"));
 		FileUtils.copyFile(new File("src/test/resources/DownloadProject.CMakeLists.cmake.in"), new File(root, "DownloadProject.CMakeLists.cmake.in"));
+		
+		
+		copyReplaceProjectName(name,new File("src/test/resources/project"),new File(root,".project"));
+		copyReplaceProjectName(name,new File("src/test/resources/cproject"),new File(root,".cproject"));
+	}
+	
+	void copyReplaceProjectName(String name, File source, File dest) throws IOException
+	{
+		String cmakeTemplate = FileUtils.readFileToString(source, "UTF-8");
+		cmakeTemplate = cmakeTemplate.replace("##PROJECT_NAME##", name);
+		FileUtils.writeStringToFile(dest, cmakeTemplate.trim());
 	}
 
 	public static class CMakeGenerateException extends Exception
