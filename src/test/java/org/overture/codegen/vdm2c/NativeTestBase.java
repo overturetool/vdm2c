@@ -16,13 +16,15 @@ import org.overture.codegen.vdm2c.CMakeUtil.CMakeGenerateException;
 public class NativeTestBase extends BaseGeneratorTest
 {
 	final static String VDM_LIB_PATH = System.getProperty("VDM_LIB_PATH");
+	
+	final static String testResourcedVdmRtPath = "src/test/resources/vdmrt/".replace('/', File.separatorChar);
 
 	File root = null;
 
 	@Rule
 	public TestName name = new TestName();
 
-	public static class HasVdmLib extends HasVdm
+	public static class HasVdmLib 
 			implements
 			org.overture.test.framework.ConditionalIgnoreMethodRule.IgnoreCondition
 	{
@@ -30,7 +32,7 @@ public class NativeTestBase extends BaseGeneratorTest
 		@Override
 		public boolean isIgnored()
 		{
-			return super.isIgnored() || VDM_LIB_PATH == null;
+			return VDM_LIB_PATH == null;
 		}
 	}
 
@@ -67,5 +69,10 @@ public class NativeTestBase extends BaseGeneratorTest
 		Assert.assertTrue("Failed to run tests", cmakeUtil.run(root, name.getMethodName(), true));
 		Assert.assertTrue("Failed to run make test", cmakeUtil.make(root, "test"));
 
+	}
+	
+	protected String getPath(String rpath)
+	{
+		return new File(new File(testResourcedVdmRtPath), rpath.replace('/', File.separatorChar)).getAbsolutePath();
 	}
 }

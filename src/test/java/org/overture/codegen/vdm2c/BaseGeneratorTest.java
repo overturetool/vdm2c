@@ -26,7 +26,7 @@ public class BaseGeneratorTest
 		}
 	}
 
-	static String getPath(String rpath)
+	protected String getPath(String rpath)
 	{
 		return new File(cexamplesBase, rpath.replace('/', File.separatorChar)).getAbsolutePath();
 	}
