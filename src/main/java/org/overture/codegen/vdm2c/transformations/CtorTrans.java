@@ -39,7 +39,6 @@ public class CtorTrans extends DepthFirstAnalysisAdaptor
 		this.assist = assist;
 	}
 
-	@SuppressWarnings("deprecation")
 	public void caseAMethodDeclCG(AMethodDeclCG node) throws AnalysisException
 	{
 		if (node.getIsConstructor())
@@ -58,7 +57,12 @@ public class CtorTrans extends DepthFirstAnalysisAdaptor
 			String bufName = "__buf";
 
 			AIfStmCG ifStm = new AIfStmCG();
-			ifStm.setIfExp(new AAddrEqualsBinaryExpCG(null, null, createIdentifier("this", null), new ANullExpCG()));
+			
+			AAddrEqualsBinaryExpCG addrEquals = new AAddrEqualsBinaryExpCG();
+			addrEquals.setLeft(createIdentifier("this", null));
+			addrEquals.setRight(new ANullExpCG());
+			
+			ifStm.setIfExp(addrEquals);
 
 			ABlockStmCG initClassBlock = new ABlockStmCG();
 			initClassBlock.setScoped(true);
