@@ -23,7 +23,9 @@ import org.overture.codegen.ir.SourceNode;
 import org.overture.codegen.vdm2c.extast.expressions.AArrayIndexExpCG;
 import org.overture.codegen.vdm2c.extast.expressions.ACExpCG;
 import org.overture.codegen.vdm2c.extast.expressions.AMacroApplyExpCG;
+import org.overture.codegen.vdm2c.extast.expressions.AParenExpCG;
 import org.overture.codegen.vdm2c.extast.expressions.APtrDerefExpCG;
+import org.overture.codegen.vdm2c.extast.expressions.AStmExpCG;
 
 public class CTransUtil
 {
@@ -150,6 +152,13 @@ public class CTransUtil
 		return exp2Stm(exp);
 	}
 
+	public static SExpCG toExp(SStmCG stm)
+	{
+		AStmExpCG exp = new AStmExpCG();
+		exp.setStm(stm);
+		return exp;
+	}
+
 	public static void addArgument(String name, STypeCG type, int index,
 			List<AFormalParamLocalParamCG> formals)
 	{
@@ -225,5 +234,11 @@ public class CTransUtil
 		AIntLiteralExpCG exp = new AIntLiteralExpCG();
 		exp.setValue(i);
 		return exp;
+	}
+	public static SExpCG newParen(SExpCG exp)
+	{
+		AParenExpCG parent = new AParenExpCG();
+		parent.setExp(exp);
+		return parent;
 	}
 }

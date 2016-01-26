@@ -20,10 +20,11 @@ import org.overture.codegen.trans.letexps.FuncTrans;
 import org.overture.codegen.vdm2c.transformations.AddThisArgToMethodsTrans;
 import org.overture.codegen.vdm2c.transformations.CallRewriteTrans;
 import org.overture.codegen.vdm2c.transformations.CtorTrans;
-import org.overture.codegen.vdm2c.transformations.DontcareParameterRenamingTrans;
+import org.overture.codegen.vdm2c.transformations.IgnoreRenamingTrans;
 import org.overture.codegen.vdm2c.transformations.ExtractRetValTrans;
 import org.overture.codegen.vdm2c.transformations.FieldIdentifierToFieldGetApplyTrans;
 import org.overture.codegen.vdm2c.transformations.ForLoopTrans;
+import org.overture.codegen.vdm2c.transformations.LetTrans;
 import org.overture.codegen.vdm2c.transformations.LiteralInstantiationRewriteTrans;
 import org.overture.codegen.vdm2c.transformations.LogicTrans;
 import org.overture.codegen.vdm2c.transformations.MangleMethodNamesTrans;
@@ -73,6 +74,9 @@ public class CTransSeries
 		transformations.add(new NumericTrans(transAssistant));
 		transformations.add(new LogicTrans(transAssistant));
 		transformations.add(new LiteralInstantiationRewriteTrans(transAssistant));
+		
+		transformations.add(new LetTrans(transAssistant));
+		
 		/**
 		 * Phase #2 - Not defined yet.
 		 */
@@ -84,9 +88,10 @@ public class CTransSeries
 		transformations.add(new FieldIdentifierToFieldGetApplyTrans(transAssistant));
 		transformations.add(new CtorTrans(transAssistant));
 		transformations.add(new NewRewriteTrans(transAssistant));
-		transformations.add(new DontcareParameterRenamingTrans(transAssistant));
+		transformations.add(new IgnoreRenamingTrans(transAssistant));
 		
 		transformations.add(new ForLoopTrans(transAssistant));
+		
 		
 		transformations.add(new SubClassResponsibilityMethodsTrans(transAssistant));
 

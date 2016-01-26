@@ -21,6 +21,8 @@ CG = #decl
     |	{ptrDeref} [root]:CG.#exp [target]:CG.#exp
     |	{c} [exp]:CG.#exp
     |	{arrayIndex} [root]:CG.#exp [index]:CG.#exp
+    |	{stm} [stm]:CG.#stm
+    |	{paren} [exp]:CG.#exp
 	;
 
 
