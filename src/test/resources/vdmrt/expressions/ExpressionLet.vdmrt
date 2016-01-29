@@ -5,7 +5,8 @@ functions
 /*
 * value definition with patterns
 */
-
+public letBlockScope : ()-> bool
+letBlockScope()== let a = true in a;
 --pattern identifier
 
 public letPatternIdentifier : ()->bool
@@ -26,6 +27,23 @@ let - = true
 in
 	true;
 	
+	
+	
+public gg : ()->?
+gg()==
+	{
+		(let x = c 
+		in x*2) | c in set {1}& c=0
+	};
+	
+
+
+public ddd : ()->?
+ddd()==
+	{
+		(c) | c in set {1}
+	};
+
 	--match value = (exp) |symbolic literal: 1, true, false, nil, 'c', "some text", <append>
 
 --set enum pattern: {a,b,1}
