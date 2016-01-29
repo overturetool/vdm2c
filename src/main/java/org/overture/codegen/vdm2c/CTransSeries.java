@@ -12,7 +12,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.overture.codegen.cgast.analysis.DepthFirstAnalysisAdaptor;
-import org.overture.codegen.cgast.declarations.ADefaultClassDeclCG;
 import org.overture.codegen.cgast.expressions.AIntLiteralExpCG;
 import org.overture.codegen.cgast.types.AExternalTypeCG;
 import org.overture.codegen.ir.IRInfo;
@@ -74,9 +73,7 @@ public class CTransSeries
 		return new Exists1CounterData(type, initExp);
 	}
 
-	public List<DepthFirstAnalysisAdaptor> consAnalyses(
-			List<ADefaultClassDeclCG> classes,
-			FuncValAssistant functionValueAssistant)
+	public List<DepthFirstAnalysisAdaptor> consAnalyses()
 	{
 		// Data and functionality to support the transformations
 		// IRInfo irInfo = codeGen.getIRGenerator().getIRInfo();

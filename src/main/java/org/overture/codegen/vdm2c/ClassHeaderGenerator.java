@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-import org.overture.codegen.cgast.INode;
+import org.overture.codegen.cgast.PCG;
 import org.overture.codegen.cgast.STypeCG;
 import org.overture.codegen.cgast.analysis.AnalysisException;
 import org.overture.codegen.cgast.analysis.DepthFirstAnalysisAdaptor;
@@ -30,13 +30,12 @@ import org.overture.codegen.vdm2c.extast.declarations.AClassStateDeclCG;
 public class ClassHeaderGenerator
 {
 	@SuppressWarnings("unchecked")
-	public Collection<? extends IRStatus<INode>> generateClassHeaders(
-			List<IRStatus<ADefaultClassDeclCG>> extract)
-			throws AnalysisException
+	public Collection<? extends IRStatus<PCG>> generateClassHeaders(
+			List<IRStatus<ADefaultClassDeclCG>> extract) throws AnalysisException
 	{
 		final List<AClassHeaderDeclCG> classHeaders = new Vector<AClassHeaderDeclCG>();
 
-		Collection<IRStatus<INode>> list = new Vector<IRStatus<INode>>();
+		Collection<IRStatus<PCG>> list = new Vector<IRStatus<PCG>>();
 
 		for (IRStatus<ADefaultClassDeclCG> irStatus : extract)
 		{
@@ -88,7 +87,7 @@ public class ClassHeaderGenerator
 
 			header.setName(classDef.getName().toString());
 
-			list.add(new IRStatus<INode>(header.getName(), header, new HashSet<VdmNodeInfo>()));
+			list.add(new IRStatus<PCG>(irStatus.getVdmNode(), header.getName(), header, new HashSet<VdmNodeInfo>()));
 			classHeaders.add(header);
 		}
 

@@ -10,17 +10,14 @@ import java.util.List;
 import java.util.Vector;
 
 import org.overture.ast.analysis.AnalysisException;
-import org.overture.ast.definitions.SClassDefinition;
 import org.overture.codegen.cgast.INode;
+import org.overture.codegen.cgast.PCG;
 import org.overture.codegen.cgast.analysis.DepthFirstAnalysisAdaptor;
 import org.overture.codegen.cgast.declarations.ADefaultClassDeclCG;
-import org.overture.codegen.cgast.declarations.AModuleDeclCG;
 import org.overture.codegen.cgast.declarations.SClassDeclCG;
 import org.overture.codegen.ir.CodeGenBase;
 import org.overture.codegen.ir.IRStatus;
 import org.overture.codegen.logging.Logger;
-import org.overture.codegen.trans.assistants.TransAssistantCG;
-import org.overture.codegen.trans.funcvalues.FuncValAssistant;
 import org.overture.codegen.utils.GeneratedData;
 import org.overture.codegen.utils.GeneratedModule;
 import org.overture.codegen.vdm2c.extast.declarations.AClassHeaderDeclCG;
@@ -33,68 +30,35 @@ public class CGen extends CodeGenBase
 	{
 		this.outputFolder = outputFolder;
 	}
-
-	public GeneratedData generateCFromVdm(List<SClassDefinition> ast,
-			File outputFolder) throws AnalysisException
+	
+	@Override
+	protected GeneratedData genVdmToTargetLang(
+			List<IRStatus<PCG>> statuses) throws AnalysisException
 	{
-		this.generator.computeDefTable(ast);
+		applyTransformations(statuses);
 
-		final List<IRStatus<org.overture.codegen.cgast.INode>> statuses = new LinkedList<>();
+		generateClassHeaders(statuses);
 
-		// This is run pr. class
-		for (SClassDefinition node : ast)
-		{
-			// Try to produce the IR
-			IRStatus<org.overture.codegen.cgast.INode> status = generator.generateFrom(node);
+		VTableGenerator.generate(IRStatus.extract(statuses, AClassHeaderDeclCG.class));
 
-			// If it was successful, then status is different from null
-			if (status != null)
-			{
-				statuses.add(status);
-			}
+		CFormat my_formatter = consFormatter(statuses);
+		writeHeaders(outputFolder, statuses, my_formatter);
+		writeClasses(outputFolder, statuses, my_formatter);
 
-		}
-
-		this.transAssistant = new TransAssistantCG(generator.getIRInfo());
-
-		List<IRStatus<AModuleDeclCG>> moduleStatuses = IRStatus.extract(statuses, AModuleDeclCG.class);
-		List<IRStatus<org.overture.codegen.cgast.INode>> modulesAsNodes = IRStatus.extract(moduleStatuses);
-
-		List<IRStatus<ADefaultClassDeclCG>> classStatuses = IRStatus.extract(modulesAsNodes, ADefaultClassDeclCG.class);
-		classStatuses.addAll(IRStatus.extract(statuses, ADefaultClassDeclCG.class));
-		List<ADefaultClassDeclCG> classes = getClassDecls(classStatuses);
-		FuncValAssistant functionValueAssistant = new FuncValAssistant();
-
-		// Transform IR
-		CTransSeries xTransSeries = new CTransSeries(this);
-		List<DepthFirstAnalysisAdaptor> transformations = xTransSeries.consAnalyses(classes, functionValueAssistant);
-
-		// Generate IR to syntax (generate code)
-
+		/**
+		 * FIXME: PVJ: This method does not return the generated data as it should. Instead the method writes the
+		 * generated code to the file system and returns an empty data structure. The date structure below is empty!
+		 */
+		List<GeneratedModule> generated = new LinkedList<GeneratedModule>();
 		GeneratedData data = new GeneratedData();
+		data.setClasses(generated);
 
-		CFormat my_formatter = new CFormat(generator.getIRInfo(), new IHeaderFinder()
-		{
+		return data;
+	}
 
-			@Override
-			public AClassHeaderDeclCG getHeader(SClassDeclCG def)
-			{
-				for (IRStatus<INode> irStatus : statuses)
-				{
-					if (irStatus.getIrNode() instanceof AClassHeaderDeclCG)
-					{
-						AClassHeaderDeclCG header = (AClassHeaderDeclCG) irStatus.getIrNode();
-						if (header.getOriginalDef() == def)
-						{
-							return header;
-						}
-					}
-				}
-				return null;
-			}
-		});
-
-		// TODO: what is this?
+	private void applyTransformations(final List<IRStatus<PCG>> statuses)
+	{
+		List<DepthFirstAnalysisAdaptor> transformations = new CTransSeries(this).consAnalyses();
 		for (DepthFirstAnalysisAdaptor trans : transformations)
 		{
 			for (IRStatus<ADefaultClassDeclCG> status : IRStatus.extract(statuses, ADefaultClassDeclCG.class))
@@ -115,23 +79,34 @@ public class CGen extends CodeGenBase
 				}
 			}
 		}
+	}
 
-		generateClassHeaders(statuses);
-
-		VTableGenerator.generate(IRStatus.extract(statuses, AClassHeaderDeclCG.class));
-
-		writeHeaders(outputFolder, statuses, my_formatter);
-
-		writeClasses(outputFolder, statuses, my_formatter);
-
-		List<GeneratedModule> generated = new LinkedList<GeneratedModule>();
-		data.setClasses(generated);
-
-		return data;
+	private CFormat consFormatter(final List<IRStatus<PCG>> statuses)
+	{
+		CFormat my_formatter = new CFormat(generator.getIRInfo(), new IHeaderFinder()
+		{
+			@Override
+			public AClassHeaderDeclCG getHeader(SClassDeclCG def)
+			{
+				for (IRStatus<PCG> irStatus : statuses)
+				{
+					if (irStatus.getIrNode() instanceof AClassHeaderDeclCG)
+					{
+						AClassHeaderDeclCG header = (AClassHeaderDeclCG) irStatus.getIrNode();
+						if (header.getOriginalDef() == def)
+						{
+							return header;
+						}
+					}
+				}
+				return null;
+			}
+		});
+		return my_formatter;
 	}
 
 	public void writeClasses(File outputFolder,
-			final List<IRStatus<org.overture.codegen.cgast.INode>> statuses,
+			final List<IRStatus<PCG>> statuses,
 			CFormat my_formatter)
 	{
 		for (IRStatus<ADefaultClassDeclCG> status : IRStatus.extract(statuses, ADefaultClassDeclCG.class))
@@ -158,7 +133,7 @@ public class CGen extends CodeGenBase
 	}
 
 	public void writeHeaders(File outputFolder,
-			final List<IRStatus<org.overture.codegen.cgast.INode>> statuses,
+			final List<IRStatus<PCG>> statuses,
 			CFormat my_formatter)
 	{
 		for (IRStatus<AClassHeaderDeclCG> status : IRStatus.extract(statuses, AClassHeaderDeclCG.class))
@@ -181,7 +156,7 @@ public class CGen extends CodeGenBase
 	}
 
 	public void generateClassHeaders(
-			final List<IRStatus<org.overture.codegen.cgast.INode>> statuses)
+			final List<IRStatus<PCG>> statuses)
 	{
 		try
 		{
@@ -191,24 +166,6 @@ public class CGen extends CodeGenBase
 			// TODO Auto-generated catch block
 			e2.printStackTrace();
 		}
-	}
-
-	private List<ADefaultClassDeclCG> getClassDecls(
-			List<IRStatus<ADefaultClassDeclCG>> statuses)
-	{
-		List<ADefaultClassDeclCG> classDecls = new LinkedList<ADefaultClassDeclCG>();
-
-		for (IRStatus<ADefaultClassDeclCG> status : statuses)
-		{
-			classDecls.add(status.getIrNode());
-		}
-
-		return classDecls;
-	}
-
-	public boolean isNull(INode node)
-	{
-		return node == null;
 	}
 
 	private void writeFile(INode node, String name, String extension,
@@ -248,13 +205,6 @@ public class CGen extends CodeGenBase
 		return writer;
 	}
 
-	@Override
-	protected GeneratedData genVdmToTargetLang(
-			List<org.overture.ast.node.INode> ast) throws AnalysisException
-	{
-		return generateCFromVdm(filter(ast, SClassDefinition.class), outputFolder);
-	}
-
 	/**
 	 * Generic filter method for AST lists. It works both up and down.
 	 * 
@@ -278,5 +228,4 @@ public class CGen extends CodeGenBase
 		return filtered;
 
 	}
-
 }

@@ -44,7 +44,7 @@ CG = #decl
     	[methods]:CG.#decl.method*
     	[includes]:eString*
     	[vtable]:eVtables
-    | {classState} [fields]:CG.#decl.field* //not sure why it cannot compile as a graph field
+    | {classState} (fields):CG.#decl.field* //not sure why it cannot compile as a graph field
     | {array} [static]:java_Boolean [type]:CG.#type [name]:java_String [size]:java_Integer [initial]:struct*
        ;
        
