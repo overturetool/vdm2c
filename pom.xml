@@ -19,9 +19,6 @@
 
 			<id>overture.au.dk</id>
       <name>overture.au.dk-releases</name>
-
-
-
       <releases>
 				<enabled>false</enabled>
 				<updatePolicy>daily</updatePolicy>
@@ -32,9 +29,7 @@
 				<updatePolicy>always</updatePolicy>
 				<checksumPolicy>warn</checksumPolicy>
       </snapshots>
-
-			<url>http://overture.au.dk/artifactory/overture-development</url>
-			
+			<url>http://overture.au.dk/artifactory/overture-development-vdm2c</url>
       <layout>default</layout>
     </repository>
   </repositories>
