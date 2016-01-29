@@ -16,8 +16,8 @@
 
 	<repositories>
     <repository>
-			<id>overture.au.dk</id>
-      <name>overture.au.dk-releases</name>
+			<id>vdm2c.overture.au.dk</id>
+      <name>vdm2c.overture.au.dk-releases</name>
       <releases>
 				<enabled>false</enabled>
 				<updatePolicy>daily</updatePolicy>
