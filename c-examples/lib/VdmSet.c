@@ -81,8 +81,6 @@ struct TypedValue* newSetWithValues(size_t size, TVP* elements)
 
 	TVP res = newCollectionWithValues(VDM_SET, count, value);
 
-	//This crashes for sets larger than 5 and also leaks memory (?) because it's not a deep free (?).
-
 	for(int i = 0; i < count; i++)
 	{
 		vdmFree(value[i]);
@@ -90,6 +88,8 @@ struct TypedValue* newSetWithValues(size_t size, TVP* elements)
 	free(value);
 	return res;
 }
+
+
 
 struct TypedValue* newSetVar(size_t size, ...)
 {
@@ -107,6 +107,9 @@ struct TypedValue* newSetVar(size_t size, ...)
 		TVP arg = va_arg(ap, TVP);
 		TVP v= vdmClone(arg); // set binding
 
+		//TODO:  Check whether element exists.
+
+
 		if(count>=bufsize)
 		{
 			//buffer too small add memory chunk
@@ -121,6 +124,84 @@ struct TypedValue* newSetVar(size_t size, ...)
 	TVP res = newCollectionWithValues(VDM_SET,count,value);
 	free(value);
 	return res;
+}
+
+
+//Just like newSetVar, but with memory preallocated to an expected
+//result set size.
+struct TypedValue* newSetVarToGrow(size_t size, size_t expected_size, ...)
+{
+	va_list ap;
+	va_start(ap, expected_size);
+
+	int count = 0;
+
+	int bufsize = expected_size;  //DEFAULT_SET_COMP_BUFFER;
+	struct TypedValue** value = (struct TypedValue**) calloc(bufsize, sizeof(struct TypedValue*));
+
+	for (int i = 0; i < size; i++)
+	{
+		TVP arg = va_arg(ap, TVP);
+		TVP v= vdmClone(arg); // set binding
+
+
+		//Extra security measure.  Will only be true if size >= expected_size.
+		if(count>=bufsize)
+		{
+			//buffer too small add memory chunk
+			bufsize += DEFAULT_SET_COMP_BUFFER_STEPSIZE;
+			value = (struct TypedValue**)realloc(value, bufsize * sizeof(struct TypedValue*));
+		}
+		vdmSetAdd(value,&count,v);
+	}
+
+	va_end(ap);
+
+	TVP res = newCollectionWithValues(VDM_SET,count,value);
+	free(value);
+	return res;
+}
+
+
+
+//What to return?
+void vdmSetGrow(TVP set, TVP element)
+{
+	int bufsize = DEFAULT_SET_COMP_BUFFER;
+
+	UNWRAP_COLLECTION(col, set);
+
+	if(col->size >= bufsize)
+	{
+		//buffer too small add memory chunk
+		bufsize += DEFAULT_SET_COMP_BUFFER_STEPSIZE;
+		col->value = (struct TypedValue**)realloc(col->value, bufsize * sizeof(struct TypedValue*));
+	}
+	vdmSetAdd(col->value, &(col->size), element);
+}
+
+
+
+void vdmSetFit(TVP set)
+{
+	UNWRAP_COLLECTION(col, set);
+
+	//Assumes that more memory is allocated in the col->value array than there are elements.
+	col->value = (struct TypedValue**)realloc(col->value, col->size * sizeof(struct TypedValue*));
+}
+
+
+
+TVP vdmSetElementAt(TVP set, int loc)
+{
+	UNWRAP_COLLECTION(col, set);
+
+	if(loc >= col->size)
+	{
+		return NULL;
+	}
+
+	return vdmClone(col->value[loc]);
 }
 
 
