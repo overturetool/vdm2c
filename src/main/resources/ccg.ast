@@ -23,12 +23,13 @@ CG = #decl
     |	{arrayIndex} [root]:CG.#exp [index]:CG.#exp
     |	{stm} [stm]:CG.#stm
     |	{paren} [exp]:CG.#exp
+    |	{plusplus} [exp]:CG.#exp
 	;
 
 
 
-//#stm {-> package='org.overture.codegen.vdm2c.extast.statements'}
-//	= {exp} [exp]:CG.#exp;
+#stm {-> package='org.overture.codegen.vdm2c.extast.statements'}
+	= {localVariableDeclaration} [decleration]:CG.#decl.var;
 	
 	
 

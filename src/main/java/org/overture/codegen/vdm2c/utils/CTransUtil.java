@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.overture.codegen.cgast.SExpCG;
+import org.overture.codegen.cgast.SPatternCG;
 import org.overture.codegen.cgast.SStmCG;
 import org.overture.codegen.cgast.STypeCG;
 import org.overture.codegen.cgast.analysis.AnalysisException;
@@ -26,6 +27,7 @@ import org.overture.codegen.vdm2c.extast.expressions.AMacroApplyExpCG;
 import org.overture.codegen.vdm2c.extast.expressions.AParenExpCG;
 import org.overture.codegen.vdm2c.extast.expressions.APtrDerefExpCG;
 import org.overture.codegen.vdm2c.extast.expressions.AStmExpCG;
+import org.overture.codegen.vdm2c.extast.statements.ALocalVariableDeclarationStmCG;
 
 public class CTransUtil
 {
@@ -62,25 +64,48 @@ public class CTransUtil
 		return ident;
 	}
 
+	
+	public static AVarDeclCG newDeclarationAssignment(SPatternCG varName,
+			STypeCG varType, SExpCG value, SourceNode derrivedFrom)
+	{
+//		AIdentifierPatternCG id = new AIdentifierPatternCG();
+//		id.setName(varName);
+
+		AVarDeclCG retVar = new AVarDeclCG();
+		retVar.setType(varType);
+		retVar.setPattern(varName);
+		retVar.setSourceNode(SourceNode.copy(derrivedFrom));
+		retVar.setExp(value);
+
+//		AIdentifierVarExpCG retVarOcc = new AIdentifierVarExpCG();
+//		retVarOcc.setType(retVar.getType().clone());
+//		retVarOcc.setName(varName);
+//		retVarOcc.setSourceNode(retVar.getSourceNode());
+//		retVarOcc.setIsLocal(true);
+
+		return retVar;
+	}
+	
+	
 	public static AVarDeclCG newDeclarationAssignment(String varName,
 			STypeCG varType, SExpCG value, SourceNode derrivedFrom)
 	{
 		AIdentifierPatternCG id = new AIdentifierPatternCG();
 		id.setName(varName);
 
-		AVarDeclCG retVar = new AVarDeclCG();
-		retVar.setType(varType);
-		retVar.setPattern(id);
-		retVar.setSourceNode(SourceNode.copy(derrivedFrom));
-		retVar.setExp(value);
+//		AVarDeclCG retVar = new AVarDeclCG();
+//		retVar.setType(varType);
+//		retVar.setPattern(id);
+//		retVar.setSourceNode(SourceNode.copy(derrivedFrom));
+//		retVar.setExp(value);
+//
+//		AIdentifierVarExpCG retVarOcc = new AIdentifierVarExpCG();
+//		retVarOcc.setType(retVar.getType().clone());
+//		retVarOcc.setName(varName);
+//		retVarOcc.setSourceNode(retVar.getSourceNode());
+//		retVarOcc.setIsLocal(true);
 
-		AIdentifierVarExpCG retVarOcc = new AIdentifierVarExpCG();
-		retVarOcc.setType(retVar.getType().clone());
-		retVarOcc.setName(varName);
-		retVarOcc.setSourceNode(retVar.getSourceNode());
-		retVarOcc.setIsLocal(true);
-
-		return retVar;
+		return newDeclarationAssignment(id, varType, value, derrivedFrom);
 	}
 
 	public static AAssignToExpStmCG newAssignment(SExpCG to, SExpCG from)
@@ -240,5 +265,12 @@ public class CTransUtil
 		AParenExpCG parent = new AParenExpCG();
 		parent.setExp(exp);
 		return parent;
+	}
+	
+	public static SStmCG newLocalDefinition(AVarDeclCG decl)
+	{
+		ALocalVariableDeclarationStmCG localDef = new ALocalVariableDeclarationStmCG();
+		localDef.setDecleration(decl);
+		return localDef;
 	}
 }
