@@ -15,4 +15,4 @@
 ##
 #set( $name = "$node.getName()")
 ##
-$return $class$name($CFormat.formatArgs($node.getArgs()));
+$return $class$name($CFormat.formatArgs($node.getArgs()))
