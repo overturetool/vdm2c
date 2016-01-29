@@ -16,7 +16,6 @@
 
 	<repositories>
     <repository>
-
 			<id>overture.au.dk</id>
       <name>overture.au.dk-releases</name>
       <releases>
