@@ -119,7 +119,7 @@ TEST(Expression_Set, setFit)
 	res = vdmEquals(set1, set2);
 	EXPECT_EQ(true, res->value.boolVal);
 
-
+	//Clean up.
 	vdmFree(res);
 	vdmFree(set1);
 	vdmFree(set2);
@@ -147,6 +147,7 @@ TEST(Expression_Set, setElementAt)
 		vdmFree(res);
 	}
 
+	//Clean up.
 	vdmFree(set);
 }
 
