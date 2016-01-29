@@ -79,6 +79,36 @@ TEST(Expression_Set, setGrow)
 	vdmFree(res);
 	res = vdmSetEquals(set1, set2);
 	EXPECT_EQ(false, res->value.boolVal);
+
+	//Clean up.
+	vdmFree(res);
+	vdmFree(set1);
+	vdmFree(set2);
+}
+
+
+
+TEST(Expression_Set, setFit)
+{
+	TVP set1;
+	TVP set2;
+	TVP res;
+
+	//Create test set.
+	set1 = newSetVarToGrow(1, 2, newInt(1));
+	set2 = newSetVar(2, newInt(1), newInt(2));
+
+	vdmSetGrow(set1, newInt(2));
+
+	res = vdmSetEquals(set1, set2);
+	EXPECT_EQ(true, res->value.boolVal);
+
+	vdmSetGrow(set1, newInt(3));
+
+	UNWRAP_COLLECTION(col, set1);
+	vdmFree(res);
+	res = vdmSetEquals(set1, set2);
+	EXPECT_EQ(false, res->value.boolVal);
 	vdmFree(res);
 
 	vdmSetFit(set1);
