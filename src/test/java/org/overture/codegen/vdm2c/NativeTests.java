@@ -45,4 +45,22 @@ public class NativeTests extends NativeTestBase
 		generate(getPath("expressions/ExpressionLet.vdmrt"));
 		compileAndTest(getTestCppFile("let/ExpressionsLet_Tests.cpp"));
 	}
+	
+	@ConditionalIgnore(condition = HasVdmLib.class)
+	@Test
+	public void ExpressionBoolean() throws IOException, InterruptedException,
+			CMakeGenerateException
+	{
+		generate(getPath("expressions/ExpressionBoolean.vdmrt"));
+		compileAndTest(getTestCppFile("boolean/ExpressionsBoolean_Tests.cpp"));
+	}
+	
+	@ConditionalIgnore(condition = HasVdmLib.class)
+	@Test
+	public void ExpressionNumeric() throws IOException, InterruptedException,
+			CMakeGenerateException
+	{
+		generate(getPath("expressions/ExpressionNumeric.vdmrt"));
+		compileAndTest(getTestCppFile("numeric/ExpressionsNumeric_Tests.cpp"));
+	}
 }
