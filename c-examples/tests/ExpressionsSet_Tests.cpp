@@ -56,6 +56,101 @@ static TVP newSet(int size, int* arr)
 #define DEFAULT_SET_COMP_BUFFER 1
 #define DEFAULT_SET_COMP_BUFFER_STEPSIZE 10
 
+
+
+TEST(Expression_Set, setGrow)
+{
+	TVP set1;
+	TVP set2;
+	TVP res;
+
+	//Create test set.
+	set1 = newSetVarToGrow(1, 2, newInt(1));
+	set2 = newSetVar(2, newInt(1), newInt(2));
+
+	vdmSetGrow(set1, newInt(2));
+
+	res = vdmSetEquals(set1, set2);
+	EXPECT_EQ(true, res->value.boolVal);
+
+	vdmSetGrow(set1, newInt(3));
+
+	UNWRAP_COLLECTION(col, set1);
+	vdmFree(res);
+	res = vdmSetEquals(set1, set2);
+	EXPECT_EQ(false, res->value.boolVal);
+
+	//Clean up.
+	vdmFree(res);
+	vdmFree(set1);
+	vdmFree(set2);
+}
+
+
+
+TEST(Expression_Set, setFit)
+{
+	TVP set1;
+	TVP set2;
+	TVP res;
+
+	//Create test set.
+	set1 = newSetVarToGrow(1, 2, newInt(1));
+	set2 = newSetVar(2, newInt(1), newInt(2));
+
+	vdmSetGrow(set1, newInt(2));
+
+	res = vdmSetEquals(set1, set2);
+	EXPECT_EQ(true, res->value.boolVal);
+
+	vdmSetGrow(set1, newInt(3));
+
+	UNWRAP_COLLECTION(col, set1);
+	vdmFree(res);
+	res = vdmSetEquals(set1, set2);
+	EXPECT_EQ(false, res->value.boolVal);
+	vdmFree(res);
+
+	vdmSetFit(set1);
+
+	//vdmSetGrow works for any set, but if it wasn't preallocated with
+	//vdmSetVarToGrow it is not as efficient.
+	vdmSetGrow(set2, newInt(3));
+	res = vdmEquals(set1, set2);
+	EXPECT_EQ(true, res->value.boolVal);
+
+
+	vdmFree(res);
+	vdmFree(set1);
+	vdmFree(set2);
+}
+
+
+
+TEST(Expression_Set, setElementAt)
+{
+	TVP set;
+	TVP elem;
+	TVP compelem;
+	TVP res;
+
+	set = newSetVar(3, newInt(1), newInt(2), newInt(3));
+
+	for(int i = 0; i < 3; i++)
+	{
+		elem = vdmSetElementAt(set, i);
+		compelem = newInt(i + 1);
+		res = vdmEquals(elem, compelem);
+		EXPECT_EQ(true, res->value.boolVal);
+		vdmFree(elem);
+		vdmFree(compelem);
+		vdmFree(res);
+	}
+
+	vdmFree(set);
+}
+
+
 TEST(Expression_Set, setComprehension)
 {
 	int arr[] = { 1, 1, 2, 8, 15 };

@@ -46,7 +46,11 @@ struct TypedValue* newSetWithValues(size_t size,TVP* elements);
  * Create new set from variadic list of elements
  */
 struct TypedValue* newSetVar(size_t size,...);
+struct TypedValue* newSetVarToGrow(size_t size, size_t expected_size, ...);
 
+void vdmSetGrow(TVP set, TVP element);
+void vdmSetFit(TVP set);
+TVP vdmSetElementAt(TVP set, int loc);
 TVP vdmSetMemberOf(TVP set, TVP element);
 TVP vdmSetNotMemberOf(TVP set, TVP element);
 TVP vdmSetUnion(TVP set1, TVP set2);
