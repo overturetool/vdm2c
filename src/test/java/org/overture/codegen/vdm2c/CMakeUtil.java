@@ -72,7 +72,7 @@ public class CMakeUtil
 			cmake = "/usr/local/bin/cmake";
 		}
 
-		ProcessBuilder pb = new ProcessBuilder(cmake, String.format("-DVDM_LIB_PATH=%s", vdmLibPath.getAbsolutePath()), ".");
+		ProcessBuilder pb = new ProcessBuilder(cmake,"-DCMAKE_BUILD_TYPE=Debug", String.format("-DVDM_LIB_PATH=%s", vdmLibPath.getAbsolutePath()), ".");
 		pb.directory(root);
 
 		return runProcess(pb, verbose);
