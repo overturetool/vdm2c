@@ -1,0 +1,92 @@
+class ExpressionLet
+
+functions
+
+/*
+* value definition with patterns
+*/
+
+--pattern identifier
+
+public letPatternIdentifier : ()->bool
+letPatternIdentifier()== 
+let a = 1,
+		b = true and a < 5
+in
+	(((let c: bool= b
+	in
+		c)));
+		
+	public a : () -> bool
+	a()== let i = 3 in letPatternIdentifier();
+
+public letPatternDontCare : () -> bool
+letPatternDontCare() ==
+let - = true
+in
+	true;
+	
+	--match value = (exp) |symbolic literal: 1, true, false, nil, 'c', "some text", <append>
+
+--set enum pattern: {a,b,1}
+--set union pattern: a union {c}
+--seq enum pattern: [a,b,1]
+--seq conc pattern: a ^ [a,2]
+--map enumeration pattern: { 1|->2, 2|->c} | {|->}
+--map munion pattern: a munion { 1|->2, 2|->c}
+--tuple pattern: mk_(a,b)
+--record pattern: mk_R(a,b)
+--object pattern: obj_ClassA(field1 |-> c,field2 |-> 1)
+
+--public c:()->bool
+--c()== let a ^ [a,2] = [[],2]
+--in 
+--let c = a in
+--true
+
+
+--public c:()->bool
+--c()== let 
+--					d = lambda -:int & true,
+--					k: int ->bool 
+--				--	k()==true 
+--					= d
+--					
+--in 
+--k(1)
+
+
+--letseqcomp : ()-> bool
+--letseqcomp()==
+--	card 
+--	---
+--	{ 
+--		let f = c 
+--		in f 
+--	| c in set {1}
+--	}
+--			
+--			----
+--			>0
+--
+--operations
+--
+--public ff : () ==>int
+--ff()== 
+--
+--(
+--dcl o : int :=0;
+--
+--
+--(let jk = 0
+--in
+--	skip;
+--	);
+--	
+--	
+--return
+--
+--	let v = 1
+--	in 8;
+--);
+end ExpressionLet
