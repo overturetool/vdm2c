@@ -20,6 +20,12 @@ public class NativeTestBase extends BaseGeneratorTest
 	final static String testResourcedVdmRtPath = "src/test/resources/vdmrt/".replace('/', File.separatorChar);
 
 	File root = null;
+	
+	
+	protected File getTestCppFile(String pathRelativeToNative)
+	{
+		return new File(("src/test/resources/native/"+pathRelativeToNative).replace('/', File.separatorChar));
+	}
 
 	@Rule
 	public TestName name = new TestName();
