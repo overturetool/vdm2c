@@ -78,7 +78,7 @@ public class CForIterator extends AbstractLanguageIterator
 		setId.setIsLocal(true);
 		AIdentifierVarExpCG itrId = newIdentifier(iteratorName, null);
 		itrId.setIsLocal(true);
-		return newDeclarationAssignment(pattern, newTvpType(), newApply("vdmSetGetAt", setId, itrId), null);
+		return newDeclarationAssignment(pattern, newTvpType(), newApply("vdmSetElementAt", setId, itrId), null);
 	}
 
 	@Override

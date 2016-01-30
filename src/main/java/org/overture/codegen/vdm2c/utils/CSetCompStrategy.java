@@ -1,6 +1,7 @@
 package org.overture.codegen.vdm2c.utils;
 
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newApply;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.newIntLiteralExp;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.toStm;
 
 import java.util.Collections;
@@ -31,7 +32,13 @@ public class CSetCompStrategy extends SetCompStrategy
 	@Override
 	protected SExpCG getEmptyCollection()
 	{
-		return CTransUtil.newApply("newSetMalloc");
+		return CTransUtil.newApply("newSetVarToGrow", newIntLiteralExp(0), newIntLiteralExp(5));// TODO: request
+																								// Framework change such
+																								// that this is inserted
+																								// after the set is
+																								// Evaluated such that a
+																								// useful estimate can
+																								// be made of the size
 	}
 
 	@Override
@@ -58,7 +65,7 @@ public class CSetCompStrategy extends SetCompStrategy
 		setCompResult.setIsLambda(false);
 		setCompResult.setIsLocal(true);
 
-		SExpCG setAdd = newApply("vdmSetFitt", setCompResult);
+		SExpCG setAdd = newApply("vdmSetFit", setCompResult);
 		return Collections.singletonList(toStm(setAdd));
 	}
 }
