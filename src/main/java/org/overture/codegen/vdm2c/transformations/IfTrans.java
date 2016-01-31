@@ -1,7 +1,6 @@
 package org.overture.codegen.vdm2c.transformations;
 
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newApply;
-import static org.overture.codegen.vdm2c.utils.CTransUtil.newTvpType;
 
 import org.overture.codegen.cgast.SExpCG;
 import org.overture.codegen.cgast.STypeCG;
