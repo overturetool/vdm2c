@@ -133,6 +133,12 @@ int toInteger(TVP a)
 	}
 }
 
+bool toBool(TVP a)
+{
+	ASSERT_CHECK_BOOL(a);
+	return a->value.boolVal;
+}
+
 TVP vdmMinus(TVP arg)
 {
 	ASSERT_CHECK_NUMERIC(arg);
