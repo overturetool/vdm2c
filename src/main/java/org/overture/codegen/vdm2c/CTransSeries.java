@@ -41,6 +41,7 @@ import org.overture.codegen.vdm2c.transformations.CtorTrans;
 import org.overture.codegen.vdm2c.transformations.ExtractRetValTrans;
 import org.overture.codegen.vdm2c.transformations.FieldIdentifierToFieldGetApplyTrans;
 import org.overture.codegen.vdm2c.transformations.ForLoopTrans;
+import org.overture.codegen.vdm2c.transformations.IfTrans;
 import org.overture.codegen.vdm2c.transformations.IgnoreRenamingTrans;
 import org.overture.codegen.vdm2c.transformations.LetTrans;
 import org.overture.codegen.vdm2c.transformations.LiteralInstantiationRewriteTrans;
@@ -151,6 +152,7 @@ public class CTransSeries
 		transformations.add(new IgnoreRenamingTrans(transAssistant));
 
 		transformations.add(new ForLoopTrans(transAssistant));
+		transformations.add(new IfTrans(transAssistant));
 
 		transformations.add(new SubClassResponsibilityMethodsTrans(transAssistant));
 

@@ -1,0 +1,16 @@
+class ExpressionCases
+
+operations
+
+public casesLitMatch : () ==> bool
+casesLitMatch() == 
+(
+return    (cases 0 :
+         0  -> true,
+         1  -> false,
+         others -> false
+    end
+   );
+)
+
+end ExpressionCases
