@@ -1,19 +1,19 @@
-#if ($node.getScoped())
+##if ($node.getScoped())
 {
-#end
+##end
 ##
 ## Local definitions:
 ##
 #foreach( $dec in $node.getLocalDefs() )
-$CFormat.format($dec)
+$CFormat.format($dec);
 #end
 ##
 ## Statements:
 ##
 #foreach( $stm in $node.getStatements() )
-$CFormat.format($stm)
+$CFormat.format($stm);
 #end
 ##
-#if ($node.getScoped())
+##if ($node.getScoped())
 }
-#end
+##end

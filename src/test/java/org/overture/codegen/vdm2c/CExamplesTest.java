@@ -80,15 +80,26 @@ public class CExamplesTest extends BaseGeneratorTest
 
 	}
 	
+	@ConditionalIgnore(condition = HasVdm.class)
 	@Test
 	public void Set()
 	{
 		CGenMain.main(new String[] {"-dest",outputFolder, getPath("expressions/ExpressionSetForCGTesting.vdmrt") });
 	}
 	
+	@ConditionalIgnore(condition = HasVdm.class)
 	@Test
 	public void Boolean()
 	{
 		CGenMain.main(new String[] {"-dest",outputFolder, getPath("expressions/ExpressionBoolean.vdmrt") });
 	}
+	
+//	@ConditionalIgnore(condition = HasVdm.class)
+//	@Test
+//	public void cases()
+//	{
+//		CGenMain.main(new String[] {"-dest",outputFolder, "/Users/kel/data/into-cps/vdm2c-exploration/vdm/expressions/ExpressionCases.vdmrt" });
+//	}
+	
+	
 }

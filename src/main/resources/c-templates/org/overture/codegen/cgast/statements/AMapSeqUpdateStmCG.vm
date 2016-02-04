@@ -2,4 +2,4 @@
 #set( $index = $CFormat.format($node.getIndex()) )
 #set( $value = $CFormat.format($node.getValue()) )
 ##
-Utils.mapSeqUpdate(${col},${index},${value});
+Utils.mapSeqUpdate(${col},${index},${value})

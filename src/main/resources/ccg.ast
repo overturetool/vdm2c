@@ -23,12 +23,13 @@ CG = #decl
     |	{arrayIndex} [root]:CG.#exp [index]:CG.#exp
     |	{stm} [stm]:CG.#stm
     |	{paren} [exp]:CG.#exp
+    |	{plusplus} [exp]:CG.#exp
 	;
 
 
 
-//#stm {-> package='org.overture.codegen.vdm2c.extast.statements'}
-//	= {exp} [exp]:CG.#exp;
+#stm {-> package='org.overture.codegen.vdm2c.extast.statements'}
+	= {localVariableDeclaration} [decleration]:CG.#decl.var;
 	
 	
 
@@ -43,7 +44,7 @@ CG = #decl
     	[methods]:CG.#decl.method*
     	[includes]:eString*
     	[vtable]:eVtables
-    | {classState} [fields]:CG.#decl.field* //not sure why it cannot compile as a graph field
+    | {classState} (fields):CG.#decl.field* //not sure why it cannot compile as a graph field
     | {array} [static]:java_Boolean [type]:CG.#type [name]:java_String [size]:java_Integer [initial]:struct*
        ;
        

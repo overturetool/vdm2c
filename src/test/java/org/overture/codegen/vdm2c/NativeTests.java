@@ -27,23 +27,49 @@ public class NativeTests extends NativeTestBase
 		compileAndTest(new File("src/test/resources/native/MethodNameMap.h".replace('/', File.separatorChar)), new File("src/test/resources/native/seq/ExpressionsSeq_Tests.cpp".replace('/', File.separatorChar)));
 	}
 	
-	
-//	@ConditionalIgnore(condition = HasVdmLib.class)
-//	@Test
-//	public void cls() throws IOException, InterruptedException,
-//			CMakeGenerateException
-//	{
-//		generate("/Users/kel/data/into-cps/svn-intocps/WP1/T1_1_Railways/PLCP_CoSim/model_de/ModelVar.vdmrt","/Users/kel/data/into-cps/svn-intocps/WP1/T1_1_Railways/PLCP_CoSim/model_de/ModelVarBOOL.vdmrt","/Users/kel/data/into-cps/svn-intocps/WP1/T1_1_Railways/PLCP_CoSim/model_de/ModelVarINT.vdmrt");
-//		compileAndTest();
-//	}
-	
 	@ConditionalIgnore(condition = HasVdmLib.class)
 	@Test
 	public void ExpressionLet() throws IOException, InterruptedException,
 			CMakeGenerateException
 	{
 		generate(getPath("expressions/ExpressionLet.vdmrt"));
-		compileAndTest();
+		compileAndTest(getTestCppFile("let/ExpressionsLet_Tests.cpp"));
+	}
+	
+	@ConditionalIgnore(condition = HasVdmLib.class)
+	@Test
+	public void ExpressionBoolean() throws IOException, InterruptedException,
+			CMakeGenerateException
+	{
+		generate(getPath("expressions/ExpressionBoolean.vdmrt"));
+		compileAndTest(getTestCppFile("boolean/ExpressionsBoolean_Tests.cpp"));
+	}
+	
+	@ConditionalIgnore(condition = HasVdmLib.class)
+	@Test
+	public void ExpressionNumeric() throws IOException, InterruptedException,
+			CMakeGenerateException
+	{
+		generate(getPath("expressions/ExpressionNumeric.vdmrt"));
+		compileAndTest(getTestCppFile("numeric/ExpressionsNumeric_Tests.cpp"));
+	}
+	
+	@ConditionalIgnore(condition = HasVdmLib.class)
+	@Test
+	public void ExpressionSetForCGTesting() throws IOException, InterruptedException,
+			CMakeGenerateException
+	{
+		generate(getPath("expressions/ExpressionSetForCGTesting.vdmrt"));
+		compileAndTest(getTestCppFile("set/ExpressionsSetForCGTesting_Tests.cpp"));
+	}
+	
+	@ConditionalIgnore(condition = HasVdmLib.class)
+	@Test
+	public void ExpressionCases() throws IOException, InterruptedException,
+			CMakeGenerateException
+	{
+		generate(getPath("expressions/ExpressionCases.vdmrt"));
+		compileAndTest(getTestCppFile("cases/ExpressionsCases_Tests.cpp"));
 	}
 	
 	@ConditionalIgnore(condition = HasVdmLib.class)

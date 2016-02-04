@@ -3,5 +3,5 @@
 ##
 while(${exp})
 {
-	${body}
+	${body};
 }

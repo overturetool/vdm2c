@@ -2,7 +2,7 @@
 ## then only the target should be generated.
 ##
 #if ($CFormat.isMapSeq($node.getTarget()))
-	$CFormat.format($node.getTarget());##
+	$CFormat.format($node.getTarget())##
 #else
-	$CFormat.format($node.getTarget()) = $CFormat.format($node.getExp());##
+	$CFormat.format($node.getTarget()) = $CFormat.format($node.getExp())##
 #end

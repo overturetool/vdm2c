@@ -13,6 +13,27 @@
 	<artifactId>vdm2c</artifactId>
 	<name>The C Code Generator</name>
 
+
+	<repositories>
+    <repository>
+			<id>vdm2c.overture.au.dk</id>
+      <name>vdm2c.overture.au.dk-releases</name>
+      <releases>
+				<enabled>false</enabled>
+				<updatePolicy>daily</updatePolicy>
+				<checksumPolicy>warn</checksumPolicy>
+      </releases>
+      <snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+				<checksumPolicy>warn</checksumPolicy>
+      </snapshots>
+			<url>http://overture.au.dk/artifactory/overture-development-vdm2c</url>
+      <layout>default</layout>
+    </repository>
+  </repositories>
+
+
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -56,7 +77,7 @@
 	<build>
 		<plugins>
 
-<plugin>
+			<plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
         <version>2.10.3</version>
@@ -66,8 +87,8 @@
 					</excludePackageNames>
 					<failOnError>false</failOnError>
 					<skip>true</skip>
-					</configuration>
-</plugin>
+				</configuration>
+			</plugin>
 
 
 			<plugin>
@@ -103,7 +124,7 @@
 					<extendedName>C</extendedName>
 					<extendedTreeOnly>true</extendedTreeOnly>
 					<useSrcOutput>false</useSrcOutput>
-<suppressWarnings></suppressWarnings>
+					<suppressWarnings></suppressWarnings>
 					<extendedAstGroupId>org.overturetool.core.codegen</extendedAstGroupId>
 					<extendedAstArtifactId>ir</extendedAstArtifactId>
 				</configuration>
@@ -132,7 +153,7 @@
 		<pluginManagement>
 			<plugins>
 				<!--This plugin's configuration is used to store Eclipse m2e settings 
-					only. It has no influence on the Maven build itself. -->
+						only. It has no influence on the Maven build itself. -->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
 					<artifactId>lifecycle-mapping</artifactId>
