@@ -52,6 +52,11 @@ public class ForLoopTrans extends DepthFirstAnalysisAdaptor
 	{
 		String bindName = node.getVar();
 
+		if (node.getBy() == null)
+		{
+			node.setBy(newIntLiteralExp(1));
+		}
+
 		ABlockStmCG replBlock = new ABlockStmCG();
 		replBlock.setScoped(true);
 
