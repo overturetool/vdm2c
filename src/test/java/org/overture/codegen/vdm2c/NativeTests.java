@@ -71,13 +71,4 @@ public class NativeTests extends NativeTestBase
 		generate(getPath("expressions/ExpressionCases.vdmrt"));
 		compileAndTest(getTestCppFile("cases/ExpressionsCases_Tests.cpp"));
 	}
-	
-	@ConditionalIgnore(condition = HasVdmLib.class)
-	@Test
-	public void ExpressionSet() throws IOException, InterruptedException,
-			CMakeGenerateException
-	{
-		generate(getPath("expressions/ExpressionSetForCGTesting.vdmrt"));
-		compileAndTest();
-	}
 }
