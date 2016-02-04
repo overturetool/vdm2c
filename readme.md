@@ -49,6 +49,14 @@ sudo apt-get install libglib2.0
 brew install glib
 ```
 
+### Other packages
+
+* ubuntu
+
+```bash
+sudo apt-get install cmake make gcc g++
+```
+
 # Using Eclipse
 
 Please install: CDT + *C/C++ Unit Testing Support*

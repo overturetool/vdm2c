@@ -133,6 +133,12 @@ int toInteger(TVP a)
 	}
 }
 
+bool toBool(TVP a)
+{
+	ASSERT_CHECK_BOOL(a);
+	return a->value.boolVal;
+}
+
 TVP vdmMinus(TVP arg)
 {
 	ASSERT_CHECK_NUMERIC(arg);
@@ -277,10 +283,10 @@ TVP vdmMod(TVP a,TVP b)
 	ASSERT_CHECK_INT(a);
 	ASSERT_CHECK_INT(b);
 
-	int av = toDouble(a);
-	int bv = toDouble(b);
+	double lv =(int) toDouble(a);
+	double rv = (int)toDouble(b);
 
-	return newInt(bv-av*(long) floor(av/bv));
+	return newReal(lv-rv*(long) floor(lv/rv));
 }
 
 TVP vdmPower(TVP a,TVP b)

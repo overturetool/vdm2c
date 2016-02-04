@@ -72,5 +72,6 @@ TVP vdmLessOrEqual(TVP a,TVP b);
 bool isNumber(TVP val);
 int toInteger(TVP a);
 double toDouble(TVP a);
+bool toBool(TVP a);
 
 #endif /* LIB_VDMBASICTYPES_H_ */
