@@ -8,7 +8,10 @@ import org.overture.codegen.cgast.declarations.AMethodDeclCG;
 import org.overture.codegen.cgast.types.ABoolBasicTypeCG;
 import org.overture.codegen.cgast.types.ACharBasicTypeCG;
 import org.overture.codegen.cgast.types.AClassTypeCG;
+import org.overture.codegen.cgast.types.AExternalTypeCG;
 import org.overture.codegen.cgast.types.AIntNumericBasicTypeCG;
+import org.overture.codegen.cgast.types.ANat1BasicTypeWrappersTypeCG;
+import org.overture.codegen.cgast.types.ANatNumericBasicTypeCG;
 import org.overture.codegen.cgast.types.ARealNumericBasicTypeCG;
 import org.overture.codegen.cgast.types.ASeqSeqTypeCG;
 
@@ -16,6 +19,9 @@ public class NameMangler
 {
 	static final String preFix = "_Z";
 	static final String intId = "I";
+	static final String natId = "N";
+	static final String nat1Id = "K";
+	
 	// static final String int1Id="I1";
 	static final String realId = "R";
 	static final String charId = "C";
@@ -85,14 +91,32 @@ public class NameMangler
 	private static class NameGenerator extends
 			DepthFirstAnalysisAdaptorAnswer<String>
 	{
+		
+		
 
 		@Override
 		public String caseAClassTypeCG(AClassTypeCG node)
 				throws AnalysisException
 		{
-			return mkName(node.getName());
+			String name = node.getName();
+			return String.format(classId, name.length(),name);
 		}
-
+		
+		@Override
+		public String caseANatNumericBasicTypeCG(ANatNumericBasicTypeCG node)
+				throws AnalysisException
+		{
+			return natId;
+		}
+		
+		
+		@Override
+		public String caseANat1BasicTypeWrappersTypeCG(
+				ANat1BasicTypeWrappersTypeCG node) throws AnalysisException
+		{
+			return nat1Id;
+		}
+		
 		@Override
 		public String caseAIntNumericBasicTypeCG(AIntNumericBasicTypeCG node)
 				throws AnalysisException
@@ -104,7 +128,7 @@ public class NameMangler
 		public String caseABoolBasicTypeCG(ABoolBasicTypeCG node)
 				throws AnalysisException
 		{
-			return intId;
+			return boolId;
 		}
 
 		@Override
@@ -122,12 +146,27 @@ public class NameMangler
 		}
 		
 		@Override
+		public String caseAExternalTypeCG(AExternalTypeCG node)
+				throws AnalysisException
+		{
+			return "";
+		}
+		
+		@Override
 		public String caseASeqSeqTypeCG(ASeqSeqTypeCG node)
 				throws AnalysisException
 		{
 			String name = node.getSeqOf().apply(THIS);
 			return String.format(seqId, name.length(),name);
 		}
+		
+		@Override
+		public String defaultInINode(INode node) throws AnalysisException
+		{
+			System.err.println("Mangling not handled: "+node.getClass().getName());
+			return super.defaultInINode(node);
+		}
+
 
 		@Override
 		public String mergeReturns(String original, String new_)
