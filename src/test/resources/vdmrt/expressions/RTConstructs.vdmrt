@@ -1,0 +1,13 @@
+class RTConstructs
+instance variables
+	a : int := 1;
+operations
+testduration : () ==> bool
+testduration() == duration(2)
+	(return true);
+	
+testcycles : () ==> bool
+testcycles() == cycles(4)
+	(return true);
+
+end RTConstructs
