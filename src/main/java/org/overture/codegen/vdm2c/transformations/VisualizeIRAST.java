@@ -1,31 +1,38 @@
 package org.overture.codegen.vdm2c.transformations;
 
-import org.overture.ast.preview.GraphViz.GraphVizException;
-import org.overture.codegen.cgast.analysis.AnalysisException;
-import org.overture.codegen.cgast.analysis.DepthFirstAnalysisAdaptor;
-import org.overture.codegen.cgast.declarations.AMethodDeclCG;
-import org.overture.codegen.trans.assistants.TransAssistantCG;
-import org.overture.codegen.vdm2c.ast.preview.Dot;
 import java.io.File;
+
+import org.overture.ast.preview.GraphViz.GraphVizException;
+import org.overture.codegen.ir.INode;
+import org.overture.codegen.ir.analysis.AnalysisException;
+import org.overture.codegen.ir.analysis.DepthFirstAnalysisAdaptor;
+import org.overture.codegen.ir.declarations.ADefaultClassDeclIR;
+import org.overture.codegen.trans.assistants.TransAssistantIR;
+import org.overture.codegen.vdm2c.ast.preview.Dot;
 
 public class VisualizeIRAST extends DepthFirstAnalysisAdaptor
 {
-	public TransAssistantCG assist;
+	public TransAssistantIR assist;
 
-	public VisualizeIRAST(TransAssistantCG assist)
+	public VisualizeIRAST(TransAssistantIR assist)
 	{
 		this.assist = assist;
 	}
-	
+
 	@Override
-	public void caseAMethodDeclCG(AMethodDeclCG node) throws AnalysisException
+	public void caseADefaultClassDeclIR(ADefaultClassDeclIR node)
+			throws AnalysisException
 	{
-		org.overture.codegen.cgast.INode tmpnode = node;
-		while(tmpnode.parent() != null)
-		{tmpnode = tmpnode.parent();
+		INode tmpnode = node;
+		while (tmpnode.parent() != null)
+		{
+			tmpnode = tmpnode.parent();
 		}
 		try
-		{Dot.makeImage(tmpnode, new File("/home/mot/Desktop/AST.svg"));}
-		catch(GraphVizException e){}
+		{
+			Dot.makeImage(tmpnode, new File("/home/mot/Desktop/AST.svg"));
+		} catch (GraphVizException e)
+		{
+		}
 	}
 }
