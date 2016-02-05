@@ -1,7 +1,7 @@
 package org.overture.codegen.vdm2c.ast;
 
 import org.overture.ast.util.ClonableString;
-import org.overture.codegen.cgast.ExternalNode;
+import org.overture.codegen.ir.ExternalNode;
 
 public class CGenClonableString implements ExternalNode
 	{

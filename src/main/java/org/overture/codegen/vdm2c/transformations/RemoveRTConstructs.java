@@ -1,31 +1,29 @@
 package org.overture.codegen.vdm2c.transformations;
 
 import java.io.File;
-
-import org.overture.ast.preview.GraphViz.GraphVizException;
-import org.overture.codegen.cgast.analysis.AnalysisException;
-import org.overture.codegen.cgast.analysis.DepthFirstAnalysisAdaptor;
-import org.overture.codegen.cgast.statements.ACyclesStmCG;
-import org.overture.codegen.cgast.statements.ADurationStmCG;
-import org.overture.codegen.trans.assistants.TransAssistantCG;
+import org.overture.codegen.ir.analysis.AnalysisException;
+import org.overture.codegen.ir.analysis.DepthFirstAnalysisAdaptor;
+import org.overture.codegen.ir.statements.ACyclesStmIR;
+import org.overture.codegen.ir.statements.ADurationStmIR;
+import org.overture.codegen.trans.assistants.TransAssistantIR;
 
 public class RemoveRTConstructs extends DepthFirstAnalysisAdaptor
 {
-	public TransAssistantCG assist;
+	public TransAssistantIR assist;
 
-	public RemoveRTConstructs(TransAssistantCG assist)
+	public RemoveRTConstructs(TransAssistantIR assist)
 	{
 		this.assist = assist;
 	}
 
 	@Override
-	public void caseADurationStmCG(ADurationStmCG node) throws AnalysisException
+	public void caseADurationStmIR(ADurationStmIR node) throws AnalysisException
 	{
 		assist.replaceNodeWith(node, node.getStm());
 	}
 	
 	@Override
-	public void caseACyclesStmCG(ACyclesStmCG node) throws AnalysisException
+	public void caseACyclesStmIR(ACyclesStmIR node) throws AnalysisException
 	{
 		assist.replaceNodeWith(node, node.getStm());
 	}

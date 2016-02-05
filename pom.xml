@@ -119,7 +119,7 @@
 					</execution>
 				</executions>
 				<configuration>
-					<ast>cg.astv2</ast>
+					<ast>ir.ast</ast>
 					<extendedAst>ccg.ast</extendedAst>
 					<extendedName>C</extendedName>
 					<extendedTreeOnly>true</extendedTreeOnly>

@@ -8,39 +8,40 @@ import static org.overture.codegen.vdm2c.utils.CTransUtil.newMacroApply;
 import org.overture.ast.definitions.AClassClassDefinition;
 import org.overture.ast.definitions.AInheritedDefinition;
 import org.overture.ast.definitions.AInstanceVariableDefinition;
+import org.overture.ast.definitions.ALocalDefinition;
 import org.overture.ast.definitions.PDefinition;
 import org.overture.ast.expressions.AVariableExp;
 import org.overture.ast.node.INode;
 import org.overture.ast.types.AFunctionType;
 import org.overture.ast.types.AOperationType;
-import org.overture.codegen.cgast.analysis.AnalysisException;
-import org.overture.codegen.cgast.analysis.DepthFirstAnalysisAdaptor;
-import org.overture.codegen.cgast.declarations.ADefaultClassDeclCG;
-import org.overture.codegen.cgast.declarations.AFieldDeclCG;
-import org.overture.codegen.cgast.declarations.AVarDeclCG;
-import org.overture.codegen.cgast.declarations.SClassDeclCG;
-import org.overture.codegen.cgast.expressions.AApplyExpCG;
-import org.overture.codegen.cgast.expressions.AIdentifierVarExpCG;
-import org.overture.codegen.cgast.name.ATokenNameCG;
-import org.overture.codegen.cgast.statements.AAssignToExpStmCG;
-import org.overture.codegen.cgast.statements.ABlockStmCG;
-import org.overture.codegen.trans.assistants.TransAssistantCG;
-import org.overture.codegen.vdm2c.extast.expressions.AMacroApplyExpCG;
+import org.overture.codegen.ir.analysis.AnalysisException;
+import org.overture.codegen.ir.analysis.DepthFirstAnalysisAdaptor;
+import org.overture.codegen.ir.declarations.ADefaultClassDeclIR;
+import org.overture.codegen.ir.declarations.AFieldDeclIR;
+import org.overture.codegen.ir.declarations.AVarDeclIR;
+import org.overture.codegen.ir.declarations.SClassDeclIR;
+import org.overture.codegen.ir.expressions.AApplyExpIR;
+import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
+import org.overture.codegen.ir.name.ATokenNameIR;
+import org.overture.codegen.ir.statements.AAssignToExpStmIR;
+import org.overture.codegen.ir.statements.ABlockStmIR;
+import org.overture.codegen.trans.assistants.TransAssistantIR;
+import org.overture.codegen.vdm2c.extast.expressions.AMacroApplyExpIR;
 
 public class FieldIdentifierToFieldGetApplyTrans extends
 		DepthFirstAnalysisAdaptor
 {
-	public TransAssistantCG assist;
+	public TransAssistantIR assist;
 
 	final static String fieldPrefix = "field_tmp_";
 
-	public FieldIdentifierToFieldGetApplyTrans(TransAssistantCG assist)
+	public FieldIdentifierToFieldGetApplyTrans(TransAssistantIR assist)
 	{
 		this.assist = assist;
 	}
 
 	@Override
-	public void caseAIdentifierVarExpCG(AIdentifierVarExpCG node)
+	public void caseAIdentifierVarExpIR(AIdentifierVarExpIR node)
 			throws AnalysisException
 	{
 		if (node.getIsLocal())
@@ -71,9 +72,12 @@ public class FieldIdentifierToFieldGetApplyTrans extends
 			{
 				AInheritedDefinition idef = (AInheritedDefinition) vardef;
 				fieldClassName = idef.getClassDefinition().getName().getName();
+			}else if (vardef instanceof ALocalDefinition && ((ALocalDefinition)vardef).getValueDefinition())
+			{
+				return;
 			}
 
-			AMacroApplyExpCG apply = newMacroApply("GET_FIELD_PTR");
+			AMacroApplyExpIR apply = newMacroApply("GET_FIELD_PTR");
 			assist.replaceNodeWith(node, apply);
 
 			// add this type
@@ -87,9 +91,9 @@ public class FieldIdentifierToFieldGetApplyTrans extends
 		}
 	}
 
-	String lookupFieldClass(SClassDeclCG node, String name)
+	String lookupFieldClass(SClassDeclIR node, String name)
 	{
-		for (AFieldDeclCG f : node.getFields())
+		for (AFieldDeclIR f : node.getFields())
 		{
 			if (f.getName().equals(name))
 			{
@@ -97,9 +101,9 @@ public class FieldIdentifierToFieldGetApplyTrans extends
 			}
 		}
 
-		for (ATokenNameCG superName : node.getSuperNames())
+		for (ATokenNameIR superName : node.getSuperNames())
 		{
-			for (SClassDeclCG def : assist.getInfo().getClasses())
+			for (SClassDeclIR def : assist.getInfo().getClasses())
 			{
 				if (def.getName().equals(superName))
 				{
@@ -116,33 +120,33 @@ public class FieldIdentifierToFieldGetApplyTrans extends
 	}
 
 	@Override
-	public void caseAAssignToExpStmCG(AAssignToExpStmCG node)
+	public void caseAAssignToExpStmIR(AAssignToExpStmIR node)
 			throws AnalysisException
 	{
-		if (node.getTarget() instanceof AIdentifierVarExpCG
-				&& ((AIdentifierVarExpCG) node.getTarget()).getIsLocal())
+		if (node.getTarget() instanceof AIdentifierVarExpIR
+				&& ((AIdentifierVarExpIR) node.getTarget()).getIsLocal())
 		{
 			return;
 		}
 
-		AIdentifierVarExpCG target = (AIdentifierVarExpCG) node.getTarget();
+		AIdentifierVarExpIR target = (AIdentifierVarExpIR) node.getTarget();
 		// class
 		String thisClassName = target.getSourceNode().getVdmNode().getAncestor(AClassClassDefinition.class).getName().getName();// the
 																																// containing
 		// field owner
-		String fieldClassName = lookupFieldClass(target.getAncestor(ADefaultClassDeclCG.class), target.getName());
+		String fieldClassName = lookupFieldClass(target.getAncestor(ADefaultClassDeclIR.class), target.getName());
 
 		String name = assist.getInfo().getTempVarNameGen().nextVarName(fieldPrefix);
 
-		AVarDeclCG retVar = newDeclarationAssignment(name, node.getExp().getType().clone(), node.getExp(), node.getExp().getSourceNode());
+		AVarDeclIR retVar = newDeclarationAssignment(name, node.getExp().getType().clone(), node.getExp(), node.getExp().getSourceNode());
 
-		ABlockStmCG replBlock = new ABlockStmCG();
+		ABlockStmIR replBlock = new ABlockStmIR();
 		replBlock.setScoped(true);
 		replBlock.getLocalDefs().add(retVar);
 
 		assist.replaceNodeWith(node, replBlock);
 
-		AMacroApplyExpCG apply = newMacroApply("SET_FIELD_PTR");// new AApplyExpCG();
+		AMacroApplyExpIR apply = newMacroApply("SET_FIELD_PTR");// new AApplyExpIR();
 		apply.setSourceNode(target.getSourceNode());
 
 		// add this type
@@ -162,7 +166,7 @@ public class FieldIdentifierToFieldGetApplyTrans extends
 
 		replBlock.getStatements().add(exp2Stm(apply));
 
-		AApplyExpCG vdmFree = new AApplyExpCG();
+		AApplyExpIR vdmFree = new AApplyExpIR();
 		vdmFree.setRoot(createIdentifier("vdmFree", node.getSourceNode()));
 		vdmFree.getArgs().add(createIdentifier(name, retVar.getSourceNode()));
 

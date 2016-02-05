@@ -2,35 +2,35 @@ package org.overture.codegen.vdm2c.transformations;
 
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newApply;
 
-import org.overture.codegen.cgast.SExpCG;
-import org.overture.codegen.cgast.STypeCG;
-import org.overture.codegen.cgast.analysis.AnalysisException;
-import org.overture.codegen.cgast.analysis.DepthFirstAnalysisAdaptor;
-import org.overture.codegen.cgast.statements.AElseIfStmCG;
-import org.overture.codegen.cgast.statements.AIfStmCG;
-import org.overture.codegen.cgast.types.AExternalTypeCG;
-import org.overture.codegen.trans.assistants.TransAssistantCG;
+import org.overture.codegen.ir.SExpIR;
+import org.overture.codegen.ir.STypeIR;
+import org.overture.codegen.ir.analysis.AnalysisException;
+import org.overture.codegen.ir.analysis.DepthFirstAnalysisAdaptor;
+import org.overture.codegen.ir.statements.AElseIfStmIR;
+import org.overture.codegen.ir.statements.AIfStmIR;
+import org.overture.codegen.ir.types.AExternalTypeIR;
+import org.overture.codegen.trans.assistants.TransAssistantIR;
 
 public class IfTrans extends DepthFirstAnalysisAdaptor
 {
-	public TransAssistantCG assist;
+	public TransAssistantIR assist;
 
-	public IfTrans(TransAssistantCG assist)
+	public IfTrans(TransAssistantIR assist)
 	{
 		this.assist = assist;
 	}
 
-	boolean mustUnpack(STypeCG type)
+	boolean mustUnpack(STypeIR type)
 	{
-		return type != null && !(type instanceof AExternalTypeCG);
+		return type != null && !(type instanceof AExternalTypeIR);
 	}
 
-	void unpack(SExpCG exp)
+	void unpack(SExpIR exp)
 	{
 		assist.replaceNodeWith(exp, newApply("toBool", exp.clone()));
 	}
 
-	void process(SExpCG exp)
+	void process(SExpIR exp)
 	{
 		if (mustUnpack(exp.getType()))
 		{
@@ -39,12 +39,12 @@ public class IfTrans extends DepthFirstAnalysisAdaptor
 	}
 
 	@Override
-	public void caseAIfStmCG(AIfStmCG node) throws AnalysisException
+	public void caseAIfStmIR(AIfStmIR node) throws AnalysisException
 	{
-		super.caseAIfStmCG(node);
+		super.caseAIfStmIR(node);
 		process(node.getIfExp());
 
-		for (AElseIfStmCG elseIf : node.getElseIf())
+		for (AElseIfStmIR elseIf : node.getElseIf())
 		{
 			process(elseIf.getElseIf());
 		}

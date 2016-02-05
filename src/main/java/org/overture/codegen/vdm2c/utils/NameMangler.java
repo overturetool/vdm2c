@@ -1,19 +1,19 @@
 package org.overture.codegen.vdm2c.utils;
 
-import org.overture.codegen.cgast.INode;
-import org.overture.codegen.cgast.analysis.AnalysisException;
-import org.overture.codegen.cgast.analysis.DepthFirstAnalysisAdaptorAnswer;
-import org.overture.codegen.cgast.declarations.AFormalParamLocalParamCG;
-import org.overture.codegen.cgast.declarations.AMethodDeclCG;
-import org.overture.codegen.cgast.types.ABoolBasicTypeCG;
-import org.overture.codegen.cgast.types.ACharBasicTypeCG;
-import org.overture.codegen.cgast.types.AClassTypeCG;
-import org.overture.codegen.cgast.types.AExternalTypeCG;
-import org.overture.codegen.cgast.types.AIntNumericBasicTypeCG;
-import org.overture.codegen.cgast.types.ANat1BasicTypeWrappersTypeCG;
-import org.overture.codegen.cgast.types.ANatNumericBasicTypeCG;
-import org.overture.codegen.cgast.types.ARealNumericBasicTypeCG;
-import org.overture.codegen.cgast.types.ASeqSeqTypeCG;
+import org.overture.codegen.ir.INode;
+import org.overture.codegen.ir.analysis.AnalysisException;
+import org.overture.codegen.ir.analysis.DepthFirstAnalysisAdaptorAnswer;
+import org.overture.codegen.ir.declarations.AFormalParamLocalParamIR;
+import org.overture.codegen.ir.declarations.AMethodDeclIR;
+import org.overture.codegen.ir.types.ABoolBasicTypeIR;
+import org.overture.codegen.ir.types.ACharBasicTypeIR;
+import org.overture.codegen.ir.types.AClassTypeIR;
+import org.overture.codegen.ir.types.AExternalTypeIR;
+import org.overture.codegen.ir.types.AIntNumericBasicTypeIR;
+import org.overture.codegen.ir.types.ANat1BasicTypeWrappersTypeIR;
+import org.overture.codegen.ir.types.ANatNumericBasicTypeIR;
+import org.overture.codegen.ir.types.ARealNumericBasicTypeIR;
+import org.overture.codegen.ir.types.ASeqSeqTypeIR;
 
 public class NameMangler
 {
@@ -44,7 +44,7 @@ public class NameMangler
 		return String.format(nameId, name.length(), name);
 	}
 
-	public static String mangle(AMethodDeclCG method) throws AnalysisException
+	public static String mangle(AMethodDeclIR method) throws AnalysisException
 	{
 		if(method.getName().startsWith(preFix))
 		{
@@ -52,7 +52,7 @@ public class NameMangler
 		}
 
 		StringBuilder sb = new StringBuilder();
-		for (AFormalParamLocalParamCG formal : method.getFormalParams())
+		for (AFormalParamLocalParamIR formal : method.getFormalParams())
 		{
 			sb.append(formal.getType().apply(generator));
 		}
@@ -95,7 +95,7 @@ public class NameMangler
 		
 
 		@Override
-		public String caseAClassTypeCG(AClassTypeCG node)
+		public String caseAClassTypeIR(AClassTypeIR node)
 				throws AnalysisException
 		{
 			String name = node.getName();
@@ -103,7 +103,7 @@ public class NameMangler
 		}
 		
 		@Override
-		public String caseANatNumericBasicTypeCG(ANatNumericBasicTypeCG node)
+		public String caseANatNumericBasicTypeIR(ANatNumericBasicTypeIR node)
 				throws AnalysisException
 		{
 			return natId;
@@ -111,49 +111,49 @@ public class NameMangler
 		
 		
 		@Override
-		public String caseANat1BasicTypeWrappersTypeCG(
-				ANat1BasicTypeWrappersTypeCG node) throws AnalysisException
+		public String caseANat1BasicTypeWrappersTypeIR(
+				ANat1BasicTypeWrappersTypeIR node) throws AnalysisException
 		{
 			return nat1Id;
 		}
 		
 		@Override
-		public String caseAIntNumericBasicTypeCG(AIntNumericBasicTypeCG node)
+		public String caseAIntNumericBasicTypeIR(AIntNumericBasicTypeIR node)
 				throws AnalysisException
 		{
 			return intId;
 		}
 
 		@Override
-		public String caseABoolBasicTypeCG(ABoolBasicTypeCG node)
+		public String caseABoolBasicTypeIR(ABoolBasicTypeIR node)
 				throws AnalysisException
 		{
 			return boolId;
 		}
 
 		@Override
-		public String caseARealNumericBasicTypeCG(ARealNumericBasicTypeCG node)
+		public String caseARealNumericBasicTypeIR(ARealNumericBasicTypeIR node)
 				throws AnalysisException
 		{
 			return realId;
 		}
 
 		@Override
-		public String caseACharBasicTypeCG(ACharBasicTypeCG node)
+		public String caseACharBasicTypeIR(ACharBasicTypeIR node)
 				throws AnalysisException
 		{
 			return charId;
 		}
 		
 		@Override
-		public String caseAExternalTypeCG(AExternalTypeCG node)
+		public String caseAExternalTypeIR(AExternalTypeIR node)
 				throws AnalysisException
 		{
 			return "";
 		}
 		
 		@Override
-		public String caseASeqSeqTypeCG(ASeqSeqTypeCG node)
+		public String caseASeqSeqTypeIR(ASeqSeqTypeIR node)
 				throws AnalysisException
 		{
 			String name = node.getSeqOf().apply(THIS);

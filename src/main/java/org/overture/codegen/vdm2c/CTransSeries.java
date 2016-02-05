@@ -11,9 +11,9 @@ package org.overture.codegen.vdm2c;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.overture.codegen.cgast.analysis.DepthFirstAnalysisAdaptor;
-import org.overture.codegen.cgast.expressions.AIntLiteralExpCG;
-import org.overture.codegen.cgast.types.AExternalTypeCG;
+import org.overture.codegen.ir.analysis.DepthFirstAnalysisAdaptor;
+import org.overture.codegen.ir.expressions.AIntLiteralExpIR;
+import org.overture.codegen.ir.types.AExternalTypeIR;
 import org.overture.codegen.ir.IRInfo;
 import org.overture.codegen.trans.AssignStmTrans;
 import org.overture.codegen.trans.AtomicStmTrans;
@@ -24,7 +24,7 @@ import org.overture.codegen.trans.IterationVarPrefixes;
 import org.overture.codegen.trans.LetBeStTrans;
 import org.overture.codegen.trans.WhileStmTrans;
 //import org.overture.codegen.trans.TempVarPrefixes;
-import org.overture.codegen.trans.assistants.TransAssistantCG;
+import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.trans.funcvalues.FuncValAssistant;
 import org.overture.codegen.trans.funcvalues.FuncValPrefixes;
 import org.overture.codegen.trans.funcvalues.FuncValTrans;
@@ -43,6 +43,7 @@ import org.overture.codegen.vdm2c.transformations.FieldIdentifierToFieldGetApply
 import org.overture.codegen.vdm2c.transformations.ForLoopTrans;
 import org.overture.codegen.vdm2c.transformations.IfTrans;
 import org.overture.codegen.vdm2c.transformations.IgnoreRenamingTrans;
+import org.overture.codegen.vdm2c.transformations.InitializerExtractorTrans;
 import org.overture.codegen.vdm2c.transformations.LetTrans;
 import org.overture.codegen.vdm2c.transformations.LiteralInstantiationRewriteTrans;
 import org.overture.codegen.vdm2c.transformations.LogicTrans;
@@ -50,9 +51,11 @@ import org.overture.codegen.vdm2c.transformations.MangleMethodNamesTrans;
 import org.overture.codegen.vdm2c.transformations.NewRewriteTrans;
 import org.overture.codegen.vdm2c.transformations.NumericTrans;
 import org.overture.codegen.vdm2c.transformations.RemoveCWrappersTrans;
+import org.overture.codegen.vdm2c.transformations.RemoveRTConstructs;
+import org.overture.codegen.vdm2c.transformations.RenameValueFieldsTrans;
 import org.overture.codegen.vdm2c.transformations.ScopeCleanerTrans;
 import org.overture.codegen.vdm2c.transformations.SubClassResponsibilityMethodsTrans;
-import org.overture.codegen.vdm2c.transformations.RemoveRTConstructs;
+import org.overture.codegen.vdm2c.transformations.ValueAccessRenameTrans;
 
 public class CTransSeries
 {
@@ -66,11 +69,11 @@ public class CTransSeries
 
 	private Exists1CounterData consExists1CounterData()
 	{
-		AExternalTypeCG type = new AExternalTypeCG();
+		AExternalTypeIR type = new AExternalTypeIR();
 		type.setName("Long");
 
 		IRInfo irInfo = codeGen.getIRGenerator().getIRInfo();
-		AIntLiteralExpCG initExp = irInfo.getExpAssistant().consIntLiteral(0);
+		AIntLiteralExpIR initExp = irInfo.getExpAssistant().consIntLiteral(0);
 
 		return new Exists1CounterData(type, initExp);
 	}
@@ -82,7 +85,7 @@ public class CTransSeries
 		// TempVarPrefixes varPrefixes = codeGen.getTempVarPrefixes();
 		// ITempVarGen nameGen = irInfo.getTempVarNameGen();
 		// TraceNames traceNamePrefixes = codeGen.getTracePrefixes();
-		TransAssistantCG transAssistant = codeGen.getTransAssistant();
+		TransAssistantIR transAssistant = codeGen.getTransAssistant();
 		// IPostCheckCreator postCheckCreator = new JavaPostCheckCreator(POST_CHECK_METHOD_NAME);
 
 		// Set up order of transformations
@@ -94,8 +97,9 @@ public class CTransSeries
 		 */
 		// Construct the transformations
 		transformations.add(new FuncTrans(transAssistant));
+		transformations.add(new InitializerExtractorTrans(transAssistant));
 		transformations.add(new RemoveRTConstructs(transAssistant));
-		
+
 		// Data and functionality to support the transformations
 		IRInfo info = codeGen.getIRGenerator().getIRInfo();
 		VarPrefixManager varMan = new VarPrefixManager();
@@ -125,7 +129,7 @@ public class CTransSeries
 		transformations.add(new WhileStmTrans(transAssistant, varMan.whileCond()));
 		transformations.add(new CExp2StmTrans(iteVarPrefixes, transAssistant, consExists1CounterData(), langIte, exp2stmPrefixes));
 		transformations.add(new PatternTrans(iteVarPrefixes, transAssistant, patternPrefixes, varMan.casesExp()));
-//		transformations.add(new RemoveSetCompAddTrans(transAssist));
+		// transformations.add(new RemoveSetCompAddTrans(transAssist));
 
 		/* C transformations */
 
@@ -136,7 +140,8 @@ public class CTransSeries
 		transformations.add(new NumericTrans(transAssistant));
 		transformations.add(new LogicTrans(transAssistant));
 		transformations.add(new LiteralInstantiationRewriteTrans(transAssistant));
-
+		transformations.add(new RenameValueFieldsTrans(transAssistant));
+		transformations.add(new ValueAccessRenameTrans(transAssistant));
 		transformations.add(new LetTrans(transAssistant));
 
 		/**

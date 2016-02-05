@@ -1,9 +1,9 @@
 package org.overture.codegen.vdm2c;
 
-import org.overture.codegen.cgast.declarations.SClassDeclCG;
-import org.overture.codegen.vdm2c.extast.declarations.AClassHeaderDeclCG;
+import org.overture.codegen.ir.declarations.SClassDeclIR;
+import org.overture.codegen.vdm2c.extast.declarations.AClassHeaderDeclIR;
 
 public interface IHeaderFinder
 {
-	public AClassHeaderDeclCG getHeader(SClassDeclCG def);
+	public AClassHeaderDeclIR getHeader(SClassDeclIR def);
 }

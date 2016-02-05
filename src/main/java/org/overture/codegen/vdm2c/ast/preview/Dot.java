@@ -4,7 +4,7 @@ import java.io.File;
 
 import org.overture.ast.preview.GraphViz;
 import org.overture.ast.preview.GraphViz.GraphVizException;
-import org.overture.codegen.cgast.INode;
+import org.overture.codegen.ir.INode;
 
 public class Dot
 {

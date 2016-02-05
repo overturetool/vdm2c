@@ -1,0 +1,10 @@
+class ClassValue
+
+values 
+ public value1 : int = 1;
+ 
+operations
+ public op1: () ==> bool
+ op1()== return value1 = 1;
+ 
+end ClassValue

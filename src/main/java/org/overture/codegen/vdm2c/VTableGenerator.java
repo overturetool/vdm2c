@@ -11,22 +11,22 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Vector;
 
-import org.overture.codegen.cgast.SDeclCG;
-import org.overture.codegen.cgast.SExpCG;
-import org.overture.codegen.cgast.declarations.AFormalParamLocalParamCG;
-import org.overture.codegen.cgast.declarations.AMethodDeclCG;
-import org.overture.codegen.cgast.declarations.SClassDeclCG;
-import org.overture.codegen.cgast.statements.ABlockStmCG;
+import org.overture.codegen.ir.SDeclIR;
+import org.overture.codegen.ir.SExpIR;
+import org.overture.codegen.ir.declarations.AFormalParamLocalParamIR;
+import org.overture.codegen.ir.declarations.AMethodDeclIR;
+import org.overture.codegen.ir.declarations.SClassDeclIR;
+import org.overture.codegen.ir.statements.ABlockStmIR;
 import org.overture.codegen.ir.IRStatus;
 import org.overture.codegen.vdm2c.ast.Vtables;
 import org.overture.codegen.vdm2c.ast.Vtables.VEntry;
 import org.overture.codegen.vdm2c.ast.Vtables.VEntryOverride;
-import org.overture.codegen.vdm2c.extast.declarations.AClassHeaderDeclCG;
+import org.overture.codegen.vdm2c.extast.declarations.AClassHeaderDeclIR;
 
 public class VTableGenerator
 {
 
-	public static void generate(List<IRStatus<AClassHeaderDeclCG>> headers)
+	public static void generate(List<IRStatus<AClassHeaderDeclIR>> headers)
 	{
 		generateLevel1(headers);
 		generateLevel2(headers);
@@ -34,13 +34,13 @@ public class VTableGenerator
 	}
 
 	private static void generateProxyOverrides(
-			List<IRStatus<AClassHeaderDeclCG>> headers)
+			List<IRStatus<AClassHeaderDeclIR>> headers)
 	{
-		for (IRStatus<AClassHeaderDeclCG> headerStatus : headers)
+		for (IRStatus<AClassHeaderDeclIR> headerStatus : headers)
 		{
-			AClassHeaderDeclCG header = headerStatus.getIrNode();
+			AClassHeaderDeclIR header = headerStatus.getIrNode();
 
-			SClassDeclCG cDef = header.getOriginalDef();
+			SClassDeclIR cDef = header.getOriginalDef();
 
 			Vtables currentTable = header.getVtable();
 
@@ -49,30 +49,30 @@ public class VTableGenerator
 				String superName = entry.getKey();
 				for (VEntryOverride ov : entry.getValue())
 				{
-					AMethodDeclCG overrideProxy = ov.method.clone();
+					AMethodDeclIR overrideProxy = ov.method.clone();
 					overrideProxy.setName(superName + "_"
 							+ overrideProxy.getName());
 
 					ov.overrideProxy = overrideProxy;
 
-					List<SExpCG> args = new Vector<SExpCG>();
-					for (AFormalParamLocalParamCG format : overrideProxy.getFormalParams())
+					List<SExpIR> args = new Vector<SExpIR>();
+					for (AFormalParamLocalParamIR format : overrideProxy.getFormalParams())
 					{
 						// TODO: not sure what to do if we have something thats not an identifier pattern
 						args.add(createIdentifier(format.getPattern().toString(), format.getSourceNode()));
 					}
 
-					AFormalParamLocalParamCG thisArg = overrideProxy.getFormalParams().get(0);
+					AFormalParamLocalParamIR thisArg = overrideProxy.getFormalParams().get(0);
 					thisArg.setPattern(newIdentifierPattern("base"));
 
-					ABlockStmCG body = new ABlockStmCG();
+					ABlockStmIR body = new ABlockStmIR();
 					body.setScoped(true);
 
-					SExpCG downcast = newApply("CLASS_DOWNCAST", createIdentifier(superName, null), createIdentifier(cDef.getName(), null), createIdentifier("base", null));
+					SExpIR downcast = newApply("CLASS_DOWNCAST", createIdentifier(superName, null), createIdentifier(cDef.getName(), null), createIdentifier("base", null));
 					body.getLocalDefs().add(newDeclarationAssignment("this", newExternalType(cDef.getName()
 							+ "CLASS"), downcast, null));
 
-					body.getStatements().add(newReturnStm(newApply(ov.override.getName(), args.toArray(new SExpCG[0]))));
+					body.getStatements().add(newReturnStm(newApply(ov.override.getName(), args.toArray(new SExpIR[0]))));
 					overrideProxy.setBody(body);
 					
 					cDef.getMethods().add(overrideProxy);
@@ -81,19 +81,19 @@ public class VTableGenerator
 		}
 	}
 
-	public static void generateLevel1(List<IRStatus<AClassHeaderDeclCG>> headers)
+	public static void generateLevel1(List<IRStatus<AClassHeaderDeclIR>> headers)
 	{
-		for (IRStatus<AClassHeaderDeclCG> headerStatus : headers)
+		for (IRStatus<AClassHeaderDeclIR> headerStatus : headers)
 		{
-			AClassHeaderDeclCG header = headerStatus.getIrNode();
+			AClassHeaderDeclIR header = headerStatus.getIrNode();
 
-			SClassDeclCG cDef = header.getOriginalDef();
+			SClassDeclIR cDef = header.getOriginalDef();
 
 			Vtables tables = new Vtables(header);
 
-			for (AMethodDeclCG m : cDef.getMethods())
+			for (AMethodDeclIR m : cDef.getMethods())
 			{
-				if (m.getIsConstructor())
+				if (excludeFromVtable(m))
 					continue;
 				tables.table.add(new VEntry(m.getName(), m));
 			}
@@ -103,15 +103,15 @@ public class VTableGenerator
 		}
 	}
 
-	public static void generateLevel2(List<IRStatus<AClassHeaderDeclCG>> headers)
+	public static void generateLevel2(List<IRStatus<AClassHeaderDeclIR>> headers)
 	{
-		for (IRStatus<AClassHeaderDeclCG> headerStatus : headers)
+		for (IRStatus<AClassHeaderDeclIR> headerStatus : headers)
 		{
-			AClassHeaderDeclCG header = headerStatus.getIrNode();
+			AClassHeaderDeclIR header = headerStatus.getIrNode();
 
-			for (SDeclCG sh : header.getFlattenedSupers())
+			for (SDeclIR sh : header.getFlattenedSupers())
 			{
-				AClassHeaderDeclCG superHeader = (AClassHeaderDeclCG) sh;
+				AClassHeaderDeclIR superHeader = (AClassHeaderDeclIR) sh;
 				Vtables superTable = superHeader.getVtable();
 				Vtables currentTable = header.getVtable();
 
@@ -126,6 +126,12 @@ public class VTableGenerator
 			}
 
 		}
+	}
+	
+	
+	static boolean excludeFromVtable(AMethodDeclIR m)
+	{
+		return m.getIsConstructor() || (m.getTag() instanceof Vdm2cTag && ((Vdm2cTag)m.getTag()).methodTags.contains(Vdm2cTag.MethodTag.Internal));
 	}
 
 }

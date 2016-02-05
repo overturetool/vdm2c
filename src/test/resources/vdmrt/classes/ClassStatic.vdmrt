@@ -1,0 +1,24 @@
+class ClassStatic
+
+instance variables
+	public static field1 : int := 1;
+	
+operations
+ public static staticOp1 : () ==> bool
+ staticOp1() == return true;
+ 
+end ClassStatic
+
+
+
+class ClassStaticUser
+
+operations
+ public getStaticField : () ==> bool
+ getStaticField()== return ClassStatic`field1 = 1;
+
+
+ public getStaticOperation : () ==> bool
+ getStaticOperation() == ClassStatic`staticOp1();
+ 
+end ClassStaticUser

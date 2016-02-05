@@ -2,15 +2,15 @@ package org.overture.codegen.vdm2c.transformations;
 
 import static org.overture.codegen.vdm2c.utils.CTransUtil.rewriteToApply;
 
-import org.overture.codegen.cgast.analysis.AnalysisException;
-import org.overture.codegen.cgast.analysis.DepthFirstAnalysisAdaptor;
-import org.overture.codegen.cgast.analysis.intf.IAnalysis;
-import org.overture.codegen.cgast.expressions.ABoolLiteralExpCG;
-import org.overture.codegen.cgast.expressions.ACharLiteralExpCG;
-import org.overture.codegen.cgast.expressions.AIntLiteralExpCG;
-import org.overture.codegen.cgast.expressions.AQuoteLiteralExpCG;
-import org.overture.codegen.cgast.expressions.AStringLiteralExpCG;
-import org.overture.codegen.trans.assistants.TransAssistantCG;
+import org.overture.codegen.ir.analysis.AnalysisException;
+import org.overture.codegen.ir.analysis.DepthFirstAnalysisAdaptor;
+import org.overture.codegen.ir.analysis.intf.IAnalysis;
+import org.overture.codegen.ir.expressions.ABoolLiteralExpIR;
+import org.overture.codegen.ir.expressions.ACharLiteralExpIR;
+import org.overture.codegen.ir.expressions.AIntLiteralExpIR;
+import org.overture.codegen.ir.expressions.AQuoteLiteralExpIR;
+import org.overture.codegen.ir.expressions.AStringLiteralExpIR;
+import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.utils.IApplyAssistant;
 
 /**
@@ -21,15 +21,15 @@ import org.overture.codegen.vdm2c.utils.IApplyAssistant;
 public class LiteralInstantiationRewriteTrans extends DepthFirstAnalysisAdaptor
 		implements IApplyAssistant
 {
-	public TransAssistantCG assist;
+	public TransAssistantIR assist;
 
-	public LiteralInstantiationRewriteTrans(TransAssistantCG assist)
+	public LiteralInstantiationRewriteTrans(TransAssistantIR assist)
 	{
 		this.assist = assist;
 	}
 
 	@Override
-	public TransAssistantCG getAssist()
+	public TransAssistantIR getAssist()
 	{
 		return assist;
 	}
@@ -41,42 +41,42 @@ public class LiteralInstantiationRewriteTrans extends DepthFirstAnalysisAdaptor
 	}
 
 	@Override
-	public void caseABoolLiteralExpCG(ABoolLiteralExpCG node)
+	public void caseABoolLiteralExpIR(ABoolLiteralExpIR node)
 			throws AnalysisException
 	{
 		rewriteToApply(this, node, "newBool", node);
 	}
 
 	@Override
-	public void caseACharLiteralExpCG(ACharLiteralExpCG node)
+	public void caseACharLiteralExpIR(ACharLiteralExpIR node)
 			throws AnalysisException
 	{
 		rewriteToApply(this, node, "newChar", node);
 	}
 
 	@Override
-	public void caseAIntLiteralExpCG(AIntLiteralExpCG node)
+	public void caseAIntLiteralExpIR(AIntLiteralExpIR node)
 			throws AnalysisException
 	{
 		rewriteToApply(this, node, "newInt", node);
 	}
 
 	@Override
-	public void caseAQuoteLiteralExpCG(AQuoteLiteralExpCG node)
+	public void caseAQuoteLiteralExpIR(AQuoteLiteralExpIR node)
 			throws AnalysisException
 	{
 		rewriteToApply(this, node, "newQuote", node);
 	}
 
-	public void caseARealLiteralExpCG(
-			org.overture.codegen.cgast.expressions.ARealLiteralExpCG node)
+	public void caseARealLiteralExpIR(
+			org.overture.codegen.ir.expressions.ARealLiteralExpIR node)
 					throws AnalysisException
 	{
 		rewriteToApply(this, node, "newReal", node);
 	};
 
 	@Override
-	public void caseAStringLiteralExpCG(AStringLiteralExpCG node)
+	public void caseAStringLiteralExpIR(AStringLiteralExpIR node)
 			throws AnalysisException
 	{
 		// TODO this may need additional rewrites actually this must be a seq comprehension

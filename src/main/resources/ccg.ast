@@ -10,26 +10,26 @@ Tokens
 eVtables ='java:org.overture.codegen.vdm2c.ast.Vtables';
 Abstract Syntax Tree
 
-CG = #decl
+IR = #decl
    | #stm
    | #exp
     ;
     
     
 #exp {-> package='org.overture.codegen.vdm2c.extast.expressions'}
-    =	{macroApply} [root]:CG.#exp [args]:CG.#exp*
-    |	{ptrDeref} [root]:CG.#exp [target]:CG.#exp
-    |	{c} [exp]:CG.#exp
-    |	{arrayIndex} [root]:CG.#exp [index]:CG.#exp
-    |	{stm} [stm]:CG.#stm
-    |	{paren} [exp]:CG.#exp
-    |	{plusplus} [exp]:CG.#exp
+    =	{macroApply} [root]:IR.#exp [args]:IR.#exp*
+    |	{ptrDeref} [root]:IR.#exp [target]:IR.#exp
+    |	{c} [exp]:IR.#exp
+    |	{arrayIndex} [root]:IR.#exp [index]:IR.#exp
+    |	{stm} [stm]:IR.#stm
+    |	{paren} [exp]:IR.#exp
+    |	{plusplus} [exp]:IR.#exp
 	;
 
 
 
 #stm {-> package='org.overture.codegen.vdm2c.extast.statements'}
-	= {localVariableDeclaration} [decleration]:CG.#decl.var;
+	= {localVariableDeclaration} [decleration]:IR.#decl.var;
 	
 	
 
@@ -38,18 +38,19 @@ CG = #decl
 	= 
        {classHeader}
     	[name]:java_String
-    	(originalDef):CG.#decl.#Class
-		(flattenedSupers):CG.#decl.classHeader*
-		[state]:CG.#decl.classState
-    	[methods]:CG.#decl.method*
+    	(originalDef):IR.#decl.#Class
+		(flattenedSupers):IR.#decl.classHeader*
+		[state]:IR.#decl.classState
+    	[methods]:IR.#decl.method*
     	[includes]:eString*
     	[vtable]:eVtables
-    | {classState} (fields):CG.#decl.field* //not sure why it cannot compile as a graph field
-    | {array} [static]:java_Boolean [type]:CG.#type [name]:java_String [size]:java_Integer [initial]:struct*
+    	(values):IR.#decl.field*
+    | {classState} (fields):IR.#decl.field*
+    | {array} [static]:java_Boolean [type]:IR.#type [name]:java_String [size]:java_Integer [initial]:struct*
        ;
        
 
 struct  {-> package='org.overture.codegen.vdm2c.extast.declarations'}
-	= {anonymous} [exp]:CG.#exp*	
+	= {anonymous} [exp]:IR.#exp*	
 	;
        

@@ -14,32 +14,32 @@ import static org.overture.codegen.vdm2c.utils.CTransUtil.newTvpType;
 import java.util.Collections;
 import java.util.LinkedList;
 
-import org.overture.codegen.cgast.analysis.AnalysisException;
-import org.overture.codegen.cgast.analysis.DepthFirstAnalysisAdaptor;
-import org.overture.codegen.cgast.declarations.AMethodDeclCG;
-import org.overture.codegen.cgast.declarations.SClassDeclCG;
-import org.overture.codegen.cgast.expressions.AAddrEqualsBinaryExpCG;
-import org.overture.codegen.cgast.expressions.ANullExpCG;
-import org.overture.codegen.cgast.name.ATokenNameCG;
-import org.overture.codegen.cgast.statements.ABlockStmCG;
-import org.overture.codegen.cgast.statements.AIfStmCG;
-import org.overture.codegen.trans.assistants.TransAssistantCG;
+import org.overture.codegen.ir.analysis.AnalysisException;
+import org.overture.codegen.ir.analysis.DepthFirstAnalysisAdaptor;
+import org.overture.codegen.ir.declarations.AMethodDeclIR;
+import org.overture.codegen.ir.declarations.SClassDeclIR;
+import org.overture.codegen.ir.expressions.AAddrEqualsBinaryExpIR;
+import org.overture.codegen.ir.expressions.ANullExpIR;
+import org.overture.codegen.ir.name.ATokenNameIR;
+import org.overture.codegen.ir.statements.ABlockStmIR;
+import org.overture.codegen.ir.statements.AIfStmIR;
+import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.utils.NameMangler;
 
 public class CtorTrans extends DepthFirstAnalysisAdaptor
 {
 	// private static final String _CTOR = "_ctor";
 
-	public TransAssistantCG assist;
+	public TransAssistantIR assist;
 
 	final static String retPrefix = "ctor_";
 
-	public CtorTrans(TransAssistantCG assist)
+	public CtorTrans(TransAssistantIR assist)
 	{
 		this.assist = assist;
 	}
 
-	public void caseAMethodDeclCG(AMethodDeclCG node) throws AnalysisException
+	public void caseAMethodDeclIR(AMethodDeclIR node) throws AnalysisException
 	{
 		if (node.getIsConstructor())
 		{
@@ -50,30 +50,30 @@ public class CtorTrans extends DepthFirstAnalysisAdaptor
 
 			// correct types and args
 			node.getMethodType().setResult(newTvpType());
-			SClassDeclCG cDef = node.getAncestor(SClassDeclCG.class);
+			SClassDeclIR cDef = node.getAncestor(SClassDeclIR.class);
 			addArgument("this", newExternalType(cDef.getName() + "CLASS"), 0, node.getFormalParams());
 
 			// modify body to include memory allocation
 			String bufName = "__buf";
 
-			AIfStmCG ifStm = new AIfStmCG();
+			AIfStmIR ifStm = new AIfStmIR();
 			
-			AAddrEqualsBinaryExpCG addrEquals = new AAddrEqualsBinaryExpCG();
+			AAddrEqualsBinaryExpIR addrEquals = new AAddrEqualsBinaryExpIR();
 			addrEquals.setLeft(createIdentifier("this", null));
-			addrEquals.setRight(new ANullExpCG());
+			addrEquals.setRight(new ANullExpIR());
 			
 			ifStm.setIfExp(addrEquals);
 
-			ABlockStmCG initClassBlock = new ABlockStmCG();
+			ABlockStmIR initClassBlock = new ABlockStmIR();
 			initClassBlock.setScoped(true);
 
 			initClassBlock.getStatements().add(newAssignment(createIdentifier(bufName, null), newApply("new")));
 			initClassBlock.getStatements().add(newAssignment(createIdentifier("this", null), newApply("TO_CLASS_PTR", createIdentifier(bufName, null), createIdentifier(cDef.getName(), null))));
 			ifStm.setThenStm(initClassBlock);
 
-			ABlockStmCG replBlock = new ABlockStmCG();
+			ABlockStmIR replBlock = new ABlockStmIR();
 			replBlock.setScoped(true);
-			replBlock.getLocalDefs().add(newDeclarationAssignment(bufName, newTvpType(), new ANullExpCG(), null));
+			replBlock.getLocalDefs().add(newDeclarationAssignment(bufName, newTvpType(), new ANullExpIR(), null));
 			replBlock.getStatements().add(ifStm);
 
 			// add constructor body
@@ -87,19 +87,19 @@ public class CtorTrans extends DepthFirstAnalysisAdaptor
 			if (cDef != null && !cDef.getSuperNames().isEmpty())
 			{
 				@SuppressWarnings("unchecked")
-				LinkedList<ATokenNameCG> supers = (LinkedList<ATokenNameCG>) cDef.getSuperNames().clone();
+				LinkedList<ATokenNameIR> supers = (LinkedList<ATokenNameIR>) cDef.getSuperNames().clone();
 
 				// invert order first super overrides last super
 				Collections.reverse(supers);
 
-				for (ATokenNameCG superName : supers)
+				for (ATokenNameIR superName : supers)
 				{
 
-					for (SClassDeclCG def : assist.getInfo().getClasses())
+					for (SClassDeclIR def : assist.getInfo().getClasses())
 					{
 						if (def.getName().equals(superName.getName()))
 						{
-							for (AMethodDeclCG m : def.getMethods())
+							for (AMethodDeclIR m : def.getMethods())
 							{
 								if (m.getIsConstructor()
 										&& m.getFormalParams().size() == 1)
@@ -119,7 +119,7 @@ public class CtorTrans extends DepthFirstAnalysisAdaptor
 			node.setBody(replBlock);
 
 		}
-		super.caseAMethodDeclCG(node);
+		super.caseAMethodDeclIR(node);
 	}
 
 }

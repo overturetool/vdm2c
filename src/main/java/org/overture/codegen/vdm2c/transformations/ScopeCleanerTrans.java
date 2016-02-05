@@ -2,29 +2,29 @@ package org.overture.codegen.vdm2c.transformations;
 
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newLocalDefinition;
 
-import org.overture.codegen.cgast.analysis.AnalysisException;
-import org.overture.codegen.cgast.analysis.DepthFirstAnalysisAdaptor;
-import org.overture.codegen.cgast.statements.ABlockStmCG;
-import org.overture.codegen.trans.assistants.TransAssistantCG;
+import org.overture.codegen.ir.analysis.AnalysisException;
+import org.overture.codegen.ir.analysis.DepthFirstAnalysisAdaptor;
+import org.overture.codegen.ir.statements.ABlockStmIR;
+import org.overture.codegen.trans.assistants.TransAssistantIR;
 
 public class ScopeCleanerTrans extends DepthFirstAnalysisAdaptor
 {
-	public TransAssistantCG assist;
+	public TransAssistantIR assist;
 
-	public ScopeCleanerTrans(TransAssistantCG assist)
+	public ScopeCleanerTrans(TransAssistantIR assist)
 	{
 		this.assist = assist;
 	}
 
 	@Override
-	public void caseABlockStmCG(ABlockStmCG node) throws AnalysisException
+	public void caseABlockStmIR(ABlockStmIR node) throws AnalysisException
 	{
 		if (node.getScoped() == null)
 		{
 			node.setScoped(false);
 		}
 
-		super.caseABlockStmCG(node);
+		super.caseABlockStmIR(node);
 
 		if (node.getLocalDefs().isEmpty() && node.getStatements().isEmpty())
 		{
@@ -33,10 +33,10 @@ public class ScopeCleanerTrans extends DepthFirstAnalysisAdaptor
 
 		// remove unnecessary scopes
 		if (node.getLocalDefs().isEmpty()
-				&& node.parent() instanceof ABlockStmCG)
+				&& node.parent() instanceof ABlockStmIR)
 		{
 			// merge
-			ABlockStmCG block = (ABlockStmCG) node.parent();
+			ABlockStmIR block = (ABlockStmIR) node.parent();
 			for (int i = 0; i < block.getStatements().size(); i++)
 			{
 				if (block.getStatements().get(i) == node)
@@ -54,9 +54,9 @@ public class ScopeCleanerTrans extends DepthFirstAnalysisAdaptor
 
 		if (!node.getScoped())
 		{
-			if (node.parent() instanceof ABlockStmCG)
+			if (node.parent() instanceof ABlockStmIR)
 			{
-				ABlockStmCG block = (ABlockStmCG) node.parent();
+				ABlockStmIR block = (ABlockStmIR) node.parent();
 				for (int i = 0; i < block.getStatements().size(); i++)
 				{
 					if (block.getStatements().get(i) == node)

@@ -36,10 +36,12 @@ public class CGenMain
 		Option verboseOpt = Option.builder("v").longOpt("verbose").desc("Print processing information").build();
 		Option sourceOpt = Option.builder("sf").longOpt("folder").desc("Path to a source folder containing VDM files").hasArg().build();
 		Option destOpt = Option.builder("dest").longOpt("destination").desc("Output directory").hasArg().required().build();
+		Option helpOpt = Option.builder("h").longOpt("help").desc("Show this description").build();
 
 		options.addOption(verboseOpt);
 		options.addOption(sourceOpt);
 		options.addOption(destOpt);
+		options.addOption(helpOpt);
 
 		CommandLineParser parser = new DefaultParser();
 		CommandLine cmd = null;
@@ -49,6 +51,7 @@ public class CGenMain
 		} catch (ParseException e1)
 		{
 			System.err.println("Parsing failed.  Reason: " + e1.getMessage());
+			showHelp(options);
 			return;
 		}
 
@@ -57,6 +60,12 @@ public class CGenMain
 		boolean print = false;
 
 		print = cmd.hasOption(verboseOpt.getOpt());
+		
+		if (cmd.hasOption(helpOpt.getOpt()))
+		{
+			showHelp(options);
+			return;
+		}
 
 		if (cmd.hasOption(sourceOpt.getOpt()))
 		{
@@ -114,6 +123,11 @@ public class CGenMain
 			// List<SClassDefinition> res = vdm_ast.result;
 
 			TypeCheckResult<List<SClassDefinition>> res = TypeCheckerUtil.typeCheckRt(files);
+			
+			if(!res.parserResult.errors.isEmpty())
+			{
+				System.err.println(res.parserResult.getErrorString());
+			}
 
 			if (!res.errors.isEmpty())
 			{
@@ -153,6 +167,12 @@ public class CGenMain
 
 	}
 
+	public static void showHelp(Options options)
+	{
+		HelpFormatter formatter = new HelpFormatter();
+		formatter.printHelp("cgen", options);
+	}
+
 	public static List<File> filterFiles(List<File> files)
 	{
 		List<File> filtered = new LinkedList<File>();
@@ -177,9 +197,7 @@ public class CGenMain
 	{
 		System.err.println("Error in argument: " + opt.getOpt() + " - "
 				+ string);
-		// automatically generate the help statement
-		HelpFormatter formatter = new HelpFormatter();
-		formatter.printHelp("cgen", options);
+		showHelp(options);
 
 	}
 }
