@@ -1,9 +1,9 @@
 package org.overture.codegen.vdm2c.transformations;
 
 import org.overture.cgc.extast.analysis.DepthFirstAnalysisCAdaptor;
-import org.overture.codegen.cgast.analysis.AnalysisException;
-import org.overture.codegen.cgast.patterns.AIdentifierPatternCG;
-import org.overture.codegen.cgast.patterns.AIgnorePatternCG;
+import org.overture.codegen.ir.analysis.AnalysisException;
+import org.overture.codegen.ir.patterns.AIdentifierPatternCG;
+import org.overture.codegen.ir.patterns.AIgnorePatternCG;
 import org.overture.codegen.trans.assistants.TransAssistantCG;
 
 public class IgnoreRenamingTrans extends DepthFirstAnalysisCAdaptor

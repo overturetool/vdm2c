@@ -3,8 +3,8 @@ package org.overture.codegen.vdm2c.utils;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.overture.codegen.cgast.declarations.AFieldDeclCG;
-import org.overture.codegen.cgast.declarations.SClassDeclCG;
+import org.overture.codegen.ir.declarations.AFieldDeclCG;
+import org.overture.codegen.ir.declarations.SClassDeclCG;
 
 public class NameConverter
 {

@@ -3,13 +3,13 @@ package org.overture.codegen.vdm2c.transformations;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.createIdentifier;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newApply;
 
-import org.overture.codegen.cgast.SExpCG;
-import org.overture.codegen.cgast.analysis.AnalysisException;
-import org.overture.codegen.cgast.analysis.DepthFirstAnalysisAdaptor;
-import org.overture.codegen.cgast.declarations.AMethodDeclCG;
-import org.overture.codegen.cgast.declarations.SClassDeclCG;
-import org.overture.codegen.cgast.expressions.ANewExpCG;
-import org.overture.codegen.cgast.statements.ANewObjectDesignatorCG;
+import org.overture.codegen.ir.SExpCG;
+import org.overture.codegen.ir.analysis.AnalysisException;
+import org.overture.codegen.ir.analysis.DepthFirstAnalysisAdaptor;
+import org.overture.codegen.ir.declarations.AMethodDeclCG;
+import org.overture.codegen.ir.declarations.SClassDeclCG;
+import org.overture.codegen.ir.expressions.ANewExpCG;
+import org.overture.codegen.ir.statements.ANewObjectDesignatorCG;
 import org.overture.codegen.trans.assistants.TransAssistantCG;
 import org.overture.codegen.vdm2c.utils.NameMangler;
 

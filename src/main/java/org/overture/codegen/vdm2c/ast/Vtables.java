@@ -10,8 +10,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Vector;
 
-import org.overture.codegen.cgast.declarations.ADefaultClassDeclCG;
-import org.overture.codegen.cgast.declarations.AMethodDeclCG;
+import org.overture.codegen.ir.declarations.ADefaultClassDeclCG;
+import org.overture.codegen.ir.declarations.AMethodDeclCG;
 import org.overture.codegen.vdm2c.extast.declarations.AAnonymousStruct;
 import org.overture.codegen.vdm2c.extast.declarations.AArrayDeclCG;
 import org.overture.codegen.vdm2c.extast.declarations.AClassHeaderDeclCG;

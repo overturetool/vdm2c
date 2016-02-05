@@ -7,11 +7,11 @@ import static org.overture.codegen.vdm2c.utils.CTransUtil.toStm;
 import java.util.Collections;
 import java.util.List;
 
-import org.overture.codegen.cgast.SExpCG;
-import org.overture.codegen.cgast.SPatternCG;
-import org.overture.codegen.cgast.SStmCG;
-import org.overture.codegen.cgast.STypeCG;
-import org.overture.codegen.cgast.expressions.AIdentifierVarExpCG;
+import org.overture.codegen.ir.SExpCG;
+import org.overture.codegen.ir.SPatternCG;
+import org.overture.codegen.ir.SStmCG;
+import org.overture.codegen.ir.STypeCG;
+import org.overture.codegen.ir.expressions.AIdentifierVarExpCG;
 import org.overture.codegen.ir.ITempVarGen;
 import org.overture.codegen.trans.IterationVarPrefixes;
 import org.overture.codegen.trans.assistants.TransAssistantCG;

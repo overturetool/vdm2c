@@ -2,14 +2,14 @@ package org.overture.codegen.vdm2c.transformations;
 
 import java.util.List;
 
-import org.overture.codegen.cgast.SExpCG;
-import org.overture.codegen.cgast.SStmCG;
-import org.overture.codegen.cgast.STypeCG;
-import org.overture.codegen.cgast.analysis.AnalysisException;
-import org.overture.codegen.cgast.expressions.ACompSetExpCG;
-import org.overture.codegen.cgast.expressions.AEnumSetExpCG;
-import org.overture.codegen.cgast.patterns.ASetMultipleBindCG;
-import org.overture.codegen.cgast.statements.ABlockStmCG;
+import org.overture.codegen.ir.SExpCG;
+import org.overture.codegen.ir.SStmCG;
+import org.overture.codegen.ir.STypeCG;
+import org.overture.codegen.ir.analysis.AnalysisException;
+import org.overture.codegen.ir.expressions.ACompSetExpCG;
+import org.overture.codegen.ir.expressions.AEnumSetExpCG;
+import org.overture.codegen.ir.patterns.ASetMultipleBindCG;
+import org.overture.codegen.ir.statements.ABlockStmCG;
 import org.overture.codegen.ir.ITempVarGen;
 import org.overture.codegen.trans.Exp2StmTrans;
 import org.overture.codegen.trans.Exp2StmVarPrefixes;

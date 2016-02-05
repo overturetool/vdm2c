@@ -4,11 +4,11 @@ import static org.overture.codegen.vdm2c.utils.CTransUtil.addArgument;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newExternalType;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newTvpType;
 
-import org.overture.codegen.cgast.analysis.AnalysisException;
-import org.overture.codegen.cgast.analysis.DepthFirstAnalysisAdaptor;
-import org.overture.codegen.cgast.declarations.AMethodDeclCG;
-import org.overture.codegen.cgast.declarations.SClassDeclCG;
-import org.overture.codegen.cgast.types.AVoidTypeCG;
+import org.overture.codegen.ir.analysis.AnalysisException;
+import org.overture.codegen.ir.analysis.DepthFirstAnalysisAdaptor;
+import org.overture.codegen.ir.declarations.AMethodDeclCG;
+import org.overture.codegen.ir.declarations.SClassDeclCG;
+import org.overture.codegen.ir.types.AVoidTypeCG;
 import org.overture.codegen.trans.assistants.TransAssistantCG;
 import org.overture.codegen.vdm2c.Vdm2cTag;
 

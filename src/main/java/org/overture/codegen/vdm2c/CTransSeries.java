@@ -11,9 +11,9 @@ package org.overture.codegen.vdm2c;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.overture.codegen.cgast.analysis.DepthFirstAnalysisAdaptor;
-import org.overture.codegen.cgast.expressions.AIntLiteralExpCG;
-import org.overture.codegen.cgast.types.AExternalTypeCG;
+import org.overture.codegen.ir.analysis.DepthFirstAnalysisAdaptor;
+import org.overture.codegen.ir.expressions.AIntLiteralExpCG;
+import org.overture.codegen.ir.types.AExternalTypeCG;
 import org.overture.codegen.ir.IRInfo;
 import org.overture.codegen.trans.AssignStmTrans;
 import org.overture.codegen.trans.AtomicStmTrans;

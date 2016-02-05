@@ -3,12 +3,12 @@ package org.overture.codegen.vdm2c.transformations;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.toExp;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.*;
 
-import org.overture.codegen.cgast.SExpCG;
-import org.overture.codegen.cgast.analysis.AnalysisException;
-import org.overture.codegen.cgast.analysis.DepthFirstAnalysisAdaptor;
-import org.overture.codegen.cgast.declarations.AVarDeclCG;
-import org.overture.codegen.cgast.expressions.ALetDefExpCG;
-import org.overture.codegen.cgast.statements.ABlockStmCG;
+import org.overture.codegen.ir.SExpCG;
+import org.overture.codegen.ir.analysis.AnalysisException;
+import org.overture.codegen.ir.analysis.DepthFirstAnalysisAdaptor;
+import org.overture.codegen.ir.declarations.AVarDeclCG;
+import org.overture.codegen.ir.expressions.ALetDefExpCG;
+import org.overture.codegen.ir.statements.ABlockStmCG;
 import org.overture.codegen.trans.assistants.TransAssistantCG;
 
 public class LetTrans extends DepthFirstAnalysisAdaptor

@@ -1,10 +1,10 @@
 package org.overture.codegen.vdm2c;
 
-import org.overture.codegen.cgast.STypeCG;
-import org.overture.codegen.cgast.expressions.AApplyExpCG;
-import org.overture.codegen.cgast.expressions.AExplicitVarExpCG;
-import org.overture.codegen.cgast.types.AExternalTypeCG;
-import org.overture.codegen.cgast.types.AMethodTypeCG;
+import org.overture.codegen.ir.STypeCG;
+import org.overture.codegen.ir.expressions.AApplyExpCG;
+import org.overture.codegen.ir.expressions.AExplicitVarExpCG;
+import org.overture.codegen.ir.types.AExternalTypeCG;
+import org.overture.codegen.ir.types.AMethodTypeCG;
 
 public class ConstructionUtils
 {

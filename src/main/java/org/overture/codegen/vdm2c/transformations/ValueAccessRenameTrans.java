@@ -5,10 +5,10 @@ import static org.overture.codegen.vdm2c.utils.CTransUtil.newIdentifier;
 import org.overture.ast.definitions.ALocalDefinition;
 import org.overture.ast.expressions.AVariableExp;
 import org.overture.ast.node.INode;
-import org.overture.codegen.cgast.analysis.AnalysisException;
-import org.overture.codegen.cgast.analysis.DepthFirstAnalysisAdaptor;
-import org.overture.codegen.cgast.expressions.AExplicitVarExpCG;
-import org.overture.codegen.cgast.expressions.AIdentifierVarExpCG;
+import org.overture.codegen.ir.analysis.AnalysisException;
+import org.overture.codegen.ir.analysis.DepthFirstAnalysisAdaptor;
+import org.overture.codegen.ir.expressions.AExplicitVarExpCG;
+import org.overture.codegen.ir.expressions.AIdentifierVarExpCG;
 import org.overture.codegen.trans.assistants.TransAssistantCG;
 import org.overture.codegen.vdm2c.utils.NameConverter;
 

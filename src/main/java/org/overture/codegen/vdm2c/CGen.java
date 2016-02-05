@@ -10,14 +10,14 @@ import java.util.List;
 import java.util.Vector;
 
 import org.overture.ast.analysis.AnalysisException;
-import org.overture.codegen.cgast.INode;
-import org.overture.codegen.cgast.PCG;
-import org.overture.codegen.cgast.analysis.DepthFirstAnalysisAdaptor;
-import org.overture.codegen.cgast.declarations.ADefaultClassDeclCG;
-import org.overture.codegen.cgast.declarations.AFieldDeclCG;
-import org.overture.codegen.cgast.declarations.ASystemClassDeclCG;
-import org.overture.codegen.cgast.declarations.SClassDeclCG;
-import org.overture.codegen.cgast.types.AClassTypeCG;
+import org.overture.codegen.ir.INode;
+import org.overture.codegen.ir.PCG;
+import org.overture.codegen.ir.analysis.DepthFirstAnalysisAdaptor;
+import org.overture.codegen.ir.declarations.ADefaultClassDeclCG;
+import org.overture.codegen.ir.declarations.AFieldDeclCG;
+import org.overture.codegen.ir.declarations.ASystemClassDeclCG;
+import org.overture.codegen.ir.declarations.SClassDeclCG;
+import org.overture.codegen.ir.types.AClassTypeCG;
 import org.overture.codegen.ir.CodeGenBase;
 import org.overture.codegen.ir.IRStatus;
 import org.overture.codegen.logging.Logger;
@@ -114,7 +114,7 @@ public class CGen extends CodeGenBase
 						
 					}
 
-				} catch (org.overture.codegen.cgast.analysis.AnalysisException e)
+				} catch (org.overture.codegen.ir.analysis.AnalysisException e)
 				{
 					Logger.getLog().printErrorln("Error when generating code for class "
 							+ status.getIrNodeName() + ": " + e.getMessage());
@@ -163,7 +163,7 @@ public class CGen extends CodeGenBase
 				writeFile(classCg, classCg.getName(), "c", my_formatter, outputFolder);
 				// printClass(classCg, my_formatter, outputFolder);
 				// generateClassHeader(classCg, my_formatter, outputFolder);
-			} catch (org.overture.codegen.cgast.analysis.AnalysisException e1)
+			} catch (org.overture.codegen.ir.analysis.AnalysisException e1)
 			{
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -187,7 +187,7 @@ public class CGen extends CodeGenBase
 			try
 			{
 				writeFile(header, header.getName(), "h", my_formatter, outputFolder);
-			} catch (org.overture.codegen.cgast.analysis.AnalysisException e)
+			} catch (org.overture.codegen.ir.analysis.AnalysisException e)
 			{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -205,7 +205,7 @@ public class CGen extends CodeGenBase
 		try
 		{
 			statuses.addAll(new ClassHeaderGenerator().generateClassHeaders(IRStatus.extract(statuses, ADefaultClassDeclCG.class)));
-		} catch (org.overture.codegen.cgast.analysis.AnalysisException e2)
+		} catch (org.overture.codegen.ir.analysis.AnalysisException e2)
 		{
 			// TODO Auto-generated catch block
 			e2.printStackTrace();
@@ -214,7 +214,7 @@ public class CGen extends CodeGenBase
 
 	private void writeFile(INode node, String name, String extension,
 			CFormat my_formatter, File output_dir)
-			throws org.overture.codegen.cgast.analysis.AnalysisException,
+			throws org.overture.codegen.ir.analysis.AnalysisException,
 			IOException
 	{
 		StringWriter writer = emitCode(node, my_formatter);
@@ -242,7 +242,7 @@ public class CGen extends CodeGenBase
 	}
 
 	private StringWriter emitCode(INode node, CFormat my_formatter)
-			throws org.overture.codegen.cgast.analysis.AnalysisException
+			throws org.overture.codegen.ir.analysis.AnalysisException
 	{
 		StringWriter writer = new StringWriter();
 		node.apply(my_formatter.GetMergeVisitor(), writer);// Why StringWriter?

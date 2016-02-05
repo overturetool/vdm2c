@@ -14,15 +14,15 @@ import static org.overture.codegen.vdm2c.utils.CTransUtil.newTvpType;
 import java.util.Collections;
 import java.util.LinkedList;
 
-import org.overture.codegen.cgast.analysis.AnalysisException;
-import org.overture.codegen.cgast.analysis.DepthFirstAnalysisAdaptor;
-import org.overture.codegen.cgast.declarations.AMethodDeclCG;
-import org.overture.codegen.cgast.declarations.SClassDeclCG;
-import org.overture.codegen.cgast.expressions.AAddrEqualsBinaryExpCG;
-import org.overture.codegen.cgast.expressions.ANullExpCG;
-import org.overture.codegen.cgast.name.ATokenNameCG;
-import org.overture.codegen.cgast.statements.ABlockStmCG;
-import org.overture.codegen.cgast.statements.AIfStmCG;
+import org.overture.codegen.ir.analysis.AnalysisException;
+import org.overture.codegen.ir.analysis.DepthFirstAnalysisAdaptor;
+import org.overture.codegen.ir.declarations.AMethodDeclCG;
+import org.overture.codegen.ir.declarations.SClassDeclCG;
+import org.overture.codegen.ir.expressions.AAddrEqualsBinaryExpCG;
+import org.overture.codegen.ir.expressions.ANullExpCG;
+import org.overture.codegen.ir.name.ATokenNameCG;
+import org.overture.codegen.ir.statements.ABlockStmCG;
+import org.overture.codegen.ir.statements.AIfStmCG;
 import org.overture.codegen.trans.assistants.TransAssistantCG;
 import org.overture.codegen.vdm2c.utils.NameMangler;
 

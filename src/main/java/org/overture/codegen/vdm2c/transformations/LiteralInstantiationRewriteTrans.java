@@ -2,14 +2,14 @@ package org.overture.codegen.vdm2c.transformations;
 
 import static org.overture.codegen.vdm2c.utils.CTransUtil.rewriteToApply;
 
-import org.overture.codegen.cgast.analysis.AnalysisException;
-import org.overture.codegen.cgast.analysis.DepthFirstAnalysisAdaptor;
-import org.overture.codegen.cgast.analysis.intf.IAnalysis;
-import org.overture.codegen.cgast.expressions.ABoolLiteralExpCG;
-import org.overture.codegen.cgast.expressions.ACharLiteralExpCG;
-import org.overture.codegen.cgast.expressions.AIntLiteralExpCG;
-import org.overture.codegen.cgast.expressions.AQuoteLiteralExpCG;
-import org.overture.codegen.cgast.expressions.AStringLiteralExpCG;
+import org.overture.codegen.ir.analysis.AnalysisException;
+import org.overture.codegen.ir.analysis.DepthFirstAnalysisAdaptor;
+import org.overture.codegen.ir.analysis.intf.IAnalysis;
+import org.overture.codegen.ir.expressions.ABoolLiteralExpCG;
+import org.overture.codegen.ir.expressions.ACharLiteralExpCG;
+import org.overture.codegen.ir.expressions.AIntLiteralExpCG;
+import org.overture.codegen.ir.expressions.AQuoteLiteralExpCG;
+import org.overture.codegen.ir.expressions.AStringLiteralExpCG;
 import org.overture.codegen.trans.assistants.TransAssistantCG;
 import org.overture.codegen.vdm2c.utils.IApplyAssistant;
 
@@ -69,7 +69,7 @@ public class LiteralInstantiationRewriteTrans extends DepthFirstAnalysisAdaptor
 	}
 
 	public void caseARealLiteralExpCG(
-			org.overture.codegen.cgast.expressions.ARealLiteralExpCG node)
+			org.overture.codegen.ir.expressions.ARealLiteralExpCG node)
 					throws AnalysisException
 	{
 		rewriteToApply(this, node, "newReal", node);

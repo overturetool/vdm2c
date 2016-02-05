@@ -2,13 +2,13 @@ package org.overture.codegen.vdm2c.transformations;
 
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newApply;
 
-import org.overture.codegen.cgast.SExpCG;
-import org.overture.codegen.cgast.STypeCG;
-import org.overture.codegen.cgast.analysis.AnalysisException;
-import org.overture.codegen.cgast.analysis.DepthFirstAnalysisAdaptor;
-import org.overture.codegen.cgast.statements.AElseIfStmCG;
-import org.overture.codegen.cgast.statements.AIfStmCG;
-import org.overture.codegen.cgast.types.AExternalTypeCG;
+import org.overture.codegen.ir.SExpCG;
+import org.overture.codegen.ir.STypeCG;
+import org.overture.codegen.ir.analysis.AnalysisException;
+import org.overture.codegen.ir.analysis.DepthFirstAnalysisAdaptor;
+import org.overture.codegen.ir.statements.AElseIfStmCG;
+import org.overture.codegen.ir.statements.AIfStmCG;
+import org.overture.codegen.ir.types.AExternalTypeCG;
 import org.overture.codegen.trans.assistants.TransAssistantCG;
 
 public class IfTrans extends DepthFirstAnalysisAdaptor

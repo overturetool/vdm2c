@@ -5,10 +5,10 @@ import org.overture.ast.definitions.SOperationDefinition;
 import org.overture.ast.expressions.ASubclassResponsibilityExp;
 import org.overture.ast.node.INode;
 import org.overture.ast.statements.ASubclassResponsibilityStm;
-import org.overture.codegen.cgast.analysis.AnalysisException;
-import org.overture.codegen.cgast.analysis.DepthFirstAnalysisAdaptor;
-import org.overture.codegen.cgast.declarations.AMethodDeclCG;
-import org.overture.codegen.cgast.statements.ABlockStmCG;
+import org.overture.codegen.ir.analysis.AnalysisException;
+import org.overture.codegen.ir.analysis.DepthFirstAnalysisAdaptor;
+import org.overture.codegen.ir.declarations.AMethodDeclCG;
+import org.overture.codegen.ir.statements.ABlockStmCG;
 import org.overture.codegen.trans.assistants.TransAssistantCG;
 
 public class SubClassResponsibilityMethodsTrans extends

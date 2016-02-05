@@ -11,12 +11,12 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Vector;
 
-import org.overture.codegen.cgast.SDeclCG;
-import org.overture.codegen.cgast.SExpCG;
-import org.overture.codegen.cgast.declarations.AFormalParamLocalParamCG;
-import org.overture.codegen.cgast.declarations.AMethodDeclCG;
-import org.overture.codegen.cgast.declarations.SClassDeclCG;
-import org.overture.codegen.cgast.statements.ABlockStmCG;
+import org.overture.codegen.ir.SDeclCG;
+import org.overture.codegen.ir.SExpCG;
+import org.overture.codegen.ir.declarations.AFormalParamLocalParamCG;
+import org.overture.codegen.ir.declarations.AMethodDeclCG;
+import org.overture.codegen.ir.declarations.SClassDeclCG;
+import org.overture.codegen.ir.statements.ABlockStmCG;
 import org.overture.codegen.ir.IRStatus;
 import org.overture.codegen.vdm2c.ast.Vtables;
 import org.overture.codegen.vdm2c.ast.Vtables.VEntry;

@@ -3,15 +3,15 @@ package org.overture.codegen.vdm2c.transformations;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newApply;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.rewriteToApply;
 
-import org.overture.codegen.cgast.SExpCG;
-import org.overture.codegen.cgast.analysis.AnalysisException;
-import org.overture.codegen.cgast.analysis.DepthFirstAnalysisAdaptor;
-import org.overture.codegen.cgast.analysis.intf.IAnalysis;
-import org.overture.codegen.cgast.expressions.AAndBoolBinaryExpCG;
-import org.overture.codegen.cgast.expressions.AEqualsBinaryExpCG;
-import org.overture.codegen.cgast.expressions.ANotEqualsBinaryExpCG;
-import org.overture.codegen.cgast.expressions.ANotUnaryExpCG;
-import org.overture.codegen.cgast.expressions.AOrBoolBinaryExpCG;
+import org.overture.codegen.ir.SExpCG;
+import org.overture.codegen.ir.analysis.AnalysisException;
+import org.overture.codegen.ir.analysis.DepthFirstAnalysisAdaptor;
+import org.overture.codegen.ir.analysis.intf.IAnalysis;
+import org.overture.codegen.ir.expressions.AAndBoolBinaryExpCG;
+import org.overture.codegen.ir.expressions.AEqualsBinaryExpCG;
+import org.overture.codegen.ir.expressions.ANotEqualsBinaryExpCG;
+import org.overture.codegen.ir.expressions.ANotUnaryExpCG;
+import org.overture.codegen.ir.expressions.AOrBoolBinaryExpCG;
 import org.overture.codegen.trans.assistants.TransAssistantCG;
 import org.overture.codegen.vdm2c.utils.IApplyAssistant;
 

@@ -1,19 +1,19 @@
 package org.overture.codegen.vdm2c.utils;
 
-import org.overture.codegen.cgast.INode;
-import org.overture.codegen.cgast.analysis.AnalysisException;
-import org.overture.codegen.cgast.analysis.DepthFirstAnalysisAdaptorAnswer;
-import org.overture.codegen.cgast.declarations.AFormalParamLocalParamCG;
-import org.overture.codegen.cgast.declarations.AMethodDeclCG;
-import org.overture.codegen.cgast.types.ABoolBasicTypeCG;
-import org.overture.codegen.cgast.types.ACharBasicTypeCG;
-import org.overture.codegen.cgast.types.AClassTypeCG;
-import org.overture.codegen.cgast.types.AExternalTypeCG;
-import org.overture.codegen.cgast.types.AIntNumericBasicTypeCG;
-import org.overture.codegen.cgast.types.ANat1BasicTypeWrappersTypeCG;
-import org.overture.codegen.cgast.types.ANatNumericBasicTypeCG;
-import org.overture.codegen.cgast.types.ARealNumericBasicTypeCG;
-import org.overture.codegen.cgast.types.ASeqSeqTypeCG;
+import org.overture.codegen.ir.INode;
+import org.overture.codegen.ir.analysis.AnalysisException;
+import org.overture.codegen.ir.analysis.DepthFirstAnalysisAdaptorAnswer;
+import org.overture.codegen.ir.declarations.AFormalParamLocalParamCG;
+import org.overture.codegen.ir.declarations.AMethodDeclCG;
+import org.overture.codegen.ir.types.ABoolBasicTypeCG;
+import org.overture.codegen.ir.types.ACharBasicTypeCG;
+import org.overture.codegen.ir.types.AClassTypeCG;
+import org.overture.codegen.ir.types.AExternalTypeCG;
+import org.overture.codegen.ir.types.AIntNumericBasicTypeCG;
+import org.overture.codegen.ir.types.ANat1BasicTypeWrappersTypeCG;
+import org.overture.codegen.ir.types.ANatNumericBasicTypeCG;
+import org.overture.codegen.ir.types.ARealNumericBasicTypeCG;
+import org.overture.codegen.ir.types.ASeqSeqTypeCG;
 
 public class NameMangler
 {

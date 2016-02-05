@@ -14,21 +14,21 @@ import static org.overture.codegen.vdm2c.utils.CTransUtil.newPtrDeref;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newTvpType;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.toStm;
 
-import org.overture.codegen.cgast.INode;
-import org.overture.codegen.cgast.SExpCG;
-import org.overture.codegen.cgast.SPatternCG;
-import org.overture.codegen.cgast.SStmCG;
-import org.overture.codegen.cgast.analysis.AnalysisException;
-import org.overture.codegen.cgast.analysis.DepthFirstAnalysisAdaptor;
-import org.overture.codegen.cgast.expressions.ALessEqualNumericBinaryExpCG;
-import org.overture.codegen.cgast.expressions.ALessNumericBinaryExpCG;
-import org.overture.codegen.cgast.expressions.APlusNumericBinaryExpCG;
-import org.overture.codegen.cgast.expressions.SNumericBinaryExpCG;
-import org.overture.codegen.cgast.patterns.AIdentifierPatternCG;
-import org.overture.codegen.cgast.statements.ABlockStmCG;
-import org.overture.codegen.cgast.statements.AForAllStmCG;
-import org.overture.codegen.cgast.statements.AForIndexStmCG;
-import org.overture.codegen.cgast.statements.AWhileStmCG;
+import org.overture.codegen.ir.INode;
+import org.overture.codegen.ir.SExpCG;
+import org.overture.codegen.ir.SPatternCG;
+import org.overture.codegen.ir.SStmCG;
+import org.overture.codegen.ir.analysis.AnalysisException;
+import org.overture.codegen.ir.analysis.DepthFirstAnalysisAdaptor;
+import org.overture.codegen.ir.expressions.ALessEqualNumericBinaryExpCG;
+import org.overture.codegen.ir.expressions.ALessNumericBinaryExpCG;
+import org.overture.codegen.ir.expressions.APlusNumericBinaryExpCG;
+import org.overture.codegen.ir.expressions.SNumericBinaryExpCG;
+import org.overture.codegen.ir.patterns.AIdentifierPatternCG;
+import org.overture.codegen.ir.statements.ABlockStmCG;
+import org.overture.codegen.ir.statements.AForAllStmCG;
+import org.overture.codegen.ir.statements.AForIndexStmCG;
+import org.overture.codegen.ir.statements.AWhileStmCG;
 import org.overture.codegen.trans.assistants.TransAssistantCG;
 
 public class ForLoopTrans extends DepthFirstAnalysisAdaptor
