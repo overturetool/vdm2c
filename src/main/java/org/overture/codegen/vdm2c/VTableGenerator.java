@@ -93,7 +93,7 @@ public class VTableGenerator
 
 			for (AMethodDeclCG m : cDef.getMethods())
 			{
-				if (m.getIsConstructor())
+				if (excludeFromVtable(m))
 					continue;
 				tables.table.add(new VEntry(m.getName(), m));
 			}
@@ -126,6 +126,12 @@ public class VTableGenerator
 			}
 
 		}
+	}
+	
+	
+	static boolean excludeFromVtable(AMethodDeclCG m)
+	{
+		return m.getIsConstructor() || (m.getTag() instanceof Vdm2cTag && ((Vdm2cTag)m.getTag()).methodTags.contains(Vdm2cTag.MethodTag.Internal));
 	}
 
 }

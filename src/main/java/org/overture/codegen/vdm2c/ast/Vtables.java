@@ -22,16 +22,16 @@ public class Vtables
 	final public List<VEntry> table = new Vector<VEntry>();
 
 	final public Map<String, List<VEntryOverride>> superVTableOverrides = new HashMap<String, List<VEntryOverride>>();
-	
-	Map<String,AClassHeaderDeclCG> supers = new HashMap<String, AClassHeaderDeclCG>();
-	
+
+	Map<String, AClassHeaderDeclCG> supers = new HashMap<String, AClassHeaderDeclCG>();
+
 	final AClassHeaderDeclCG header;
 
 	public Vtables(AClassHeaderDeclCG header)
 	{
 		this.header = header;
 	}
-	
+
 	public List<VEntry> getTable()
 	{
 		return table;
@@ -47,17 +47,16 @@ public class Vtables
 
 		public final String key;
 		public final AMethodDeclCG method;
-		
+
 		public String getKey()
 		{
 			return key;
 		}
+
 		public AMethodDeclCG getMethod()
 		{
 			return method;
 		}
-		
-		
 
 	}
 
@@ -126,7 +125,9 @@ public class Vtables
 		for (VEntry entry : table)
 		{
 			if (entry.key.equals(method.key))
+			{
 				return true;
+			}
 		}
 
 		// TODO check all overrides
@@ -138,7 +139,9 @@ public class Vtables
 		for (VEntry entry : table)
 		{
 			if (entry.key.equals(method.key))
+			{
 				return entry;
+			}
 		}
 
 		// TODO check all overrides
@@ -146,7 +149,8 @@ public class Vtables
 		return null;
 	}
 
-	public void addSuperOverride(AClassHeaderDeclCG superDcl, VEntry original, VEntry override)
+	public void addSuperOverride(AClassHeaderDeclCG superDcl, VEntry original,
+			VEntry override)
 	{
 		String name = superDcl.getName();
 		supers.put(name, superDcl);
@@ -169,87 +173,110 @@ public class Vtables
 		overrides.add(new VEntryOverride(original.key, original.method, override.method));
 
 	}
-	
-	
+
 	public boolean hasOverride(String superName)
 	{
 		return supers.containsKey(superName);
 	}
-	
-	public Map<String,String> getOverrides(String sueprName)
+
+	public Map<String, String> getOverrides(String sueprName)
 	{
-		Map<String,String> overrideMap = new HashMap<String, String>();
-		
+		Map<String, String> overrideMap = new HashMap<String, String>();
+
 		for (Entry<String, List<VEntryOverride>> entry : superVTableOverrides.entrySet())
 		{
 			AClassHeaderDeclCG superHeader = supers.get(entry.getKey());
-			
-			//FIXME this should also be recursive
+
+			// FIXME this should also be recursive
 			for (VEntry aArrayDeclCG : superHeader.getVtable().table)
 			{
-				for(VEntryOverride m : entry.getValue())
+				for (VEntryOverride m : entry.getValue())
 				{
-					if(m.method==aArrayDeclCG.method)
+					if (m.method == aArrayDeclCG.method)
 					{
-						overrideMap.put(String.format("CLASS_%s_%s",sueprName,aArrayDeclCG.getMethod().getName()), m.overrideProxy.getName());
+						overrideMap.put(String.format("CLASS_%s_%s", sueprName, aArrayDeclCG.getMethod().getName()), m.overrideProxy.getName());
 					}
 				}
-				
+
 			}
-			
+
 		}
-		
+
 		return overrideMap;
 	}
-	
+
 	public String getOverrideStaticTableName(String superName)
 	{
-		return "g_VTableArrayFor"+header.getName()+"_Override_"+ superName;
+		return "g_VTableArrayFor" + header.getName() + "_Override_" + superName;
 	}
-	
-	
-	
+
 	public List<AArrayDeclCG> getOverrideVTableDeclarations()
 	{
 		List<AArrayDeclCG> fields = new Vector<AArrayDeclCG>();
-		
+
 		for (Entry<String, List<VEntryOverride>> entry : superVTableOverrides.entrySet())
 		{
-			String name =getOverrideStaticTableName(entry.getKey());
+			String name = getOverrideStaticTableName(entry.getKey());
 			AArrayDeclCG arrayDcl = new AArrayDeclCG();
 			arrayDcl.setStatic(true);
 			arrayDcl.setName(name);
 			arrayDcl.setType(newExternalType("struct VTable"));
 			AClassHeaderDeclCG superHeader = supers.get(entry.getKey());
 			arrayDcl.setSize(superHeader.getVtable().table.size());
-			
-			//FIXME this should also be recursive
+
+			// FIXME this should also be recursive
 			for (VEntry aArrayDeclCG : superHeader.getVtable().table)
 			{
 				AMethodDeclCG selectedMethod = aArrayDeclCG.method;
-				for(VEntryOverride m : entry.getValue())
+				for (VEntryOverride m : entry.getValue())
 				{
-					if(m.method==aArrayDeclCG.method)
+					if (m.method == aArrayDeclCG.method)
 					{
-						//is overriden
+						// is overriden
 						selectedMethod = m.overrideProxy;
 					}
 				}
-				
+
 				AAnonymousStruct structEntry = new AAnonymousStruct();
-				
-				structEntry.getExp().add(createIdentifier("0", null));//sorry this should be int literal
-				structEntry.getExp().add(createIdentifier("0", null));//sorry this should be int literal
+
+				structEntry.getExp().add(createIdentifier("0", null));// sorry this should be int literal
+				structEntry.getExp().add(createIdentifier("0", null));// sorry this should be int literal
 				structEntry.getExp().add(newCast("VirtualFunctionPointer", createIdentifier(selectedMethod.getName(), null)));
-				
-//				arrayDcl.getInitial().add(structEntry);
-				
+
+				// arrayDcl.getInitial().add(structEntry);
+
 			}
-			
+
 			fields.add(arrayDcl);
 		}
-		
+
 		return fields;
+	}
+
+	public AArrayDeclCG getVTableDeclarations()
+	{
+		String name = "VTableArrayFor" + header.getName();
+		AArrayDeclCG arrayDcl = new AArrayDeclCG();
+		arrayDcl.setStatic(true);
+		arrayDcl.setName(name);
+		arrayDcl.setType(newExternalType("struct VTable"));
+		arrayDcl.setSize(table.size());
+
+		for (VEntry aArrayDeclCG : table)
+		{
+			AMethodDeclCG selectedMethod = aArrayDeclCG.method;
+
+			AAnonymousStruct structEntry = new AAnonymousStruct();
+
+			structEntry.getExp().add(createIdentifier("0", null));// sorry this should be int literal
+			structEntry.getExp().add(createIdentifier("0", null));// sorry this should be int literal
+			structEntry.getExp().add(newCast("VirtualFunctionPointer", createIdentifier(selectedMethod.getName(), null)));
+
+			arrayDcl.getInitial().add(structEntry);
+
+		}
+
+		return arrayDcl;
 	}
 
 }
