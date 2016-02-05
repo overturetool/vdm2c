@@ -3,16 +3,16 @@ package org.overture.codegen.vdm2c.transformations;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newApply;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newReturnStm;
 
-import org.overture.codegen.ir.SExpCG;
-import org.overture.codegen.ir.SStmCG;
-import org.overture.codegen.ir.STypeCG;
+import org.overture.codegen.ir.SExpIR;
+import org.overture.codegen.ir.SStmIR;
+import org.overture.codegen.ir.STypeIR;
 import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.analysis.DepthFirstAnalysisAdaptor;
-import org.overture.codegen.ir.declarations.AFieldDeclCG;
-import org.overture.codegen.ir.declarations.AMethodDeclCG;
-import org.overture.codegen.ir.declarations.SClassDeclCG;
-import org.overture.codegen.ir.types.AMethodTypeCG;
-import org.overture.codegen.trans.assistants.TransAssistantCG;
+import org.overture.codegen.ir.declarations.AFieldDeclIR;
+import org.overture.codegen.ir.declarations.AMethodDeclIR;
+import org.overture.codegen.ir.declarations.SClassDeclIR;
+import org.overture.codegen.ir.types.AMethodTypeIR;
+import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.Vdm2cTag;
 import org.overture.codegen.vdm2c.Vdm2cTag.MethodTag;
 import org.overture.codegen.vdm2c.utils.NameMangler;
@@ -20,28 +20,28 @@ import org.overture.codegen.vdm2c.utils.NameMangler;
 public class InitializerExtractorTrans extends DepthFirstAnalysisAdaptor
 {
 	private static final String FIELD_INITIALIZER = "fieldInitializer";
-	public TransAssistantCG assist;
+	public TransAssistantIR assist;
 
-	public InitializerExtractorTrans(TransAssistantCG assist)
+	public InitializerExtractorTrans(TransAssistantIR assist)
 	{
 		this.assist = assist;
 	}
 
 	@Override
-	public void caseAFieldDeclCG(AFieldDeclCG node) throws AnalysisException
+	public void caseAFieldDeclIR(AFieldDeclIR node) throws AnalysisException
 	{
-		SExpCG initial = node.getInitial();
+		SExpIR initial = node.getInitial();
 		if(initial!=null)
 		{
 			if(initial.getType()==null)
 			{
 				node.setInitial(null);
 				return;}
-			STypeCG type = initial.getType().clone();
-//			SExpCG exp = ndoe.get
-			SStmCG body = newReturnStm(initial);
+			STypeIR type = initial.getType().clone();
+//			SExpIR exp = ndoe.get
+			SStmIR body = newReturnStm(initial);
 			
-			AMethodDeclCG method = new AMethodDeclCG();
+			AMethodDeclIR method = new AMethodDeclIR();
 			method.setAbstract(false);
 			method.setAsync(false);
 			method.setImplicit(false);
@@ -49,14 +49,14 @@ public class InitializerExtractorTrans extends DepthFirstAnalysisAdaptor
 			method.setIsConstructor(false);
 			method.setTag(new Vdm2cTag().addMethodTag(MethodTag.Internal));
 			method.setBody(body);
-			AMethodTypeCG mtype = new AMethodTypeCG();
+			AMethodTypeIR mtype = new AMethodTypeIR();
 			mtype.setResult(type);
 			method.setMethodType(mtype);
 			method.setName(assist.getInfo().getTempVarNameGen().nextVarName(FIELD_INITIALIZER));
 			
 			node.setInitial(newApply(NameMangler.mangle(method)));
 			
-			SClassDeclCG cls = node.getAncestor(SClassDeclCG.class);
+			SClassDeclIR cls = node.getAncestor(SClassDeclIR.class);
 			cls.getMethods().add(method);
 		}
 	}

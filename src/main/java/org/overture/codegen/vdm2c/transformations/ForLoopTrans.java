@@ -15,28 +15,28 @@ import static org.overture.codegen.vdm2c.utils.CTransUtil.newTvpType;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.toStm;
 
 import org.overture.codegen.ir.INode;
-import org.overture.codegen.ir.SExpCG;
-import org.overture.codegen.ir.SPatternCG;
-import org.overture.codegen.ir.SStmCG;
+import org.overture.codegen.ir.SExpIR;
+import org.overture.codegen.ir.SPatternIR;
+import org.overture.codegen.ir.SStmIR;
 import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.analysis.DepthFirstAnalysisAdaptor;
-import org.overture.codegen.ir.expressions.ALessEqualNumericBinaryExpCG;
-import org.overture.codegen.ir.expressions.ALessNumericBinaryExpCG;
-import org.overture.codegen.ir.expressions.APlusNumericBinaryExpCG;
-import org.overture.codegen.ir.expressions.SNumericBinaryExpCG;
-import org.overture.codegen.ir.patterns.AIdentifierPatternCG;
-import org.overture.codegen.ir.statements.ABlockStmCG;
-import org.overture.codegen.ir.statements.AForAllStmCG;
-import org.overture.codegen.ir.statements.AForIndexStmCG;
-import org.overture.codegen.ir.statements.AWhileStmCG;
-import org.overture.codegen.trans.assistants.TransAssistantCG;
+import org.overture.codegen.ir.expressions.ALessEqualNumericBinaryExpIR;
+import org.overture.codegen.ir.expressions.ALessNumericBinaryExpIR;
+import org.overture.codegen.ir.expressions.APlusNumericBinaryExpIR;
+import org.overture.codegen.ir.expressions.SNumericBinaryExpIR;
+import org.overture.codegen.ir.patterns.AIdentifierPatternIR;
+import org.overture.codegen.ir.statements.ABlockStmIR;
+import org.overture.codegen.ir.statements.AForAllStmIR;
+import org.overture.codegen.ir.statements.AForIndexStmIR;
+import org.overture.codegen.ir.statements.AWhileStmIR;
+import org.overture.codegen.trans.assistants.TransAssistantIR;
 
 public class ForLoopTrans extends DepthFirstAnalysisAdaptor
 {
-	public TransAssistantCG assist;
+	public TransAssistantIR assist;
 	final static String retPrefix = "forLoop_";
 
-	public ForLoopTrans(TransAssistantCG assist)
+	public ForLoopTrans(TransAssistantIR assist)
 	{
 		this.assist = assist;
 	}
@@ -47,7 +47,7 @@ public class ForLoopTrans extends DepthFirstAnalysisAdaptor
 	}
 
 	@Override
-	public void caseAForIndexStmCG(AForIndexStmCG node)
+	public void caseAForIndexStmIR(AForIndexStmIR node)
 			throws AnalysisException
 	{
 		String bindName = node.getVar();
@@ -57,28 +57,28 @@ public class ForLoopTrans extends DepthFirstAnalysisAdaptor
 			node.setBy(newIntLiteralExp(1));
 		}
 
-		ABlockStmCG replBlock = new ABlockStmCG();
+		ABlockStmIR replBlock = new ABlockStmIR();
 		replBlock.setScoped(true);
 
 		String indexName = getNewName();
 		replBlock.getLocalDefs().add(newDeclarationAssignment(indexName, newExternalType("int"), newApply("toInteger", node.getFrom()), null));
 
-		SNumericBinaryExpCG less = new ALessEqualNumericBinaryExpCG();
+		SNumericBinaryExpIR less = new ALessEqualNumericBinaryExpIR();
 		less.setLeft(newIdentifier(indexName, null));
 		less.setRight(newApply("toInteger", node.getTo()));
 
-		AWhileStmCG loop = new AWhileStmCG();
+		AWhileStmIR loop = new AWhileStmIR();
 		replBlock.getStatements().add(loop);
 		loop.setExp(newCExp(less));
 
-		ABlockStmCG whileBlock = new ABlockStmCG();
+		ABlockStmIR whileBlock = new ABlockStmIR();
 		whileBlock.setScoped(true);
 		loop.setBody(whileBlock);
 		whileBlock.getLocalDefs().add(newDeclarationAssignment(bindName, newTvpType(), newApply("newInt", createIdentifier(indexName, null)), null));
 		whileBlock.getStatements().add(node.getBody());
 		whileBlock.getStatements().add(toStm(newApply("vdmFree", createIdentifier(bindName, null))));
 
-		APlusNumericBinaryExpCG pp = new APlusNumericBinaryExpCG();
+		APlusNumericBinaryExpIR pp = new APlusNumericBinaryExpIR();
 		pp.setLeft(createIdentifier(indexName, null));
 		pp.setRight(newApply("toInteger", node.getBy()));
 
@@ -88,22 +88,22 @@ public class ForLoopTrans extends DepthFirstAnalysisAdaptor
 	}
 
 	@Override
-	public void caseAForAllStmCG(AForAllStmCG node) throws AnalysisException
+	public void caseAForAllStmIR(AForAllStmIR node) throws AnalysisException
 	{
-		super.caseAForAllStmCG(node);
+		super.caseAForAllStmIR(node);
 		rewritetoCollectionLoop(node, node.getExp(), node.getPattern(), node.getBody());
 	}
 
-	void rewritetoCollectionLoop(INode source, SExpCG set,
-			SPatternCG sPatternCG, SStmCG body)
+	void rewritetoCollectionLoop(INode source, SExpIR set,
+			SPatternIR sPatternIR, SStmIR body)
 	{
 		String bindName = null;
-		if (sPatternCG instanceof AIdentifierPatternCG)
+		if (sPatternIR instanceof AIdentifierPatternIR)
 		{
-			bindName = ((AIdentifierPatternCG) sPatternCG).getName();
+			bindName = ((AIdentifierPatternIR) sPatternIR).getName();
 		}
 
-		ABlockStmCG replBlock = new ABlockStmCG();
+		ABlockStmIR replBlock = new ABlockStmIR();
 		replBlock.setScoped(true);
 
 		String setName = getNewName();
@@ -114,21 +114,21 @@ public class ForLoopTrans extends DepthFirstAnalysisAdaptor
 		String colName = getNewName();
 		replBlock.getStatements().add(toStm(newMacroApply("UNWRAP_COLLECTION", newIdentifier(colName, set.getSourceNode()), newIdentifier(setName, set.getSourceNode()))));
 
-		SNumericBinaryExpCG less = new ALessNumericBinaryExpCG();
+		SNumericBinaryExpIR less = new ALessNumericBinaryExpIR();
 		less.setLeft(newIdentifier(indexName, null));
 		less.setRight(newPtrDeref(newIdentifier(colName, null), newIdentifier("size", null)));
 
-		AWhileStmCG loop = new AWhileStmCG();
+		AWhileStmIR loop = new AWhileStmIR();
 		replBlock.getStatements().add(loop);
 		loop.setExp(newCExp(less));
 
-		ABlockStmCG whileBlock = new ABlockStmCG();
+		ABlockStmIR whileBlock = new ABlockStmIR();
 		whileBlock.setScoped(true);
 		loop.setBody(whileBlock);
 		whileBlock.getLocalDefs().add(newDeclarationAssignment(bindName, newTvpType(), newArrayIndex(newPtrDeref(createIdentifier(colName, null), createIdentifier("value", null)), createIdentifier(indexName, null)), null));
 		whileBlock.getStatements().add(body);
 
-		APlusNumericBinaryExpCG pp = new APlusNumericBinaryExpCG();
+		APlusNumericBinaryExpIR pp = new APlusNumericBinaryExpIR();
 		pp.setLeft(createIdentifier(indexName, null));
 		pp.setRight(newIntLiteralExp(1));
 

@@ -10,11 +10,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Vector;
 
-import org.overture.codegen.ir.declarations.ADefaultClassDeclCG;
-import org.overture.codegen.ir.declarations.AMethodDeclCG;
+import org.overture.codegen.ir.declarations.ADefaultClassDeclIR;
+import org.overture.codegen.ir.declarations.AMethodDeclIR;
 import org.overture.codegen.vdm2c.extast.declarations.AAnonymousStruct;
-import org.overture.codegen.vdm2c.extast.declarations.AArrayDeclCG;
-import org.overture.codegen.vdm2c.extast.declarations.AClassHeaderDeclCG;
+import org.overture.codegen.vdm2c.extast.declarations.AArrayDeclIR;
+import org.overture.codegen.vdm2c.extast.declarations.AClassHeaderDeclIR;
 import org.overture.codegen.vdm2c.utils.NameMangler;
 
 public class Vtables
@@ -23,11 +23,11 @@ public class Vtables
 
 	final public Map<String, List<VEntryOverride>> superVTableOverrides = new HashMap<String, List<VEntryOverride>>();
 
-	Map<String, AClassHeaderDeclCG> supers = new HashMap<String, AClassHeaderDeclCG>();
+	Map<String, AClassHeaderDeclIR> supers = new HashMap<String, AClassHeaderDeclIR>();
 
-	final AClassHeaderDeclCG header;
+	final AClassHeaderDeclIR header;
 
-	public Vtables(AClassHeaderDeclCG header)
+	public Vtables(AClassHeaderDeclIR header)
 	{
 		this.header = header;
 	}
@@ -39,21 +39,21 @@ public class Vtables
 
 	public static class VEntry
 	{
-		public VEntry(String key, AMethodDeclCG method)
+		public VEntry(String key, AMethodDeclIR method)
 		{
 			this.key = key;
 			this.method = method;
 		}
 
 		public final String key;
-		public final AMethodDeclCG method;
+		public final AMethodDeclIR method;
 
 		public String getKey()
 		{
 			return key;
 		}
 
-		public AMethodDeclCG getMethod()
+		public AMethodDeclIR getMethod()
 		{
 			return method;
 		}
@@ -62,11 +62,11 @@ public class Vtables
 
 	public static class VEntryOverride extends VEntry
 	{
-		public final AMethodDeclCG override;
-		public AMethodDeclCG overrideProxy;
+		public final AMethodDeclIR override;
+		public AMethodDeclIR overrideProxy;
 
-		public VEntryOverride(String key, AMethodDeclCG method,
-				AMethodDeclCG override)
+		public VEntryOverride(String key, AMethodDeclIR method,
+				AMethodDeclIR override)
 		{
 			super(key, method);
 			this.override = override;
@@ -105,13 +105,13 @@ public class Vtables
 			sb.append((indent ? "\t" : "")
 					+ String.format("%1$" + length + "s", vEntry.key)
 					+ ": "
-					+ vEntry.method.getAncestor(ADefaultClassDeclCG.class).getName()
+					+ vEntry.method.getAncestor(ADefaultClassDeclIR.class).getName()
 					+ " -> " + NameMangler.getName(vEntry.method.getName()));
 			if (vEntry instanceof VEntryOverride)
 			{
 				VEntryOverride override = (VEntryOverride) vEntry;
 				sb.append(" overriden by "
-						+ override.override.getAncestor(ADefaultClassDeclCG.class).getName()
+						+ override.override.getAncestor(ADefaultClassDeclIR.class).getName()
 						+ " -> "
 						+ NameMangler.getName(override.override.getName()));
 			}
@@ -149,7 +149,7 @@ public class Vtables
 		return null;
 	}
 
-	public void addSuperOverride(AClassHeaderDeclCG superDcl, VEntry original,
+	public void addSuperOverride(AClassHeaderDeclIR superDcl, VEntry original,
 			VEntry override)
 	{
 		String name = superDcl.getName();
@@ -185,16 +185,16 @@ public class Vtables
 
 		for (Entry<String, List<VEntryOverride>> entry : superVTableOverrides.entrySet())
 		{
-			AClassHeaderDeclCG superHeader = supers.get(entry.getKey());
+			AClassHeaderDeclIR superHeader = supers.get(entry.getKey());
 
 			// FIXME this should also be recursive
-			for (VEntry aArrayDeclCG : superHeader.getVtable().table)
+			for (VEntry aArrayDeclIR : superHeader.getVtable().table)
 			{
 				for (VEntryOverride m : entry.getValue())
 				{
-					if (m.method == aArrayDeclCG.method)
+					if (m.method == aArrayDeclIR.method)
 					{
-						overrideMap.put(String.format("CLASS_%s_%s", sueprName, aArrayDeclCG.getMethod().getName()), m.overrideProxy.getName());
+						overrideMap.put(String.format("CLASS_%s_%s", sueprName, aArrayDeclIR.getMethod().getName()), m.overrideProxy.getName());
 					}
 				}
 
@@ -210,27 +210,27 @@ public class Vtables
 		return "g_VTableArrayFor" + header.getName() + "_Override_" + superName;
 	}
 
-	public List<AArrayDeclCG> getOverrideVTableDeclarations()
+	public List<AArrayDeclIR> getOverrideVTableDeclarations()
 	{
-		List<AArrayDeclCG> fields = new Vector<AArrayDeclCG>();
+		List<AArrayDeclIR> fields = new Vector<AArrayDeclIR>();
 
 		for (Entry<String, List<VEntryOverride>> entry : superVTableOverrides.entrySet())
 		{
 			String name = getOverrideStaticTableName(entry.getKey());
-			AArrayDeclCG arrayDcl = new AArrayDeclCG();
+			AArrayDeclIR arrayDcl = new AArrayDeclIR();
 			arrayDcl.setStatic(true);
 			arrayDcl.setName(name);
 			arrayDcl.setType(newExternalType("struct VTable"));
-			AClassHeaderDeclCG superHeader = supers.get(entry.getKey());
+			AClassHeaderDeclIR superHeader = supers.get(entry.getKey());
 			arrayDcl.setSize(superHeader.getVtable().table.size());
 
 			// FIXME this should also be recursive
-			for (VEntry aArrayDeclCG : superHeader.getVtable().table)
+			for (VEntry aArrayDeclIR : superHeader.getVtable().table)
 			{
-				AMethodDeclCG selectedMethod = aArrayDeclCG.method;
+				AMethodDeclIR selectedMethod = aArrayDeclIR.method;
 				for (VEntryOverride m : entry.getValue())
 				{
-					if (m.method == aArrayDeclCG.method)
+					if (m.method == aArrayDeclIR.method)
 					{
 						// is overriden
 						selectedMethod = m.overrideProxy;
@@ -253,18 +253,18 @@ public class Vtables
 		return fields;
 	}
 
-	public AArrayDeclCG getVTableDeclarations()
+	public AArrayDeclIR getVTableDeclarations()
 	{
 		String name = "VTableArrayFor" + header.getName();
-		AArrayDeclCG arrayDcl = new AArrayDeclCG();
+		AArrayDeclIR arrayDcl = new AArrayDeclIR();
 		arrayDcl.setStatic(true);
 		arrayDcl.setName(name);
 		arrayDcl.setType(newExternalType("struct VTable"));
 		arrayDcl.setSize(table.size());
 
-		for (VEntry aArrayDeclCG : table)
+		for (VEntry aArrayDeclIR : table)
 		{
-			AMethodDeclCG selectedMethod = aArrayDeclCG.method;
+			AMethodDeclIR selectedMethod = aArrayDeclIR.method;
 
 			AAnonymousStruct structEntry = new AAnonymousStruct();
 

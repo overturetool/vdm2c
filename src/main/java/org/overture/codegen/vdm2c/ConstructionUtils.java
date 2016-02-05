@@ -1,31 +1,31 @@
 package org.overture.codegen.vdm2c;
 
-import org.overture.codegen.ir.STypeCG;
-import org.overture.codegen.ir.expressions.AApplyExpCG;
-import org.overture.codegen.ir.expressions.AExplicitVarExpCG;
-import org.overture.codegen.ir.types.AExternalTypeCG;
-import org.overture.codegen.ir.types.AMethodTypeCG;
+import org.overture.codegen.ir.STypeIR;
+import org.overture.codegen.ir.expressions.AApplyExpIR;
+import org.overture.codegen.ir.expressions.AExplicitVarExpIR;
+import org.overture.codegen.ir.types.AExternalTypeIR;
+import org.overture.codegen.ir.types.AMethodTypeIR;
 
 public class ConstructionUtils
 {
 
-	public static AApplyExpCG consUtilCall(String utils_name, String memberName,
-			STypeCG returnType)
+	public static AApplyExpIR consUtilCall(String utils_name, String memberName,
+			STypeIR returnType)
 	{
-		AExplicitVarExpCG member = new AExplicitVarExpCG();
+		AExplicitVarExpIR member = new AExplicitVarExpIR();
 
-		AMethodTypeCG methodType = new AMethodTypeCG();
+		AMethodTypeIR methodType = new AMethodTypeIR();
 		methodType.setResult(returnType.clone());
 		member.setType(methodType);
 		member.setIsLambda(false);
 		member.setIsLocal(false);
 		// member.setIsStatic(true);
 
-		AExternalTypeCG classType = new AExternalTypeCG();
+		AExternalTypeIR classType = new AExternalTypeIR();
 		classType.setName(utils_name);
 		member.setClassType(classType);
 		member.setName(memberName);
-		AApplyExpCG call = new AApplyExpCG();
+		AApplyExpIR call = new AApplyExpIR();
 
 		call.setType(returnType.clone());
 		call.setRoot(member);

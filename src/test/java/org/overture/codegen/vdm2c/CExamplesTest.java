@@ -84,7 +84,7 @@ public class CExamplesTest extends BaseGeneratorTest
 	@Test
 	public void Set()
 	{
-		CGenMain.main(new String[] {"-dest",outputFolder, getPath("expressions/ExpressionSetForCGTesting.vdmrt") });
+		CGenMain.main(new String[] {"-dest",outputFolder, getPath("expressions/ExpressionSetForIRTesting.vdmrt") });
 	}
 	
 	@ConditionalIgnore(condition = HasVdm.class)

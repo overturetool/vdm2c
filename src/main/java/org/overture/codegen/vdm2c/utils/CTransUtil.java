@@ -4,60 +4,60 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.overture.codegen.ir.SExpCG;
-import org.overture.codegen.ir.SPatternCG;
-import org.overture.codegen.ir.SStmCG;
-import org.overture.codegen.ir.STypeCG;
+import org.overture.codegen.ir.SExpIR;
+import org.overture.codegen.ir.SPatternIR;
+import org.overture.codegen.ir.SStmIR;
+import org.overture.codegen.ir.STypeIR;
 import org.overture.codegen.ir.analysis.AnalysisException;
-import org.overture.codegen.ir.declarations.AFormalParamLocalParamCG;
-import org.overture.codegen.ir.declarations.AVarDeclCG;
-import org.overture.codegen.ir.expressions.AApplyExpCG;
-import org.overture.codegen.ir.expressions.ACastUnaryExpCG;
-import org.overture.codegen.ir.expressions.AIdentifierVarExpCG;
-import org.overture.codegen.ir.expressions.AIntLiteralExpCG;
-import org.overture.codegen.ir.patterns.AIdentifierPatternCG;
-import org.overture.codegen.ir.statements.AAssignToExpStmCG;
-import org.overture.codegen.ir.statements.AExpStmCG;
-import org.overture.codegen.ir.statements.AReturnStmCG;
-import org.overture.codegen.ir.types.AExternalTypeCG;
+import org.overture.codegen.ir.declarations.AFormalParamLocalParamIR;
+import org.overture.codegen.ir.declarations.AVarDeclIR;
+import org.overture.codegen.ir.expressions.AApplyExpIR;
+import org.overture.codegen.ir.expressions.ACastUnaryExpIR;
+import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
+import org.overture.codegen.ir.expressions.AIntLiteralExpIR;
+import org.overture.codegen.ir.patterns.AIdentifierPatternIR;
+import org.overture.codegen.ir.statements.AAssignToExpStmIR;
+import org.overture.codegen.ir.statements.AExpStmIR;
+import org.overture.codegen.ir.statements.AReturnStmIR;
+import org.overture.codegen.ir.types.AExternalTypeIR;
 import org.overture.codegen.ir.SourceNode;
-import org.overture.codegen.vdm2c.extast.expressions.AArrayIndexExpCG;
-import org.overture.codegen.vdm2c.extast.expressions.ACExpCG;
-import org.overture.codegen.vdm2c.extast.expressions.AMacroApplyExpCG;
-import org.overture.codegen.vdm2c.extast.expressions.AParenExpCG;
-import org.overture.codegen.vdm2c.extast.expressions.APtrDerefExpCG;
-import org.overture.codegen.vdm2c.extast.expressions.AStmExpCG;
-import org.overture.codegen.vdm2c.extast.statements.ALocalVariableDeclarationStmCG;
+import org.overture.codegen.vdm2c.extast.expressions.AArrayIndexExpIR;
+import org.overture.codegen.vdm2c.extast.expressions.ACExpIR;
+import org.overture.codegen.vdm2c.extast.expressions.AMacroApplyExpIR;
+import org.overture.codegen.vdm2c.extast.expressions.AParenExpIR;
+import org.overture.codegen.vdm2c.extast.expressions.APtrDerefExpIR;
+import org.overture.codegen.vdm2c.extast.expressions.AStmExpIR;
+import org.overture.codegen.vdm2c.extast.statements.ALocalVariableDeclarationStmIR;
 
 public class CTransUtil
 {
-	// public static AIdentifierVarExpCG createIdentifier(String name,
+	// public static AIdentifierVarExpIR createIdentifier(String name,
 	// org.overture.ast.node.INode derrivedFrom)
 	// {
-	// AIdentifierVarExpCG ident = new AIdentifierVarExpCG();
+	// AIdentifierVarExpIR ident = new AIdentifierVarExpIR();
 	// ident.setName(name);
 	// ident.setIsLocal(true);
 	// ident.setSourceNode(new SourceNode(derrivedFrom));
 	// return ident;
 	// }
 
-	public static AIdentifierPatternCG newIdentifierPattern(String name)
+	public static AIdentifierPatternIR newIdentifierPattern(String name)
 	{
-		AIdentifierPatternCG id = new AIdentifierPatternCG();
+		AIdentifierPatternIR id = new AIdentifierPatternIR();
 		id.setName(name);
 		return id;
 	}
 
-	public static AIdentifierVarExpCG newIdentifier(String name,
+	public static AIdentifierVarExpIR newIdentifier(String name,
 			SourceNode derrivedFrom)
 	{
 		return createIdentifier(name, derrivedFrom);
 	}
 
-	public static AIdentifierVarExpCG createIdentifier(String name,
+	public static AIdentifierVarExpIR createIdentifier(String name,
 			SourceNode derrivedFrom)
 	{
-		AIdentifierVarExpCG ident = new AIdentifierVarExpCG();
+		AIdentifierVarExpIR ident = new AIdentifierVarExpIR();
 		ident.setName(name);
 		ident.setIsLocal(true);
 		ident.setSourceNode(derrivedFrom);
@@ -65,10 +65,10 @@ public class CTransUtil
 	}
 
 	
-	public static AVarDeclCG newDeclarationAssignment(SPatternCG varName,
-			STypeCG varType, SExpCG value, SourceNode derrivedFrom)
+	public static AVarDeclIR newDeclarationAssignment(SPatternIR varName,
+			STypeIR varType, SExpIR value, SourceNode derrivedFrom)
 	{
-		AVarDeclCG retVar = new AVarDeclCG();
+		AVarDeclIR retVar = new AVarDeclIR();
 		retVar.setType(varType);
 		retVar.setPattern(varName);
 		retVar.setSourceNode(derrivedFrom);
@@ -77,52 +77,52 @@ public class CTransUtil
 	}
 	
 	
-	public static AVarDeclCG newDeclarationAssignment(String varName,
-			STypeCG varType, SExpCG value, SourceNode derrivedFrom)
+	public static AVarDeclIR newDeclarationAssignment(String varName,
+			STypeIR varType, SExpIR value, SourceNode derrivedFrom)
 	{
-		AIdentifierPatternCG id = new AIdentifierPatternCG();
+		AIdentifierPatternIR id = new AIdentifierPatternIR();
 		id.setName(varName);
 		return newDeclarationAssignment(id, varType, value, derrivedFrom);
 	}
 
-	public static AAssignToExpStmCG newAssignment(SExpCG to, SExpCG from)
+	public static AAssignToExpStmIR newAssignment(SExpIR to, SExpIR from)
 	{
-		AAssignToExpStmCG assign = new AAssignToExpStmCG();
+		AAssignToExpStmIR assign = new AAssignToExpStmIR();
 		assign.setTarget(to);
 		assign.setExp(from);
 		return assign;
 	}
 
 	@SuppressWarnings("deprecation")
-	public static SExpCG newCast(String string, SExpCG newApply)
+	public static SExpIR newCast(String string, SExpIR newApply)
 	{
-		ACastUnaryExpCG cast = new ACastUnaryExpCG();
+		ACastUnaryExpIR cast = new ACastUnaryExpIR();
 		cast.setExp(newApply);
-		cast.setType(new AExternalTypeCG(null, null, null, false, null, string, null));
+		cast.setType(new AExternalTypeIR(null, null, null, false, null, string, null));
 		return cast;
 	}
 
-	public static SStmCG newReturnStm(SExpCG createIdentifier)
+	public static SStmIR newReturnStm(SExpIR createIdentifier)
 	{
-		AReturnStmCG ret = new AReturnStmCG();
+		AReturnStmIR ret = new AReturnStmIR();
 		ret.setExp(createIdentifier);
 		return ret;
 	}
 
-	public static STypeCG newTvpType()
+	public static STypeIR newTvpType()
 	{
 		return newExternalType("TVP");
 	}
 
 	@SuppressWarnings("deprecation")
-	public static STypeCG newExternalType(String name)
+	public static STypeIR newExternalType(String name)
 	{
-		return new AExternalTypeCG(false, null, name, null);
+		return new AExternalTypeIR(false, null, name, null);
 	}
 
-	public static AApplyExpCG newApply(String name, SExpCG... args)
+	public static AApplyExpIR newApply(String name, SExpIR... args)
 	{
-		AApplyExpCG apply = new AApplyExpCG();
+		AApplyExpIR apply = new AApplyExpIR();
 		apply.setRoot(createIdentifier(name, null));
 		if (args != null)
 		{
@@ -131,9 +131,9 @@ public class CTransUtil
 		return apply;
 	}
 
-	public static AMacroApplyExpCG newMacroApply(String name, SExpCG... args)
+	public static AMacroApplyExpIR newMacroApply(String name, SExpIR... args)
 	{
-		AMacroApplyExpCG apply = new AMacroApplyExpCG();
+		AMacroApplyExpIR apply = new AMacroApplyExpIR();
 		apply.setRoot(createIdentifier(name, null));
 		if (args != null)
 		{
@@ -142,34 +142,34 @@ public class CTransUtil
 		return apply;
 	}
 
-	public static SStmCG exp2Stm(SExpCG exp)
+	public static SStmIR exp2Stm(SExpIR exp)
 	{
-		AExpStmCG stm = new AExpStmCG();
+		AExpStmIR stm = new AExpStmIR();
 		stm.setExp(exp);
 		return stm;
 	}
 
-	public static SStmCG toStm(SExpCG exp)
+	public static SStmIR toStm(SExpIR exp)
 	{
 		return exp2Stm(exp);
 	}
 
-	public static SExpCG toExp(SStmCG stm)
+	public static SExpIR toExp(SStmIR stm)
 	{
-		AStmExpCG exp = new AStmExpCG();
+		AStmExpIR exp = new AStmExpIR();
 		exp.setStm(stm);
 		return exp;
 	}
 
-	public static void addArgument(String name, STypeCG type, int index,
-			List<AFormalParamLocalParamCG> formals)
+	public static void addArgument(String name, STypeIR type, int index,
+			List<AFormalParamLocalParamIR> formals)
 	{
-		LinkedList<AFormalParamLocalParamCG> f = new LinkedList<>();
+		LinkedList<AFormalParamLocalParamIR> f = new LinkedList<>();
 
-		AFormalParamLocalParamCG cl = new AFormalParamLocalParamCG();
-		AIdentifierPatternCG id = new AIdentifierPatternCG();
+		AFormalParamLocalParamIR cl = new AFormalParamLocalParamIR();
+		AIdentifierPatternIR id = new AIdentifierPatternIR();
 
-		// AIntNumericBasicTypeCG ty = new AIntNumericBasicTypeCG();
+		// AIntNumericBasicTypeIR ty = new AIntNumericBasicTypeIR();
 
 		// Create the special new parameter for each operation
 		// cl.setTag("class");
@@ -189,38 +189,38 @@ public class CTransUtil
 	 * @param exp
 	 * @return
 	 */
-	public static SExpCG newCExp(SExpCG exp)
+	public static SExpIR newCExp(SExpIR exp)
 	{
-		ACExpCG wrapper = new ACExpCG();
+		ACExpIR wrapper = new ACExpIR();
 		wrapper.setExp(exp);
 		return wrapper;
 	}
 
-	public static SExpCG newPtrDeref(SExpCG root, SExpCG target)
+	public static SExpIR newPtrDeref(SExpIR root, SExpIR target)
 	{
-		APtrDerefExpCG deref = new APtrDerefExpCG();
+		APtrDerefExpIR deref = new APtrDerefExpIR();
 		deref.setRoot(root);
 		deref.setTarget(target);
 		return deref;
 	}
 
-	public static SExpCG newArrayIndex(SExpCG array, SExpCG index)
+	public static SExpIR newArrayIndex(SExpIR array, SExpIR index)
 	{
-		AArrayIndexExpCG exp = new AArrayIndexExpCG();
+		AArrayIndexExpIR exp = new AArrayIndexExpIR();
 		exp.setRoot(array);
 		exp.setIndex(index);
 		return exp;
 	}
 
-	public static AApplyExpCG rewriteToApply(IApplyAssistant assist,
-			SExpCG node, String string, SExpCG... args)
+	public static AApplyExpIR rewriteToApply(IApplyAssistant assist,
+			SExpIR node, String string, SExpIR... args)
 			throws AnalysisException
 	{
-		AApplyExpCG apply = newApply(string);
+		AApplyExpIR apply = newApply(string);
 		apply.setSourceNode(node.getSourceNode());
 		apply.setType(node.getType());
 		assist.getAssist().replaceNodeWith(node, apply);
-		for (SExpCG arg : args)
+		for (SExpIR arg : args)
 		{
 			apply.getArgs().add(arg);
 			if (arg != node)
@@ -231,22 +231,22 @@ public class CTransUtil
 		return apply;
 	}
 
-	public static SExpCG newIntLiteralExp(long i)
+	public static SExpIR newIntLiteralExp(long i)
 	{
-		AIntLiteralExpCG exp = new AIntLiteralExpCG();
+		AIntLiteralExpIR exp = new AIntLiteralExpIR();
 		exp.setValue(i);
 		return exp;
 	}
-	public static SExpCG newParen(SExpCG exp)
+	public static SExpIR newParen(SExpIR exp)
 	{
-		AParenExpCG parent = new AParenExpCG();
+		AParenExpIR parent = new AParenExpIR();
 		parent.setExp(exp);
 		return parent;
 	}
 	
-	public static SStmCG newLocalDefinition(AVarDeclCG decl)
+	public static SStmIR newLocalDefinition(AVarDeclIR decl)
 	{
-		ALocalVariableDeclarationStmCG localDef = new ALocalVariableDeclarationStmCG();
+		ALocalVariableDeclarationStmIR localDef = new ALocalVariableDeclarationStmIR();
 		localDef.setDecleration(decl);
 		return localDef;
 	}

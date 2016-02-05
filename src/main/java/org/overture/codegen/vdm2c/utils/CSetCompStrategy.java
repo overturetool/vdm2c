@@ -7,22 +7,22 @@ import static org.overture.codegen.vdm2c.utils.CTransUtil.toStm;
 import java.util.Collections;
 import java.util.List;
 
-import org.overture.codegen.ir.SExpCG;
-import org.overture.codegen.ir.SPatternCG;
-import org.overture.codegen.ir.SStmCG;
-import org.overture.codegen.ir.STypeCG;
-import org.overture.codegen.ir.expressions.AIdentifierVarExpCG;
+import org.overture.codegen.ir.SExpIR;
+import org.overture.codegen.ir.SPatternIR;
+import org.overture.codegen.ir.SStmIR;
+import org.overture.codegen.ir.STypeIR;
+import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
 import org.overture.codegen.ir.ITempVarGen;
 import org.overture.codegen.trans.IterationVarPrefixes;
-import org.overture.codegen.trans.assistants.TransAssistantCG;
+import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.trans.comp.SetCompStrategy;
 import org.overture.codegen.trans.iterator.ILanguageIterator;
 
 public class CSetCompStrategy extends SetCompStrategy
 {
 
-	public CSetCompStrategy(TransAssistantCG transformationAssitant,
-			SExpCG first, SExpCG predicate, String var, STypeCG compType,
+	public CSetCompStrategy(TransAssistantIR transformationAssitant,
+			SExpIR first, SExpIR predicate, String var, STypeIR compType,
 			ILanguageIterator langIterator, ITempVarGen tempGen,
 			IterationVarPrefixes iteVarPrefixes)
 	{
@@ -30,7 +30,7 @@ public class CSetCompStrategy extends SetCompStrategy
 	}
 
 	@Override
-	protected SExpCG getEmptyCollection()
+	protected SExpIR getEmptyCollection()
 	{
 		return CTransUtil.newApply("newSetVarToGrow", newIntLiteralExp(0), newIntLiteralExp(5));// TODO: request
 																								// Framework change such
@@ -42,30 +42,30 @@ public class CSetCompStrategy extends SetCompStrategy
 	}
 
 	@Override
-	protected List<SStmCG> getConditionalAdd(AIdentifierVarExpCG setVar,
-			List<SPatternCG> patterns, SPatternCG pattern)
+	protected List<SStmIR> getConditionalAdd(AIdentifierVarExpIR setVar,
+			List<SPatternIR> patterns, SPatternIR pattern)
 	{
-		AIdentifierVarExpCG setCompResult = new AIdentifierVarExpCG();
+		AIdentifierVarExpIR setCompResult = new AIdentifierVarExpIR();
 		setCompResult.setType(compType.clone());
 		setCompResult.setName(idPattern.getName());
 		setCompResult.setIsLambda(false);
 		setCompResult.setIsLocal(true);
 
-		SExpCG setAdd = newApply("vdmSetGrow", setCompResult, first.clone());
+		SExpIR setAdd = newApply("vdmSetGrow", setCompResult, first.clone());
 		return Collections.singletonList(toStm(setAdd));
 	}
 
 	@Override
-	public List<SStmCG> getPostOuterBlockStms(AIdentifierVarExpCG setVar,
-			List<SPatternCG> patterns)
+	public List<SStmIR> getPostOuterBlockStms(AIdentifierVarExpIR setVar,
+			List<SPatternIR> patterns)
 	{
-		AIdentifierVarExpCG setCompResult = new AIdentifierVarExpCG();
+		AIdentifierVarExpIR setCompResult = new AIdentifierVarExpIR();
 		setCompResult.setType(compType.clone());
 		setCompResult.setName(idPattern.getName());
 		setCompResult.setIsLambda(false);
 		setCompResult.setIsLocal(true);
 
-		SExpCG setAdd = newApply("vdmSetFit", setCompResult);
+		SExpIR setAdd = newApply("vdmSetFit", setCompResult);
 		return Collections.singletonList(toStm(setAdd));
 	}
 }

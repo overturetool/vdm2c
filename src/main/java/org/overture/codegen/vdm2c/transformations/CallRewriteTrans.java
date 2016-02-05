@@ -9,21 +9,21 @@ import java.util.Vector;
 
 import org.overture.ast.definitions.PDefinition;
 import org.overture.ast.definitions.SClassDefinition;
-import org.overture.codegen.ir.SExpCG;
-import org.overture.codegen.ir.SStmCG;
+import org.overture.codegen.ir.SExpIR;
+import org.overture.codegen.ir.SStmIR;
 import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.analysis.DepthFirstAnalysisAdaptor;
-import org.overture.codegen.ir.declarations.AMethodDeclCG;
-import org.overture.codegen.ir.declarations.SClassDeclCG;
-import org.overture.codegen.ir.expressions.AApplyExpCG;
-import org.overture.codegen.ir.expressions.AIdentifierVarExpCG;
-import org.overture.codegen.ir.statements.ACallObjectExpStmCG;
-import org.overture.codegen.ir.statements.ACallObjectStmCG;
-import org.overture.codegen.ir.statements.APlainCallStmCG;
-import org.overture.codegen.ir.statements.AReturnStmCG;
-import org.overture.codegen.ir.types.AMethodTypeCG;
-import org.overture.codegen.trans.assistants.TransAssistantCG;
-import org.overture.codegen.vdm2c.extast.expressions.AMacroApplyExpCG;
+import org.overture.codegen.ir.declarations.AMethodDeclIR;
+import org.overture.codegen.ir.declarations.SClassDeclIR;
+import org.overture.codegen.ir.expressions.AApplyExpIR;
+import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
+import org.overture.codegen.ir.statements.ACallObjectExpStmIR;
+import org.overture.codegen.ir.statements.ACallObjectStmIR;
+import org.overture.codegen.ir.statements.APlainCallStmIR;
+import org.overture.codegen.ir.statements.AReturnStmIR;
+import org.overture.codegen.ir.types.AMethodTypeIR;
+import org.overture.codegen.trans.assistants.TransAssistantIR;
+import org.overture.codegen.vdm2c.extast.expressions.AMacroApplyExpIR;
 
 /**
  * See {@link https://github.com/overturetool/vdm2c/issues/1} for the full discussion on call semantics
@@ -32,52 +32,52 @@ import org.overture.codegen.vdm2c.extast.expressions.AMacroApplyExpCG;
  */
 public class CallRewriteTrans extends DepthFirstAnalysisAdaptor
 {
-	public TransAssistantCG assist;
+	public TransAssistantIR assist;
 
 	final CompatibleMethodCollector methodCollector = new CompatibleMethodCollector();
 
-	public CallRewriteTrans(TransAssistantCG assist)
+	public CallRewriteTrans(TransAssistantIR assist)
 	{
 		this.assist = assist;
 	}
 
 	@Override
-	public void caseAReturnStmCG(AReturnStmCG node) throws AnalysisException
+	public void caseAReturnStmIR(AReturnStmIR node) throws AnalysisException
 	{
 		// TODO Auto-generated method stub
-		super.caseAReturnStmCG(node);
+		super.caseAReturnStmIR(node);
 	}
 
 	@Override
-	public void caseAPlainCallStmCG(APlainCallStmCG node)
+	public void caseAPlainCallStmIR(APlainCallStmIR node)
 			throws AnalysisException
 	{
 		// op(a,d,f); --no root, so current class is the root.
 
-		SClassDeclCG cDef = node.getAncestor(SClassDeclCG.class);
+		SClassDeclIR cDef = node.getAncestor(SClassDeclIR.class);
 		List<PDefinition> tmp = methodCollector.collectCompatibleMethods((SClassDefinition) cDef.getSourceNode().getVdmNode(), node.getName(), node.getSourceNode().getVdmNode(), methodCollector.getArgTypes(node.getSourceNode().getVdmNode()));
 
-		List<AMethodDeclCG> resolvedMethods = lookupVdmFunOpToMethods(tmp);
+		List<AMethodDeclIR> resolvedMethods = lookupVdmFunOpToMethods(tmp);
 
 		// FIXME: we need to consider all methods not only the first one
-		SStmCG apple = exp2Stm(createApply(resolvedMethods.get(0), cDef.getName(), node.getArgs()));
+		SStmIR apple = exp2Stm(createApply(resolvedMethods.get(0), cDef.getName(), node.getArgs()));
 
 		assist.replaceNodeWith(node, apple);
 
 	}
 
-	SExpCG createApply(AMethodDeclCG method, String thisName,
-			List<SExpCG> linkedList) throws AnalysisException
+	SExpIR createApply(AMethodDeclIR method, String thisName,
+			List<SExpIR> linkedList) throws AnalysisException
 	{
-		AMethodDeclCG selectedMethod = method;
+		AMethodDeclIR selectedMethod = method;
 		String thisType = thisName;
-		String methodOwnerType = selectedMethod.getAncestor(SClassDeclCG.class).getName();
+		String methodOwnerType = selectedMethod.getAncestor(SClassDeclIR.class).getName();
 		String thisArgs = "this";
 		String methodId = String.format("CLASS_%s_%s", methodOwnerType, selectedMethod.getName());
 
-		AMacroApplyExpCG apply = newMacroApply("CALL_FUNC_PTR", createIdentifier(thisType, null), createIdentifier(methodOwnerType, null), createIdentifier(thisArgs, null), createIdentifier(methodId, null));
+		AMacroApplyExpIR apply = newMacroApply("CALL_FUNC_PTR", createIdentifier(thisType, null), createIdentifier(methodOwnerType, null), createIdentifier(thisArgs, null), createIdentifier(methodId, null));
 
-		for (SExpCG arg : linkedList)
+		for (SExpIR arg : linkedList)
 		{
 			arg.apply(THIS);
 			apply.getArgs().add(arg);
@@ -85,17 +85,17 @@ public class CallRewriteTrans extends DepthFirstAnalysisAdaptor
 		return apply;
 	}
 
-	List<AMethodDeclCG> lookupVdmFunOpToMethods(List<PDefinition> funOps)
+	List<AMethodDeclIR> lookupVdmFunOpToMethods(List<PDefinition> funOps)
 			throws AnalysisException
 	{
-		List<AMethodDeclCG> methods = new Vector<AMethodDeclCG>();
+		List<AMethodDeclIR> methods = new Vector<AMethodDeclIR>();
 
 		// must be ordered so run over vdm defs
 		for (PDefinition def : funOps)
 		{
-			for (SClassDeclCG cgClass : assist.getInfo().getClasses())
+			for (SClassDeclIR cgClass : assist.getInfo().getClasses())
 			{
-				for (AMethodDeclCG m : cgClass.getMethods())
+				for (AMethodDeclIR m : cgClass.getMethods())
 				{
 					if (!m.getIsConstructor()
 							&& m.getSourceNode().getVdmNode() == def)
@@ -115,38 +115,38 @@ public class CallRewriteTrans extends DepthFirstAnalysisAdaptor
 	}
 
 	@Override
-	public void caseAApplyExpCG(AApplyExpCG node) throws AnalysisException
+	public void caseAApplyExpIR(AApplyExpIR node) throws AnalysisException
 	{
-		if (node.getRoot() instanceof AIdentifierVarExpCG)
+		if (node.getRoot() instanceof AIdentifierVarExpIR)
 		{
-			AIdentifierVarExpCG root = (AIdentifierVarExpCG) node.getRoot();
-			if (root.getType() instanceof AMethodTypeCG)
+			AIdentifierVarExpIR root = (AIdentifierVarExpIR) node.getRoot();
+			if (root.getType() instanceof AMethodTypeIR)
 			{
 				// this is a call
 				String name = root.getName();
 				System.out.println();
-				SClassDeclCG cDef = node.getAncestor(SClassDeclCG.class);
+				SClassDeclIR cDef = node.getAncestor(SClassDeclIR.class);
 				List<PDefinition> tmp = methodCollector.collectCompatibleMethods((SClassDefinition) cDef.getSourceNode().getVdmNode(), name, node.getSourceNode().getVdmNode(), methodCollector.getArgTypes(node.getSourceNode().getVdmNode()));
 				System.out.println();
-				List<AMethodDeclCG> resolvedMethods = lookupVdmFunOpToMethods(tmp);
+				List<AMethodDeclIR> resolvedMethods = lookupVdmFunOpToMethods(tmp);
 				assist.replaceNodeWith(node, createApply(resolvedMethods.get(0), cDef.getName(), node.getArgs()));
 			}
 		}
 	}
 
 	@Override
-	public void caseACallObjectExpStmCG(ACallObjectExpStmCG node)
+	public void caseACallObjectExpStmIR(ACallObjectExpStmIR node)
 			throws AnalysisException
 	{
 		// TODO Auto-generated method stub
-		super.caseACallObjectExpStmCG(node);
+		super.caseACallObjectExpStmIR(node);
 	}
 
 	@Override
-	public void caseACallObjectStmCG(ACallObjectStmCG node)
+	public void caseACallObjectStmIR(ACallObjectStmIR node)
 			throws AnalysisException
 	{
 		// TODO Auto-generated method stub
-		super.caseACallObjectStmCG(node);
+		super.caseACallObjectStmIR(node);
 	}
 }

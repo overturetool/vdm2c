@@ -2,26 +2,26 @@ package org.overture.codegen.vdm2c.transformations;
 
 import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.analysis.DepthFirstAnalysisAdaptor;
-import org.overture.codegen.ir.declarations.AVarDeclCG;
-import org.overture.codegen.ir.expressions.AIdentifierVarExpCG;
-import org.overture.codegen.ir.patterns.AIdentifierPatternCG;
-import org.overture.codegen.ir.statements.ABlockStmCG;
-import org.overture.codegen.ir.statements.AReturnStmCG;
-import org.overture.codegen.trans.assistants.TransAssistantCG;
+import org.overture.codegen.ir.declarations.AVarDeclIR;
+import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
+import org.overture.codegen.ir.patterns.AIdentifierPatternIR;
+import org.overture.codegen.ir.statements.ABlockStmIR;
+import org.overture.codegen.ir.statements.AReturnStmIR;
+import org.overture.codegen.trans.assistants.TransAssistantIR;
 
 public class ExtractRetValTrans extends DepthFirstAnalysisAdaptor
 {
-	public TransAssistantCG assist;
+	public TransAssistantIR assist;
 
 	final static String retPrefix = "ret_";
 
-	public ExtractRetValTrans(TransAssistantCG assist)
+	public ExtractRetValTrans(TransAssistantIR assist)
 	{
 		this.assist = assist;
 	}
 
 	@Override
-	public void caseAReturnStmCG(AReturnStmCG node) throws AnalysisException
+	public void caseAReturnStmIR(AReturnStmIR node) throws AnalysisException
 	{
 		if(node.getExp()==null||node.getExp().getType()==null)
 		{
@@ -33,16 +33,16 @@ public class ExtractRetValTrans extends DepthFirstAnalysisAdaptor
 
 		String name = assist.getInfo().getTempVarNameGen().nextVarName(retPrefix);
 
-		AIdentifierPatternCG id = new AIdentifierPatternCG();
+		AIdentifierPatternIR id = new AIdentifierPatternIR();
 		id.setName(name);
 
-		AVarDeclCG retVar = new AVarDeclCG();
+		AVarDeclIR retVar = new AVarDeclIR();
 		retVar.setType(node.getExp().getType().clone());
 		retVar.setPattern(id);
 		retVar.setSourceNode(node.getExp().getSourceNode());
 		retVar.setExp(node.getExp());
 
-		AIdentifierVarExpCG retVarOcc = new AIdentifierVarExpCG();
+		AIdentifierVarExpIR retVarOcc = new AIdentifierVarExpIR();
 		retVarOcc.setType(retVar.getType().clone());
 		retVarOcc.setName(name);
 		retVarOcc.setSourceNode(retVar.getSourceNode());
@@ -50,7 +50,7 @@ public class ExtractRetValTrans extends DepthFirstAnalysisAdaptor
 
 		node.setExp(retVarOcc);
 
-		ABlockStmCG replBlock = new ABlockStmCG();
+		ABlockStmIR replBlock = new ABlockStmIR();
 		replBlock.getLocalDefs().add(retVar);
 
 		assist.replaceNodeWith(node, replBlock);

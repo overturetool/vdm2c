@@ -12,8 +12,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.overture.codegen.ir.analysis.DepthFirstAnalysisAdaptor;
-import org.overture.codegen.ir.expressions.AIntLiteralExpCG;
-import org.overture.codegen.ir.types.AExternalTypeCG;
+import org.overture.codegen.ir.expressions.AIntLiteralExpIR;
+import org.overture.codegen.ir.types.AExternalTypeIR;
 import org.overture.codegen.ir.IRInfo;
 import org.overture.codegen.trans.AssignStmTrans;
 import org.overture.codegen.trans.AtomicStmTrans;
@@ -24,7 +24,7 @@ import org.overture.codegen.trans.IterationVarPrefixes;
 import org.overture.codegen.trans.LetBeStTrans;
 import org.overture.codegen.trans.WhileStmTrans;
 //import org.overture.codegen.trans.TempVarPrefixes;
-import org.overture.codegen.trans.assistants.TransAssistantCG;
+import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.trans.funcvalues.FuncValAssistant;
 import org.overture.codegen.trans.funcvalues.FuncValPrefixes;
 import org.overture.codegen.trans.funcvalues.FuncValTrans;
@@ -69,11 +69,11 @@ public class CTransSeries
 
 	private Exists1CounterData consExists1CounterData()
 	{
-		AExternalTypeCG type = new AExternalTypeCG();
+		AExternalTypeIR type = new AExternalTypeIR();
 		type.setName("Long");
 
 		IRInfo irInfo = codeGen.getIRGenerator().getIRInfo();
-		AIntLiteralExpCG initExp = irInfo.getExpAssistant().consIntLiteral(0);
+		AIntLiteralExpIR initExp = irInfo.getExpAssistant().consIntLiteral(0);
 
 		return new Exists1CounterData(type, initExp);
 	}
@@ -85,7 +85,7 @@ public class CTransSeries
 		// TempVarPrefixes varPrefixes = codeGen.getTempVarPrefixes();
 		// ITempVarGen nameGen = irInfo.getTempVarNameGen();
 		// TraceNames traceNamePrefixes = codeGen.getTracePrefixes();
-		TransAssistantCG transAssistant = codeGen.getTransAssistant();
+		TransAssistantIR transAssistant = codeGen.getTransAssistant();
 		// IPostCheckCreator postCheckCreator = new JavaPostCheckCreator(POST_CHECK_METHOD_NAME);
 
 		// Set up order of transformations

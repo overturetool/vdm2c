@@ -3,16 +3,16 @@ package org.overture.codegen.vdm2c.transformations;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newApply;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.rewriteToApply;
 
-import org.overture.codegen.ir.SExpCG;
+import org.overture.codegen.ir.SExpIR;
 import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.analysis.DepthFirstAnalysisAdaptor;
 import org.overture.codegen.ir.analysis.intf.IAnalysis;
-import org.overture.codegen.ir.expressions.AAndBoolBinaryExpCG;
-import org.overture.codegen.ir.expressions.AEqualsBinaryExpCG;
-import org.overture.codegen.ir.expressions.ANotEqualsBinaryExpCG;
-import org.overture.codegen.ir.expressions.ANotUnaryExpCG;
-import org.overture.codegen.ir.expressions.AOrBoolBinaryExpCG;
-import org.overture.codegen.trans.assistants.TransAssistantCG;
+import org.overture.codegen.ir.expressions.AAndBoolBinaryExpIR;
+import org.overture.codegen.ir.expressions.AEqualsBinaryExpIR;
+import org.overture.codegen.ir.expressions.ANotEqualsBinaryExpIR;
+import org.overture.codegen.ir.expressions.ANotUnaryExpIR;
+import org.overture.codegen.ir.expressions.AOrBoolBinaryExpIR;
+import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.utils.IApplyAssistant;
 
 /**
@@ -23,15 +23,15 @@ import org.overture.codegen.vdm2c.utils.IApplyAssistant;
 public class LogicTrans extends DepthFirstAnalysisAdaptor implements
 		IApplyAssistant
 {
-	public TransAssistantCG assist;
+	public TransAssistantIR assist;
 
-	public LogicTrans(TransAssistantCG assist)
+	public LogicTrans(TransAssistantIR assist)
 	{
 		this.assist = assist;
 	}
 
 	@Override
-	public TransAssistantCG getAssist()
+	public TransAssistantIR getAssist()
 	{
 		return assist;
 	}
@@ -43,36 +43,36 @@ public class LogicTrans extends DepthFirstAnalysisAdaptor implements
 	}
 
 	@Override
-	public void caseAAndBoolBinaryExpCG(AAndBoolBinaryExpCG node)
+	public void caseAAndBoolBinaryExpIR(AAndBoolBinaryExpIR node)
 			throws AnalysisException
 	{
 		rewriteToApply(this, node, "vdmAnd", node.getLeft(), node.getRight());
 	}
 
 	@Override
-	public void caseAEqualsBinaryExpCG(AEqualsBinaryExpCG node)
+	public void caseAEqualsBinaryExpIR(AEqualsBinaryExpIR node)
 			throws AnalysisException
 	{
 		rewriteToApply(this, node, "vdmEquals", node.getLeft(), node.getRight());
 	}
 
 	@Override
-	public void caseANotEqualsBinaryExpCG(ANotEqualsBinaryExpCG node)
+	public void caseANotEqualsBinaryExpIR(ANotEqualsBinaryExpIR node)
 			throws AnalysisException
 	{
-		SExpCG replacement = rewriteToApply(this, node, "vdmEquals", node.getLeft(), node.getRight());
+		SExpIR replacement = rewriteToApply(this, node, "vdmEquals", node.getLeft(), node.getRight());
 		replacement.parent().replaceChild(replacement, newApply("vdmNot", replacement.clone()));
 	}
 
 	@Override
-	public void caseANotUnaryExpCG(ANotUnaryExpCG node)
+	public void caseANotUnaryExpIR(ANotUnaryExpIR node)
 			throws AnalysisException
 	{
 		rewriteToApply(this, node, "vdmNot", node.getExp());
 	}
 
 	@Override
-	public void caseAOrBoolBinaryExpCG(AOrBoolBinaryExpCG node)
+	public void caseAOrBoolBinaryExpIR(AOrBoolBinaryExpIR node)
 			throws AnalysisException
 	{
 		rewriteToApply(this, node, "vdmOr", node.getLeft(), node.getRight());

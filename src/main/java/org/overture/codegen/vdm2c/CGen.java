@@ -11,19 +11,19 @@ import java.util.Vector;
 
 import org.overture.ast.analysis.AnalysisException;
 import org.overture.codegen.ir.INode;
-import org.overture.codegen.ir.PCG;
+import org.overture.codegen.ir.PIR;
 import org.overture.codegen.ir.analysis.DepthFirstAnalysisAdaptor;
-import org.overture.codegen.ir.declarations.ADefaultClassDeclCG;
-import org.overture.codegen.ir.declarations.AFieldDeclCG;
-import org.overture.codegen.ir.declarations.ASystemClassDeclCG;
-import org.overture.codegen.ir.declarations.SClassDeclCG;
-import org.overture.codegen.ir.types.AClassTypeCG;
+import org.overture.codegen.ir.declarations.ADefaultClassDeclIR;
+import org.overture.codegen.ir.declarations.AFieldDeclIR;
+import org.overture.codegen.ir.declarations.ASystemClassDeclIR;
+import org.overture.codegen.ir.declarations.SClassDeclIR;
+import org.overture.codegen.ir.types.AClassTypeIR;
 import org.overture.codegen.ir.CodeGenBase;
 import org.overture.codegen.ir.IRStatus;
 import org.overture.codegen.logging.Logger;
 import org.overture.codegen.utils.GeneratedData;
 import org.overture.codegen.utils.GeneratedModule;
-import org.overture.codegen.vdm2c.extast.declarations.AClassHeaderDeclCG;
+import org.overture.codegen.vdm2c.extast.declarations.AClassHeaderDeclIR;
 
 public class CGen extends CodeGenBase
 {
@@ -36,14 +36,14 @@ public class CGen extends CodeGenBase
 	
 	@Override
 	protected GeneratedData genVdmToTargetLang(
-			List<IRStatus<PCG>> statuses) throws AnalysisException
+			List<IRStatus<PIR>> statuses) throws AnalysisException
 	{
 		statuses = replaceSystemClassWithClass(statuses);
 		applyTransformations(statuses);
 
 		generateClassHeaders(statuses);
 
-		VTableGenerator.generate(IRStatus.extract(statuses, AClassHeaderDeclCG.class));
+		VTableGenerator.generate(IRStatus.extract(statuses, AClassHeaderDeclIR.class));
 
 		CFormat my_formatter = consFormatter(statuses);
 		writeHeaders(outputFolder, statuses, my_formatter);
@@ -60,13 +60,13 @@ public class CGen extends CodeGenBase
 		return data;
 	}
 
-	private List<IRStatus<PCG>> replaceSystemClassWithClass(
-			List<IRStatus<PCG>> statuses)
+	private List<IRStatus<PIR>> replaceSystemClassWithClass(
+			List<IRStatus<PIR>> statuses)
 	{
-		IRStatus<PCG> status = null;
-		for (IRStatus<PCG> irStatus : statuses)
+		IRStatus<PIR> status = null;
+		for (IRStatus<PIR> irStatus : statuses)
 		{
-			if(irStatus.getIrNode() instanceof ASystemClassDeclCG)
+			if(irStatus.getIrNode() instanceof ASystemClassDeclIR)
 			{
 				status = irStatus;
 				
@@ -75,19 +75,19 @@ public class CGen extends CodeGenBase
 		
 		if(status!=null)
 		{
-			ASystemClassDeclCG systemDef = (ASystemClassDeclCG) status.getIrNode();
-			ADefaultClassDeclCG cDef = new ADefaultClassDeclCG();
+			ASystemClassDeclIR systemDef = (ASystemClassDeclIR) status.getIrNode();
+			ADefaultClassDeclIR cDef = new ADefaultClassDeclIR();
 			cDef.setName(systemDef.getName());
-			for (AFieldDeclCG f : systemDef.getFields())
+			for (AFieldDeclIR f : systemDef.getFields())
 			{
-				if(f.getType() instanceof AClassTypeCG)
+				if(f.getType() instanceof AClassTypeIR)
 				{
-					AClassTypeCG type = (AClassTypeCG) f.getType();
+					AClassTypeIR type = (AClassTypeIR) f.getType();
 					if(type.getName().equals("CPU")|| type.getName().equals("BUS"))
 						continue;
 				}
 				
-//				if(f.getType() instanceof abus instanceof ABusClassDeclCG || f instanceof ACpuClassDeclCG)
+//				if(f.getType() instanceof abus instanceof ABusClassDeclIR || f instanceof ACpuClassDeclIR)
 //					continue;
 				cDef.getFields().add(f.clone());
 			}
@@ -99,12 +99,12 @@ public class CGen extends CodeGenBase
 		return statuses;
 	}
 
-	private void applyTransformations(final List<IRStatus<PCG>> statuses)
+	private void applyTransformations(final List<IRStatus<PIR>> statuses)
 	{
 		List<DepthFirstAnalysisAdaptor> transformations = new CTransSeries(this).consAnalyses();
 		for (DepthFirstAnalysisAdaptor trans : transformations)
 		{
-			for (IRStatus<ADefaultClassDeclCG> status : IRStatus.extract(statuses, ADefaultClassDeclCG.class))
+			for (IRStatus<ADefaultClassDeclIR> status : IRStatus.extract(statuses, ADefaultClassDeclIR.class))
 			{
 				try
 				{
@@ -125,18 +125,18 @@ public class CGen extends CodeGenBase
 		}
 	}
 
-	private CFormat consFormatter(final List<IRStatus<PCG>> statuses)
+	private CFormat consFormatter(final List<IRStatus<PIR>> statuses)
 	{
 		CFormat my_formatter = new CFormat(generator.getIRInfo(), new IHeaderFinder()
 		{
 			@Override
-			public AClassHeaderDeclCG getHeader(SClassDeclCG def)
+			public AClassHeaderDeclIR getHeader(SClassDeclIR def)
 			{
-				for (IRStatus<PCG> irStatus : statuses)
+				for (IRStatus<PIR> irStatus : statuses)
 				{
-					if (irStatus.getIrNode() instanceof AClassHeaderDeclCG)
+					if (irStatus.getIrNode() instanceof AClassHeaderDeclIR)
 					{
-						AClassHeaderDeclCG header = (AClassHeaderDeclCG) irStatus.getIrNode();
+						AClassHeaderDeclIR header = (AClassHeaderDeclIR) irStatus.getIrNode();
 						if (header.getOriginalDef() == def)
 						{
 							return header;
@@ -150,13 +150,13 @@ public class CGen extends CodeGenBase
 	}
 
 	public void writeClasses(File outputFolder,
-			final List<IRStatus<PCG>> statuses,
+			final List<IRStatus<PIR>> statuses,
 			CFormat my_formatter)
 	{
-		for (IRStatus<ADefaultClassDeclCG> status : IRStatus.extract(statuses, ADefaultClassDeclCG.class))
+		for (IRStatus<ADefaultClassDeclIR> status : IRStatus.extract(statuses, ADefaultClassDeclIR.class))
 		{
 			// StringWriter writer = new StringWriter();
-			ADefaultClassDeclCG classCg = status.getIrNode();
+			ADefaultClassDeclIR classCg = status.getIrNode();
 
 			try
 			{
@@ -177,13 +177,13 @@ public class CGen extends CodeGenBase
 	}
 
 	public void writeHeaders(File outputFolder,
-			final List<IRStatus<PCG>> statuses,
+			final List<IRStatus<PIR>> statuses,
 			CFormat my_formatter)
 	{
-		for (IRStatus<AClassHeaderDeclCG> status : IRStatus.extract(statuses, AClassHeaderDeclCG.class))
+		for (IRStatus<AClassHeaderDeclIR> status : IRStatus.extract(statuses, AClassHeaderDeclIR.class))
 		{
 			// StringWriter writer = new StringWriter();
-			AClassHeaderDeclCG header = status.getIrNode();
+			AClassHeaderDeclIR header = status.getIrNode();
 			try
 			{
 				writeFile(header, header.getName(), "h", my_formatter, outputFolder);
@@ -200,11 +200,11 @@ public class CGen extends CodeGenBase
 	}
 
 	public void generateClassHeaders(
-			final List<IRStatus<PCG>> statuses)
+			final List<IRStatus<PIR>> statuses)
 	{
 		try
 		{
-			statuses.addAll(new ClassHeaderGenerator().generateClassHeaders(IRStatus.extract(statuses, ADefaultClassDeclCG.class)));
+			statuses.addAll(new ClassHeaderGenerator().generateClassHeaders(IRStatus.extract(statuses, ADefaultClassDeclIR.class)));
 		} catch (org.overture.codegen.ir.analysis.AnalysisException e2)
 		{
 			// TODO Auto-generated catch block

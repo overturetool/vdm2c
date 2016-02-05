@@ -3,8 +3,8 @@ package org.overture.codegen.vdm2c.utils;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.overture.codegen.ir.declarations.AFieldDeclCG;
-import org.overture.codegen.ir.declarations.SClassDeclCG;
+import org.overture.codegen.ir.declarations.AFieldDeclIR;
+import org.overture.codegen.ir.declarations.SClassDeclIR;
 
 public class NameConverter
 {
@@ -12,9 +12,9 @@ public class NameConverter
 
 	final static Map<String, String> fieldNames = new HashMap<String, String>();
 
-	public static String getCName(AFieldDeclCG field)
+	public static String getCName(AFieldDeclIR field)
 	{
-		String name = String.format(valueNameTemplate, field.getType().getAncestor(SClassDeclCG.class).getName(), field.getName());
+		String name = String.format(valueNameTemplate, field.getType().getAncestor(SClassDeclIR.class).getName(), field.getName());
 		fieldNames.put(field.getName(), name);
 		return name;
 	}

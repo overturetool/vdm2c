@@ -3,31 +3,31 @@ package org.overture.codegen.vdm2c.transformations;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.toExp;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.*;
 
-import org.overture.codegen.ir.SExpCG;
+import org.overture.codegen.ir.SExpIR;
 import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.analysis.DepthFirstAnalysisAdaptor;
-import org.overture.codegen.ir.declarations.AVarDeclCG;
-import org.overture.codegen.ir.expressions.ALetDefExpCG;
-import org.overture.codegen.ir.statements.ABlockStmCG;
-import org.overture.codegen.trans.assistants.TransAssistantCG;
+import org.overture.codegen.ir.declarations.AVarDeclIR;
+import org.overture.codegen.ir.expressions.ALetDefExpIR;
+import org.overture.codegen.ir.statements.ABlockStmIR;
+import org.overture.codegen.trans.assistants.TransAssistantIR;
 
 public class LetTrans extends DepthFirstAnalysisAdaptor
 {
-	public TransAssistantCG assist;
+	public TransAssistantIR assist;
 
-	public LetTrans(TransAssistantCG assist)
+	public LetTrans(TransAssistantIR assist)
 	{
 		this.assist = assist;
 	}
 
 
 	@Override
-	public void caseALetDefExpCG(ALetDefExpCG node) throws AnalysisException
+	public void caseALetDefExpIR(ALetDefExpIR node) throws AnalysisException
 	{
-		ABlockStmCG replBlock = new ABlockStmCG();
+		ABlockStmIR replBlock = new ABlockStmIR();
 		replBlock.setScoped(true);
 		
-		for (AVarDeclCG varDef : node.getLocalDefs())
+		for (AVarDeclIR varDef : node.getLocalDefs())
 		{
 			varDef.apply(THIS);
 		}
@@ -37,7 +37,7 @@ public class LetTrans extends DepthFirstAnalysisAdaptor
 		node.getExp().apply(THIS);
 		replBlock.getStatements().add(toStm(node.getExp()));
 		
-		SExpCG replacement =newParen( toExp(replBlock));
+		SExpIR replacement =newParen( toExp(replBlock));
 		assist.replaceNodeWith(node, replacement);
 	}
 	

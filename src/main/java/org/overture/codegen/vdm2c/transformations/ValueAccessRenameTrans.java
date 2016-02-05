@@ -7,22 +7,22 @@ import org.overture.ast.expressions.AVariableExp;
 import org.overture.ast.node.INode;
 import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.analysis.DepthFirstAnalysisAdaptor;
-import org.overture.codegen.ir.expressions.AExplicitVarExpCG;
-import org.overture.codegen.ir.expressions.AIdentifierVarExpCG;
-import org.overture.codegen.trans.assistants.TransAssistantCG;
+import org.overture.codegen.ir.expressions.AExplicitVarExpIR;
+import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
+import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.utils.NameConverter;
 
 public class ValueAccessRenameTrans extends DepthFirstAnalysisAdaptor
 {
-	public TransAssistantCG assist;
+	public TransAssistantIR assist;
 
-	public ValueAccessRenameTrans(TransAssistantCG assist)
+	public ValueAccessRenameTrans(TransAssistantIR assist)
 	{
 		this.assist = assist;
 	}
 
 	@Override
-	public void caseAExplicitVarExpCG(AExplicitVarExpCG node)
+	public void caseAExplicitVarExpIR(AExplicitVarExpIR node)
 			throws AnalysisException
 	{
 		INode vdmNode = node.getSourceNode().getVdmNode();
@@ -34,14 +34,14 @@ public class ValueAccessRenameTrans extends DepthFirstAnalysisAdaptor
 				ALocalDefinition local = (ALocalDefinition) varExp.getVardef();
 				if (local.getValueDefinition())
 				{
-					AIdentifierVarExpCG identifier = newIdentifier(NameConverter.getCFieldNameFromOriginal(node.getName()), node.getSourceNode());
+					AIdentifierVarExpIR identifier = newIdentifier(NameConverter.getCFieldNameFromOriginal(node.getName()), node.getSourceNode());
 					identifier.setIsLocal(false);
 					assist.replaceNodeWith(node, identifier);
 				}
 			}
 
 		}
-		super.caseAExplicitVarExpCG(node);
+		super.caseAExplicitVarExpIR(node);
 	}
 
 }

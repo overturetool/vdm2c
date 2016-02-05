@@ -6,21 +6,21 @@ import static org.overture.codegen.vdm2c.utils.CTransUtil.newTvpType;
 
 import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.analysis.DepthFirstAnalysisAdaptor;
-import org.overture.codegen.ir.declarations.AMethodDeclCG;
-import org.overture.codegen.ir.declarations.SClassDeclCG;
-import org.overture.codegen.ir.types.AVoidTypeCG;
-import org.overture.codegen.trans.assistants.TransAssistantCG;
+import org.overture.codegen.ir.declarations.AMethodDeclIR;
+import org.overture.codegen.ir.declarations.SClassDeclIR;
+import org.overture.codegen.ir.types.AVoidTypeIR;
+import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.Vdm2cTag;
 
 public class AddThisArgToMethodsTrans extends DepthFirstAnalysisAdaptor
 {
 
-	public AddThisArgToMethodsTrans(TransAssistantCG transformationAssistant)
+	public AddThisArgToMethodsTrans(TransAssistantIR transformationAssistant)
 	{
 	}
 
 	@Override
-	public void caseAMethodDeclCG(AMethodDeclCG node) throws AnalysisException
+	public void caseAMethodDeclIR(AMethodDeclIR node) throws AnalysisException
 	{
 		if (!node.getIsConstructor())
 		{
@@ -30,11 +30,11 @@ public class AddThisArgToMethodsTrans extends DepthFirstAnalysisAdaptor
 				return;
 			}
 
-			if (!(node.getMethodType().getResult() instanceof AVoidTypeCG))
+			if (!(node.getMethodType().getResult() instanceof AVoidTypeIR))
 			{
 				node.getMethodType().setResult(newTvpType());
 			}
-			SClassDeclCG cDef = node.getAncestor(SClassDeclCG.class);
+			SClassDeclIR cDef = node.getAncestor(SClassDeclIR.class);
 			addArgument("this", newExternalType(cDef.getName() + "CLASS"), 0, node.getFormalParams());
 		}
 	}

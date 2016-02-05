@@ -8,46 +8,46 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-import org.overture.codegen.ir.PCG;
-import org.overture.codegen.ir.STypeCG;
+import org.overture.codegen.ir.IRStatus;
+import org.overture.codegen.ir.PIR;
+import org.overture.codegen.ir.STypeIR;
+import org.overture.codegen.ir.VdmNodeInfo;
 import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.analysis.DepthFirstAnalysisAdaptor;
-import org.overture.codegen.ir.declarations.ADefaultClassDeclCG;
-import org.overture.codegen.ir.declarations.AFieldDeclCG;
-import org.overture.codegen.ir.declarations.AFormalParamLocalParamCG;
-import org.overture.codegen.ir.declarations.AMethodDeclCG;
-import org.overture.codegen.ir.declarations.SClassDeclCG;
-import org.overture.codegen.ir.name.ATokenNameCG;
-import org.overture.codegen.ir.patterns.AIdentifierPatternCG;
-import org.overture.codegen.ir.types.AClassTypeCG;
-import org.overture.codegen.ir.types.ARecordTypeCG;
-import org.overture.codegen.ir.IRStatus;
-import org.overture.codegen.ir.VdmNodeInfo;
+import org.overture.codegen.ir.declarations.ADefaultClassDeclIR;
+import org.overture.codegen.ir.declarations.AFieldDeclIR;
+import org.overture.codegen.ir.declarations.AFormalParamLocalParamIR;
+import org.overture.codegen.ir.declarations.AMethodDeclIR;
+import org.overture.codegen.ir.declarations.SClassDeclIR;
+import org.overture.codegen.ir.name.ATokenNameIR;
+import org.overture.codegen.ir.patterns.AIdentifierPatternIR;
+import org.overture.codegen.ir.types.AClassTypeIR;
+import org.overture.codegen.ir.types.ARecordTypeIR;
 import org.overture.codegen.vdm2c.Vdm2cTag.MethodTag;
 import org.overture.codegen.vdm2c.ast.CGenClonableString;
-import org.overture.codegen.vdm2c.extast.declarations.AClassHeaderDeclCG;
-import org.overture.codegen.vdm2c.extast.declarations.AClassStateDeclCG;
+import org.overture.codegen.vdm2c.extast.declarations.AClassHeaderDeclIR;
+import org.overture.codegen.vdm2c.extast.declarations.AClassStateDeclIR;
 
 public class ClassHeaderGenerator
 {
-	public Collection<? extends IRStatus<PCG>> generateClassHeaders(
-			List<IRStatus<ADefaultClassDeclCG>> extract)
+	public Collection<? extends IRStatus<PIR>> generateClassHeaders(
+			List<IRStatus<ADefaultClassDeclIR>> extract)
 			throws AnalysisException
 	{
-		final List<AClassHeaderDeclCG> classHeaders = new Vector<AClassHeaderDeclCG>();
+		final List<AClassHeaderDeclIR> classHeaders = new Vector<AClassHeaderDeclIR>();
 
-		Collection<IRStatus<PCG>> list = new Vector<IRStatus<PCG>>();
+		Collection<IRStatus<PIR>> list = new Vector<IRStatus<PIR>>();
 
-		for (IRStatus<ADefaultClassDeclCG> irStatus : extract)
+		for (IRStatus<ADefaultClassDeclIR> irStatus : extract)
 		{
-			ADefaultClassDeclCG classDef = irStatus.getIrNode();
+			ADefaultClassDeclIR classDef = irStatus.getIrNode();
 
-			AClassHeaderDeclCG header = new AClassHeaderDeclCG();
+			AClassHeaderDeclIR header = new AClassHeaderDeclIR();
 
 			header.setOriginalDef(classDef);
 
-			AClassStateDeclCG state = new AClassStateDeclCG();
-			for (AFieldDeclCG field : classDef.getFields())
+			AClassStateDeclIR state = new AClassStateDeclIR();
+			for (AFieldDeclIR field : classDef.getFields())
 			{
 				if (field.getFinal())
 				{
@@ -61,7 +61,7 @@ public class ClassHeaderGenerator
 
 			header.setState(state);
 
-			for (AMethodDeclCG m : classDef.getMethods())
+			for (AMethodDeclIR m : classDef.getMethods())
 			{
 				if (m.getTag() instanceof Vdm2cTag)
 				{
@@ -70,13 +70,13 @@ public class ClassHeaderGenerator
 						continue;
 					}
 				}
-				AMethodDeclCG copy = m.clone();
+				AMethodDeclIR copy = m.clone();
 				copy.setBody(null);
-				for (AFormalParamLocalParamCG formal : copy.getFormalParams())
+				for (AFormalParamLocalParamIR formal : copy.getFormalParams())
 				{
-					if (formal.getPattern() instanceof AIdentifierPatternCG)
+					if (formal.getPattern() instanceof AIdentifierPatternIR)
 					{
-						AIdentifierPatternCG pattern = (AIdentifierPatternCG) formal.getPattern();
+						AIdentifierPatternIR pattern = (AIdentifierPatternIR) formal.getPattern();
 						if (pattern.getName().equals("this"))
 						{
 							pattern.setName("this_ptr");
@@ -96,16 +96,16 @@ public class ClassHeaderGenerator
 
 			header.setName(classDef.getName().toString());
 
-			list.add(new IRStatus<PCG>(irStatus.getVdmNode(), header.getName(), header, new HashSet<VdmNodeInfo>()));
+			list.add(new IRStatus<PIR>(irStatus.getVdmNode(), header.getName(), header, new HashSet<VdmNodeInfo>()));
 			classHeaders.add(header);
 		}
 
 		// not all headers are made. Now we need to sort out the inheritance
 
-		for (AClassHeaderDeclCG header : classHeaders)
+		for (AClassHeaderDeclIR header : classHeaders)
 		{
-			SClassDeclCG originalDef = header.getOriginalDef();
-			LinkedList<ATokenNameCG> superNames = originalDef.getSuperNames();
+			SClassDeclIR originalDef = header.getOriginalDef();
+			LinkedList<ATokenNameIR> superNames = originalDef.getSuperNames();
 
 			if (superNames.isEmpty())
 			{
@@ -116,9 +116,9 @@ public class ClassHeaderGenerator
 			{
 
 				@Override
-				public AClassHeaderDeclCG get(String name)
+				public AClassHeaderDeclIR get(String name)
 				{
-					for (AClassHeaderDeclCG header : classHeaders)
+					for (AClassHeaderDeclIR header : classHeaders)
 					{
 						if (header.getName().equals(name))
 						{
@@ -133,14 +133,14 @@ public class ClassHeaderGenerator
 		return list;
 	}
 
-	private Map<String, STypeCG> collectIncludeTypes(
-			final ADefaultClassDeclCG classDef) throws AnalysisException
+	private Map<String, STypeIR> collectIncludeTypes(
+			final ADefaultClassDeclIR classDef) throws AnalysisException
 	{
-		final Map<String, STypeCG> types = new HashMap<String, STypeCG>();
+		final Map<String, STypeIR> types = new HashMap<String, STypeIR>();
 
 		classDef.apply(new DepthFirstAnalysisAdaptor()
 		{
-			void addType(String name, STypeCG type)
+			void addType(String name, STypeIR type)
 			{
 				if (!types.containsKey(name))
 				{
@@ -149,14 +149,14 @@ public class ClassHeaderGenerator
 			}
 
 			@Override
-			public void caseAClassTypeCG(AClassTypeCG node)
+			public void caseAClassTypeIR(AClassTypeIR node)
 					throws AnalysisException
 			{
 				addType(node.getName(), node);
 			}
 
 			@Override
-			public void caseARecordTypeCG(ARecordTypeCG node)
+			public void caseARecordTypeIR(ARecordTypeIR node)
 					throws AnalysisException
 			{
 				addType(node.getName().getName(), node);
@@ -164,9 +164,9 @@ public class ClassHeaderGenerator
 
 		});
 
-		for (ATokenNameCG s : classDef.getSuperNames())
+		for (ATokenNameIR s : classDef.getSuperNames())
 		{
-			AClassTypeCG ct = new AClassTypeCG();
+			AClassTypeIR ct = new AClassTypeIR();
 			ct.setName(s.getName());
 			if (!types.containsKey(s.getName()))
 			{
@@ -179,22 +179,22 @@ public class ClassHeaderGenerator
 
 	private interface HeaderProvider
 	{
-		public AClassHeaderDeclCG get(String name);
+		public AClassHeaderDeclIR get(String name);
 	}
 
-	List<AClassHeaderDeclCG> getSupers(HeaderProvider provider,
-			AClassHeaderDeclCG header)
+	List<AClassHeaderDeclIR> getSupers(HeaderProvider provider,
+			AClassHeaderDeclIR header)
 	{
-		List<AClassHeaderDeclCG> supers = new Vector<AClassHeaderDeclCG>();
+		List<AClassHeaderDeclIR> supers = new Vector<AClassHeaderDeclIR>();
 
-		SClassDeclCG originalDef = header.getOriginalDef();
-		LinkedList<ATokenNameCG> superNames = originalDef.getSuperNames();
+		SClassDeclIR originalDef = header.getOriginalDef();
+		LinkedList<ATokenNameIR> superNames = originalDef.getSuperNames();
 
 		if (!superNames.isEmpty())
 		{
-			for (ATokenNameCG superName : superNames)
+			for (ATokenNameIR superName : superNames)
 			{
-				AClassHeaderDeclCG super1Header = provider.get(superName.getName());
+				AClassHeaderDeclIR super1Header = provider.get(superName.getName());
 				supers.addAll(getSupers(provider, super1Header));
 				supers.add(super1Header);
 			}

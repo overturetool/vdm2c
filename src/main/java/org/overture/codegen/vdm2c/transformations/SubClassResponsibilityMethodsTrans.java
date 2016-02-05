@@ -7,21 +7,21 @@ import org.overture.ast.node.INode;
 import org.overture.ast.statements.ASubclassResponsibilityStm;
 import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.analysis.DepthFirstAnalysisAdaptor;
-import org.overture.codegen.ir.declarations.AMethodDeclCG;
-import org.overture.codegen.ir.statements.ABlockStmCG;
-import org.overture.codegen.trans.assistants.TransAssistantCG;
+import org.overture.codegen.ir.declarations.AMethodDeclIR;
+import org.overture.codegen.ir.statements.ABlockStmIR;
+import org.overture.codegen.trans.assistants.TransAssistantIR;
 
 public class SubClassResponsibilityMethodsTrans extends
 		DepthFirstAnalysisAdaptor
 {
 
 	public SubClassResponsibilityMethodsTrans(
-			TransAssistantCG transformationAssistant)
+			TransAssistantIR transformationAssistant)
 	{
 	}
 
 	@Override
-	public void caseAMethodDeclCG(AMethodDeclCG node) throws AnalysisException
+	public void caseAMethodDeclIR(AMethodDeclIR node) throws AnalysisException
 	{
 		if (node.getSourceNode() == null
 				|| node.getSourceNode().getVdmNode() == null)
@@ -35,7 +35,7 @@ public class SubClassResponsibilityMethodsTrans extends
 				|| vdm instanceof SFunctionDefinition
 				&& ((SFunctionDefinition) vdm).getBody() instanceof ASubclassResponsibilityExp)
 		{
-			node.setBody(new ABlockStmCG());
+			node.setBody(new ABlockStmIR());
 		}
 
 	}
