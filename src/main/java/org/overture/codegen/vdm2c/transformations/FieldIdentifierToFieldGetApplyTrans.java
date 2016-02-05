@@ -8,6 +8,7 @@ import static org.overture.codegen.vdm2c.utils.CTransUtil.newMacroApply;
 import org.overture.ast.definitions.AClassClassDefinition;
 import org.overture.ast.definitions.AInheritedDefinition;
 import org.overture.ast.definitions.AInstanceVariableDefinition;
+import org.overture.ast.definitions.ALocalDefinition;
 import org.overture.ast.definitions.PDefinition;
 import org.overture.ast.expressions.AVariableExp;
 import org.overture.ast.node.INode;
@@ -71,6 +72,9 @@ public class FieldIdentifierToFieldGetApplyTrans extends
 			{
 				AInheritedDefinition idef = (AInheritedDefinition) vardef;
 				fieldClassName = idef.getClassDefinition().getName().getName();
+			}else if (vardef instanceof ALocalDefinition && ((ALocalDefinition)vardef).getValueDefinition())
+			{
+				return;
 			}
 
 			AMacroApplyExpCG apply = newMacroApply("GET_FIELD_PTR");
