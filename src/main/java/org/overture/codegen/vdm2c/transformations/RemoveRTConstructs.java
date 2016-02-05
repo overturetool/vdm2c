@@ -1,5 +1,8 @@
 package org.overture.codegen.vdm2c.transformations;
 
+import java.io.File;
+
+import org.overture.ast.preview.GraphViz.GraphVizException;
 import org.overture.codegen.cgast.analysis.AnalysisException;
 import org.overture.codegen.cgast.analysis.DepthFirstAnalysisAdaptor;
 import org.overture.codegen.cgast.statements.ACyclesStmCG;
