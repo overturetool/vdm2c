@@ -5,6 +5,9 @@
 \#include "$String.format("%s.h",$cname)"
 \#include <stdio.h>
 \#include <string.h>
+	
+
+
 
 
 // Memory management methods
@@ -12,7 +15,9 @@ void ${cname}_free_fields(struct ${cname} *this)
 {
 	//free class struct
 #foreach( $field in $node.getFields() )
+	#if($field.getFinal() == false)
 	vdmFree(this->m_${cname}_$field.getName());
+	#end
 #end
 }
 
@@ -33,16 +38,10 @@ $CFormat.format($method)
 #end
 #end
 
-// The table
-static struct VTable VTableArrayFor${cname} [] =
-{
-#foreach( $method in $node.getMethods() )
-#if(!$method.getIsConstructor()){ 0, 0, (VirtualFunctionPointer) $method.getName() },
-#end
-#end
-};
+// VTable for this class
+$CFormat.format($CFormat.getHeader($node).getVtable().getVTableDeclarations())
 
-
+// Overload VTables
 #foreach( $field in $CFormat.getHeader($node).getVtable().getOverrideVTableDeclarations() )
 $CFormat.format($field)
 #end
@@ -89,7 +88,9 @@ ${cname}CLASS ${cname}_Constructor(${cname}CLASS this_ptr)
 		this_ptr->_${cname}_pVTable=VTableArrayFor${cname};
 
 	#foreach( $field in $node.getFields() )
+		#if($field.getFinal() == false)
 	this_ptr->m_${cname}_$field.getName()=#if($CFormat.isNull($field.getInitial())) NULL #else $CFormat.format($field.getInitial())#end;
+		#end
 	#end
 }
 
@@ -116,5 +117,13 @@ const struct ${cname}Class ${cname} =
 #if($method.getIsConstructor())
 $CFormat.format($method)
 #end
+#end
+
+
+// initialize globals - this is done last since they are declared in the header but uses init functions which are printet in any order
+#foreach($field in $node.getFields())
+	#if($field.getFinal())
+TVP $field.getName() = #if($CFormat.isNull($field.getInitial())) NULL #else $CFormat.format($field.getInitial())#end;
+	#end
 #end
 

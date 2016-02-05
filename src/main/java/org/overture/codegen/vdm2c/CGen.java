@@ -14,7 +14,10 @@ import org.overture.codegen.cgast.INode;
 import org.overture.codegen.cgast.PCG;
 import org.overture.codegen.cgast.analysis.DepthFirstAnalysisAdaptor;
 import org.overture.codegen.cgast.declarations.ADefaultClassDeclCG;
+import org.overture.codegen.cgast.declarations.AFieldDeclCG;
+import org.overture.codegen.cgast.declarations.ASystemClassDeclCG;
 import org.overture.codegen.cgast.declarations.SClassDeclCG;
+import org.overture.codegen.cgast.types.AClassTypeCG;
 import org.overture.codegen.ir.CodeGenBase;
 import org.overture.codegen.ir.IRStatus;
 import org.overture.codegen.logging.Logger;
@@ -35,6 +38,7 @@ public class CGen extends CodeGenBase
 	protected GeneratedData genVdmToTargetLang(
 			List<IRStatus<PCG>> statuses) throws AnalysisException
 	{
+		statuses = replaceSystemClassWithClass(statuses);
 		applyTransformations(statuses);
 
 		generateClassHeaders(statuses);
@@ -56,6 +60,45 @@ public class CGen extends CodeGenBase
 		return data;
 	}
 
+	private List<IRStatus<PCG>> replaceSystemClassWithClass(
+			List<IRStatus<PCG>> statuses)
+	{
+		IRStatus<PCG> status = null;
+		for (IRStatus<PCG> irStatus : statuses)
+		{
+			if(irStatus.getIrNode() instanceof ASystemClassDeclCG)
+			{
+				status = irStatus;
+				
+			}
+		}
+		
+		if(status!=null)
+		{
+			ASystemClassDeclCG systemDef = (ASystemClassDeclCG) status.getIrNode();
+			ADefaultClassDeclCG cDef = new ADefaultClassDeclCG();
+			cDef.setName(systemDef.getName());
+			for (AFieldDeclCG f : systemDef.getFields())
+			{
+				if(f.getType() instanceof AClassTypeCG)
+				{
+					AClassTypeCG type = (AClassTypeCG) f.getType();
+					if(type.getName().equals("CPU")|| type.getName().equals("BUS"))
+						continue;
+				}
+				
+//				if(f.getType() instanceof abus instanceof ABusClassDeclCG || f instanceof ACpuClassDeclCG)
+//					continue;
+				cDef.getFields().add(f.clone());
+			}
+			//FIXME: add and filter the constructur for RT calls on cpus and busses
+			
+			status.setIrNode(cDef);
+		}
+		
+		return statuses;
+	}
+
 	private void applyTransformations(final List<IRStatus<PCG>> statuses)
 	{
 		List<DepthFirstAnalysisAdaptor> transformations = new CTransSeries(this).consAnalyses();
@@ -68,6 +111,7 @@ public class CGen extends CodeGenBase
 					if (!getInfo().getDeclAssistant().isLibraryName(status.getIrNodeName()))
 					{
 						generator.applyPartialTransformation(status, trans);
+						
 					}
 
 				} catch (org.overture.codegen.cgast.analysis.AnalysisException e)

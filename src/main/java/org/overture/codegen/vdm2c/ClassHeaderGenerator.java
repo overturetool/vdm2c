@@ -23,15 +23,16 @@ import org.overture.codegen.cgast.types.AClassTypeCG;
 import org.overture.codegen.cgast.types.ARecordTypeCG;
 import org.overture.codegen.ir.IRStatus;
 import org.overture.codegen.ir.VdmNodeInfo;
+import org.overture.codegen.vdm2c.Vdm2cTag.MethodTag;
 import org.overture.codegen.vdm2c.ast.CGenClonableString;
 import org.overture.codegen.vdm2c.extast.declarations.AClassHeaderDeclCG;
 import org.overture.codegen.vdm2c.extast.declarations.AClassStateDeclCG;
 
 public class ClassHeaderGenerator
 {
-	@SuppressWarnings("unchecked")
 	public Collection<? extends IRStatus<PCG>> generateClassHeaders(
-			List<IRStatus<ADefaultClassDeclCG>> extract) throws AnalysisException
+			List<IRStatus<ADefaultClassDeclCG>> extract)
+			throws AnalysisException
 	{
 		final List<AClassHeaderDeclCG> classHeaders = new Vector<AClassHeaderDeclCG>();
 
@@ -45,20 +46,30 @@ public class ClassHeaderGenerator
 
 			header.setOriginalDef(classDef);
 
-			for (AFieldDeclCG fi : classDef.getFields())
-			{
-				fi.getAccess();
-				fi.getInitial();
-			}
-
 			AClassStateDeclCG state = new AClassStateDeclCG();
-			state.setFields((List<? extends AFieldDeclCG>) classDef.getFields().clone());
+			for (AFieldDeclCG field : classDef.getFields())
+			{
+				if (field.getFinal())
+				{
+					header.getValues().add(field);
+//					field.setName(NameConverter.getCName(field));
+				} else
+				{
+					state.getFields().add(field);
+				}
+			}
 
 			header.setState(state);
 
-			// def.setMethods((List<? extends AMethodDeclCG>) classDef.getMethods().clone());
 			for (AMethodDeclCG m : classDef.getMethods())
 			{
+				if (m.getTag() instanceof Vdm2cTag)
+				{
+					if (((Vdm2cTag) m.getTag()).methodTags.contains(MethodTag.Internal))
+					{
+						continue;
+					}
+				}
 				AMethodDeclCG copy = m.clone();
 				copy.setBody(null);
 				for (AFormalParamLocalParamCG formal : copy.getFormalParams())
@@ -68,9 +79,7 @@ public class ClassHeaderGenerator
 						AIdentifierPatternCG pattern = (AIdentifierPatternCG) formal.getPattern();
 						if (pattern.getName().equals("this"))
 						{
-							pattern.setName("this_ptr");// .getModifiedName("self"));//new
-														// LexNameToken(pattern.getName().getModifiedName(classname),
-														// name, location));
+							pattern.setName("this_ptr");
 						}
 					}
 				}
@@ -160,7 +169,9 @@ public class ClassHeaderGenerator
 			AClassTypeCG ct = new AClassTypeCG();
 			ct.setName(s.getName());
 			if (!types.containsKey(s.getName()))
+			{
 				types.put(s.getName(), ct);
+			}
 		}
 
 		return types;

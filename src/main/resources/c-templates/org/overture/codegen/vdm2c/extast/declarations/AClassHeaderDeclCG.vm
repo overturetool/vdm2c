@@ -17,6 +17,11 @@
 \#include "$String.format("%s.h",$typeName)"
 #end
 
+//values / global const
+#foreach( $val in $node.getValues() )
+extern const TVP $val.getName();
+#end
+
 \#define $String.format("CLASS_ID_%s_ID %d",$cname, $CFormat.getClassId($cname))
 
 \#define $String.format("%s struct %s*",$cstructname,$cname)

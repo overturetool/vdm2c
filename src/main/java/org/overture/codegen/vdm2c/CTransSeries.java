@@ -43,6 +43,7 @@ import org.overture.codegen.vdm2c.transformations.FieldIdentifierToFieldGetApply
 import org.overture.codegen.vdm2c.transformations.ForLoopTrans;
 import org.overture.codegen.vdm2c.transformations.IfTrans;
 import org.overture.codegen.vdm2c.transformations.IgnoreRenamingTrans;
+import org.overture.codegen.vdm2c.transformations.InitializerExtractorTrans;
 import org.overture.codegen.vdm2c.transformations.LetTrans;
 import org.overture.codegen.vdm2c.transformations.LiteralInstantiationRewriteTrans;
 import org.overture.codegen.vdm2c.transformations.LogicTrans;
@@ -50,8 +51,10 @@ import org.overture.codegen.vdm2c.transformations.MangleMethodNamesTrans;
 import org.overture.codegen.vdm2c.transformations.NewRewriteTrans;
 import org.overture.codegen.vdm2c.transformations.NumericTrans;
 import org.overture.codegen.vdm2c.transformations.RemoveCWrappersTrans;
+import org.overture.codegen.vdm2c.transformations.RenameValueFieldsTrans;
 import org.overture.codegen.vdm2c.transformations.ScopeCleanerTrans;
 import org.overture.codegen.vdm2c.transformations.SubClassResponsibilityMethodsTrans;
+import org.overture.codegen.vdm2c.transformations.ValueAccessRenameTrans;
 
 public class CTransSeries
 {
@@ -93,6 +96,7 @@ public class CTransSeries
 		 */
 		// Construct the transformations
 		transformations.add(new FuncTrans(transAssistant));
+		transformations.add(new InitializerExtractorTrans(transAssistant));
 
 		// Data and functionality to support the transformations
 		IRInfo info = codeGen.getIRGenerator().getIRInfo();
@@ -124,7 +128,7 @@ public class CTransSeries
 		transformations.add(new WhileStmTrans(transAssist, varMan.whileCond()));
 		transformations.add(new CExp2StmTrans(iteVarPrefixes, transAssist, consExists1CounterData(), langIte, exp2stmPrefixes));
 		transformations.add(new PatternTrans(iteVarPrefixes, transAssist, patternPrefixes, varMan.casesExp()));
-//		transformations.add(new RemoveSetCompAddTrans(transAssist));
+		// transformations.add(new RemoveSetCompAddTrans(transAssist));
 
 		/* C transformations */
 
@@ -135,7 +139,8 @@ public class CTransSeries
 		transformations.add(new NumericTrans(transAssistant));
 		transformations.add(new LogicTrans(transAssistant));
 		transformations.add(new LiteralInstantiationRewriteTrans(transAssistant));
-
+		transformations.add(new RenameValueFieldsTrans(transAssistant));
+		transformations.add(new ValueAccessRenameTrans(transAssistant));
 		transformations.add(new LetTrans(transAssistant));
 
 		/**
