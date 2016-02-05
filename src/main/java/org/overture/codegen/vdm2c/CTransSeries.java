@@ -56,6 +56,7 @@ import org.overture.codegen.vdm2c.transformations.RenameValueFieldsTrans;
 import org.overture.codegen.vdm2c.transformations.ScopeCleanerTrans;
 import org.overture.codegen.vdm2c.transformations.SubClassResponsibilityMethodsTrans;
 import org.overture.codegen.vdm2c.transformations.ValueAccessRenameTrans;
+import org.overture.codegen.vdm2c.transformations.VisualizeIRAST;
 
 public class CTransSeries
 {
@@ -99,6 +100,7 @@ public class CTransSeries
 		transformations.add(new FuncTrans(transAssistant));
 		transformations.add(new InitializerExtractorTrans(transAssistant));
 		transformations.add(new RemoveRTConstructs(transAssistant));
+		transformations.add(new VisualizeIRAST(transAssistant));
 
 		// Data and functionality to support the transformations
 		IRInfo info = codeGen.getIRGenerator().getIRInfo();
