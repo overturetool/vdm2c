@@ -10,6 +10,7 @@ import org.overture.codegen.cgast.declarations.AMethodDeclCG;
 import org.overture.codegen.cgast.declarations.SClassDeclCG;
 import org.overture.codegen.cgast.types.AVoidTypeCG;
 import org.overture.codegen.trans.assistants.TransAssistantCG;
+import org.overture.codegen.vdm2c.Vdm2cTag;
 
 public class AddThisArgToMethodsTrans extends DepthFirstAnalysisAdaptor
 {
@@ -23,6 +24,12 @@ public class AddThisArgToMethodsTrans extends DepthFirstAnalysisAdaptor
 	{
 		if (!node.getIsConstructor())
 		{
+			if (node.getTag() instanceof Vdm2cTag
+					&& ((Vdm2cTag) node.getTag()).methodTags.contains(Vdm2cTag.MethodTag.Internal))
+			{
+				return;
+			}
+
 			if (!(node.getMethodType().getResult() instanceof AVoidTypeCG))
 			{
 				node.getMethodType().setResult(newTvpType());

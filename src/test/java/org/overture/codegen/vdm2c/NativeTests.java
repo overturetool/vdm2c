@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.overture.codegen.vdm2c.CMakeUtil.CMakeGenerateException;
 import org.overture.test.framework.ConditionalIgnoreMethodRule.ConditionalIgnore;
 
+
 public class NativeTests extends NativeTestBase
 {
 	@ConditionalIgnore(condition = HasVdmLib.class)
@@ -70,5 +71,14 @@ public class NativeTests extends NativeTestBase
 	{
 		generate(getPath("expressions/ExpressionCases.vdmrt"));
 		compileAndTest(getTestCppFile("cases/ExpressionsCases_Tests.cpp"));
+	}
+	
+	@ConditionalIgnore(condition = HasVdmLib.class)
+	@Test
+	public void RemoveRTConstructs() throws IOException, InterruptedException,
+			CMakeGenerateException
+	{
+		generate(getPath("expressions/RTConstructs.vdmrt"));
+		compileAndTest(getTestCppFile("rt/RTConstructs_Tests.cpp"));
 	}
 }

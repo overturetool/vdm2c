@@ -51,6 +51,7 @@ import org.overture.codegen.vdm2c.transformations.MangleMethodNamesTrans;
 import org.overture.codegen.vdm2c.transformations.NewRewriteTrans;
 import org.overture.codegen.vdm2c.transformations.NumericTrans;
 import org.overture.codegen.vdm2c.transformations.RemoveCWrappersTrans;
+import org.overture.codegen.vdm2c.transformations.RemoveRTConstructs;
 import org.overture.codegen.vdm2c.transformations.RenameValueFieldsTrans;
 import org.overture.codegen.vdm2c.transformations.ScopeCleanerTrans;
 import org.overture.codegen.vdm2c.transformations.SubClassResponsibilityMethodsTrans;
@@ -97,6 +98,7 @@ public class CTransSeries
 		// Construct the transformations
 		transformations.add(new FuncTrans(transAssistant));
 		transformations.add(new InitializerExtractorTrans(transAssistant));
+		transformations.add(new RemoveRTConstructs(transAssistant));
 
 		// Data and functionality to support the transformations
 		IRInfo info = codeGen.getIRGenerator().getIRInfo();
@@ -108,26 +110,25 @@ public class CTransSeries
 		// UnionTypeVarPrefixes unionTypePrefixes = varMan.getUnionTypePrefixes();
 		// List<INode> cloneFreeNodes = codeGen.getJavaFormat().getValueSemantics().getCloneFreeNodes();
 
-		TransAssistantCG transAssist = codeGen.getTransAssistant();
 		// IPostCheckCreator postCheckCreator = new JavaPostCheckCreator(varMan.postCheckMethodName());
 
 		// Construct the transformations
-		transformations.add(new AtomicStmTrans(transAssist, varMan.atomicTmpVar()));
-		transformations.add(new FuncTrans(transAssist));
+		transformations.add(new AtomicStmTrans(transAssistant, varMan.atomicTmpVar()));
+		transformations.add(new FuncTrans(transAssistant));
 		transformations.add(new DivideTrans(info));
 		transformations.add(new CallObjStmTrans(info));
-		transformations.add(new AssignStmTrans(transAssist));
+		transformations.add(new AssignStmTrans(transAssistant));
 		// PrePostTrans prePostTr = new PrePostTrans(info);
-		transformations.add(new IfExpTrans(transAssist));
+		transformations.add(new IfExpTrans(transAssistant));
 		FuncValAssistant funcValAssist = new FuncValAssistant();
-		transformations.add(new FuncValTrans(transAssist, funcValAssist, funcValPrefixes));
+		transformations.add(new FuncValTrans(transAssistant, funcValAssist, funcValPrefixes));
 		// ILanguageIterator langIte = new JavaLanguageIterator(transAssist, iteVarPrefixes);
-		AbstractLanguageIterator langIte = new CForIterator(transAssist, iteVarPrefixes);
-		transformations.add(new LetBeStTrans(transAssist, langIte, iteVarPrefixes));
+		AbstractLanguageIterator langIte = new CForIterator(transAssistant, iteVarPrefixes);
+		transformations.add(new LetBeStTrans(transAssistant, langIte, iteVarPrefixes));
 
-		transformations.add(new WhileStmTrans(transAssist, varMan.whileCond()));
-		transformations.add(new CExp2StmTrans(iteVarPrefixes, transAssist, consExists1CounterData(), langIte, exp2stmPrefixes));
-		transformations.add(new PatternTrans(iteVarPrefixes, transAssist, patternPrefixes, varMan.casesExp()));
+		transformations.add(new WhileStmTrans(transAssistant, varMan.whileCond()));
+		transformations.add(new CExp2StmTrans(iteVarPrefixes, transAssistant, consExists1CounterData(), langIte, exp2stmPrefixes));
+		transformations.add(new PatternTrans(iteVarPrefixes, transAssistant, patternPrefixes, varMan.casesExp()));
 		// transformations.add(new RemoveSetCompAddTrans(transAssist));
 
 		/* C transformations */
