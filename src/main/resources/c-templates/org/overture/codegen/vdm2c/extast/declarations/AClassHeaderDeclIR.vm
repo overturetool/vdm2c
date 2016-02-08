@@ -19,7 +19,7 @@
 
 //values / global const
 #foreach( $val in $node.getValues() )
-extern const TVP $val.getName();
+extern TVP $val.getName();
 #end
 
 \#define $String.format("CLASS_ID_%s_ID %d",$cname, $CFormat.getClassId($cname))
@@ -40,8 +40,8 @@ struct $cname
 };
 
 /* public access functions*/
-#foreach( $method in $node.getMethods() )
-#if($method.getIsConstructor()|| $method.getIsStatic()) $CFormat.format($method.getMethodType().getResult()) $method.getName()($CFormat.format($method.getFormalParams()));
+#foreach( $method in $node.getOriginalDef().getMethods() )
+#if($method.getIsConstructor()|| $CFormat.isPublic($method)) $CFormat.format($method.getMethodType().getResult()) $method.getName()($CFormat.format($method.getFormalParams()).replace("this","this_"));
 #end
 #end
 

@@ -36,6 +36,7 @@ public class AddThisArgToMethodsTrans extends DepthFirstAnalysisAdaptor
 			}
 			SClassDeclIR cDef = node.getAncestor(SClassDeclIR.class);
 			addArgument("this", newExternalType(cDef.getName() + "CLASS"), 0, node.getFormalParams());
+			node.setAccess("private");
 		}
 	}
 

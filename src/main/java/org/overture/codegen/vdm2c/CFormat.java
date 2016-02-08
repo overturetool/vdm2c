@@ -385,4 +385,9 @@ public class CFormat
 		return cl.getName().toString();
 	}
 
+	public boolean isPublic(AMethodDeclIR method)
+	{
+		return "public".equals(method.getAccess());
+	}
+
 }

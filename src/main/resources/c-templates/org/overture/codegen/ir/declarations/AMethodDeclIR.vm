@@ -1,6 +1,4 @@
-#if(!$node.getIsConstructor()) static #end $CFormat.format($node.getMethodType().getResult()) $node.getName()($CFormat.format($node.getFormalParams()))#if($CFormat.isNull($node.getBody()));
-#end
-#if(!$CFormat.isNull($node.getBody())){
+#if($node.getStatic()) static #end $CFormat.format($node.getMethodType().getResult()) $node.getName()($CFormat.format($node.getFormalParams()))#if($CFormat.isNull($node.getBody()));
+#else
 	$CFormat.format($node.getBody())
-}
 #end

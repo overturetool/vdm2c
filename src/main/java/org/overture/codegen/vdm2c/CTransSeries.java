@@ -37,6 +37,7 @@ import org.overture.codegen.trans.quantifier.Exists1CounterData;
 import org.overture.codegen.vdm2c.transformations.AddThisArgToMethodsTrans;
 import org.overture.codegen.vdm2c.transformations.CExp2StmTrans;
 import org.overture.codegen.vdm2c.transformations.CallRewriteTrans;
+import org.overture.codegen.vdm2c.transformations.CreateGlobalConstInitFunctionTrans;
 import org.overture.codegen.vdm2c.transformations.CtorTrans;
 import org.overture.codegen.vdm2c.transformations.ExtractRetValTrans;
 import org.overture.codegen.vdm2c.transformations.FieldIdentifierToFieldGetApplyTrans;
@@ -48,6 +49,7 @@ import org.overture.codegen.vdm2c.transformations.LetTrans;
 import org.overture.codegen.vdm2c.transformations.LiteralInstantiationRewriteTrans;
 import org.overture.codegen.vdm2c.transformations.LogicTrans;
 import org.overture.codegen.vdm2c.transformations.MangleMethodNamesTrans;
+import org.overture.codegen.vdm2c.transformations.MethodVisibilityTrans;
 import org.overture.codegen.vdm2c.transformations.NewRewriteTrans;
 import org.overture.codegen.vdm2c.transformations.NumericTrans;
 import org.overture.codegen.vdm2c.transformations.RemoveCWrappersTrans;
@@ -147,6 +149,7 @@ public class CTransSeries
 		/**
 		 * Phase #2 - Not defined yet.
 		 */
+		transformations.add(new CreateGlobalConstInitFunctionTrans(transAssistant));
 		transformations.add(new AddThisArgToMethodsTrans(transAssistant));
 		transformations.add(new MangleMethodNamesTrans(transAssistant));
 
@@ -167,6 +170,7 @@ public class CTransSeries
 		 */
 		transformations.add(new RemoveCWrappersTrans(transAssistant));
 		transformations.add(new ScopeCleanerTrans(transAssistant));
+		transformations.add(new MethodVisibilityTrans(transAssistant));
 
 		return transformations;
 	}

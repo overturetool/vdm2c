@@ -39,9 +39,12 @@ public class CGen extends CodeGenBase
 			List<IRStatus<PIR>> statuses) throws AnalysisException
 	{
 		statuses = replaceSystemClassWithClass(statuses);
+		
+		generateClassHeaders(statuses);
+		
 		applyTransformations(statuses);
 
-		generateClassHeaders(statuses);
+		
 
 		VTableGenerator.generate(IRStatus.extract(statuses, AClassHeaderDeclIR.class));
 

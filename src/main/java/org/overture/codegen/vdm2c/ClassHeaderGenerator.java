@@ -16,14 +16,10 @@ import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.analysis.DepthFirstAnalysisAdaptor;
 import org.overture.codegen.ir.declarations.ADefaultClassDeclIR;
 import org.overture.codegen.ir.declarations.AFieldDeclIR;
-import org.overture.codegen.ir.declarations.AFormalParamLocalParamIR;
-import org.overture.codegen.ir.declarations.AMethodDeclIR;
 import org.overture.codegen.ir.declarations.SClassDeclIR;
 import org.overture.codegen.ir.name.ATokenNameIR;
-import org.overture.codegen.ir.patterns.AIdentifierPatternIR;
 import org.overture.codegen.ir.types.AClassTypeIR;
 import org.overture.codegen.ir.types.ARecordTypeIR;
-import org.overture.codegen.vdm2c.Vdm2cTag.MethodTag;
 import org.overture.codegen.vdm2c.ast.CGenClonableString;
 import org.overture.codegen.vdm2c.extast.declarations.AClassHeaderDeclIR;
 import org.overture.codegen.vdm2c.extast.declarations.AClassStateDeclIR;
@@ -52,7 +48,6 @@ public class ClassHeaderGenerator
 				if (field.getFinal())
 				{
 					header.getValues().add(field);
-//					field.setName(NameConverter.getCName(field));
 				} else
 				{
 					state.getFields().add(field);
@@ -60,31 +55,6 @@ public class ClassHeaderGenerator
 			}
 
 			header.setState(state);
-
-			for (AMethodDeclIR m : classDef.getMethods())
-			{
-				if (m.getTag() instanceof Vdm2cTag)
-				{
-					if (((Vdm2cTag) m.getTag()).methodTags.contains(MethodTag.Internal))
-					{
-						continue;
-					}
-				}
-				AMethodDeclIR copy = m.clone();
-				copy.setBody(null);
-				for (AFormalParamLocalParamIR formal : copy.getFormalParams())
-				{
-					if (formal.getPattern() instanceof AIdentifierPatternIR)
-					{
-						AIdentifierPatternIR pattern = (AIdentifierPatternIR) formal.getPattern();
-						if (pattern.getName().equals("this"))
-						{
-							pattern.setName("this_ptr");
-						}
-					}
-				}
-				header.getMethods().add(copy);
-			}
 
 			List<CGenClonableString> includes = new Vector<CGenClonableString>();
 
@@ -177,7 +147,7 @@ public class ClassHeaderGenerator
 		return types;
 	}
 
-	private interface HeaderProvider
+	public interface HeaderProvider
 	{
 		public AClassHeaderDeclIR get(String name);
 	}

@@ -45,7 +45,7 @@ public class InitializerExtractorTrans extends DepthFirstAnalysisAdaptor
 			method.setAbstract(false);
 			method.setAsync(false);
 			method.setImplicit(false);
-			method.setStatic(false);
+			method.setStatic(true);
 			method.setIsConstructor(false);
 			method.setTag(new Vdm2cTag().addMethodTag(MethodTag.Internal));
 			method.setBody(body);
@@ -53,11 +53,12 @@ public class InitializerExtractorTrans extends DepthFirstAnalysisAdaptor
 			mtype.setResult(type);
 			method.setMethodType(mtype);
 			method.setName(assist.getInfo().getTempVarNameGen().nextVarName(FIELD_INITIALIZER));
+			method.setName(NameMangler.mangle(method));
 			
 			node.setInitial(newApply(NameMangler.mangle(method)));
 			
 			SClassDeclIR cls = node.getAncestor(SClassDeclIR.class);
-			cls.getMethods().add(method);
+			cls.getMethods().add(0,method);
 		}
 	}
 }

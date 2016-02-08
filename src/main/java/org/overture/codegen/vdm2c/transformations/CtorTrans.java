@@ -43,7 +43,7 @@ public class CtorTrans extends DepthFirstAnalysisAdaptor
 	{
 		if (node.getIsConstructor())
 		{
-			node.setStatic(true);// make available in the class header
+			node.setStatic(false);// make available in the class header
 
 			// rename
 			node.setName(NameMangler.mangle(node));

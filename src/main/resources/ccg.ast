@@ -41,7 +41,6 @@ IR = #decl
     	(originalDef):IR.#decl.#Class
 		(flattenedSupers):IR.#decl.classHeader*
 		[state]:IR.#decl.classState
-    	[methods]:IR.#decl.method*
     	[includes]:eString*
     	[vtable]:eVtables
     	(values):IR.#decl.field*
