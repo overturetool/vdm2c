@@ -1,0 +1,11 @@
+class ClassValueTest is subclass of TestCase,ClassValue
+
+operations
+
+public testOp1 : () ==>()
+testOp1()== assertTrue(op1());
+
+public testOpOtherValue : () ==>()
+testOpOtherValue()== assertTrue(opOtherValue());
+
+end ClassValueTest
