@@ -4,6 +4,7 @@ import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.analysis.DepthFirstAnalysisAdaptor;
 import org.overture.codegen.ir.declarations.AFieldDeclIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
+import org.overture.codegen.vdm2c.utils.CTransUtil;
 import org.overture.codegen.vdm2c.utils.NameConverter;
 
 public class RenameValueFieldsTrans extends DepthFirstAnalysisAdaptor
@@ -16,7 +17,10 @@ public class RenameValueFieldsTrans extends DepthFirstAnalysisAdaptor
 	@Override
 	public void caseAFieldDeclIR(AFieldDeclIR node) throws AnalysisException
 	{
-		node.setName(NameConverter.getCName(node));
+		if (CTransUtil.isValueDefinition(node))
+		{
+			node.setName(NameConverter.getCName(node));
+		}
 		super.caseAFieldDeclIR(node);
 	}
 

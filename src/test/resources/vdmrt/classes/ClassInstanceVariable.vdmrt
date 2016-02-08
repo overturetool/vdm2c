@@ -1,0 +1,15 @@
+class ClassInstanceVariable
+
+instance variables
+
+field1 : int := 9;
+
+operations
+
+public getField1: () ==> int
+getField1()==return field1;
+
+public setField1: int ==> ()
+setField1(v)== field1:=v;
+
+end ClassInstanceVariable

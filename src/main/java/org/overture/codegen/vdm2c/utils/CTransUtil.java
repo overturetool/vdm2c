@@ -4,15 +4,22 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.overture.ast.definitions.ALocalDefinition;
+import org.overture.ast.definitions.AValueDefinition;
+import org.overture.ast.expressions.AVariableExp;
+import org.overture.ast.node.INode;
 import org.overture.codegen.ir.SExpIR;
 import org.overture.codegen.ir.SPatternIR;
 import org.overture.codegen.ir.SStmIR;
 import org.overture.codegen.ir.STypeIR;
 import org.overture.codegen.ir.analysis.AnalysisException;
+import org.overture.codegen.ir.declarations.AFieldDeclIR;
 import org.overture.codegen.ir.declarations.AFormalParamLocalParamIR;
+import org.overture.codegen.ir.declarations.AMethodDeclIR;
 import org.overture.codegen.ir.declarations.AVarDeclIR;
 import org.overture.codegen.ir.expressions.AApplyExpIR;
 import org.overture.codegen.ir.expressions.ACastUnaryExpIR;
+import org.overture.codegen.ir.expressions.AExplicitVarExpIR;
 import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
 import org.overture.codegen.ir.expressions.AIntLiteralExpIR;
 import org.overture.codegen.ir.patterns.AIdentifierPatternIR;
@@ -20,7 +27,10 @@ import org.overture.codegen.ir.statements.AAssignToExpStmIR;
 import org.overture.codegen.ir.statements.AExpStmIR;
 import org.overture.codegen.ir.statements.AReturnStmIR;
 import org.overture.codegen.ir.types.AExternalTypeIR;
+import org.overture.codegen.ir.types.AMethodTypeIR;
 import org.overture.codegen.ir.SourceNode;
+import org.overture.codegen.vdm2c.Vdm2cTag;
+import org.overture.codegen.vdm2c.Vdm2cTag.MethodTag;
 import org.overture.codegen.vdm2c.extast.expressions.AArrayIndexExpIR;
 import org.overture.codegen.vdm2c.extast.expressions.ACExpIR;
 import org.overture.codegen.vdm2c.extast.expressions.AMacroApplyExpIR;
@@ -64,7 +74,6 @@ public class CTransUtil
 		return ident;
 	}
 
-	
 	public static AVarDeclIR newDeclarationAssignment(SPatternIR varName,
 			STypeIR varType, SExpIR value, SourceNode derrivedFrom)
 	{
@@ -75,8 +84,7 @@ public class CTransUtil
 		retVar.setExp(value);
 		return retVar;
 	}
-	
-	
+
 	public static AVarDeclIR newDeclarationAssignment(String varName,
 			STypeIR varType, SExpIR value, SourceNode derrivedFrom)
 	{
@@ -237,17 +245,70 @@ public class CTransUtil
 		exp.setValue(i);
 		return exp;
 	}
+
 	public static SExpIR newParen(SExpIR exp)
 	{
 		AParenExpIR parent = new AParenExpIR();
 		parent.setExp(exp);
 		return parent;
 	}
-	
+
 	public static SStmIR newLocalDefinition(AVarDeclIR decl)
 	{
 		ALocalVariableDeclarationStmIR localDef = new ALocalVariableDeclarationStmIR();
 		localDef.setDecleration(decl);
 		return localDef;
 	}
+
+	public static AMethodDeclIR newInternalMethod(String name, SStmIR body,
+			STypeIR returnType) throws AnalysisException
+	{
+		AMethodDeclIR method = new AMethodDeclIR();
+		method.setAbstract(false);
+		method.setAsync(false);
+		method.setImplicit(false);
+		method.setStatic(true);
+		method.setIsConstructor(false);
+		method.setTag(new Vdm2cTag().addMethodTag(MethodTag.Internal));
+		method.setBody(body);
+		AMethodTypeIR mtype = new AMethodTypeIR();
+		mtype.setResult(returnType);
+		method.setMethodType(mtype);
+		method.setName(name);
+		method.setName(NameMangler.mangle(method));
+		return method;
+	}
+
+	public static boolean isValueDefinition(AFieldDeclIR node)
+	{
+
+		if (node.getSourceNode() != null
+				&& node.getSourceNode().getVdmNode() != null)
+		{
+			INode vdmNode = node.getSourceNode().getVdmNode();
+			return vdmNode instanceof AValueDefinition
+					|| vdmNode instanceof ALocalDefinition
+					&& ((ALocalDefinition) vdmNode).getValueDefinition();
+		}
+		return false;
+	}
+
+	public static boolean isValueDefinition(AExplicitVarExpIR node)
+	{
+		INode vdmNode = node.getSourceNode().getVdmNode();
+		if (vdmNode instanceof AVariableExp)
+		{
+			AVariableExp varExp = (AVariableExp) vdmNode;
+			if (varExp.getVardef() instanceof ALocalDefinition)
+			{
+				ALocalDefinition local = (ALocalDefinition) varExp.getVardef();
+				if (local.getValueDefinition())
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 }
