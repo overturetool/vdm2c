@@ -127,7 +127,6 @@ public class CallRewriteTrans extends DepthFirstAnalysisAdaptor
 			{
 				// this is a call
 				String name = root.getName();
-				System.out.println();
 				SClassDeclIR cDef = node.getAncestor(SClassDeclIR.class);
 				List<PDefinition> tmp = methodCollector.collectCompatibleMethods((SClassDefinition) cDef.getSourceNode().getVdmNode(), name, node.getSourceNode().getVdmNode(), methodCollector.getArgTypes(node.getSourceNode().getVdmNode()));
 				System.out.println();
