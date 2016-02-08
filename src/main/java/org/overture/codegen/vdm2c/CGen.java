@@ -33,18 +33,16 @@ public class CGen extends CodeGenBase
 	{
 		this.outputFolder = outputFolder;
 	}
-	
+
 	@Override
-	protected GeneratedData genVdmToTargetLang(
-			List<IRStatus<PIR>> statuses) throws AnalysisException
+	protected GeneratedData genVdmToTargetLang(List<IRStatus<PIR>> statuses)
+			throws AnalysisException
 	{
 		statuses = replaceSystemClassWithClass(statuses);
-		
-		generateClassHeaders(statuses);
-		
-		applyTransformations(statuses);
 
-		
+		generateClassHeaders(statuses);
+
+		applyTransformations(statuses);
 
 		VTableGenerator.generate(IRStatus.extract(statuses, AClassHeaderDeclIR.class));
 
@@ -69,36 +67,37 @@ public class CGen extends CodeGenBase
 		IRStatus<PIR> status = null;
 		for (IRStatus<PIR> irStatus : statuses)
 		{
-			if(irStatus.getIrNode() instanceof ASystemClassDeclIR)
+			if (irStatus.getIrNode() instanceof ASystemClassDeclIR)
 			{
 				status = irStatus;
-				
+
 			}
 		}
-		
-		if(status!=null)
+
+		if (status != null)
 		{
 			ASystemClassDeclIR systemDef = (ASystemClassDeclIR) status.getIrNode();
 			ADefaultClassDeclIR cDef = new ADefaultClassDeclIR();
 			cDef.setName(systemDef.getName());
 			for (AFieldDeclIR f : systemDef.getFields())
 			{
-				if(f.getType() instanceof AClassTypeIR)
+				if (f.getType() instanceof AClassTypeIR)
 				{
 					AClassTypeIR type = (AClassTypeIR) f.getType();
-					if(type.getName().equals("CPU")|| type.getName().equals("BUS"))
+					if (type.getName().equals("CPU")
+							|| type.getName().equals("BUS"))
 						continue;
 				}
-				
-//				if(f.getType() instanceof abus instanceof ABusClassDeclIR || f instanceof ACpuClassDeclIR)
-//					continue;
+
+				// if(f.getType() instanceof abus instanceof ABusClassDeclIR || f instanceof ACpuClassDeclIR)
+				// continue;
 				cDef.getFields().add(f.clone());
 			}
-			//FIXME: add and filter the constructur for RT calls on cpus and busses
-			
+			// FIXME: add and filter the constructur for RT calls on cpus and busses
+
 			status.setIrNode(cDef);
 		}
-		
+
 		return statuses;
 	}
 
@@ -111,11 +110,7 @@ public class CGen extends CodeGenBase
 			{
 				try
 				{
-					if (!getInfo().getDeclAssistant().isLibraryName(status.getIrNodeName()))
-					{
-						generator.applyPartialTransformation(status, trans);
-						
-					}
+					generator.applyPartialTransformation(status, trans);
 
 				} catch (org.overture.codegen.ir.analysis.AnalysisException e)
 				{
@@ -153,8 +148,7 @@ public class CGen extends CodeGenBase
 	}
 
 	public void writeClasses(File outputFolder,
-			final List<IRStatus<PIR>> statuses,
-			CFormat my_formatter)
+			final List<IRStatus<PIR>> statuses, CFormat my_formatter)
 	{
 		for (IRStatus<ADefaultClassDeclIR> status : IRStatus.extract(statuses, ADefaultClassDeclIR.class))
 		{
@@ -180,8 +174,7 @@ public class CGen extends CodeGenBase
 	}
 
 	public void writeHeaders(File outputFolder,
-			final List<IRStatus<PIR>> statuses,
-			CFormat my_formatter)
+			final List<IRStatus<PIR>> statuses, CFormat my_formatter)
 	{
 		for (IRStatus<AClassHeaderDeclIR> status : IRStatus.extract(statuses, AClassHeaderDeclIR.class))
 		{
@@ -202,8 +195,7 @@ public class CGen extends CodeGenBase
 		}
 	}
 
-	public void generateClassHeaders(
-			final List<IRStatus<PIR>> statuses)
+	public void generateClassHeaders(final List<IRStatus<PIR>> statuses)
 	{
 		try
 		{
