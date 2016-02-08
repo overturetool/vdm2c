@@ -10,7 +10,11 @@ public class Vdm2cTag
 		/**
 		 * Internal method, should not be exported and included in the VTable
 		 */
-		Internal 
+		Internal, 
+		/**
+		 * Do not generate code in .c
+		 */
+		HeaderOnly 
 	};
 
 	public final Set<MethodTag> methodTags = new HashSet<MethodTag>();

@@ -45,6 +45,7 @@ import org.overture.codegen.vdm2c.transformations.ForLoopTrans;
 import org.overture.codegen.vdm2c.transformations.IfTrans;
 import org.overture.codegen.vdm2c.transformations.IgnoreRenamingTrans;
 import org.overture.codegen.vdm2c.transformations.InitializerExtractorTrans;
+import org.overture.codegen.vdm2c.transformations.IsNotYetSpecifiedTrans;
 import org.overture.codegen.vdm2c.transformations.LetTrans;
 import org.overture.codegen.vdm2c.transformations.LiteralInstantiationRewriteTrans;
 import org.overture.codegen.vdm2c.transformations.LogicTrans;
@@ -145,6 +146,7 @@ public class CTransSeries
 		transformations.add(new RenameValueFieldsTrans(transAssistant));
 		transformations.add(new ValueAccessRenameTrans(transAssistant));
 		transformations.add(new LetTrans(transAssistant));
+		
 
 		/**
 		 * Phase #2 - Not defined yet.
@@ -152,6 +154,8 @@ public class CTransSeries
 		transformations.add(new CreateGlobalConstInitFunctionTrans(transAssistant));
 		transformations.add(new AddThisArgToMethodsTrans(transAssistant));
 		transformations.add(new MangleMethodNamesTrans(transAssistant));
+		//not name mangle
+		transformations.add(new IsNotYetSpecifiedTrans(transAssistant));
 
 		transformations.add(new CallRewriteTrans(transAssistant));
 		transformations.add(new ExtractRetValTrans(transAssistant));

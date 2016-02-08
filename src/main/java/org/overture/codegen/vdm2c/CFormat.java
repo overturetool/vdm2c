@@ -389,5 +389,10 @@ public class CFormat
 	{
 		return "public".equals(method.getAccess());
 	}
+	
+	public boolean hasMethodTagHeaderOnly(AMethodDeclIR method)
+	{
+		return method.getTag() instanceof Vdm2cTag && ((Vdm2cTag)method.getTag()).methodTags.contains(Vdm2cTag.MethodTag.HeaderOnly);
+	}
 
 }

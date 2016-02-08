@@ -1,0 +1,15 @@
+class ClassIsNotYetSpecified
+
+operations
+
+public opNotSpecified : () ==> ()
+opNotSpecified()== is not yet specified;
+
+
+functions
+	
+public funNotSpecified :  () -> bool
+funNotSpecified () == is not yet specified;
+
+
+end ClassIsNotYetSpecified

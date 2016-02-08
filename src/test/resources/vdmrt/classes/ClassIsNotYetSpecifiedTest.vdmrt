@@ -1,0 +1,11 @@
+class ClassIsNotYetSpecifiedTest is subclass of TestCase,ClassIsNotYetSpecified
+
+operations
+
+--public testOp1 : () ==>()
+--testOp1()== opNotSpecified();
+--
+--public testOpOtherValue : () ==>()
+--testOpOtherValue()== assertTrue(funNotSpecified());
+
+end ClassIsNotYetSpecifiedTest

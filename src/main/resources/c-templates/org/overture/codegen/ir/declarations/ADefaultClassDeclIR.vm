@@ -33,7 +33,7 @@ static void ${cname}_free(struct ${cname} *this)
 
 // The methods but not constructors
 #foreach( $method in $node.getMethods() )
-#if(!$method.getIsConstructor())
+#if( !$method.getIsConstructor() && !$CFormat.hasMethodTagHeaderOnly($method) )
 $CFormat.format($method)
 #end
 #end
