@@ -52,6 +52,9 @@ public class CallRewriteTrans extends DepthFirstAnalysisAdaptor
 	public void caseAPlainCallStmIR(APlainCallStmIR node)
 			throws AnalysisException
 	{
+		if((node.getClassType()+"").equals("IO")){
+			return ;//FIXME handle external stuff
+		}
 		// op(a,d,f); --no root, so current class is the root.
 
 		SClassDeclIR cDef = node.getAncestor(SClassDeclIR.class);
@@ -98,7 +101,7 @@ public class CallRewriteTrans extends DepthFirstAnalysisAdaptor
 				for (AMethodDeclIR m : cgClass.getMethods())
 				{
 					if (!m.getIsConstructor()
-							&& m.getSourceNode().getVdmNode() == def)
+							&& m.getSourceNode()!=null && m.getSourceNode().getVdmNode() == def)
 					{
 						methods.add(m);
 					}
@@ -129,6 +132,11 @@ public class CallRewriteTrans extends DepthFirstAnalysisAdaptor
 				List<PDefinition> tmp = methodCollector.collectCompatibleMethods((SClassDefinition) cDef.getSourceNode().getVdmNode(), name, node.getSourceNode().getVdmNode(), methodCollector.getArgTypes(node.getSourceNode().getVdmNode()));
 				System.out.println();
 				List<AMethodDeclIR> resolvedMethods = lookupVdmFunOpToMethods(tmp);
+				if(resolvedMethods.isEmpty())
+				{
+					System.err.println("Generator error unable to find method");
+					return;
+				}
 				assist.replaceNodeWith(node, createApply(resolvedMethods.get(0), cDef.getName(), node.getArgs()));
 			}
 		}
