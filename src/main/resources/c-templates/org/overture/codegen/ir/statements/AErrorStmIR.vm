@@ -1,1 +1,1 @@
-throw new RuntimeException("ERROR statement reached")
+assert(false &&" ERROR statement reached")
