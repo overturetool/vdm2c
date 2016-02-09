@@ -39,9 +39,18 @@ struct $cname
 	$CFormat.format($node.getState())
 };
 
-/* public access functions*/
+/* public access functions */
 #foreach( $method in $node.getOriginalDef().getMethods() )
-#if($method.getIsConstructor()|| $CFormat.isPublic($method)) $CFormat.format($method.getMethodType().getResult()) $method.getName()($CFormat.format($method.getFormalParams()).replace("this","this_"));
+#if($CFormat.isPublic($method)) 
+	$CFormat.format($method.getMethodType().getResult()) $method.getName()($CFormat.format($method.getFormalParams()).replace("this","this_"));
+#end
+#end
+
+/* Constructors */
+#foreach( $method in $node.getOriginalDef().getMethods() )
+#if($method.getIsConstructor()) 
+	$CFormat.formatSource($method)
+	$CFormat.format($method.getMethodType().getResult()) $method.getName()($CFormat.format($method.getFormalParams()).replace("this","this_"));
 #end
 #end
 
