@@ -81,39 +81,4 @@ public class NativeTests extends NativeTestBase
 		compileAndTest(getTestCppFile("rt/RTConstructs_Tests.cpp"));
 	}
 
-	@ConditionalIgnore(condition = HasVdmLib.class)
-	@Test
-	public void ClassValues() throws IOException, InterruptedException,
-			CMakeGenerateException
-	{
-		generate(getPath("classes/ClassValue.vdmrt"));
-		compileAndTest(getTestCppFile("classes/ClassValue_Tests.cpp"));
-	}
-
-	@ConditionalIgnore(condition = HasVdmLib.class)
-	@Test
-	public void ClassInstanceVariable() throws IOException,
-			InterruptedException, CMakeGenerateException
-	{
-		generate(getPath("classes/ClassInstanceVariable.vdmrt"));
-		compileAndTest();
-	}
-	
-	@ConditionalIgnore(condition = HasVdmLib.class)
-	@Test
-	public void ClassInstanceVariableInheritance() throws IOException,
-			InterruptedException, CMakeGenerateException
-	{
-		generate(getPath("classes/ClassInstanceVariableInheritance.vdmrt"));
-		compileAndTest(getTestCppFile("classes/ClassInstanceVariableInheritance_Tests.cpp"));
-	}
-
-	@ConditionalIgnore(condition = HasVdmLib.class)
-	@Test
-	public void ClassIsNotYetSpecified() throws IOException,
-			InterruptedException, CMakeGenerateException
-	{
-		generate(getPath("classes/ClassIsNotYetSpecified.vdmrt"));
-		compileAndTest(getTestCppFile("classes/ClassIsNotYetSpecified_external.c"),getTestCppFile("classes/ClassIsNotYetSpecified_Tests.cpp"));
-	}
 }
