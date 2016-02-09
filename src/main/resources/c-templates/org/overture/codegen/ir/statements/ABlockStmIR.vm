@@ -1,5 +1,6 @@
 {
 #foreach( $stm in $node.getStatements() )
+$CFormat.formatSource($stm)
 $CFormat.format($stm);
 #end
 }

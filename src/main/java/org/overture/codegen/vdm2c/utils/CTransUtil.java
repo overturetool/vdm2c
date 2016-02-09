@@ -236,6 +236,7 @@ public class CTransUtil
 				arg.apply(assist);
 			}
 		}
+		apply.setSourceNode(node.getSourceNode());
 		return apply;
 	}
 
@@ -257,6 +258,7 @@ public class CTransUtil
 	{
 		ALocalVariableDeclarationStmIR localDef = new ALocalVariableDeclarationStmIR();
 		localDef.setDecleration(decl);
+		localDef.setSourceNode(decl.getSourceNode());
 		return localDef;
 	}
 

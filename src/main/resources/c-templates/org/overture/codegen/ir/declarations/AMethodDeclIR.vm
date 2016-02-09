@@ -1,3 +1,4 @@
+$CFormat.formatSource($node)
 #if($node.getStatic()) static #end $CFormat.format($node.getMethodType().getResult()) $node.getName()($CFormat.format($node.getFormalParams()))#if($CFormat.isNull($node.getBody()));
 #else
 	$CFormat.format($node.getBody())

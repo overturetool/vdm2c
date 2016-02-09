@@ -1,13 +1,18 @@
 package org.overture.codegen.vdm2c;
 
 import java.io.StringWriter;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.overture.ast.intf.lex.ILexLocation;
 import org.overture.codegen.ir.INode;
+import org.overture.codegen.ir.IRInfo;
+import org.overture.codegen.ir.PIR;
 import org.overture.codegen.ir.SExpIR;
 import org.overture.codegen.ir.SStmIR;
 import org.overture.codegen.ir.STypeIR;
@@ -26,7 +31,6 @@ import org.overture.codegen.ir.types.ABoolBasicTypeIR;
 import org.overture.codegen.ir.types.SMapTypeIR;
 import org.overture.codegen.ir.types.SSeqTypeIR;
 import org.overture.codegen.ir.types.SSetTypeIR;
-import org.overture.codegen.ir.IRInfo;
 import org.overture.codegen.logging.Logger;
 import org.overture.codegen.merging.MergeVisitor;
 import org.overture.codegen.merging.TemplateCallable;
@@ -45,10 +49,15 @@ public class CFormat
 	private long nextClassId = 0;
 	private Map<String, Long> classIds = new HashMap<String, Long>();
 
+	boolean printSourceNodeLocations = true;
+	final static String commentPattern = "/* %s */";
+
 	public Long getClassId(String name)
 	{
 		if (classIds.containsKey(name))
+		{
 			return classIds.get(name);
+		}
 
 		Long id = nextClassId;
 		classIds.put(name, id);
@@ -108,17 +117,6 @@ public class CFormat
 	{
 		return info.getAssistantManager().getTypeAssistant().isSeqType(exp);
 	}
-
-	// public Boolean isClassType(AFormalParamLocalParamIR fp)
-	// {
-	// return fp.getTag() == "class";
-	// }
-	//
-	// public String getEnclosingClass(AFormalParamLocalParamIR fp)
-	// {
-	// return fp.getAncestor(ADefaultClassDeclIR.class).getName().toString()
-	// + "CLASS";
-	// }
 
 	public String format(SExpIR exp, boolean leftChild)
 			throws AnalysisException
@@ -389,10 +387,43 @@ public class CFormat
 	{
 		return "public".equals(method.getAccess());
 	}
-	
+
 	public boolean hasMethodTagHeaderOnly(AMethodDeclIR method)
 	{
-		return method.getTag() instanceof Vdm2cTag && ((Vdm2cTag)method.getTag()).methodTags.contains(Vdm2cTag.MethodTag.HeaderOnly);
+		return method.getTag() instanceof Vdm2cTag
+				&& ((Vdm2cTag) method.getTag()).methodTags.contains(Vdm2cTag.MethodTag.HeaderOnly);
+	}
+
+	public String formatSource(PIR node)
+	{
+		if (printSourceNodeLocations && node.getSourceNode() != null
+				&& node.getSourceNode().getVdmNode() != null)
+		{
+			org.overture.ast.node.INode vdmNode = node.getSourceNode().getVdmNode();
+			try
+			{
+				Method getLocationMethod = vdmNode.getClass().getMethod("getLocation", new Class<?>[0]);
+				if (getLocationMethod != null)
+				{
+					ILexLocation location = (ILexLocation) getLocationMethod.invoke(vdmNode, new Object[0]);
+					if (location != null)
+					{
+						return String.format(commentPattern, String.format("%s %d:%d", location.getFile().getName(), location.getStartLine(), location.getStartPos()));
+					}
+				}
+			} catch (NoSuchMethodException e)
+			{
+			} catch (SecurityException e)
+			{
+			} catch (IllegalAccessException e)
+			{
+			} catch (IllegalArgumentException e)
+			{
+			} catch (InvocationTargetException e)
+			{
+			}
+		}
+		return "";
 	}
 
 }
