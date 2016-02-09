@@ -6,7 +6,7 @@ protected notExp: () -> bool
 notExp()== not false;
 
 protected andExp: () -> bool
-andExp()== true and true;
+andExp()== true and true and true and true and true;
 
 protected orExp: () -> bool
 orExp()== true or false;

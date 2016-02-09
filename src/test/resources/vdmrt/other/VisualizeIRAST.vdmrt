@@ -1,9 +1,14 @@
 class VisualizeIRAST
-instance variables
-	a : int := 1;
+
 operations
-testduration : () ==> bool
-testduration() == duration(2)
-	(return true);
+test2 : () ==> bool
+test2() ==
+	return true and false and false and true;
 	
+test3 : () ==> bool
+test3() ==
+	(dcl a : int := 3;
+	dcl b : int := 4;
+	dcl c : int := 5;
+	return a + b + c = 3)
 end VisualizeIRAST

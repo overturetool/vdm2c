@@ -1,6 +1,7 @@
 class RTConstructs
 instance variables
 	a : int := 1;
+	
 operations
 testduration : () ==> bool
 testduration() == duration(2)
