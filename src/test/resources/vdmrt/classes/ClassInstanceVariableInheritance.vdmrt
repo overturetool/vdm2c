@@ -1,0 +1,29 @@
+class ClassDepth0 is subclass of ClassDepth1, ClassDepth2
+
+instance variables
+
+field0 : int := 9;
+
+operations
+
+public checkSum: () ==> bool
+checkSum()== return (field0 + field1 + field2) = 12;
+
+end ClassDepth0
+
+
+class ClassDepth1
+
+instance variables
+
+public field1 : int := 1;
+
+end ClassDepth1
+
+class ClassDepth2
+
+instance variables
+
+public field2 : int := 2;
+
+end ClassDepth2

@@ -98,6 +98,15 @@ public class NativeTests extends NativeTestBase
 		generate(getPath("classes/ClassInstanceVariable.vdmrt"));
 		compileAndTest();
 	}
+	
+	@ConditionalIgnore(condition = HasVdmLib.class)
+	@Test
+	public void ClassInstanceVariableInheritance() throws IOException,
+			InterruptedException, CMakeGenerateException
+	{
+		generate(getPath("classes/ClassInstanceVariableInheritance.vdmrt"));
+		compileAndTest(getTestCppFile("classes/ClassInstanceVariableInheritance_Tests.cpp"));
+	}
 
 	@ConditionalIgnore(condition = HasVdmLib.class)
 	@Test

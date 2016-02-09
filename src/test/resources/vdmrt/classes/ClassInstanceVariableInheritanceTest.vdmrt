@@ -1,0 +1,8 @@
+class ClassInstanceVariableInheritanceTest is subclass of TestCase,ClassDepth0
+
+operations
+
+public testSumFields : () ==>()
+testSumFields()==assertTrue( checkSum());
+
+end ClassInstanceVariableInheritanceTest
