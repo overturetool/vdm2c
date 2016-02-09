@@ -50,6 +50,7 @@ import org.overture.codegen.vdm2c.transformations.LetTrans;
 import org.overture.codegen.vdm2c.transformations.LiteralInstantiationRewriteTrans;
 import org.overture.codegen.vdm2c.transformations.LogicTrans;
 import org.overture.codegen.vdm2c.transformations.MangleMethodNamesTrans;
+import org.overture.codegen.vdm2c.transformations.MapSeqUpdateRewriteTrans;
 import org.overture.codegen.vdm2c.transformations.MethodVisibilityTrans;
 import org.overture.codegen.vdm2c.transformations.NewRewriteTrans;
 import org.overture.codegen.vdm2c.transformations.NumericTrans;
@@ -166,6 +167,7 @@ public class CTransSeries
 
 		transformations.add(new ForLoopTrans(transAssistant));
 		transformations.add(new IfTrans(transAssistant));
+		transformations.add(new MapSeqUpdateRewriteTrans(transAssistant));
 
 		transformations.add(new SubClassResponsibilityMethodsTrans(transAssistant));
 
