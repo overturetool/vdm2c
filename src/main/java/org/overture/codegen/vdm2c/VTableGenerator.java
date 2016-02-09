@@ -5,19 +5,20 @@ import static org.overture.codegen.vdm2c.utils.CTransUtil.newApply;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newDeclarationAssignment;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newExternalType;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newIdentifierPattern;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.newLocalDefinition;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newReturnStm;
 
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Vector;
 
+import org.overture.codegen.ir.IRStatus;
 import org.overture.codegen.ir.SDeclIR;
 import org.overture.codegen.ir.SExpIR;
 import org.overture.codegen.ir.declarations.AFormalParamLocalParamIR;
 import org.overture.codegen.ir.declarations.AMethodDeclIR;
 import org.overture.codegen.ir.declarations.SClassDeclIR;
 import org.overture.codegen.ir.statements.ABlockStmIR;
-import org.overture.codegen.ir.IRStatus;
 import org.overture.codegen.vdm2c.ast.Vtables;
 import org.overture.codegen.vdm2c.ast.Vtables.VEntry;
 import org.overture.codegen.vdm2c.ast.Vtables.VEntryOverride;
@@ -69,12 +70,13 @@ public class VTableGenerator
 					body.setScoped(true);
 
 					SExpIR downcast = newApply("CLASS_DOWNCAST", createIdentifier(superName, null), createIdentifier(cDef.getName(), null), createIdentifier("base", null));
-					body.getLocalDefs().add(newDeclarationAssignment("this", newExternalType(cDef.getName()
-							+ "CLASS"), downcast, null));
+
+					body.getStatements().add(newLocalDefinition(newDeclarationAssignment("this", newExternalType(cDef.getName()
+							+ "CLASS"), downcast, null)));
 
 					body.getStatements().add(newReturnStm(newApply(ov.override.getName(), args.toArray(new SExpIR[0]))));
 					overrideProxy.setBody(body);
-					
+
 					cDef.getMethods().add(overrideProxy);
 				}
 			}
@@ -94,7 +96,9 @@ public class VTableGenerator
 			for (AMethodDeclIR m : cDef.getMethods())
 			{
 				if (excludeFromVtable(m))
+				{
 					continue;
+				}
 				tables.table.add(new VEntry(m.getName(), m));
 			}
 
@@ -127,11 +131,12 @@ public class VTableGenerator
 
 		}
 	}
-	
-	
+
 	static boolean excludeFromVtable(AMethodDeclIR m)
 	{
-		return m.getIsConstructor() || (m.getTag() instanceof Vdm2cTag && ((Vdm2cTag)m.getTag()).methodTags.contains(Vdm2cTag.MethodTag.Internal));
+		return m.getIsConstructor()
+				|| m.getTag() instanceof Vdm2cTag
+				&& ((Vdm2cTag) m.getTag()).methodTags.contains(Vdm2cTag.MethodTag.Internal);
 	}
 
 }
