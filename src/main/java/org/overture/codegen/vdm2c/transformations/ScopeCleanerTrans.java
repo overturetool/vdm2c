@@ -31,6 +31,12 @@ public class ScopeCleanerTrans extends DepthFirstAnalysisAdaptor
 			node.parent().removeChild(node);
 		}
 
+		// convert all declerations to statements with local definitions
+		for (int i = node.getLocalDefs().size() - 1; i >= 0; i--)
+		{
+			node.getStatements().add(0, newLocalDefinition(node.getLocalDefs().get(i)));
+		}
+
 		// remove unnecessary scopes
 		if (node.getLocalDefs().isEmpty()
 				&& node.parent() instanceof ABlockStmIR)
