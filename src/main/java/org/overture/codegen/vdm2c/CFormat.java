@@ -27,6 +27,7 @@ import org.overture.codegen.ir.expressions.AEqualsBinaryExpIR;
 import org.overture.codegen.ir.expressions.ANotEqualsBinaryExpIR;
 import org.overture.codegen.ir.expressions.ANotUnaryExpIR;
 import org.overture.codegen.ir.expressions.SBinaryExpIR;
+import org.overture.codegen.ir.statements.ABlockStmIR;
 import org.overture.codegen.ir.types.ABoolBasicTypeIR;
 import org.overture.codegen.ir.types.SMapTypeIR;
 import org.overture.codegen.ir.types.SSeqTypeIR;
@@ -424,6 +425,11 @@ public class CFormat
 			}
 		}
 		return "";
+	}
+	
+	public boolean isBlock(PIR node)
+	{
+		return node instanceof ABlockStmIR;
 	}
 
 }
