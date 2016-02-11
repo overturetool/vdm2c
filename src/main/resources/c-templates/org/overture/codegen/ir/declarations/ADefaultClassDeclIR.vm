@@ -5,12 +5,14 @@
 \#include "$String.format("%s.h",$cname)"
 \#include <stdio.h>
 \#include <string.h>
-	
 
-
-
-
-// Memory management methods
+#[[
+/* -------------------------------
+ *
+ * Memory management methods
+ *
+ --------------------------------- */
+]]#
 void ${cname}_free_fields(struct ${cname} *this)
 {
 	//free class struct
@@ -31,13 +33,26 @@ static void ${cname}_free(struct ${cname} *this)
 	}
 }
 
-// The methods but not constructors
+#[[
+/* -------------------------------
+ *
+ * Member methods 
+ *
+ --------------------------------- */
+ ]]#
 #foreach( $method in $node.getMethods() )
 #if( !$method.getIsConstructor() && !$CFormat.hasMethodTagHeaderOnly($method) )
 $CFormat.format($method)
 #end
 #end
 
+#[[
+/* -------------------------------
+ *
+ * VTable
+ *
+ --------------------------------- */
+ ]]#
 // VTable for this class
 $CFormat.format($CFormat.getHeader($node).getVtable().getVTableDeclarations())
 
@@ -46,7 +61,14 @@ $CFormat.format($CFormat.getHeader($node).getVtable().getVTableDeclarations())
 $CFormat.format($field)
 #end
 
-// The internal memory constructor
+#[[
+/* -------------------------------
+ *
+ * Internal memory constructor
+ *
+ --------------------------------- */
+ ]]#
+ 
 ${cname}CLASS ${cname}_Constructor(${cname}CLASS this_ptr)
 {
 
@@ -110,16 +132,27 @@ static TVP new()
 const struct ${cname}Class ${cname} =
 { ._new = &new };
 
+#[[
+/* -------------------------------
+ *
+ * Public class constructors
+ *
+ --------------------------------- */ 
+ ]]#
 
-
-// The VDM accessible constructor methods
 #foreach( $method in $node.getMethods() )
 #if($method.getIsConstructor())
 $CFormat.format($method)
 #end
 #end
 
-
+#[[
+/* -------------------------------
+ *
+ * Global class fields
+ *
+ --------------------------------- */
+ ]]#
 // initialize globals - this is done last since they are declared in the header but uses init functions which are printet in any order
 #foreach($field in $node.getFields())
 	#if($field.getFinal())
