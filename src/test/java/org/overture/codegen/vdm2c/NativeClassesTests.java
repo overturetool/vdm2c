@@ -35,6 +35,16 @@ public class NativeClassesTests extends NativeTestBase
 		generate(getPath("classes/ClassInstanceVariableInheritance.vdmrt"));
 		compileAndTest(getTestCppFile("classes/ClassInstanceVariableInheritance_Tests.cpp"));
 	}
+	
+	
+	@ConditionalIgnore(condition = HasVdmLib.class)
+	@Test
+	public void ClassInstanceVariableSeqAssign() throws IOException,
+			InterruptedException, CMakeGenerateException
+	{
+		generate(getPath("classes/ClassInstanceVariableSeqAssign.vdmrt"));
+		compileAndTest();
+	}
 
 	@ConditionalIgnore(condition = HasVdmLib.class)
 	@Test
@@ -71,4 +81,7 @@ public class NativeClassesTests extends NativeTestBase
 		generate(getPath("classes/ClassOpInheritanceOverride.vdmrt"));
 		compileAndTest(getTestCppFile("classes/ClassOpInheritanceOverride_Tests.cpp"));
 	}
+	
+	
+	
 }

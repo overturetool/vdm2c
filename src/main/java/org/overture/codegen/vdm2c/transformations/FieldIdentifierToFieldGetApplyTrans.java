@@ -5,6 +5,9 @@ import static org.overture.codegen.vdm2c.utils.CTransUtil.exp2Stm;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newDeclarationAssignment;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newMacroApply;
 
+import java.util.List;
+import java.util.Vector;
+
 import org.overture.ast.definitions.AClassClassDefinition;
 import org.overture.ast.definitions.AInheritedDefinition;
 import org.overture.ast.definitions.AInstanceVariableDefinition;
@@ -12,10 +15,11 @@ import org.overture.ast.definitions.ALocalDefinition;
 import org.overture.ast.definitions.PDefinition;
 import org.overture.ast.expressions.AVariableExp;
 import org.overture.ast.node.INode;
+import org.overture.ast.statements.AIdentifierStateDesignator;
 import org.overture.ast.types.AFunctionType;
 import org.overture.ast.types.AOperationType;
+import org.overture.cgc.extast.analysis.DepthFirstAnalysisCAdaptor;
 import org.overture.codegen.ir.analysis.AnalysisException;
-import org.overture.codegen.ir.analysis.DepthFirstAnalysisAdaptor;
 import org.overture.codegen.ir.declarations.ADefaultClassDeclIR;
 import org.overture.codegen.ir.declarations.AFieldDeclIR;
 import org.overture.codegen.ir.declarations.AVarDeclIR;
@@ -29,7 +33,7 @@ import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.extast.expressions.AMacroApplyExpIR;
 
 public class FieldIdentifierToFieldGetApplyTrans extends
-		DepthFirstAnalysisAdaptor
+		DepthFirstAnalysisCAdaptor
 {
 	public TransAssistantIR assist;
 
@@ -49,6 +53,9 @@ public class FieldIdentifierToFieldGetApplyTrans extends
 			return;
 		}
 
+		String thisClassName = null;
+		String fieldClassName = null;
+
 		INode vdmNode = node.getSourceNode().getVdmNode();
 		if (vdmNode instanceof AVariableExp)
 		{
@@ -60,9 +67,8 @@ public class FieldIdentifierToFieldGetApplyTrans extends
 				return;
 			}
 
-			String thisClassName = varExp.getAncestor(AClassClassDefinition.class).getName().getName();// the containing
-																										// class
-			String fieldClassName = null;
+			thisClassName = varExp.getAncestor(AClassClassDefinition.class).getName().getName();// the containing
+																								// class
 
 			PDefinition vardef = varExp.getVardef();
 			if (vardef instanceof AInstanceVariableDefinition)
@@ -72,10 +78,53 @@ public class FieldIdentifierToFieldGetApplyTrans extends
 			{
 				AInheritedDefinition idef = (AInheritedDefinition) vardef;
 				fieldClassName = idef.getClassDefinition().getName().getName();
-			}else if (vardef instanceof ALocalDefinition && ((ALocalDefinition)vardef).getValueDefinition())
+			} else if (vardef instanceof ALocalDefinition
+					&& ((ALocalDefinition) vardef).getValueDefinition())
 			{
 				return;
 			}
+
+		} else if (vdmNode instanceof AIdentifierStateDesignator)
+		{
+			AIdentifierStateDesignator designator = (AIdentifierStateDesignator) vdmNode;
+
+			// why is the definition not kept here? we dont know what this points to
+
+			AClassClassDefinition thisClass = designator.getAncestor(AClassClassDefinition.class);// the containing
+																									// class
+			thisClassName = thisClass.getName().getName();
+
+//			while (thisClass != null && fieldClassName == null)
+			{
+				List<PDefinition> definitons = new Vector<PDefinition>();
+				definitons.addAll(thisClass.getDefinitions());
+				definitons.addAll(thisClass.getAllInheritedDefinitions());
+				for (PDefinition def : definitons)
+				{
+					if (def instanceof AInheritedDefinition)
+					{
+						def = ((AInheritedDefinition)def).getSuperdef();
+					}
+					
+					if (def instanceof AInstanceVariableDefinition)
+					{
+						if (def.getName().getName().equals(designator.getName().getName()))
+						{
+							fieldClassName = def.getClassDefinition().getName().getName();
+							break;
+						}
+					} 
+				}
+			}
+
+			if (fieldClassName == null)
+			{
+				System.out.println();
+			}
+		}
+
+		if (thisClassName != null && fieldClassName != null)
+		{
 
 			AMacroApplyExpIR apply = newMacroApply("GET_FIELD_PTR");
 			assist.replaceNodeWith(node, apply);

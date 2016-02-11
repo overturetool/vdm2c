@@ -1,0 +1,29 @@
+class ClassInstanceVariableSeqAssignDepth0
+
+instance variables
+
+protected fieldSeq0 : seq of int := [9];
+
+end ClassInstanceVariableSeqAssignDepth0
+
+class ClassInstanceVariableSeqAssign is subclass of ClassInstanceVariableSeqAssignDepth0
+
+instance variables
+
+fieldSeq : seq of int := [9];
+
+operations
+
+public getField1: () ==> seq of int
+getField1()==return fieldSeq;
+
+public setField1: int *int ==> ()
+setField1(index,v)== fieldSeq(index):=v;
+
+public getField0: () ==> seq of int
+getField0()==return fieldSeq0;
+
+public setField0: int *int ==> ()
+setField0(index,v)== fieldSeq0(index):=v;
+
+end ClassInstanceVariableSeqAssign
