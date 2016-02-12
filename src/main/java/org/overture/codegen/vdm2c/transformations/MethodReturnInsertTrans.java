@@ -1,13 +1,15 @@
 package org.overture.codegen.vdm2c.transformations;
 
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newReturnStm;
-import static org.overture.codegen.vdm2c.utils.CTransUtil.toExp;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.*;
 
 import org.overture.cgc.extast.analysis.DepthFirstAnalysisCAdaptor;
 import org.overture.codegen.ir.SStmIR;
 import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.declarations.AMethodDeclIR;
 import org.overture.codegen.ir.statements.ABlockStmIR;
+import org.overture.codegen.ir.statements.AElseIfStmIR;
+import org.overture.codegen.ir.statements.AIfStmIR;
 import org.overture.codegen.ir.statements.AReturnStmIR;
 import org.overture.codegen.ir.types.AVoidTypeIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
@@ -44,7 +46,10 @@ public class MethodReturnInsertTrans extends DepthFirstAnalysisCAdaptor
 
 	private void insertReturn(SStmIR body) throws AnalysisException
 	{
-		if (body instanceof AReturnStmIR)
+		if (body == null)
+		{
+			return;
+		} else if (body instanceof AReturnStmIR)
 		{
 			return;
 		} else if (body instanceof ABlockStmIR)
@@ -58,6 +63,28 @@ public class MethodReturnInsertTrans extends DepthFirstAnalysisCAdaptor
 				insertReturn(((ABlockStmIR) body).getStatements().getLast());
 			}
 
+		} else if (body instanceof AElseIfStmIR)
+		{
+AElseIfStmIR elif = (AElseIfStmIR) body;
+insertReturn(elif.getThenStm());
+//if(elif.getThenStm().getElseIf()!=null)
+//insertReturn(toStm(elif.getElseIf()));
+return;
+
+		} else if (body instanceof AIfStmIR)
+		{
+			AIfStmIR stmIf = (AIfStmIR) body;
+			insertReturn(stmIf.getThenStm());
+			for (AElseIfStmIR elif : stmIf.getElseIf())
+			{
+				insertReturn(elif);
+			}
+			if (stmIf.getElseStm() != null)
+			{
+				insertReturn(stmIf.getElseStm());
+			}
+
+			return;
 		} else
 		{
 			assist.replaceNodeWith(body, newReturnStm(toExp(body.clone())));

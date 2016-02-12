@@ -107,7 +107,7 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 		for (SExpIR arg : linkedList)
 		{
 			arg.apply(THIS);
-			apply.getArgs().add(arg);
+			apply.getArgs().add(arg.clone());
 		}
 		return apply;
 	}
