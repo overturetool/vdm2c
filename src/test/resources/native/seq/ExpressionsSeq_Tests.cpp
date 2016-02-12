@@ -19,7 +19,7 @@ extern "C"
 #endif
 }
 
-#define CHECK(methodId) TVP c=ExpressionSeq._new();\
+#define CHECK(methodId) TVP c=_Z13ExpressionSeqEV(NULL);\
 TVP res=CALL_FUNC(ExpressionSeq,ExpressionSeq,c,methodId);\
 EXPECT_EQ (true,res->value.boolVal);\
 vdmFree(res);\

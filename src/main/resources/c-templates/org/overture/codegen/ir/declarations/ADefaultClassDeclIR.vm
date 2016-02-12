@@ -128,9 +128,6 @@ static TVP new()
 			{	.ptr=newClassValue(ptr->_${cname}_id, &ptr->_${cname}_refs, (freeVdmClassFunction)&${cname}_free, ptr)});
 }
 
-//Drepecated only there to support existing tests
-const struct ${cname}Class ${cname} =
-{ ._new = &new };
 
 #[[
 /* -------------------------------

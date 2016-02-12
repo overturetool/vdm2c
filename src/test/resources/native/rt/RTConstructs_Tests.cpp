@@ -16,7 +16,7 @@ extern "C"
 
 }
 
-#define CHECK(methodId) TVP c=RTConstructs._new();\
+#define CHECK(methodId) TVP c=_Z12RTConstructsEV(NULL);\
 TVP res=CALL_FUNC(RTConstructs,RTConstructs,c,methodId);\
 EXPECT_EQ (true,res->value.boolVal);\
 vdmFree(res);\

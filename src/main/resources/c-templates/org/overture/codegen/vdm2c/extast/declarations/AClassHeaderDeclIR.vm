@@ -47,6 +47,7 @@ struct $cname
 #end
 
 /* Constructors */
+
 #foreach( $method in $node.getOriginalDef().getMethods() )
 #if($method.getIsConstructor()) 
 	$CFormat.formatSource($method)
@@ -55,12 +56,10 @@ struct $cname
 #end
 
 /* internal use only*/
+
 void ${cname}_free_fields(${cstructname});
 $cstructname ${cname}_Constructor(${cstructname});
 
-extern const struct ${cname}Class
-{
-	TVP (*_new)();
-} $cname;
+
 
 #endif /* $cdefname */

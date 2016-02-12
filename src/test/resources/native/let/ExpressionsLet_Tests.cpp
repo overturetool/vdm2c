@@ -16,7 +16,7 @@ extern "C"
 
 }
 
-#define CHECK(methodId) TVP c=ExpressionLet._new();\
+#define CHECK(methodId) TVP c=_Z13ExpressionLetEV(NULL);\
 TVP res=CALL_FUNC(ExpressionLet,ExpressionLet,c,methodId);\
 EXPECT_EQ (true,res->value.boolVal);\
 vdmFree(res);\
