@@ -14,12 +14,12 @@ import static org.overture.codegen.vdm2c.utils.CTransUtil.newPtrDeref;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newTvpType;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.toStm;
 
+import org.overture.cgc.extast.analysis.DepthFirstAnalysisCAdaptor;
 import org.overture.codegen.ir.INode;
 import org.overture.codegen.ir.SExpIR;
 import org.overture.codegen.ir.SPatternIR;
 import org.overture.codegen.ir.SStmIR;
 import org.overture.codegen.ir.analysis.AnalysisException;
-import org.overture.codegen.ir.analysis.DepthFirstAnalysisAdaptor;
 import org.overture.codegen.ir.expressions.ALessEqualNumericBinaryExpIR;
 import org.overture.codegen.ir.expressions.ALessNumericBinaryExpIR;
 import org.overture.codegen.ir.expressions.APlusNumericBinaryExpIR;
@@ -31,7 +31,7 @@ import org.overture.codegen.ir.statements.AForIndexStmIR;
 import org.overture.codegen.ir.statements.AWhileStmIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 
-public class ForLoopTrans extends DepthFirstAnalysisAdaptor
+public class ForLoopTrans extends DepthFirstAnalysisCAdaptor
 {
 	public TransAssistantIR assist;
 	final static String retPrefix = "forLoop_";

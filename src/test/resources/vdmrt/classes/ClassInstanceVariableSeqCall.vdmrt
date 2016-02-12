@@ -1,0 +1,21 @@
+class ClassInstanceVariableSeqCall
+
+operations
+
+public op : () ==> bool
+op () == return true;
+
+end ClassInstanceVariableSeqCall
+
+class ClassInstanceVariableSeqCaller 
+
+instance variables
+
+field : seq of ClassInstanceVariableSeqCall := [new ClassInstanceVariableSeqCall()];
+operations
+
+public call: () ==> bool
+call()== field(1).op();
+
+
+end ClassInstanceVariableSeqCaller

@@ -45,6 +45,15 @@ public class NativeClassesTests extends NativeTestBase
 		generate(getPath("classes/ClassInstanceVariableSeqAssign.vdmrt"));
 		compileAndTest();
 	}
+	
+	@ConditionalIgnore(condition = HasVdmLib.class)
+	@Test
+	public void ClassInstanceVariableSeqCall() throws IOException,
+			InterruptedException, CMakeGenerateException
+	{
+		generate(getPath("classes/ClassInstanceVariableSeqCall.vdmrt"));
+		compileAndTest(getTestCppFile("classes/ClassInstanceVariableSeqCall_Tests.cpp"));
+	}
 
 	@ConditionalIgnore(condition = HasVdmLib.class)
 	@Test

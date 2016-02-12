@@ -94,7 +94,7 @@ public class FieldIdentifierToFieldGetApplyTrans extends
 																									// class
 			thisClassName = thisClass.getName().getName();
 
-//			while (thisClass != null && fieldClassName == null)
+			// while (thisClass != null && fieldClassName == null)
 			{
 				List<PDefinition> definitons = new Vector<PDefinition>();
 				definitons.addAll(thisClass.getDefinitions());
@@ -103,9 +103,9 @@ public class FieldIdentifierToFieldGetApplyTrans extends
 				{
 					if (def instanceof AInheritedDefinition)
 					{
-						def = ((AInheritedDefinition)def).getSuperdef();
+						def = ((AInheritedDefinition) def).getSuperdef();
 					}
-					
+
 					if (def instanceof AInstanceVariableDefinition)
 					{
 						if (def.getName().getName().equals(designator.getName().getName()))
@@ -113,7 +113,7 @@ public class FieldIdentifierToFieldGetApplyTrans extends
 							fieldClassName = def.getClassDefinition().getName().getName();
 							break;
 						}
-					} 
+					}
 				}
 			}
 

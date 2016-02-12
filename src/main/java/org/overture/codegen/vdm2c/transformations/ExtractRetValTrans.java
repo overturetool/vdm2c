@@ -1,7 +1,7 @@
 package org.overture.codegen.vdm2c.transformations;
 
+import org.overture.cgc.extast.analysis.DepthFirstAnalysisCAdaptor;
 import org.overture.codegen.ir.analysis.AnalysisException;
-import org.overture.codegen.ir.analysis.DepthFirstAnalysisAdaptor;
 import org.overture.codegen.ir.declarations.AVarDeclIR;
 import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
 import org.overture.codegen.ir.patterns.AIdentifierPatternIR;
@@ -9,7 +9,7 @@ import org.overture.codegen.ir.statements.ABlockStmIR;
 import org.overture.codegen.ir.statements.AReturnStmIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 
-public class ExtractRetValTrans extends DepthFirstAnalysisAdaptor
+public class ExtractRetValTrans extends DepthFirstAnalysisCAdaptor
 {
 	public TransAssistantIR assist;
 
@@ -23,7 +23,7 @@ public class ExtractRetValTrans extends DepthFirstAnalysisAdaptor
 	@Override
 	public void caseAReturnStmIR(AReturnStmIR node) throws AnalysisException
 	{
-		if(node.getExp()==null||node.getExp().getType()==null)
+		if (node.getExp() == null || node.getExp().getType() == null)
 		{
 			return;
 		}

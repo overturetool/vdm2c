@@ -3,15 +3,14 @@ package org.overture.codegen.vdm2c.transformations;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newApply;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newIdentifier;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newInternalMethod;
-import static org.overture.codegen.vdm2c.utils.CTransUtil.newReturnStm;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.toStm;
 
 import java.util.List;
 
+import org.overture.cgc.extast.analysis.DepthFirstAnalysisCAdaptor;
 import org.overture.codegen.ir.INode;
 import org.overture.codegen.ir.SStmIR;
 import org.overture.codegen.ir.analysis.AnalysisException;
-import org.overture.codegen.ir.analysis.DepthFirstAnalysisAdaptor;
 import org.overture.codegen.ir.declarations.AFormalParamLocalParamIR;
 import org.overture.codegen.ir.declarations.AMethodDeclIR;
 import org.overture.codegen.ir.declarations.SClassDeclIR;
@@ -19,12 +18,11 @@ import org.overture.codegen.ir.expressions.AApplyExpIR;
 import org.overture.codegen.ir.expressions.ANotImplementedExpIR;
 import org.overture.codegen.ir.patterns.AIdentifierPatternIR;
 import org.overture.codegen.ir.statements.ANotImplementedStmIR;
-import org.overture.codegen.ir.types.AVoidTypeIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.Vdm2cTag;
 import org.overture.codegen.vdm2c.utils.NameMangler;
 
-public class IsNotYetSpecifiedTrans extends DepthFirstAnalysisAdaptor
+public class IsNotYetSpecifiedTrans extends DepthFirstAnalysisCAdaptor
 {
 	private final static String externalMethodName = "vdm_%s_%s";
 	public TransAssistantIR assist;
@@ -67,13 +65,7 @@ public class IsNotYetSpecifiedTrans extends DepthFirstAnalysisAdaptor
 
 		// handle both functions and operations
 		SStmIR stm = null;
-		if (method.getMethodType().getResult() instanceof AVoidTypeIR)
-		{
-			stm = toStm(apply);
-		} else
-		{
-			stm = newReturnStm(apply);
-		}
+		stm = toStm(apply);
 		assist.replaceNodeWith(node, stm);
 	}
 

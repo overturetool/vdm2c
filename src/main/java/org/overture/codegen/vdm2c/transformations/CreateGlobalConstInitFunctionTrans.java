@@ -3,8 +3,8 @@ package org.overture.codegen.vdm2c.transformations;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newAssignment;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newIdentifier;
 
+import org.overture.cgc.extast.analysis.DepthFirstAnalysisCAdaptor;
 import org.overture.codegen.ir.analysis.AnalysisException;
-import org.overture.codegen.ir.analysis.DepthFirstAnalysisAdaptor;
 import org.overture.codegen.ir.declarations.ADefaultClassDeclIR;
 import org.overture.codegen.ir.declarations.AFieldDeclIR;
 import org.overture.codegen.ir.declarations.AMethodDeclIR;
@@ -16,7 +16,7 @@ import org.overture.codegen.vdm2c.Vdm2cTag;
 import org.overture.codegen.vdm2c.Vdm2cTag.MethodTag;
 
 public class CreateGlobalConstInitFunctionTrans extends
-		DepthFirstAnalysisAdaptor
+		DepthFirstAnalysisCAdaptor
 {
 	private static final String GLOBAL_CONST_INIT_FUNCTION_PATTERN = "%s_constInit";
 	public TransAssistantIR assist;
@@ -41,7 +41,9 @@ public class CreateGlobalConstInitFunctionTrans extends
 		}
 
 		if (body.getStatements().isEmpty())
+		{
 			return;
+		}
 
 		AMethodDeclIR method = new AMethodDeclIR();
 		method.setAbstract(false);

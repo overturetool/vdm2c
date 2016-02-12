@@ -4,18 +4,18 @@ import static org.overture.codegen.vdm2c.utils.CTransUtil.newApply;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newInternalMethod;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newReturnStm;
 
+import org.overture.cgc.extast.analysis.DepthFirstAnalysisCAdaptor;
 import org.overture.codegen.ir.SExpIR;
 import org.overture.codegen.ir.SStmIR;
 import org.overture.codegen.ir.STypeIR;
 import org.overture.codegen.ir.analysis.AnalysisException;
-import org.overture.codegen.ir.analysis.DepthFirstAnalysisAdaptor;
 import org.overture.codegen.ir.declarations.AFieldDeclIR;
 import org.overture.codegen.ir.declarations.AMethodDeclIR;
 import org.overture.codegen.ir.declarations.SClassDeclIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.utils.NameMangler;
 
-public class InitializerExtractorTrans extends DepthFirstAnalysisAdaptor
+public class InitializerExtractorTrans extends DepthFirstAnalysisCAdaptor
 {
 	private static final String FIELD_INITIALIZER = "fieldInitializer";
 	public TransAssistantIR assist;

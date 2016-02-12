@@ -51,6 +51,7 @@ import org.overture.codegen.vdm2c.transformations.LiteralInstantiationRewriteTra
 import org.overture.codegen.vdm2c.transformations.LogicTrans;
 import org.overture.codegen.vdm2c.transformations.MangleMethodNamesTrans;
 import org.overture.codegen.vdm2c.transformations.MapSeqUpdateRewriteTrans;
+import org.overture.codegen.vdm2c.transformations.MethodReturnInsertTrans;
 import org.overture.codegen.vdm2c.transformations.MethodVisibilityTrans;
 import org.overture.codegen.vdm2c.transformations.NewRewriteTrans;
 import org.overture.codegen.vdm2c.transformations.NumericTrans;
@@ -135,6 +136,8 @@ public class CTransSeries
 		transformations.add(new PatternTrans(iteVarPrefixes, transAssistant, patternPrefixes, varMan.casesExp()));
 		// transformations.add(new RemoveSetCompAddTrans(transAssist));
 
+		
+		transformations.add(new MethodReturnInsertTrans(transAssistant));
 		/* C transformations */
 
 		/**

@@ -2,14 +2,14 @@ package org.overture.codegen.vdm2c.transformations;
 
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newLocalDefinition;
 
+import org.overture.cgc.extast.analysis.DepthFirstAnalysisCAdaptor;
 import org.overture.codegen.ir.SStmIR;
 import org.overture.codegen.ir.analysis.AnalysisException;
-import org.overture.codegen.ir.analysis.DepthFirstAnalysisAdaptor;
 import org.overture.codegen.ir.statements.ABlockStmIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.extast.statements.ALocalVariableDeclarationStmIR;
 
-public class ScopeCleanerTrans extends DepthFirstAnalysisAdaptor
+public class ScopeCleanerTrans extends DepthFirstAnalysisCAdaptor
 {
 	public TransAssistantIR assist;
 
@@ -21,12 +21,16 @@ public class ScopeCleanerTrans extends DepthFirstAnalysisAdaptor
 	static boolean hasDeclerations(ABlockStmIR block)
 	{
 		if (!block.getLocalDefs().isEmpty())
+		{
 			return true;
+		}
 
 		for (SStmIR stm : block.getStatements())
 		{
 			if (stm instanceof ALocalVariableDeclarationStmIR)
+			{
 				return true;
+			}
 		}
 		return false;
 	}
