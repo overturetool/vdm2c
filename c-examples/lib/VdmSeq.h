@@ -60,4 +60,6 @@ TVP vdmSeqIndex(TVP seq,TVP index);
 TVP vdmSeqEqual(TVP seq,TVP seq2);
 TVP vdmSeqInEqual(TVP seq,TVP seq2);
 
+void vdmSeqUpdate(TVP seq, TVP index, TVP newValue);
+
 #endif /* LIB_VDMSEQ_H_ */

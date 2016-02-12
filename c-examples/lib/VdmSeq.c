@@ -42,8 +42,6 @@ struct TypedValue* newSeqWithValues(size_t size, TVP* elements)
 	return newCollectionWithValues(VDM_SEQ,size,elements);
 }
 
-
-
 struct TypedValue* newSeqVar(size_t size, ...)
 {
 	TVP elements[size];
@@ -187,4 +185,16 @@ TVP vdmSeqInEqual(TVP seq,TVP seq2)
 	ASSERT_CHECK(seq2);
 
 	return newBool(!collectionEqual(seq,seq2));
+}
+
+void vdmSeqUpdate(TVP seq, TVP indexVal, TVP newValue)
+{
+	ASSERT_CHECK(seq);
+	assert((indexVal->type == VDM_INT||indexVal->type == VDM_NAT||indexVal->type == VDM_NAT1) && "index is not a int");
+
+	int index = indexVal->value.intVal;
+	UNWRAP_COLLECTION(col,seq);
+
+	assert(index-1>=0 && index-1<col->size && "invalid index");
+	col->value[index-1] = vdmClone(newValue);
 }
