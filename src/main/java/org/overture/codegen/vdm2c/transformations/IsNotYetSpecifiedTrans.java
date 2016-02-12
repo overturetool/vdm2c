@@ -39,7 +39,7 @@ public class IsNotYetSpecifiedTrans extends DepthFirstAnalysisCAdaptor
 		AMethodDeclIR method = node.getAncestor(AMethodDeclIR.class);
 
 		String name = String.format(externalMethodName, classDef.getName(), NameMangler.getName(method.getName()));
-		AMethodDeclIR externMethod = newInternalMethod(name, null, method.getMethodType().getResult().clone());
+		AMethodDeclIR externMethod = newInternalMethod(name, null, method.getMethodType().getResult().clone(),true);
 		externMethod.setFormalParams((List<? extends AFormalParamLocalParamIR>) method.getFormalParams().clone());
 		// remove this
 		externMethod.getFormalParams().remove(0);

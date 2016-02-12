@@ -12,6 +12,7 @@ import org.overture.codegen.ir.SExpIR;
 import org.overture.codegen.ir.SPatternIR;
 import org.overture.codegen.ir.SStmIR;
 import org.overture.codegen.ir.STypeIR;
+import org.overture.codegen.ir.SourceNode;
 import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.declarations.AFieldDeclIR;
 import org.overture.codegen.ir.declarations.AFormalParamLocalParamIR;
@@ -28,7 +29,6 @@ import org.overture.codegen.ir.statements.AExpStmIR;
 import org.overture.codegen.ir.statements.AReturnStmIR;
 import org.overture.codegen.ir.types.AExternalTypeIR;
 import org.overture.codegen.ir.types.AMethodTypeIR;
-import org.overture.codegen.ir.SourceNode;
 import org.overture.codegen.vdm2c.Vdm2cTag;
 import org.overture.codegen.vdm2c.Vdm2cTag.MethodTag;
 import org.overture.codegen.vdm2c.extast.expressions.AArrayIndexExpIR;
@@ -262,8 +262,8 @@ public class CTransUtil
 		return localDef;
 	}
 
-	public static AMethodDeclIR newInternalMethod(String name, SStmIR body,
-			STypeIR returnType) throws AnalysisException
+	public static AMethodDeclIR newMethod(String name, SStmIR body,
+			STypeIR returnType, boolean mangleName) throws AnalysisException
 	{
 		AMethodDeclIR method = new AMethodDeclIR();
 		method.setAbstract(false);
@@ -271,13 +271,23 @@ public class CTransUtil
 		method.setImplicit(false);
 		method.setStatic(true);
 		method.setIsConstructor(false);
-		method.setTag(new Vdm2cTag().addMethodTag(MethodTag.Internal));
 		method.setBody(body);
 		AMethodTypeIR mtype = new AMethodTypeIR();
 		mtype.setResult(returnType);
 		method.setMethodType(mtype);
 		method.setName(name);
-		method.setName(NameMangler.mangle(method));
+		if (mangleName)
+		{
+			method.setName(NameMangler.mangle(method));
+		}
+		return method;
+	}
+
+	public static AMethodDeclIR newInternalMethod(String name, SStmIR body,
+			STypeIR returnType, boolean mangleName) throws AnalysisException
+	{
+		AMethodDeclIR method = newMethod(name, body, returnType, mangleName);
+		method.setTag(new Vdm2cTag().addMethodTag(MethodTag.Internal));
 		return method;
 	}
 

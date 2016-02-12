@@ -25,15 +25,21 @@ vdmFree(c)
 
 TEST(ClassValue, op1)
 {
-	ClassValue_constInit();
-	ClassValue0_constInit();
+	ClassValue_const_init();
+	ClassValue0_const_init();
 	CHECK(CLASS_ClassValue__Z3op1EV);
+
+	ClassValue0_const_shutdown();
+	ClassValue_const_shutdown();
 }
 
 TEST(ClassValue, opOtherValue)
 {
-	ClassValue_constInit();
-	ClassValue0_constInit();
+	ClassValue_const_init();
+	ClassValue0_const_init();
 	CHECK(CLASS_ClassValue__Z12opOtherValueEV);
+
+	ClassValue0_const_shutdown();
+	ClassValue_const_shutdown();
 }
 

@@ -39,7 +39,7 @@ public class InitializerExtractorTrans extends DepthFirstAnalysisCAdaptor
 			STypeIR type = initial.getType().clone();
 			SStmIR body = newReturnStm(initial);
 
-			AMethodDeclIR method = newInternalMethod(assist.getInfo().getTempVarNameGen().nextVarName(FIELD_INITIALIZER), body, type);
+			AMethodDeclIR method = newInternalMethod(assist.getInfo().getTempVarNameGen().nextVarName(FIELD_INITIALIZER), body, type,true);
 
 			node.setInitial(newApply(NameMangler.mangle(method)));
 
