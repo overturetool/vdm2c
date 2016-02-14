@@ -1,4 +1,4 @@
-class ExpressionSetForCGTestingTest is subclass of TestCase,ExpressionSet
+class ExpressionSetForCGTestingTest is subclass of TestCase,ExpressionSetForCGTesting
 operations
 
 public testsetInset : () ==>()

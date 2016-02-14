@@ -17,11 +17,11 @@ import org.overture.codegen.ir.statements.AReturnStmIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.extast.statements.ALocalVariableDeclarationStmIR;
 
-public class FreeBeforeReturn extends DepthFirstAnalysisAdaptor
+public class FreeLocalBlockDeclsTrans extends DepthFirstAnalysisAdaptor
 {
 	public TransAssistantIR assist;
 
-	public FreeBeforeReturn(TransAssistantIR assist)
+	public FreeLocalBlockDeclsTrans(TransAssistantIR assist)
 	{
 		this.assist = assist;
 	}

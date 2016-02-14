@@ -57,7 +57,7 @@ import org.overture.codegen.vdm2c.transformations.ScopeCleanerTrans;
 import org.overture.codegen.vdm2c.transformations.SubClassResponsibilityMethodsTrans;
 import org.overture.codegen.vdm2c.transformations.ValueAccessRenameTrans;
 import org.overture.codegen.vdm2c.transformations.VisualizeIRAST;
-import org.overture.codegen.vdm2c.transformations.FreeBeforeReturn;
+import org.overture.codegen.vdm2c.transformations.FreeLocalBlockDeclsTrans;
 
 public class CTransSeries
 {
@@ -168,7 +168,7 @@ public class CTransSeries
 		transformations.add(new RemoveCWrappersTrans(transAssistant));
 		transformations.add(new ScopeCleanerTrans(transAssistant));
 		//transformations.add(new VisualizeIRAST(transAssistant));
-		transformations.add(new FreeBeforeReturn(transAssistant));
+		transformations.add(new FreeLocalBlockDeclsTrans(transAssistant));
 		
 		return transformations;
 	}

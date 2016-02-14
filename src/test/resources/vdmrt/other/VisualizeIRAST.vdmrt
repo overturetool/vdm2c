@@ -3,7 +3,7 @@ class VisualizeIRAST
 operations
 test2 : () ==> bool
 test2() ==
-	return true and false and false and true;
+	return true and true and true;
 	
 test3 : () ==> bool
 test3() ==
@@ -12,3 +12,6 @@ test3() ==
 	dcl c : int := 5;
 	return a + b + c = 3)
 end VisualizeIRAST
+
+class ds
+end ds
