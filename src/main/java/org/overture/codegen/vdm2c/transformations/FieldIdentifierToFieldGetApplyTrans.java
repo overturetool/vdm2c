@@ -2,6 +2,7 @@ package org.overture.codegen.vdm2c.transformations;
 
 import static org.overture.codegen.vdm2c.utils.CTransUtil.createIdentifier;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.exp2Stm;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.newApply;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newDeclarationAssignment;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newMacroApply;
 
@@ -31,6 +32,7 @@ import org.overture.codegen.ir.statements.AAssignToExpStmIR;
 import org.overture.codegen.ir.statements.ABlockStmIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.extast.expressions.AMacroApplyExpIR;
+import org.overture.codegen.vdm2c.utils.NameConverter;
 
 public class FieldIdentifierToFieldGetApplyTrans extends
 		DepthFirstAnalysisCAdaptor
@@ -71,8 +73,27 @@ public class FieldIdentifierToFieldGetApplyTrans extends
 																								// class
 
 			PDefinition vardef = varExp.getVardef();
+
+			if (vardef instanceof AInheritedDefinition)
+			{
+				PDefinition superDef = ((AInheritedDefinition) vardef).getSuperdef();
+				if (superDef instanceof AInstanceVariableDefinition)
+				{
+					if (vardef.getAccess().getStatic() != null)
+					{
+						assist.replaceNodeWith(node, newApply("vdmClone", node.clone()));
+						return;
+					}
+				}
+			}
+
 			if (vardef instanceof AInstanceVariableDefinition)
 			{
+				if (vardef.getAccess().getStatic() != null)
+				{
+					assist.replaceNodeWith(node, newApply("vdmClone", node.clone()));
+					return;
+				}
 				fieldClassName = thisClassName;
 			} else if (vardef instanceof AInheritedDefinition)
 			{
@@ -168,6 +189,44 @@ public class FieldIdentifierToFieldGetApplyTrans extends
 		return null;
 	}
 
+	AFieldDeclIR lookupField(SClassDeclIR node, String name)
+	{
+		for (AFieldDeclIR f : node.getFields())
+		{
+			if (!f.getStatic()
+					&& f.getName().equals(name)
+					|| f.getStatic()
+					&& f.getName().equals(NameConverter.getCFieldNameFromOriginal(name)))
+			{
+				return f;
+			}
+		}
+
+		for (ATokenNameIR superName : node.getSuperNames())
+		{
+			for (SClassDeclIR def : assist.getInfo().getClasses())
+			{
+				if (def.getName().equals(superName))
+				{
+					AFieldDeclIR n = lookupField(def, name);
+					if (n != null)
+					{
+						return n;
+					}
+				}
+			}
+		}
+
+		return null;
+	}
+
+	boolean isStatic(SClassDeclIR classDef, String name)
+	{
+		AFieldDeclIR field = lookupField(classDef, name);
+
+		return field.getStatic();
+	}
+
 	@Override
 	public void caseAAssignToExpStmIR(AAssignToExpStmIR node)
 			throws AnalysisException
@@ -180,8 +239,18 @@ public class FieldIdentifierToFieldGetApplyTrans extends
 
 		AIdentifierVarExpIR target = (AIdentifierVarExpIR) node.getTarget();
 		// class
-		String thisClassName = target.getSourceNode().getVdmNode().getAncestor(AClassClassDefinition.class).getName().getName();// the
-																																// containing
+
+		if (isStatic(node.getAncestor(SClassDeclIR.class), target.getName()))
+		{
+			AIdentifierVarExpIR id = createIdentifier(NameConverter.getCFieldNameFromOriginal(target.getName()), target.getSourceNode());
+			id.setType(target.getType().clone());
+			assist.replaceNodeWith(node.getTarget(), id);
+			return;
+		}
+		AClassClassDefinition classDef = target.getSourceNode().getVdmNode().getAncestor(AClassClassDefinition.class);
+
+		String thisClassName = classDef.getName().getName();// the
+															// containing
 		// field owner
 		String fieldClassName = lookupFieldClass(target.getAncestor(ADefaultClassDeclIR.class), target.getName());
 

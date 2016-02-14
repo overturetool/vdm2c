@@ -11,10 +11,10 @@ package org.overture.codegen.vdm2c;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.overture.codegen.ir.IRInfo;
 import org.overture.codegen.ir.analysis.DepthFirstAnalysisAdaptor;
 import org.overture.codegen.ir.expressions.AIntLiteralExpIR;
 import org.overture.codegen.ir.types.AExternalTypeIR;
-import org.overture.codegen.ir.IRInfo;
 import org.overture.codegen.trans.AssignStmTrans;
 import org.overture.codegen.trans.AtomicStmTrans;
 import org.overture.codegen.trans.CallObjStmTrans;
@@ -38,6 +38,7 @@ import org.overture.codegen.vdm2c.transformations.AddThisArgToMethodsTrans;
 import org.overture.codegen.vdm2c.transformations.CExp2StmTrans;
 import org.overture.codegen.vdm2c.transformations.CallRewriteTrans;
 import org.overture.codegen.vdm2c.transformations.CreateGlobalConstInitFunctionTrans;
+import org.overture.codegen.vdm2c.transformations.CreateGlobalStaticInitFunctionTrans;
 import org.overture.codegen.vdm2c.transformations.CtorTrans;
 import org.overture.codegen.vdm2c.transformations.ExtractRetValTrans;
 import org.overture.codegen.vdm2c.transformations.FieldIdentifierToFieldGetApplyTrans;
@@ -57,8 +58,9 @@ import org.overture.codegen.vdm2c.transformations.NewRewriteTrans;
 import org.overture.codegen.vdm2c.transformations.NumericTrans;
 import org.overture.codegen.vdm2c.transformations.RemoveCWrappersTrans;
 import org.overture.codegen.vdm2c.transformations.RemoveRTConstructs;
-import org.overture.codegen.vdm2c.transformations.RenameValueFieldsTrans;
+import org.overture.codegen.vdm2c.transformations.RenameFieldsTrans;
 import org.overture.codegen.vdm2c.transformations.ScopeCleanerTrans;
+import org.overture.codegen.vdm2c.transformations.StaticFieldAccessRenameTrans;
 import org.overture.codegen.vdm2c.transformations.SubClassResponsibilityMethodsTrans;
 import org.overture.codegen.vdm2c.transformations.ValueAccessRenameTrans;
 
@@ -136,7 +138,6 @@ public class CTransSeries
 		transformations.add(new PatternTrans(iteVarPrefixes, transAssistant, patternPrefixes, varMan.casesExp()));
 		// transformations.add(new RemoveSetCompAddTrans(transAssist));
 
-		
 		transformations.add(new MethodReturnInsertTrans(transAssistant));
 		/* C transformations */
 
@@ -147,18 +148,19 @@ public class CTransSeries
 		transformations.add(new NumericTrans(transAssistant));
 		transformations.add(new LogicTrans(transAssistant));
 		transformations.add(new LiteralInstantiationRewriteTrans(transAssistant));
-		transformations.add(new RenameValueFieldsTrans(transAssistant));
+		transformations.add(new RenameFieldsTrans(transAssistant));
 		transformations.add(new ValueAccessRenameTrans(transAssistant));
+		transformations.add(new StaticFieldAccessRenameTrans(transAssistant));
 		transformations.add(new LetTrans(transAssistant));
-		
 
 		/**
 		 * Phase #2 - Not defined yet.
 		 */
 		transformations.add(new CreateGlobalConstInitFunctionTrans(transAssistant));
+		transformations.add(new CreateGlobalStaticInitFunctionTrans(transAssistant));
 		transformations.add(new AddThisArgToMethodsTrans(transAssistant));
 		transformations.add(new MangleMethodNamesTrans(transAssistant));
-		//not name mangle
+		// not name mangle
 		transformations.add(new IsNotYetSpecifiedTrans(transAssistant));
 
 		transformations.add(new CallRewriteTrans(transAssistant));

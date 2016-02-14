@@ -100,6 +100,15 @@ public class NativeClassesTests extends NativeTestBase
 		compileAndTest(getTestCppFile("classes/ClassOpInheritanceOverride_Tests.cpp"));
 	}
 	
+	@ConditionalIgnore(condition = HasVdmLib.class)
+	@Test
+	public void ClassStaticInstanceVariable() throws IOException,
+			InterruptedException, CMakeGenerateException
+	{
+		generate(getPath("classes/ClassStaticInstanceVariable.vdmrt"));
+		compileAndTest();
+	}
+	
 	
 	
 }

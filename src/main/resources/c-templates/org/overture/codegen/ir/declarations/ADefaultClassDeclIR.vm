@@ -15,9 +15,8 @@
 ]]#
 void ${cname}_free_fields(struct ${cname} *this)
 {
-	//free class struct
 #foreach( $field in $node.getFields() )
-	#if($field.getFinal() == false)
+	#if( !($field.getFinal() == true || $field.getStatic() == true) )
 	vdmFree(this->m_${cname}_$field.getName());
 	#end
 #end
@@ -110,7 +109,7 @@ ${cname}CLASS ${cname}_Constructor(${cname}CLASS this_ptr)
 		this_ptr->_${cname}_pVTable=VTableArrayFor${cname};
 
 	#foreach( $field in $node.getFields() )
-		#if($field.getFinal() == false)
+		#if( !($field.getFinal() == true || $field.getStatic() == true) )
 	this_ptr->m_${cname}_$field.getName()=#if($CFormat.isNull($field.getInitial())) NULL #else $CFormat.format($field.getInitial())#end;
 		#end
 	#end
@@ -152,7 +151,7 @@ $CFormat.format($method)
  ]]#
 // initialize globals - this is done last since they are declared in the header but uses init functions which are printet in any order
 #foreach($field in $node.getFields())
-	#if($field.getFinal())
+	#if($field.getFinal() || $field.getStatic())
 TVP $field.getName() = #if($CFormat.isNull($field.getInitial())) NULL #else $CFormat.format($field.getInitial())#end;
 	#end
 #end

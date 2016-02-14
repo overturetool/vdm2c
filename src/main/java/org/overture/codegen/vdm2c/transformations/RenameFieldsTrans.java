@@ -7,17 +7,18 @@ import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.utils.CTransUtil;
 import org.overture.codegen.vdm2c.utils.NameConverter;
 
-public class RenameValueFieldsTrans extends DepthFirstAnalysisCAdaptor
+public class RenameFieldsTrans extends DepthFirstAnalysisCAdaptor
 {
 
-	public RenameValueFieldsTrans(TransAssistantIR transformationAssistant)
+	public RenameFieldsTrans(TransAssistantIR transformationAssistant)
 	{
 	}
 
 	@Override
 	public void caseAFieldDeclIR(AFieldDeclIR node) throws AnalysisException
 	{
-		if (CTransUtil.isValueDefinition(node))
+		if (CTransUtil.isValueDefinition(node)
+				|| CTransUtil.isStaticDefinition(node))
 		{
 			node.setName(NameConverter.getCName(node));
 		}

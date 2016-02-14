@@ -45,7 +45,7 @@ public class ClassHeaderGenerator
 			AClassStateDeclIR state = new AClassStateDeclIR();
 			for (AFieldDeclIR field : classDef.getFields())
 			{
-				if (field.getFinal())
+				if (field.getFinal() || field.getStatic())
 				{
 					header.getValues().add(field);
 				} else

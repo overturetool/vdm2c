@@ -4,8 +4,11 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.overture.ast.definitions.AInheritedDefinition;
+import org.overture.ast.definitions.AInstanceVariableDefinition;
 import org.overture.ast.definitions.ALocalDefinition;
 import org.overture.ast.definitions.AValueDefinition;
+import org.overture.ast.definitions.PDefinition;
 import org.overture.ast.expressions.AVariableExp;
 import org.overture.ast.node.INode;
 import org.overture.codegen.ir.SExpIR;
@@ -315,6 +318,50 @@ public class CTransUtil
 			{
 				ALocalDefinition local = (ALocalDefinition) varExp.getVardef();
 				if (local.getValueDefinition())
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	public static boolean isStaticDefinition(AFieldDeclIR node)
+	{
+
+		if (node.getSourceNode() != null
+				&& node.getSourceNode().getVdmNode() != null)
+		{
+			INode vdmNode = node.getSourceNode().getVdmNode();
+			if (vdmNode instanceof AInstanceVariableDefinition)
+			{
+				AInstanceVariableDefinition field = (AInstanceVariableDefinition) vdmNode;
+				if (field.getAccess().getStatic() != null)
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	public static boolean isStaticFieldDefinition(AExplicitVarExpIR node)
+	{
+		INode vdmNode = node.getSourceNode().getVdmNode();
+		if (vdmNode instanceof AVariableExp)
+		{
+			AVariableExp varExp = (AVariableExp) vdmNode;
+			PDefinition def = varExp.getVardef();
+
+			if (def instanceof AInheritedDefinition)
+			{
+				def = ((AInheritedDefinition) def).getSuperdef();
+			}
+
+			if (def instanceof AInstanceVariableDefinition)
+			{
+				AInstanceVariableDefinition field = (AInstanceVariableDefinition) def;
+				if (field.getAccess().getStatic() != null)
 				{
 					return true;
 				}
