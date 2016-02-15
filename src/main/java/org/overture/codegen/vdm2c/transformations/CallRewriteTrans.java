@@ -69,7 +69,7 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 
 		// FIXME: we need to consider all methods not only the first one
 		SStmIR apple = exp2Stm(createLocalPtrApply(resolvedMethods.get(0), cDef.getName(), node.getArgs()));
-
+		apple.setSourceNode(node.getSourceNode());
 		assist.replaceNodeWith(node, apple);
 
 	}
@@ -160,7 +160,9 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 					System.err.println("Generator error unable to find method");
 					return;
 				}
-				assist.replaceNodeWith(node, createLocalPtrApply(resolvedMethods.get(0), cDef.getName(), node.getArgs()));
+				SExpIR apply = createLocalPtrApply(resolvedMethods.get(0), cDef.getName(), node.getArgs());
+				apply.setSourceNode(node.getSourceNode());
+				assist.replaceNodeWith(node, apply);
 			} else if (root.getType() instanceof ASeqSeqTypeIR)
 			{
 				// sequence index
@@ -193,6 +195,7 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 		// CALL_FUNC(thisTypeName,funcTname,classValue,id, args...
 		// FIXME: we need to consider all methods not only the first one
 		SStmIR apple = exp2Stm(createClassApply(resolvedMethods.get(0), objectClass.getName().getName(), node.getObj(), node.getArgs()));
+		apple.setSourceNode(node.getSourceNode());
 
 		assist.replaceNodeWith(node, apple);
 
