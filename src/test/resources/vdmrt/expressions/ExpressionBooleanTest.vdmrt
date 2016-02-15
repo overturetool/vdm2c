@@ -5,7 +5,7 @@ public testnotExp : () ==>()
 testnotExp()== assertTrue(notExp());
 
 public testandExp : () ==>()
-testandExp()== assertFalse(andExp());
+testandExp()== assertTrue(andExp());
 
 public testorExp : () ==>()
 testorExp()== assertTrue(orExp());
@@ -14,7 +14,7 @@ public testimplicationExp : () ==>()
 testimplicationExp()== assertFalse(implicationExp());
 
 public testbiimplicationExp : () ==>()
-testbiimplicationExp()== assertFalse(biimplicationExp());
+testbiimplicationExp()== assertTrue(biimplicationExp());
 
 public testequalityExp : () ==>()
 testequalityExp()== assertTrue(equalityExp());
