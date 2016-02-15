@@ -1,6 +1,13 @@
 package org.overture.codegen.vdm2c.transformations;
 
-import static org.overture.codegen.vdm2c.utils.CTransUtil.*;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.GET_FIELD_PTR;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.SET_FIELD_PTR;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.createIdentifier;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.exp2Stm;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.newApply;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.newDeclarationAssignment;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.newIdentifier;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.newMacroApply;
 
 import java.util.List;
 import java.util.Vector;
@@ -32,10 +39,13 @@ import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.extast.expressions.AMacroApplyExpIR;
 import org.overture.codegen.vdm2c.utils.CTransUtil;
 import org.overture.codegen.vdm2c.utils.NameConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FieldIdentifierToFieldGetApplyTrans extends
 		DepthFirstAnalysisCAdaptor
 {
+	final static Logger logger = LoggerFactory.getLogger(FieldIdentifierToFieldGetApplyTrans.class);
 	public TransAssistantIR assist;
 
 	final static String fieldPrefix = "field_tmp_";
@@ -144,7 +154,7 @@ public class FieldIdentifierToFieldGetApplyTrans extends
 
 			if (fieldClassName == null)
 			{
-				System.out.println();
+				logger.warn("Field class name not found: {}", node);
 			}
 		}
 
@@ -172,14 +182,13 @@ public class FieldIdentifierToFieldGetApplyTrans extends
 		replaceWithStaticReference(classDef, node);
 	}
 
-	
 	void replaceWithStaticReference(SClassDeclIR classDef,
 			AIdentifierVarExpIR identifier)
 	{
-		replaceWithStaticReference(classDef,identifier.getName(),identifier);
+		replaceWithStaticReference(classDef, identifier.getName(), identifier);
 	}
-	
-	void replaceWithStaticReference(SClassDeclIR classDef,String name, 
+
+	void replaceWithStaticReference(SClassDeclIR classDef, String name,
 			SExpIR node)
 	{
 
@@ -223,7 +232,8 @@ public class FieldIdentifierToFieldGetApplyTrans extends
 		for (AFieldDeclIR f : node.getFields())
 		{
 			if (f.getName().equals(name)
-					|| (f.getStatic() && f.getName().equals(NameConverter.getCFieldNameFromOriginal(name))))
+					|| f.getStatic()
+					&& f.getName().equals(NameConverter.getCFieldNameFromOriginal(name)))
 			{
 				return f;
 			}

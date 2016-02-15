@@ -28,6 +28,8 @@ import org.overture.codegen.ir.types.AMethodTypeIR;
 import org.overture.codegen.ir.types.ASeqSeqTypeIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.extast.expressions.AMacroApplyExpIR;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * See {@link https://github.com/overturetool/vdm2c/issues/1} for the full discussion on call semantics
@@ -36,6 +38,7 @@ import org.overture.codegen.vdm2c.extast.expressions.AMacroApplyExpIR;
  */
 public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 {
+	final static Logger logger = LoggerFactory.getLogger(CallRewriteTrans.class);
 	public TransAssistantIR assist;
 
 	final CompatibleMethodCollector methodCollector = new CompatibleMethodCollector();
@@ -153,11 +156,10 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 				String name = root.getName();
 				SClassDeclIR cDef = node.getAncestor(SClassDeclIR.class);
 				List<PDefinition> tmp = methodCollector.collectCompatibleMethods((SClassDefinition) cDef.getSourceNode().getVdmNode(), name, node.getSourceNode().getVdmNode(), methodCollector.getArgTypes(node.getSourceNode().getVdmNode()));
-				System.out.println();
 				List<AMethodDeclIR> resolvedMethods = lookupVdmFunOpToMethods(tmp);
 				if (resolvedMethods.isEmpty())
 				{
-					System.err.println("Generator error unable to find method");
+					logger.error("Generator error unable to find method for: {}", node);
 					return;
 				}
 				SExpIR apply = createLocalPtrApply(resolvedMethods.get(0), cDef.getName(), node.getArgs());
@@ -166,7 +168,6 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 			} else if (root.getType() instanceof ASeqSeqTypeIR)
 			{
 				// sequence index
-				System.out.println();
 				AApplyExpIR seqIndexApply = newApply("vdmSeqIndex", node.getRoot());
 				seqIndexApply.getArgs().addAll(node.getArgs());
 				seqIndexApply.setSourceNode(node.getSourceNode());

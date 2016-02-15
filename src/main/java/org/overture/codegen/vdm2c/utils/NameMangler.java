@@ -14,14 +14,18 @@ import org.overture.codegen.ir.types.ANat1BasicTypeWrappersTypeIR;
 import org.overture.codegen.ir.types.ANatNumericBasicTypeIR;
 import org.overture.codegen.ir.types.ARealNumericBasicTypeIR;
 import org.overture.codegen.ir.types.ASeqSeqTypeIR;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class NameMangler
 {
+	final static Logger logger = LoggerFactory.getLogger(NameMangler.class);
+
 	static final String preFix = "_Z";
 	static final String intId = "I";
 	static final String natId = "N";
 	static final String nat1Id = "K";
-	
+
 	// static final String int1Id="I1";
 	static final String realId = "R";
 	static final String charId = "C";
@@ -46,7 +50,7 @@ public class NameMangler
 
 	public static String mangle(AMethodDeclIR method) throws AnalysisException
 	{
-		if(method.getName().startsWith(preFix))
+		if (method.getName().startsWith(preFix))
 		{
 			return method.getName();
 		}
@@ -63,60 +67,56 @@ public class NameMangler
 		}
 
 		String name = String.format(mangledPattern, mkName(method.getName()), sb.toString());
-		System.out.println(method.getName() + " mangled to " + name);
+		logger.trace(method.getName() + " mangled to " + name);
 		return name;
 	}
-	
+
 	public static String getName(String mangledName)
 	{
-		if(mangledName.startsWith(preFix))
+		if (mangledName.startsWith(preFix))
 		{
-			String tmp= mangledName.substring(preFix.length());
-			
-			
-		int index = 0;
-		while(Character.isDigit(tmp.charAt(index)))
-		{
-			index++;
-		}
-		int length = Integer.parseInt(tmp.substring(0,index));
+			String tmp = mangledName.substring(preFix.length());
 
-		return tmp.substring(index,index+ length);
-//			return mangledName.substring(preFix.length(),mangledName.in-preFix.length());
+			int index = 0;
+			while (Character.isDigit(tmp.charAt(index)))
+			{
+				index++;
+			}
+			int length = Integer.parseInt(tmp.substring(0, index));
+
+			return tmp.substring(index, index + length);
+			// return mangledName.substring(preFix.length(),mangledName.in-preFix.length());
 		}
-		//unmangled
+		// unmangled
 		return mangledName;
 	}
 
 	private static class NameGenerator extends
 			DepthFirstAnalysisAdaptorAnswer<String>
 	{
-		
-		
 
 		@Override
 		public String caseAClassTypeIR(AClassTypeIR node)
 				throws AnalysisException
 		{
 			String name = node.getName();
-			return String.format(classId, name.length(),name);
+			return String.format(classId, name.length(), name);
 		}
-		
+
 		@Override
 		public String caseANatNumericBasicTypeIR(ANatNumericBasicTypeIR node)
 				throws AnalysisException
 		{
 			return natId;
 		}
-		
-		
+
 		@Override
 		public String caseANat1BasicTypeWrappersTypeIR(
 				ANat1BasicTypeWrappersTypeIR node) throws AnalysisException
 		{
 			return nat1Id;
 		}
-		
+
 		@Override
 		public String caseAIntNumericBasicTypeIR(AIntNumericBasicTypeIR node)
 				throws AnalysisException
@@ -144,29 +144,29 @@ public class NameMangler
 		{
 			return charId;
 		}
-		
+
 		@Override
 		public String caseAExternalTypeIR(AExternalTypeIR node)
 				throws AnalysisException
 		{
 			return "";
 		}
-		
+
 		@Override
 		public String caseASeqSeqTypeIR(ASeqSeqTypeIR node)
 				throws AnalysisException
 		{
 			String name = node.getSeqOf().apply(THIS);
-			return String.format(seqId, name.length(),name);
+			return String.format(seqId, name.length(), name);
 		}
-		
+
 		@Override
 		public String defaultInINode(INode node) throws AnalysisException
 		{
-			System.err.println("Mangling not handled: "+node.getClass().getName());
+			System.err.println("Mangling not handled: "
+					+ node.getClass().getName());
 			return super.defaultInINode(node);
 		}
-
 
 		@Override
 		public String mergeReturns(String original, String new_)

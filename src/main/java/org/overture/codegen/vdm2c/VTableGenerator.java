@@ -23,9 +23,12 @@ import org.overture.codegen.vdm2c.ast.Vtables;
 import org.overture.codegen.vdm2c.ast.Vtables.VEntry;
 import org.overture.codegen.vdm2c.ast.Vtables.VEntryOverride;
 import org.overture.codegen.vdm2c.extast.declarations.AClassHeaderDeclIR;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class VTableGenerator
 {
+	final static Logger logger = LoggerFactory.getLogger(VTableGenerator.class);
 
 	public static void generate(List<IRStatus<AClassHeaderDeclIR>> headers)
 	{
@@ -126,7 +129,7 @@ public class VTableGenerator
 						currentTable.addSuperOverride(superHeader, superTable.getEntry(entry), entry);
 					}
 				}
-				System.out.println(currentTable);
+				logger.debug("VTable:\n {}", currentTable);
 			}
 
 		}
