@@ -10,7 +10,6 @@ import org.overture.ast.definitions.ALocalDefinition;
 import org.overture.ast.definitions.AValueDefinition;
 import org.overture.ast.definitions.PDefinition;
 import org.overture.ast.expressions.AVariableExp;
-import org.overture.ast.intf.lex.ILexNameToken;
 import org.overture.ast.node.INode;
 import org.overture.codegen.ir.SExpIR;
 import org.overture.codegen.ir.SPatternIR;
@@ -378,8 +377,7 @@ public class CTransUtil
 		return false;
 	}
 
-	public static SClassDeclIR getClass(TransAssistantIR assist,
-			String name)
+	public static SClassDeclIR getClass(TransAssistantIR assist, String name)
 	{
 		for (SClassDeclIR c : assist.getInfo().getClasses())
 		{
