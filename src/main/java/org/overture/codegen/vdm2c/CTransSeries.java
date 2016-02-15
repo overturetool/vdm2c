@@ -41,6 +41,7 @@ import org.overture.codegen.vdm2c.transformations.CreateGlobalConstInitFunctionT
 import org.overture.codegen.vdm2c.transformations.CreateGlobalStaticInitFunctionTrans;
 import org.overture.codegen.vdm2c.transformations.CtorTrans;
 import org.overture.codegen.vdm2c.transformations.ExtractRetValTrans;
+import org.overture.codegen.vdm2c.transformations.FieldExpRewriteTrans;
 import org.overture.codegen.vdm2c.transformations.FieldIdentifierToFieldGetApplyTrans;
 import org.overture.codegen.vdm2c.transformations.ForLoopTrans;
 import org.overture.codegen.vdm2c.transformations.IfTrans;
@@ -149,9 +150,11 @@ public class CTransSeries
 		transformations.add(new LogicTrans(transAssistant));
 		transformations.add(new LiteralInstantiationRewriteTrans(transAssistant));
 		transformations.add(new RenameFieldsTrans(transAssistant));
+		transformations.add(new FieldExpRewriteTrans(transAssistant));
 		transformations.add(new ValueAccessRenameTrans(transAssistant));
 		transformations.add(new StaticFieldAccessRenameTrans(transAssistant));
 		transformations.add(new LetTrans(transAssistant));
+		
 
 		/**
 		 * Phase #2 - Not defined yet.

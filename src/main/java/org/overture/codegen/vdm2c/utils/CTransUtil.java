@@ -10,6 +10,7 @@ import org.overture.ast.definitions.ALocalDefinition;
 import org.overture.ast.definitions.AValueDefinition;
 import org.overture.ast.definitions.PDefinition;
 import org.overture.ast.expressions.AVariableExp;
+import org.overture.ast.intf.lex.ILexNameToken;
 import org.overture.ast.node.INode;
 import org.overture.codegen.ir.SExpIR;
 import org.overture.codegen.ir.SPatternIR;
@@ -21,6 +22,7 @@ import org.overture.codegen.ir.declarations.AFieldDeclIR;
 import org.overture.codegen.ir.declarations.AFormalParamLocalParamIR;
 import org.overture.codegen.ir.declarations.AMethodDeclIR;
 import org.overture.codegen.ir.declarations.AVarDeclIR;
+import org.overture.codegen.ir.declarations.SClassDeclIR;
 import org.overture.codegen.ir.expressions.AApplyExpIR;
 import org.overture.codegen.ir.expressions.ACastUnaryExpIR;
 import org.overture.codegen.ir.expressions.AExplicitVarExpIR;
@@ -32,6 +34,7 @@ import org.overture.codegen.ir.statements.AExpStmIR;
 import org.overture.codegen.ir.statements.AReturnStmIR;
 import org.overture.codegen.ir.types.AExternalTypeIR;
 import org.overture.codegen.ir.types.AMethodTypeIR;
+import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.Vdm2cTag;
 import org.overture.codegen.vdm2c.Vdm2cTag.MethodTag;
 import org.overture.codegen.vdm2c.extast.expressions.AArrayIndexExpIR;
@@ -44,6 +47,11 @@ import org.overture.codegen.vdm2c.extast.statements.ALocalVariableDeclarationStm
 
 public class CTransUtil
 {
+	public static final String GET_FIELD_PTR = "GET_FIELD_PTR";
+	public static final String SET_FIELD_PTR = "SET_FIELD_PTR";
+
+	public static final String GET_FIELD = "GET_FIELD";
+
 	// public static AIdentifierVarExpIR createIdentifier(String name,
 	// org.overture.ast.node.INode derrivedFrom)
 	// {
@@ -368,6 +376,19 @@ public class CTransUtil
 			}
 		}
 		return false;
+	}
+
+	public static SClassDeclIR getClass(TransAssistantIR assist,
+			String name)
+	{
+		for (SClassDeclIR c : assist.getInfo().getClasses())
+		{
+			if (c.getName().equals(name))
+			{
+				return c;
+			}
+		}
+		return null;
 	}
 
 }

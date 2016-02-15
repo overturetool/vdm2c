@@ -1,10 +1,6 @@
 package org.overture.codegen.vdm2c.transformations;
 
-import static org.overture.codegen.vdm2c.utils.CTransUtil.createIdentifier;
-import static org.overture.codegen.vdm2c.utils.CTransUtil.exp2Stm;
-import static org.overture.codegen.vdm2c.utils.CTransUtil.newApply;
-import static org.overture.codegen.vdm2c.utils.CTransUtil.newDeclarationAssignment;
-import static org.overture.codegen.vdm2c.utils.CTransUtil.newMacroApply;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.*;
 
 import java.util.List;
 import java.util.Vector;
@@ -14,12 +10,14 @@ import org.overture.ast.definitions.AInheritedDefinition;
 import org.overture.ast.definitions.AInstanceVariableDefinition;
 import org.overture.ast.definitions.ALocalDefinition;
 import org.overture.ast.definitions.PDefinition;
+import org.overture.ast.definitions.SClassDefinition;
 import org.overture.ast.expressions.AVariableExp;
 import org.overture.ast.node.INode;
 import org.overture.ast.statements.AIdentifierStateDesignator;
 import org.overture.ast.types.AFunctionType;
 import org.overture.ast.types.AOperationType;
 import org.overture.cgc.extast.analysis.DepthFirstAnalysisCAdaptor;
+import org.overture.codegen.ir.SExpIR;
 import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.declarations.ADefaultClassDeclIR;
 import org.overture.codegen.ir.declarations.AFieldDeclIR;
@@ -32,6 +30,7 @@ import org.overture.codegen.ir.statements.AAssignToExpStmIR;
 import org.overture.codegen.ir.statements.ABlockStmIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.extast.expressions.AMacroApplyExpIR;
+import org.overture.codegen.vdm2c.utils.CTransUtil;
 import org.overture.codegen.vdm2c.utils.NameConverter;
 
 public class FieldIdentifierToFieldGetApplyTrans extends
@@ -81,7 +80,7 @@ public class FieldIdentifierToFieldGetApplyTrans extends
 				{
 					if (vardef.getAccess().getStatic() != null)
 					{
-						assist.replaceNodeWith(node, newApply("vdmClone", node.clone()));
+						replaceWithStaticReference(vardef.getClassDefinition(), node);
 						return;
 					}
 				}
@@ -91,7 +90,7 @@ public class FieldIdentifierToFieldGetApplyTrans extends
 			{
 				if (vardef.getAccess().getStatic() != null)
 				{
-					assist.replaceNodeWith(node, newApply("vdmClone", node.clone()));
+					replaceWithStaticReference(vardef.getClassDefinition(), node);
 					return;
 				}
 				fieldClassName = thisClassName;
@@ -102,6 +101,11 @@ public class FieldIdentifierToFieldGetApplyTrans extends
 			} else if (vardef instanceof ALocalDefinition
 					&& ((ALocalDefinition) vardef).getValueDefinition())
 			{
+				if (vardef.getAccess().getStatic() != null)
+				{
+					replaceWithStaticReference(vardef.getClassDefinition(), node);
+					return;
+				}
 				return;
 			}
 
@@ -147,7 +151,7 @@ public class FieldIdentifierToFieldGetApplyTrans extends
 		if (thisClassName != null && fieldClassName != null)
 		{
 
-			AMacroApplyExpIR apply = newMacroApply("GET_FIELD_PTR");
+			AMacroApplyExpIR apply = newMacroApply(GET_FIELD_PTR);
 			assist.replaceNodeWith(node, apply);
 
 			// add this type
@@ -161,7 +165,32 @@ public class FieldIdentifierToFieldGetApplyTrans extends
 		}
 	}
 
-	String lookupFieldClass(SClassDeclIR node, String name)
+	private void replaceWithStaticReference(SClassDefinition classDefinition,
+			AIdentifierVarExpIR node)
+	{
+		SClassDeclIR classDef = CTransUtil.getClass(assist, classDefinition.getName().getName());
+		replaceWithStaticReference(classDef, node);
+	}
+
+	
+	void replaceWithStaticReference(SClassDeclIR classDef,
+			AIdentifierVarExpIR identifier)
+	{
+		replaceWithStaticReference(classDef,identifier.getName(),identifier);
+	}
+	
+	void replaceWithStaticReference(SClassDeclIR classDef,String name, 
+			SExpIR node)
+	{
+
+		AFieldDeclIR field = lookupField(classDef, name);
+		AIdentifierVarExpIR newIdentifier = newIdentifier(field.getName(), node.getSourceNode());
+		newIdentifier.setType(node.getType());
+		newIdentifier.setIsLocal(false);
+		assist.replaceNodeWith(node, newApply("vdmClone", newIdentifier));
+	}
+
+	public String lookupFieldClass(SClassDeclIR node, String name)
 	{
 		for (AFieldDeclIR f : node.getFields())
 		{
@@ -189,14 +218,12 @@ public class FieldIdentifierToFieldGetApplyTrans extends
 		return null;
 	}
 
-	AFieldDeclIR lookupField(SClassDeclIR node, String name)
+	public AFieldDeclIR lookupField(SClassDeclIR node, String name)
 	{
 		for (AFieldDeclIR f : node.getFields())
 		{
-			if (!f.getStatic()
-					&& f.getName().equals(name)
-					|| f.getStatic()
-					&& f.getName().equals(NameConverter.getCFieldNameFromOriginal(name)))
+			if (f.getName().equals(name)
+					|| (f.getStatic() && f.getName().equals(NameConverter.getCFieldNameFromOriginal(name))))
 			{
 				return f;
 			}
@@ -220,7 +247,7 @@ public class FieldIdentifierToFieldGetApplyTrans extends
 		return null;
 	}
 
-	boolean isStatic(SClassDeclIR classDef, String name)
+	public boolean isStatic(SClassDeclIR classDef, String name)
 	{
 		AFieldDeclIR field = lookupField(classDef, name);
 
@@ -264,7 +291,7 @@ public class FieldIdentifierToFieldGetApplyTrans extends
 
 		assist.replaceNodeWith(node, replBlock);
 
-		AMacroApplyExpIR apply = newMacroApply("SET_FIELD_PTR");// new AApplyExpIR();
+		AMacroApplyExpIR apply = newMacroApply(SET_FIELD_PTR);// new AApplyExpIR();
 		apply.setSourceNode(target.getSourceNode());
 
 		// add this type
