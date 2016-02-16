@@ -3,15 +3,6 @@ class VisualizeIRAST
 operations
 test2 : () ==> bool
 test2() ==
-	return true and true and true;
+	let thevar = 1 in return true;
 	
-test3 : () ==> bool
-test3() ==
-	(dcl a : int := 3;
-	dcl b : int := 4;
-	dcl c : int := 5;
-	return a + b + c = 3)
 end VisualizeIRAST
-
-class ds
-end ds

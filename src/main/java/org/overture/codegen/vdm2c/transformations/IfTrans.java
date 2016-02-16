@@ -57,30 +57,5 @@ public class IfTrans extends DepthFirstAnalysisAdaptor
 		{
 			process(elseIf.getElseIf());
 		}
-		
-		LinkedList<SStmIR> stms;
-		AApplyExpIR applyexpr;
-
-//		if(node.getThenStm() instanceof ABlockStmIR)
-//		{
-//			stms = (LinkedList<SStmIR>) ((ABlockStmIR) (node.getThenStm())).getStatements().clone();			
-//
-//			for (SStmIR stm : stms)
-//			{
-//				if (stm instanceof ALocalVariableDeclarationStmIR)
-//				{
-//					if(((ALocalVariableDeclarationStmIR) stm).getDecleration().getPattern() instanceof AIdentifierPatternIR)
-//					{
-//						applyexpr = newApply("vdmFree", newIdentifier(
-//								((AIdentifierPatternIR) ((ALocalVariableDeclarationStmIR) stm)
-//										.getDecleration()
-//										.getPattern())
-//								.getName(), null));
-//
-//						((ABlockStmIR) (node.getThenStm())).getStatements().add(toStm(applyexpr));
-//					}
-//				}
-//			}
-//		}
 	}
 }
