@@ -23,11 +23,11 @@ public class StaticFieldAccessRenameTrans extends DepthFirstAnalysisCAdaptor
 	public void caseAExplicitVarExpIR(AExplicitVarExpIR node)
 			throws AnalysisException
 	{
+		super.caseAExplicitVarExpIR(node);
 		if (isStaticFieldDefinition(node))
 		{
 			fieldUtil.replace(node);
 		}
-		super.caseAExplicitVarExpIR(node);
 	}
 
 }
