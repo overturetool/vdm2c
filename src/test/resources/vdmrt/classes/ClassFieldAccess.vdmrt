@@ -22,7 +22,7 @@ opStatic(-)== return true;
 
 end ClassFieldAccess
 
-class ClassFieldHolder
+system ClassFieldHolder
 
 instance variables
 

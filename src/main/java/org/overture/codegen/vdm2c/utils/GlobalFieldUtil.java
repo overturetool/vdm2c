@@ -50,9 +50,8 @@ public class GlobalFieldUtil
 	public void replaceWithStaticReference(SClassDeclIR classDef, String name,
 			SExpIR node)
 	{
-
 		AFieldDeclIR field = lookupField(classDef, name);
-		AIdentifierVarExpIR newIdentifier = newIdentifier(field.getName(), node.getSourceNode());
+		AIdentifierVarExpIR newIdentifier = newIdentifier(NameConverter.getCName(field), node.getSourceNode());
 		newIdentifier.setType(node.getType());
 		newIdentifier.setIsLocal(false);
 		assist.replaceNodeWith(node, newApply("vdmClone", newIdentifier));
