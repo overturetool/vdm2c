@@ -12,6 +12,7 @@ import org.overture.ast.definitions.SOperationDefinition;
 import org.overture.ast.expressions.AApplyExp;
 import org.overture.ast.expressions.PExp;
 import org.overture.ast.node.INode;
+import org.overture.ast.statements.AApplyObjectDesignator;
 import org.overture.ast.statements.ACallObjectStm;
 import org.overture.ast.statements.ACallStm;
 import org.overture.ast.types.AFunctionType;
@@ -57,6 +58,8 @@ public class CompatibleMethodCollector
 
 	public List<PType> getArgTypes(INode node)
 	{
+		LinkedList<PExp> cargs = null;
+
 		if (node instanceof SFunctionDefinitionBase)
 		{
 			AFunctionType ft = (AFunctionType) ((SFunctionDefinitionBase) node).getType();
@@ -67,25 +70,23 @@ public class CompatibleMethodCollector
 			return ft.getParameters();
 		} else if (node instanceof ACallStm)
 		{
-			LinkedList<PExp> cargs = ((ACallStm) node).getArgs();
-			List<PType> argTypes = new Vector<PType>();
-			for (PExp pExp : cargs)
-			{
-				argTypes.add(pExp.getType());
-			}
-			return argTypes;
+			cargs = ((ACallStm) node).getArgs();
+
 		} else if (node instanceof AApplyExp)
 		{
-			LinkedList<PExp> cargs = ((AApplyExp) node).getArgs();
-			List<PType> argTypes = new Vector<PType>();
-			for (PExp pExp : cargs)
-			{
-				argTypes.add(pExp.getType());
-			}
-			return argTypes;
+			cargs = ((AApplyExp) node).getArgs();
+
 		} else if (node instanceof ACallObjectStm)
 		{
-			LinkedList<PExp> cargs = ((ACallObjectStm) node).getArgs();
+			cargs = ((ACallObjectStm) node).getArgs();
+
+		} else if (node instanceof AApplyObjectDesignator)
+		{
+			cargs = ((AApplyObjectDesignator) node).getArgs();
+		}
+
+		if (cargs != null)
+		{
 			List<PType> argTypes = new Vector<PType>();
 			for (PExp pExp : cargs)
 			{

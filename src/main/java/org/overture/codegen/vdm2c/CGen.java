@@ -9,8 +9,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
 
+import org.apache.commons.lang.time.StopWatch;
 import org.overture.ast.analysis.AnalysisException;
+import org.overture.codegen.ir.CodeGenBase;
 import org.overture.codegen.ir.INode;
+import org.overture.codegen.ir.IRStatus;
+import org.overture.codegen.ir.IrNodeInfo;
 import org.overture.codegen.ir.PIR;
 import org.overture.codegen.ir.analysis.DepthFirstAnalysisAdaptor;
 import org.overture.codegen.ir.declarations.ADefaultClassDeclIR;
@@ -18,15 +22,16 @@ import org.overture.codegen.ir.declarations.AFieldDeclIR;
 import org.overture.codegen.ir.declarations.ASystemClassDeclIR;
 import org.overture.codegen.ir.declarations.SClassDeclIR;
 import org.overture.codegen.ir.types.AClassTypeIR;
-import org.overture.codegen.ir.CodeGenBase;
-import org.overture.codegen.ir.IRStatus;
-import org.overture.codegen.logging.Logger;
 import org.overture.codegen.utils.GeneratedData;
 import org.overture.codegen.utils.GeneratedModule;
 import org.overture.codegen.vdm2c.extast.declarations.AClassHeaderDeclIR;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CGen extends CodeGenBase
 {
+	final static Logger logger = LoggerFactory.getLogger(CGen.class);
+	final static org.overture.codegen.logging.ILogger console = org.overture.codegen.logging.Logger.getLog();
 	final File outputFolder;
 
 	public CGen(File outputFolder)
@@ -86,7 +91,9 @@ public class CGen extends CodeGenBase
 					AClassTypeIR type = (AClassTypeIR) f.getType();
 					if (type.getName().equals("CPU")
 							|| type.getName().equals("BUS"))
+					{
 						continue;
+					}
 				}
 
 				// if(f.getType() instanceof abus instanceof ABusClassDeclIR || f instanceof ACpuClassDeclIR)
@@ -104,22 +111,28 @@ public class CGen extends CodeGenBase
 	private void applyTransformations(final List<IRStatus<PIR>> statuses)
 	{
 		List<DepthFirstAnalysisAdaptor> transformations = new CTransSeries(this).consAnalyses();
+
+		final StopWatch stopwatch = new StopWatch();
 		for (DepthFirstAnalysisAdaptor trans : transformations)
 		{
+			logger.debug("Applying transformation: {}", trans.getClass().getSimpleName());
+			stopwatch.reset();
+			stopwatch.start();
 			for (IRStatus<ADefaultClassDeclIR> status : IRStatus.extract(statuses, ADefaultClassDeclIR.class))
 			{
 				try
 				{
 					generator.applyPartialTransformation(status, trans);
-
 				} catch (org.overture.codegen.ir.analysis.AnalysisException e)
 				{
-					Logger.getLog().printErrorln("Error when generating code for class "
+					console.printErrorln("Error when generating code for class "
 							+ status.getIrNodeName() + ": " + e.getMessage());
-					Logger.getLog().printErrorln("Skipping class..");
+					console.printErrorln("Skipping class..");
 					e.printStackTrace();
 				}
 			}
+			stopwatch.stop();
+			logger.debug("Completed transformation: {}. Time elapsed: {}", trans.getClass().getSimpleName(), stopwatch);
 		}
 	}
 
@@ -150,6 +163,10 @@ public class CGen extends CodeGenBase
 	public void writeClasses(File outputFolder,
 			final List<IRStatus<PIR>> statuses, CFormat my_formatter)
 	{
+		logger.debug("Writing C source files");
+		final StopWatch stopwatch = new StopWatch();
+		final StopWatch stopwatchClass = new StopWatch();
+		stopwatch.start();
 		for (IRStatus<ADefaultClassDeclIR> status : IRStatus.extract(statuses, ADefaultClassDeclIR.class))
 		{
 			// StringWriter writer = new StringWriter();
@@ -157,20 +174,23 @@ public class CGen extends CodeGenBase
 
 			try
 			{
+				stopwatchClass.reset();
+				stopwatchClass.start();
+				// logger.trace("Emitting code and writing: {}", classCg.getName());
 				writeFile(classCg, classCg.getName(), "c", my_formatter, outputFolder);
-				// printClass(classCg, my_formatter, outputFolder);
-				// generateClassHeader(classCg, my_formatter, outputFolder);
+				stopwatchClass.stop();
+				logger.trace("Emitted code for class: {} in: {}", classCg.getName(), stopwatchClass);
 			} catch (org.overture.codegen.ir.analysis.AnalysisException e1)
 			{
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			} catch (IOException e1)
 			{
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 
 		}
+		stopwatch.stop();
+		logger.debug("Writing C source files. Completed in: {}", stopwatch);
 	}
 
 	public void writeHeaders(File outputFolder,
@@ -240,7 +260,28 @@ public class CGen extends CodeGenBase
 			throws org.overture.codegen.ir.analysis.AnalysisException
 	{
 		StringWriter writer = new StringWriter();
+		my_formatter.GetMergeVisitor().init();
 		node.apply(my_formatter.GetMergeVisitor(), writer);// Why StringWriter?
+		if (my_formatter.GetMergeVisitor().hasMergeErrors())
+		{
+			// throw new
+			// org.overture.codegen.ir.analysis.AnalysisException(my_formatter.GetMergeVisitor().getMergeErrors().get(0));
+			for (Exception e : my_formatter.GetMergeVisitor().getMergeErrors())
+			{
+				logger.error("Merge error:", e);
+			}
+
+		}
+		if (my_formatter.GetMergeVisitor().hasUnsupportedTargLangNodes())
+		{
+			for (IrNodeInfo n : my_formatter.GetMergeVisitor().getUnsupportedInTargLang())
+			{
+				logger.warn("Merg reached unsupported template: {}", n);
+			}
+
+			// throw new
+			// org.overture.codegen.ir.analysis.AnalysisException(my_formatter.GetMergeVisitor().getUnsupportedInTargLang().iterator().next().toString());
+		}
 		return writer;
 	}
 

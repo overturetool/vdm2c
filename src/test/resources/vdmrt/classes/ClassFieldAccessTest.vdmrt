@@ -1,0 +1,20 @@
+class ClassFieldAccessTest is subclass of TestCase,ClassFieldAccessAccessor
+
+operations
+
+public testAccessField : () ==>()
+testAccessField()==assertTrue( accessField());
+
+public testAccessStaticField : () ==>()
+testAccessStaticField()==assertTrue( accessStaticField());
+
+public testAccessOp : () ==>()
+testAccessOp()==assertTrue( accessOp());
+
+public testAccessOpStatic : () ==>()
+testAccessOpStatic()==assertTrue( accessOpStatic());
+
+public testAccessFun : () ==>()
+testAccessFun()==assertTrue( accessFun());
+
+end ClassFieldAccessTest

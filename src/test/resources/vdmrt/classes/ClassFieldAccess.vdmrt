@@ -1,0 +1,62 @@
+class ClassFieldAccess
+
+instance variables
+
+public field : int := 9;
+
+public static fieldStatic : bool := true;
+
+functions
+
+public fun: ()->bool
+fun()==true;
+
+operations
+
+public op : int ==>bool
+op(-)==return true;
+
+
+public static opStatic : int ==> bool
+opStatic(-)== return true;
+
+end ClassFieldAccess
+
+class ClassFieldHolder
+
+instance variables
+
+public static v : ClassFieldAccess := new ClassFieldAccess();
+
+end ClassFieldHolder
+
+
+class ClassFieldAccessAccessor
+
+values
+
+c : ClassFieldAccess = new ClassFieldAccess();
+
+
+
+operations
+
+public accessField : ()==> bool
+accessField()== return c.field=9;
+
+public accessStaticField : ()==> bool
+accessStaticField()== return c.fieldStatic;
+
+public accessOp : ()==> bool
+accessOp()== return c.op(1);
+
+public accessOpStatic : ()==> bool
+accessOpStatic()== return true;--return ClassFieldAccess`opStatic(1);
+
+public accessOpStaticField : ()==> bool
+accessOpStaticField()== return ClassFieldHolder`v.opStatic(1);
+
+public accessFun : ()==> bool
+accessFun()== return c.fun();
+
+end ClassFieldAccessAccessor

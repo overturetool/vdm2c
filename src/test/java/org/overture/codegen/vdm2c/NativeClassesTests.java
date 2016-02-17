@@ -109,6 +109,16 @@ public class NativeClassesTests extends NativeTestBase
 		compileAndTest();
 	}
 	
+	@ConditionalIgnore(condition = HasVdmLib.class)
+	@Test
+	public void ClassFieldAccess() throws IOException,
+			InterruptedException, CMakeGenerateException
+	{
+		generate(getPath("classes/ClassFieldAccess.vdmrt"));
+		compileAndTest();
+	}
+	
+	
 	
 	
 }

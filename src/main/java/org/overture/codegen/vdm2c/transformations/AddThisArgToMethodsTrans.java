@@ -8,6 +8,7 @@ import org.overture.cgc.extast.analysis.DepthFirstAnalysisCAdaptor;
 import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.declarations.AMethodDeclIR;
 import org.overture.codegen.ir.declarations.SClassDeclIR;
+import org.overture.codegen.ir.types.AMethodTypeIR;
 import org.overture.codegen.ir.types.AVoidTypeIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.Vdm2cTag;
@@ -32,7 +33,10 @@ public class AddThisArgToMethodsTrans extends DepthFirstAnalysisCAdaptor
 
 			if (!(node.getMethodType().getResult() instanceof AVoidTypeIR))
 			{
+				AMethodTypeIR oldType = node.getMethodType().clone();
 				node.getMethodType().setResult(newTvpType());
+				node.getMethodType().setSourceNode(oldType.getSourceNode());
+				node.getMethodType().getResult().setSourceNode(oldType.getResult().getSourceNode());
 			}
 			SClassDeclIR cDef = node.getAncestor(SClassDeclIR.class);
 			addArgument("this", newExternalType(cDef.getName() + "CLASS"), 0, node.getFormalParams());
