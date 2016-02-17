@@ -25,7 +25,6 @@ import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
 import org.overture.codegen.ir.statements.ACallObjectExpStmIR;
 import org.overture.codegen.ir.statements.ACallObjectStmIR;
 import org.overture.codegen.ir.statements.APlainCallStmIR;
-import org.overture.codegen.ir.statements.AReturnStmIR;
 import org.overture.codegen.ir.types.AClassTypeIR;
 import org.overture.codegen.ir.types.AMethodTypeIR;
 import org.overture.codegen.ir.types.ASeqSeqTypeIR;
@@ -50,13 +49,6 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 	public CallRewriteTrans(TransAssistantIR assist)
 	{
 		this.assist = assist;
-	}
-
-	@Override
-	public void caseAReturnStmIR(AReturnStmIR node) throws AnalysisException
-	{
-		// TODO Auto-generated method stub
-		super.caseAReturnStmIR(node);
 	}
 
 	@Override
