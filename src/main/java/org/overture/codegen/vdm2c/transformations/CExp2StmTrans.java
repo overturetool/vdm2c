@@ -33,7 +33,6 @@ public class CExp2StmTrans extends Exp2StmTrans
 			ILanguageIterator langIterator, Exp2StmVarPrefixes prefixes)
 	{
 		super(iteVarPrefixes, transAssistant, counterData, langIterator, prefixes);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
