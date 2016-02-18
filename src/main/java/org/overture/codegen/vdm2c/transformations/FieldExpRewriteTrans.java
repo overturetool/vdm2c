@@ -79,7 +79,7 @@ public class FieldExpRewriteTrans extends DepthFirstAnalysisCAdaptor
 							{
 								String fieldNameTmp = assist.getInfo().getTempVarNameGen().nextVarName(retPrefix);
 								SourceNode objSource = node.getObject().getSourceNode();
-								block.getLocalDefs().add(newDeclarationAssignment(fieldNameTmp, node.getObject().getType(), node.getObject(), objSource));
+								block.getLocalDefs().add(newDeclarationAssignment(fieldNameTmp, node.getObject().getType().clone(), node.getObject(), objSource));
 
 								AMacroApplyExpIR apply = newMacroApply(GET_FIELD);
 
