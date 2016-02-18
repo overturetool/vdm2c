@@ -126,6 +126,20 @@ public class NativeClassesTests extends NativeTestBase
 		generate(getPath("classes/ClassOpOpCall.vdmrt"));
 		compileAndTest();
 	}
-	
-	
+	@ConditionalIgnore(condition = HasVdmLib.class)
+	@Test
+	public void ClassOpOverride() throws IOException,
+			InterruptedException, CMakeGenerateException
+	{
+		generate(getPath("classes/ClassOpOverride.vdmrt"));
+		compileAndTest();
+	}
+	@ConditionalIgnore(condition = HasVdmLib.class)
+	@Test
+	public void ClassOpOverrideMiddle() throws IOException,
+			InterruptedException, CMakeGenerateException
+	{
+		generate(getPath("classes/ClassOpOverrideMiddle.vdmrt"));
+		compileAndTest();
+	}
 }

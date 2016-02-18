@@ -72,7 +72,7 @@ public class ExtractEmbeddedCreationsTrans extends DepthFirstAnalysisCAdaptor
 							}
 
 							// locate this node ancestor index in the block
-							INode ancesterStm = node.parent();
+							INode ancesterStm = node;
 							int nodeIndex = -1;
 							while (!ancesterStm.parent().equals(block))
 							{

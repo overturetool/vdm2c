@@ -180,6 +180,8 @@ public class CTransSeries
 
 		transformations.add(new SubClassResponsibilityMethodsTrans(transAssistant));
 		
+		// ExtractEmbeddedCreationsTrans requires that blocks doesn't have any local decelerations but that all is statements
+		transformations.add(new ScopeCleanerTrans(transAssistant));
 		transformations.add(new ExtractEmbeddedCreationsTrans(transAssistant));
 
 		/**
