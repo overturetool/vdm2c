@@ -7,6 +7,7 @@ import org.overture.ast.definitions.SClassDefinition;
 import org.overture.codegen.ir.SExpIR;
 import org.overture.codegen.ir.declarations.AFieldDeclIR;
 import org.overture.codegen.ir.declarations.SClassDeclIR;
+import org.overture.codegen.ir.expressions.AApplyExpIR;
 import org.overture.codegen.ir.expressions.AExplicitVarExpIR;
 import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
 import org.overture.codegen.ir.name.ATokenNameIR;
@@ -52,9 +53,11 @@ public class GlobalFieldUtil
 	{
 		AFieldDeclIR field = lookupField(classDef, name);
 		AIdentifierVarExpIR newIdentifier = newIdentifier(NameConverter.getCName(field), node.getSourceNode());
-		newIdentifier.setType(node.getType());
+		newIdentifier.setType(node.getType().clone());
 		newIdentifier.setIsLocal(false);
-		assist.replaceNodeWith(node, newApply("vdmClone", newIdentifier));
+		AApplyExpIR vdmCloneApply = newApply("vdmClone", newIdentifier);
+		vdmCloneApply.setType(node.getType().clone());
+		assist.replaceNodeWith(node, vdmCloneApply);
 	}
 
 	public String lookupFieldClass(SClassDeclIR node, String name)
