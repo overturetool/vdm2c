@@ -57,6 +57,12 @@ public class Vtables
 		{
 			return method;
 		}
+		
+		@Override
+		public String toString()
+		{
+			return key+" "+method;
+		}
 
 	}
 
