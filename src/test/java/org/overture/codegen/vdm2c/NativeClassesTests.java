@@ -118,7 +118,14 @@ public class NativeClassesTests extends NativeTestBase
 		compileAndTest();
 	}
 	
-	
+	@ConditionalIgnore(condition = HasVdmLib.class)
+	@Test
+	public void ClassOpOpCall() throws IOException,
+			InterruptedException, CMakeGenerateException
+	{
+		generate(getPath("classes/ClassOpOpCall.vdmrt"));
+		compileAndTest();
+	}
 	
 	
 }

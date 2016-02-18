@@ -1,0 +1,11 @@
+class ClassOpOpCallTest is subclass of TestCase,ClassOpOpCall
+
+operations
+
+public testCallCall : () ==>()
+testCallCall()==assertTrue( callcall());
+
+public testCallCallStatic : () ==>()
+testCallCallStatic()==assertTrue( callcallStatic());
+
+end ClassOpOpCallTest

@@ -50,6 +50,10 @@ public class CTransUtil
 	public static final String SET_FIELD_PTR = "SET_FIELD_PTR";
 
 	public static final String GET_FIELD = "GET_FIELD";
+	
+	public static final String METHOD_CALL_ID_PATTERN = "CLASS_%s_%s";
+	public static final String CALL_FUNC = "CALL_FUNC";
+	public static final String CALL_FUNC_PTR = "CALL_FUNC_PTR";
 
 	// public static AIdentifierVarExpIR createIdentifier(String name,
 	// org.overture.ast.node.INode derrivedFrom)

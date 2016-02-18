@@ -40,6 +40,7 @@ import org.overture.codegen.vdm2c.transformations.CallRewriteTrans;
 import org.overture.codegen.vdm2c.transformations.CreateGlobalConstInitFunctionTrans;
 import org.overture.codegen.vdm2c.transformations.CreateGlobalStaticInitFunctionTrans;
 import org.overture.codegen.vdm2c.transformations.CtorTrans;
+import org.overture.codegen.vdm2c.transformations.ExtractEmbeddedCreationsTrans;
 import org.overture.codegen.vdm2c.transformations.ExtractRetValTrans;
 import org.overture.codegen.vdm2c.transformations.FieldExpRewriteTrans;
 import org.overture.codegen.vdm2c.transformations.FieldIdentifierToFieldGetApplyTrans;
@@ -178,6 +179,8 @@ public class CTransSeries
 		transformations.add(new MapSeqUpdateRewriteTrans(transAssistant));
 
 		transformations.add(new SubClassResponsibilityMethodsTrans(transAssistant));
+		
+		transformations.add(new ExtractEmbeddedCreationsTrans(transAssistant));
 
 		/**
 		 * Phase #X - Remove any temporary nodes

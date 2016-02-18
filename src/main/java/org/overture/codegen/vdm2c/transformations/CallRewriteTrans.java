@@ -85,9 +85,9 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 		String thisType = thisName;
 		String methodOwnerType = selectedMethod.getAncestor(SClassDeclIR.class).getName();
 		String thisArgs = "this";
-		String methodId = String.format("CLASS_%s_%s", methodOwnerType, selectedMethod.getName());
+		String methodId = String.format(CTransUtil.METHOD_CALL_ID_PATTERN, methodOwnerType, selectedMethod.getName());
 
-		AMacroApplyExpIR apply = newMacroApply("CALL_FUNC_PTR", createIdentifier(thisType, null), createIdentifier(methodOwnerType, null), createIdentifier(thisArgs, null), createIdentifier(methodId, null));
+		AMacroApplyExpIR apply = newMacroApply(CTransUtil.CALL_FUNC_PTR, createIdentifier(thisType, null), createIdentifier(methodOwnerType, null), createIdentifier(thisArgs, null), createIdentifier(methodId, null));
 		apply.setType(method.getMethodType().getResult().clone());
 		for (SExpIR arg : linkedList)
 		{
@@ -104,9 +104,9 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 		AMethodDeclIR selectedMethod = method;
 		String thisType = thisName;
 		String methodOwnerType = selectedMethod.getAncestor(SClassDeclIR.class).getName();
-		String methodId = String.format("CLASS_%s_%s", methodOwnerType, selectedMethod.getName());
+		String methodId = String.format(CTransUtil.METHOD_CALL_ID_PATTERN, methodOwnerType, selectedMethod.getName());
 		// CALL_FUNC(thisTypeName,funcTname,classValue,id, args...
-		AMacroApplyExpIR apply = newMacroApply("CALL_FUNC", createIdentifier(thisType, null), createIdentifier(methodOwnerType, null), classValue, createIdentifier(methodId, null));
+		AMacroApplyExpIR apply = newMacroApply(CTransUtil.CALL_FUNC, createIdentifier(thisType, null), createIdentifier(methodOwnerType, null), classValue, createIdentifier(methodId, null));
 		apply.setType(method.getMethodType().getResult().clone());
 		for (SExpIR arg : linkedList)
 		{
