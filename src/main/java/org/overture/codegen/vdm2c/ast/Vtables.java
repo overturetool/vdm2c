@@ -192,6 +192,11 @@ public class Vtables
 		for (Entry<String, List<VEntryOverride>> entry : superVTableOverrides.entrySet())
 		{
 			AClassHeaderDeclIR superHeader = supers.get(entry.getKey());
+			
+			if(!superHeader.getName().equals(sueprName))
+			{
+				continue;
+			}
 
 			// FIXME this should also be recursive
 			for (VEntry aArrayDeclIR : superHeader.getVtable().table)
