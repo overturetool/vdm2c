@@ -26,7 +26,6 @@ import org.overture.codegen.vdm2c.extast.declarations.AClassHeaderDeclIR;
 
 public class CFormat
 {
-
 	final IHeaderFinder headerFinder;
 	private MergeVisitor mergeVisitor;
 	private IRInfo info;
@@ -56,8 +55,6 @@ public class CFormat
 		return headerFinder.getHeader(def);
 	}
 
-	public static final String UTILS_FILE = "Utils";
-
 	public CFormat(IRInfo info, IHeaderFinder headerfinder)
 	{
 		this.headerFinder = headerfinder;
@@ -73,8 +70,8 @@ public class CFormat
 	public String format(INode node) throws AnalysisException
 	{
 		StringWriter writer = new StringWriter();
+		
 		node.apply(mergeVisitor, writer);
-
 		return writer.toString();
 	}
 
