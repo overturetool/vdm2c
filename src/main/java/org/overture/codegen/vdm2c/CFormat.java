@@ -4,7 +4,6 @@ import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -14,25 +13,11 @@ import org.overture.codegen.ir.INode;
 import org.overture.codegen.ir.IRInfo;
 import org.overture.codegen.ir.PIR;
 import org.overture.codegen.ir.SExpIR;
-import org.overture.codegen.ir.SStmIR;
-import org.overture.codegen.ir.STypeIR;
 import org.overture.codegen.ir.analysis.AnalysisException;
-import org.overture.codegen.ir.declarations.ADefaultClassDeclIR;
-import org.overture.codegen.ir.declarations.AFieldDeclIR;
 import org.overture.codegen.ir.declarations.AFormalParamLocalParamIR;
 import org.overture.codegen.ir.declarations.AMethodDeclIR;
 import org.overture.codegen.ir.declarations.SClassDeclIR;
-import org.overture.codegen.ir.expressions.ABoolLiteralExpIR;
-import org.overture.codegen.ir.expressions.AEqualsBinaryExpIR;
-import org.overture.codegen.ir.expressions.ANotEqualsBinaryExpIR;
-import org.overture.codegen.ir.expressions.ANotUnaryExpIR;
-import org.overture.codegen.ir.expressions.SBinaryExpIR;
 import org.overture.codegen.ir.statements.ABlockStmIR;
-import org.overture.codegen.ir.types.ABoolBasicTypeIR;
-import org.overture.codegen.ir.types.SMapTypeIR;
-import org.overture.codegen.ir.types.SSeqTypeIR;
-import org.overture.codegen.ir.types.SSetTypeIR;
-import org.overture.codegen.logging.Logger;
 import org.overture.codegen.merging.MergeVisitor;
 import org.overture.codegen.merging.TemplateCallable;
 import org.overture.codegen.merging.TemplateManager;
@@ -45,7 +30,6 @@ public class CFormat
 	final IHeaderFinder headerFinder;
 	private MergeVisitor mergeVisitor;
 	private IRInfo info;
-	private int number = 0;
 
 	private long nextClassId = 0;
 	private Map<String, Long> classIds = new HashMap<String, Long>();
@@ -73,13 +57,6 @@ public class CFormat
 	}
 
 	public static final String UTILS_FILE = "Utils";
-
-	public String getNumber()
-	{
-		number = number + 1;
-
-		return Integer.toString(number - 1);
-	}
 
 	public CFormat(IRInfo info, IHeaderFinder headerfinder)
 	{
@@ -143,40 +120,6 @@ public class CFormat
 		return mergeVisitor;
 	}
 
-	public String formatOperationBody(SStmIR body) throws AnalysisException
-	{
-		String NEWLINE = "\n";
-		if (body == null)
-		{
-			return ";";
-		}
-
-		StringWriter generatedBody = new StringWriter();
-
-		generatedBody.append("{" + NEWLINE + NEWLINE);
-		generatedBody.append(handleOpBody(body));
-		generatedBody.append(NEWLINE + "}");
-
-		return generatedBody.toString();
-	}
-
-	private String handleOpBody(SStmIR body) throws AnalysisException
-	{
-		AMethodDeclIR method = body.getAncestor(AMethodDeclIR.class);
-
-		if (method == null)
-		{
-			Logger.getLog().printErrorln("Could not find enclosing method when formatting operation body. Got: "
-					+ body);
-		} else if (method.getAsync() != null && method.getAsync())
-		{
-			return "new VDMThread(){ " + "\tpublic void run() {" + "\t "
-					+ format(body) + "\t} " + "}.start();";
-		}
-
-		return format(body);
-	}
-
 	public String format(List<AFormalParamLocalParamIR> params)
 			throws AnalysisException
 	{
@@ -197,11 +140,6 @@ public class CFormat
 			writer.append(format(param));
 		}
 		return writer.toString();
-	}
-
-	public boolean isClass(INode node)
-	{
-		return node != null && node instanceof ADefaultClassDeclIR;
 	}
 
 	public String formatArgs(List<? extends SExpIR> exps)
@@ -226,22 +164,6 @@ public class CFormat
 		return writer.toString();
 	}
 
-	public List<AMethodDeclIR> getMethodsByAccess(List<AMethodDeclIR> methods,
-			String access)
-	{
-		LinkedList<AMethodDeclIR> matches = new LinkedList<AMethodDeclIR>();
-
-		for (AMethodDeclIR m : methods)
-		{
-			if (m.getAccess().equals(access))
-			{
-				matches.add(m);
-			}
-		}
-
-		return matches;
-	}
-
 	public boolean isNull(INode node)
 	{
 		return node == null;
@@ -252,136 +174,6 @@ public class CFormat
 		return GeneralUtils.isEscapeSequence(c) ? StringEscapeUtils.escapeJavaScript(c
 				+ "")
 				: c + "";
-	}
-
-	public List<AFieldDeclIR> getFieldsByAccess(List<AFieldDeclIR> fields,
-			String access)
-	{
-		LinkedList<AFieldDeclIR> matches = new LinkedList<AFieldDeclIR>();
-
-		for (AFieldDeclIR f : fields)
-		{
-			if (f.getAccess().equals(access))
-			{
-				matches.add(f);
-			}
-		}
-
-		return matches;
-	}
-
-	public String formatEqualsBinaryExp(AEqualsBinaryExpIR node)
-			throws AnalysisException
-	{
-		STypeIR leftNodeType = node.getLeft().getType();
-
-		if (leftNodeType instanceof SSeqTypeIR
-				|| leftNodeType instanceof SSetTypeIR
-				|| leftNodeType instanceof SMapTypeIR)
-		{
-			return handleCollectionComparison(node);
-		} else
-		{
-			return handleEquals(node);
-		}
-	}
-
-	public String formatNotEqualsBinaryExp(ANotEqualsBinaryExpIR node)
-			throws AnalysisException
-	{
-		ANotUnaryExpIR transformed = transNotEquals(node);
-		return formatNotUnary(transformed.getExp());
-	}
-
-	public String formatNotUnary(SExpIR exp) throws AnalysisException
-	{
-		String formattedExp = format(exp, false);
-
-		boolean doNotWrap = exp instanceof ABoolLiteralExpIR
-				|| formattedExp.startsWith("(") && formattedExp.endsWith(")");
-
-		return doNotWrap ? "!" + formattedExp : "!(" + formattedExp + ")";
-	}
-
-	private ANotUnaryExpIR transNotEquals(ANotEqualsBinaryExpIR notEqual)
-	{
-		ANotUnaryExpIR notUnary = new ANotUnaryExpIR();
-		notUnary.setType(new ABoolBasicTypeIR());
-
-		AEqualsBinaryExpIR equal = new AEqualsBinaryExpIR();
-		equal.setType(new ABoolBasicTypeIR());
-		equal.setLeft(notEqual.getLeft().clone());
-		equal.setRight(notEqual.getRight().clone());
-
-		notUnary.setExp(equal);
-
-		// Replace the "notEqual" expression with the transformed expression
-		INode parent = notEqual.parent();
-
-		// It may be the case that the parent is null if we execute e.g. [1] <>
-		// [1] in isolation
-		if (parent != null)
-		{
-			parent.replaceChild(notEqual, notUnary);
-			notEqual.parent(null);
-		}
-
-		return notUnary;
-	}
-
-	private String handleEquals(AEqualsBinaryExpIR valueType)
-			throws AnalysisException
-	{
-		return String.format("%s.equals(%s, %s)", UTILS_FILE, format(valueType.getLeft()), format(valueType.getRight()));
-	}
-
-	private String handleCollectionComparison(SBinaryExpIR node)
-			throws AnalysisException
-	{
-		// In VDM the types of the equals are compatible when the AST passes the
-		// type check
-		SExpIR leftNode = node.getLeft();
-		SExpIR rightNode = node.getRight();
-
-		final String EMPTY = ".isEmpty()";
-
-		if (isEmptyCollection(leftNode.getType()))
-		{
-			return format(node.getRight()) + EMPTY;
-		} else if (isEmptyCollection(rightNode.getType()))
-		{
-			return format(node.getLeft()) + EMPTY;
-		}
-
-		return UTILS_FILE + ".equals(" + format(node.getLeft()) + ", "
-				+ format(node.getRight()) + ")";
-	}
-
-	private boolean isEmptyCollection(STypeIR type)
-	{
-		if (type instanceof SSeqTypeIR)
-		{
-			SSeqTypeIR seq = (SSeqTypeIR) type;
-
-			return seq.getEmpty();
-		} else if (type instanceof SSetTypeIR)
-		{
-			SSetTypeIR set = (SSetTypeIR) type;
-
-			return set.getEmpty();
-		} else if (type instanceof SMapTypeIR)
-		{
-			SMapTypeIR map = (SMapTypeIR) type;
-
-			return map.getEmpty();
-		}
-
-		return false;
-	}
-
-	public String getClassName(SClassDeclIR cl)
-	{
-		return cl.getName().toString();
 	}
 
 	public boolean isPublic(AMethodDeclIR method)
@@ -426,7 +218,7 @@ public class CFormat
 		}
 		return "";
 	}
-	
+
 	public boolean isBlock(PIR node)
 	{
 		return node instanceof ABlockStmIR;
