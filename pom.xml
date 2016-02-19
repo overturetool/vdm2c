@@ -128,6 +128,15 @@
 				<configuration>
 					<destFile>${basedir}/target/coverage-reports/jacoco-unit.exec</destFile>
 					<dataFile>${basedir}/target/coverage-reports/jacoco-unit.exec</dataFile>
+					<excludes>
+        <exclude>org/overture/cgc/extast/analysis/**/*.*</exclude>
+				<exclude>org/overture/codegen/vdm2c/extast/expressions/**/*</exclude>
+				<exclude>org/overture/codegen/vdm2c/extast/declarations/**/*</exclude>
+				<exclude>org/overture/codegen/vdm2c/extast/statements/**/*</exclude>
+				<exclude>org/overture/cgc/extast/node/**/*</exclude>
+				<exclude>org/overture/codegen/vdm2c/ast/preview/**/*</exclude>
+				
+    </excludes>
 				</configuration>
 				<executions>
 					<execution>
