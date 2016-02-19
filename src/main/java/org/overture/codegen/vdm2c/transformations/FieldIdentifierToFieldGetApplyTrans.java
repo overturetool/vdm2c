@@ -32,6 +32,7 @@ import org.overture.codegen.ir.statements.AAssignToExpStmIR;
 import org.overture.codegen.ir.statements.ABlockStmIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.extast.expressions.AMacroApplyExpIR;
+import org.overture.codegen.vdm2c.utils.CTransUtil;
 import org.overture.codegen.vdm2c.utils.GlobalFieldUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,21 +77,15 @@ public class FieldIdentifierToFieldGetApplyTrans extends
 
 			thisClassName = varExp.getAncestor(AClassClassDefinition.class).getName().getName();// the containing
 																								// class
-
-			PDefinition vardef = varExp.getVardef();
-
-			if (vardef instanceof AInheritedDefinition)
+			fieldClassName = thisClassName; //default to same class
+			
+			if (varExp.getVardef() instanceof AInheritedDefinition)
 			{
-				PDefinition superDef = ((AInheritedDefinition) vardef).getSuperdef();
-				if (superDef instanceof AInstanceVariableDefinition)
-				{
-					if (vardef.getAccess().getStatic() != null)
-					{
-						fieldUtil.replaceWithStaticReference(vardef.getClassDefinition(), node);
-						return;
-					}
-				}
+				AInheritedDefinition idef = (AInheritedDefinition) varExp.getVardef();
+				fieldClassName = idef.getClassDefinition().getName().getName();
 			}
+
+			PDefinition vardef = CTransUtil.unwrapInheritedDef(varExp.getVardef());
 
 			if (vardef instanceof AInstanceVariableDefinition)
 			{
@@ -99,11 +94,7 @@ public class FieldIdentifierToFieldGetApplyTrans extends
 					fieldUtil.replaceWithStaticReference(vardef.getClassDefinition(), node);
 					return;
 				}
-				fieldClassName = thisClassName;
-			} else if (vardef instanceof AInheritedDefinition)
-			{
-				AInheritedDefinition idef = (AInheritedDefinition) vardef;
-				fieldClassName = idef.getClassDefinition().getName().getName();
+
 			} else if (vardef instanceof ALocalDefinition
 					&& ((ALocalDefinition) vardef).getValueDefinition())
 			{
