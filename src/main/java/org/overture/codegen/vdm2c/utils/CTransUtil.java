@@ -318,6 +318,15 @@ public class CTransUtil
 		}
 		return false;
 	}
+	
+	public static PDefinition unwrapInheritedDef(PDefinition def)
+	{
+		while(def instanceof AInheritedDefinition)
+		{
+			def = ((AInheritedDefinition)def).getSuperdef();
+		}
+		return def;
+	}
 
 	public static boolean isValueDefinition(AExplicitVarExpIR node)
 	{
@@ -325,9 +334,11 @@ public class CTransUtil
 		if (vdmNode instanceof AVariableExp)
 		{
 			AVariableExp varExp = (AVariableExp) vdmNode;
-			if (varExp.getVardef() instanceof ALocalDefinition)
+			
+			PDefinition def = unwrapInheritedDef(varExp.getVardef());
+			if (def instanceof ALocalDefinition)
 			{
-				ALocalDefinition local = (ALocalDefinition) varExp.getVardef();
+				ALocalDefinition local = (ALocalDefinition) def;
 				if (local.getValueDefinition())
 				{
 					return true;
