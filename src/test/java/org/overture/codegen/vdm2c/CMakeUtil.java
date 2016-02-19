@@ -37,6 +37,10 @@ public class CMakeUtil
 		
 		copyReplaceProjectName(name,new File("src/test/resources/project"),new File(root,".project"));
 		copyReplaceProjectName(name,new File("src/test/resources/cproject"),new File(root,".cproject"));
+		
+		File settings = new File(root,".settings");
+		settings.mkdirs();
+		FileUtils.copyFile(new File("src/test/resources/c_settings.xml"), new File(root, "language.settings.xml"));
 	}
 	
 	void copyReplaceProjectName(String name, File source, File dest) throws IOException

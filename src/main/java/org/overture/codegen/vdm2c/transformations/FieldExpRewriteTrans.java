@@ -45,6 +45,7 @@ public class FieldExpRewriteTrans extends DepthFirstAnalysisCAdaptor
 		if (node.getType() instanceof AMethodTypeIR)
 		{
 			// handled in CallRewriteTrans
+			return;
 		} else
 		{
 			// its a field

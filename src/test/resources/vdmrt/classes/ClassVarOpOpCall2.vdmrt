@@ -1,0 +1,23 @@
+class ClassVarOpOpCall2
+
+instance variables
+
+v1 : ClassVarOpOpCall2 := new ClassVarOpOpCall2();
+v2 : ClassVarOpOpCall2 := new ClassVarOpOpCall2();
+v3 : ClassVarOpOpCall2 := new ClassVarOpOpCall2();
+
+operations
+
+public op: () ==> bool
+op()==return true;
+
+public check : ()==>bool
+check()==(
+
+if(v1.op() or v2.op() or v3.op())
+then return true;
+ return false
+);
+
+end ClassVarOpOpCall2
+

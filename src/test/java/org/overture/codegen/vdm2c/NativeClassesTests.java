@@ -126,6 +126,34 @@ public class NativeClassesTests extends NativeTestBase
 		generate(getPath("classes/ClassOpOpCall.vdmrt"));
 		compileAndTest();
 	}
+	
+	@ConditionalIgnore(condition = HasVdmLib.class)
+	@Test
+	public void ClassVarOpOpCall() throws IOException,
+			InterruptedException, CMakeGenerateException
+	{
+		generate(getPath("classes/ClassVarOpOpCall.vdmrt"));
+		compileAndTest();
+	}
+
+	@ConditionalIgnore(condition = HasVdmLib.class)
+	@Test
+	public void ClassVarOpOpCall2() throws IOException,
+			InterruptedException, CMakeGenerateException
+	{
+		generate(getPath("classes/ClassVarOpOpCall2.vdmrt"));
+		compileAndTest();
+	}
+	
+	@ConditionalIgnore(condition = HasVdmLib.class)
+	@Test
+	public void ClassIfNotEq() throws IOException,
+			InterruptedException, CMakeGenerateException
+	{
+		generate(getPath("classes/ClassIfNotEq.vdmrt"));
+		compileAndTest();
+	}
+	
 	@ConditionalIgnore(condition = HasVdmLib.class)
 	@Test
 	public void ClassOpOverride() throws IOException,
@@ -142,4 +170,15 @@ public class NativeClassesTests extends NativeTestBase
 		generate(getPath("classes/ClassOpOverrideMiddle.vdmrt"));
 		compileAndTest();
 	}
+	
+	@ConditionalIgnore(condition = HasVdmLib.class)
+	@Test
+	public void ClassValueInheritance() throws IOException,
+			InterruptedException, CMakeGenerateException
+	{
+		generate(getPath("classes/ClassValueInheritance.vdmrt"));
+		compileAndTest();
+	}
+	
+	
 }

@@ -61,7 +61,8 @@ public class LogicTrans extends DepthFirstAnalysisCAdaptor implements
 			throws AnalysisException
 	{
 		SExpIR replacement = rewriteToApply(this, node, "vdmEquals", node.getLeft(), node.getRight());
-		replacement.parent().replaceChild(replacement, newApply("vdmNot", replacement.clone()));
+		rewriteToApply(this, replacement, "vdmNot", replacement).apply(THIS);;
+//		replacement.parent().replaceChild(replacement, newApply("vdmNot", replacement.clone()));
 	}
 
 	@Override

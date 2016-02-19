@@ -50,7 +50,7 @@ public class CTransUtil
 	public static final String SET_FIELD_PTR = "SET_FIELD_PTR";
 
 	public static final String GET_FIELD = "GET_FIELD";
-	
+
 	public static final String METHOD_CALL_ID_PATTERN = "CLASS_%s_%s";
 	public static final String CALL_FUNC = "CALL_FUNC";
 	public static final String CALL_FUNC_PTR = "CALL_FUNC_PTR";
@@ -240,7 +240,10 @@ public class CTransUtil
 	{
 		AApplyExpIR apply = newApply(string);
 		apply.setSourceNode(node.getSourceNode());
-		apply.setType(node.getType());
+		if (node.getType() != null)
+		{
+			apply.setType(node.getType().clone());
+		}
 		assist.getAssist().replaceNodeWith(node, apply);
 		for (SExpIR arg : args)
 		{
@@ -318,12 +321,12 @@ public class CTransUtil
 		}
 		return false;
 	}
-	
+
 	public static PDefinition unwrapInheritedDef(PDefinition def)
 	{
-		while(def instanceof AInheritedDefinition)
+		while (def instanceof AInheritedDefinition)
 		{
-			def = ((AInheritedDefinition)def).getSuperdef();
+			def = ((AInheritedDefinition) def).getSuperdef();
 		}
 		return def;
 	}
@@ -334,7 +337,7 @@ public class CTransUtil
 		if (vdmNode instanceof AVariableExp)
 		{
 			AVariableExp varExp = (AVariableExp) vdmNode;
-			
+
 			PDefinition def = unwrapInheritedDef(varExp.getVardef());
 			if (def instanceof ALocalDefinition)
 			{

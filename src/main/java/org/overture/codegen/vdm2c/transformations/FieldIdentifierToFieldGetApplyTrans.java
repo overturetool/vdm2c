@@ -77,8 +77,8 @@ public class FieldIdentifierToFieldGetApplyTrans extends
 
 			thisClassName = varExp.getAncestor(AClassClassDefinition.class).getName().getName();// the containing
 																								// class
-			fieldClassName = thisClassName; //default to same class
-			
+			fieldClassName = thisClassName; // default to same class
+
 			if (varExp.getVardef() instanceof AInheritedDefinition)
 			{
 				AInheritedDefinition idef = (AInheritedDefinition) varExp.getVardef();
@@ -170,6 +170,8 @@ public class FieldIdentifierToFieldGetApplyTrans extends
 		if (node.getTarget() instanceof AIdentifierVarExpIR
 				&& ((AIdentifierVarExpIR) node.getTarget()).getIsLocal())
 		{
+			// if not handle here then process children
+			super.caseAAssignToExpStmIR(node);
 			return;
 		}
 
@@ -194,6 +196,8 @@ public class FieldIdentifierToFieldGetApplyTrans extends
 
 		String name = assist.getInfo().getTempVarNameGen().nextVarName(fieldPrefix);
 
+		// process right side of assignment
+		node.getExp().apply(THIS);
 		AVarDeclIR retVar = newDeclarationAssignment(name, node.getExp().getType().clone(), node.getExp(), node.getExp().getSourceNode());
 
 		ABlockStmIR replBlock = new ABlockStmIR();

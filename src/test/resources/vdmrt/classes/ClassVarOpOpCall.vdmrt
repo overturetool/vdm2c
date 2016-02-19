@@ -1,0 +1,18 @@
+class ClassVarOpOpCall
+
+operations
+
+public op: () ==> bool
+op()==return true;
+
+public get : () ==> ClassVarOpOpCall
+get()==return new ClassVarOpOpCall();
+
+
+
+public varcallcall : () ==> bool
+varcallcall()==return let v = new ClassVarOpOpCall() in v.get().op();
+
+
+end ClassVarOpOpCall
+

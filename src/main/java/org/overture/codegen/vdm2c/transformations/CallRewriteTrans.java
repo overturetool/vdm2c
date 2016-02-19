@@ -78,7 +78,7 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 
 	}
 
-	SExpIR createLocalPtrApply(AMethodDeclIR method, String thisName,
+	AMacroApplyExpIR createLocalPtrApply(AMethodDeclIR method, String thisName,
 			List<SExpIR> linkedList) throws AnalysisException
 	{
 		AMethodDeclIR selectedMethod = method;
@@ -97,7 +97,7 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 		return apply;
 	}
 
-	SExpIR createClassApply(AMethodDeclIR method, String thisName,
+	AMacroApplyExpIR createClassApply(AMethodDeclIR method, String thisName,
 			SExpIR classValue, List<SExpIR> linkedList)
 			throws AnalysisException
 	{
@@ -193,7 +193,7 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 				logger.error("Generator error unable to find method for: {}", originalApply);
 				return;
 			}
-			SExpIR apply = null;
+			AMacroApplyExpIR apply = null;
 
 			if (object == null)
 			{
@@ -202,9 +202,22 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 			} else
 			{
 				apply = createClassApply(resolvedMethods.get(0), cDef.getName(), object, originalApply.getArgs());
+				
 			}
 			apply.setSourceNode(originalApply.getSourceNode());
 			assist.replaceNodeWith(originalApply, apply);
+
+			//if object call then apply transformation to object too
+			if(object!=null)
+			{
+				apply.getArgs().get(2).apply(THIS);
+			}
+			
+			//apply transformation to all arguments
+			for (int i = 4; i < apply.getArgs().size(); i++)
+			{
+				apply.getArgs().get(i).apply(THIS);
+			}
 		} else if (type instanceof ASeqSeqTypeIR)
 		{
 			// sequence index
@@ -215,6 +228,13 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 
 			assist.replaceNodeWith(originalApply, seqIndexApply);
 			seqIndexApply.apply(THIS);
+		}else
+		{
+			//no rewrite but run on args too
+			for (SExpIR arg : originalApply.getArgs())
+			{
+				arg.apply(THIS);
+			}
 		}
 	}
 
@@ -246,6 +266,7 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 			throws AnalysisException
 	{
 		// TODO Auto-generated method stub
+		logger.error("Reached unhandled call rewrite: {}", node);
 		super.caseACallObjectStmIR(node);
 	}
 }

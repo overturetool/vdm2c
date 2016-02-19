@@ -1,0 +1,20 @@
+class ClassValueInheritance0
+
+values 
+ public value0 : int = 66;
+
+end ClassValueInheritance0
+
+class ClassValueInheritance is subclass of ClassValueInheritance0
+
+values 
+ public value1 : int = value0;
+ 
+operations
+ public check: () ==> bool
+ check()== return value1 = 66;
+ 
+
+
+
+end ClassValueInheritance
