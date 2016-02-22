@@ -109,6 +109,76 @@ public class NativeClassesTests extends NativeTestBase
 		compileAndTest();
 	}
 	
+	@ConditionalIgnore(condition = HasVdmLib.class)
+	@Test
+	public void ClassFieldAccess() throws IOException,
+			InterruptedException, CMakeGenerateException
+	{
+		generate(getPath("classes/ClassFieldAccess.vdmrt"));
+		compileAndTest();
+	}
+	
+	@ConditionalIgnore(condition = HasVdmLib.class)
+	@Test
+	public void ClassOpOpCall() throws IOException,
+			InterruptedException, CMakeGenerateException
+	{
+		generate(getPath("classes/ClassOpOpCall.vdmrt"));
+		compileAndTest();
+	}
+	
+	@ConditionalIgnore(condition = HasVdmLib.class)
+	@Test
+	public void ClassVarOpOpCall() throws IOException,
+			InterruptedException, CMakeGenerateException
+	{
+		generate(getPath("classes/ClassVarOpOpCall.vdmrt"));
+		compileAndTest();
+	}
+
+	@ConditionalIgnore(condition = HasVdmLib.class)
+	@Test
+	public void ClassVarOpOpCall2() throws IOException,
+			InterruptedException, CMakeGenerateException
+	{
+		generate(getPath("classes/ClassVarOpOpCall2.vdmrt"));
+		compileAndTest();
+	}
+	
+	@ConditionalIgnore(condition = HasVdmLib.class)
+	@Test
+	public void ClassIfNotEq() throws IOException,
+			InterruptedException, CMakeGenerateException
+	{
+		generate(getPath("classes/ClassIfNotEq.vdmrt"));
+		compileAndTest();
+	}
+	
+	@ConditionalIgnore(condition = HasVdmLib.class)
+	@Test
+	public void ClassOpOverride() throws IOException,
+			InterruptedException, CMakeGenerateException
+	{
+		generate(getPath("classes/ClassOpOverride.vdmrt"));
+		compileAndTest();
+	}
+	@ConditionalIgnore(condition = HasVdmLib.class)
+	@Test
+	public void ClassOpOverrideMiddle() throws IOException,
+			InterruptedException, CMakeGenerateException
+	{
+		generate(getPath("classes/ClassOpOverrideMiddle.vdmrt"));
+		compileAndTest();
+	}
+	
+	@ConditionalIgnore(condition = HasVdmLib.class)
+	@Test
+	public void ClassValueInheritance() throws IOException,
+			InterruptedException, CMakeGenerateException
+	{
+		generate(getPath("classes/ClassValueInheritance.vdmrt"));
+		compileAndTest();
+	}
 	
 	
 }

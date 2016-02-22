@@ -1,0 +1,42 @@
+class ClassOpOverrideMiddle
+
+operations
+public op: () ==> bool
+op()==return true;
+
+end ClassOpOverrideMiddle
+
+
+
+
+class ClassOpOverrideMiddle1 is subclass of ClassOpOverrideMiddle
+
+operations
+public op2: () ==> bool
+op2()==return true;
+
+end ClassOpOverrideMiddle1
+
+
+
+class ClassOpOverrideMiddle3 is subclass of ClassOpOverrideMiddle1
+
+operations
+public op: () ==> bool
+op()==return true;
+
+public op2: () ==> bool
+op2()==return true;
+
+
+
+
+public extCall : () ==> bool
+extCall()==let tmp =  new ClassOpOverrideMiddle3()in
+(
+	let - = tmp.op() in skip;
+	return true;
+); 
+
+end ClassOpOverrideMiddle3
+

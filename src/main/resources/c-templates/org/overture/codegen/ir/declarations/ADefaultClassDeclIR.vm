@@ -90,12 +90,13 @@ ${cname}CLASS ${cname}_Constructor(${cname}CLASS this_ptr)
 			#set($tn = $vtable.getOverrideStaticTableName($sname))
 			if(! ${tn}[0].pFunc)
 			{
-				//obtain origitnal $sname VTable
+				//obtain original $sname VTable
 				memcpy( $tn, this_ptr->_${sname}_pVTable, sizeof( struct VTable) * $vtable.getOverrides($sname).size() );
 				
 				//install overrides
 				#foreach($entry in $vtable.getOverrides($sname).entrySet())
 					${tn}[$entry.getKey()].pFunc = (VirtualFunctionPointer)$entry.getValue(); //override
+					
 				#end
 			}
 			this_ptr->_${sname}_pVTable = $tn;

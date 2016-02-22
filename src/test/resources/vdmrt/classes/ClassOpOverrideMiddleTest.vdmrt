@@ -1,0 +1,9 @@
+class ClassOpOverrideMiddleTest is subclass of TestCase,ClassOpOverrideMiddle3
+
+operations
+
+
+public testextCall: ()==>bool
+testextCall()==return extCall();
+
+end ClassOpOverrideMiddleTest

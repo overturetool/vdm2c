@@ -1,0 +1,33 @@
+class ClassOpOpCall
+
+instance variables
+
+static val : ClassOpOpCall := new ClassOpOpCall();
+
+operations
+
+public op: () ==> bool
+op()==return true;
+
+public get : () ==> ClassOpOpCall
+get()==return new ClassOpOpCall();
+
+public get2 : () ==> ClassOpOpCall
+get2()==return get();
+
+
+public callcall : () ==> bool
+callcall()==return get().op();
+
+--public varcallcall : () ==> bool
+--varcallcall()==return let v = new ClassOpOpCall() in v.get().op();
+
+public check : ClassOpOpCall* ClassOpOpCall==>bool
+check(-,-) == return true;
+
+
+public callcallStatic : () ==> bool
+callcallStatic()== ClassOpOpCall`val.check(ClassOpOpCall`get(),ClassOpOpCall`get2());
+
+end ClassOpOpCall
+

@@ -15,6 +15,7 @@ import org.overture.codegen.ir.types.AClassTypeIR;
 import org.overture.codegen.ir.types.AMethodTypeIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.extast.expressions.AMacroApplyExpIR;
+import org.overture.codegen.vdm2c.utils.GlobalFieldUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,14 +28,14 @@ public class FieldExpRewriteTrans extends DepthFirstAnalysisCAdaptor
 	public TransAssistantIR assist;
 
 	final CompatibleMethodCollector methodCollector = new CompatibleMethodCollector();
-	final FieldIdentifierToFieldGetApplyTrans lookup;
+	final GlobalFieldUtil fieldUtil;
 
 	final static String retPrefix = "fieldTmp_";
 
 	public FieldExpRewriteTrans(TransAssistantIR assist)
 	{
 		this.assist = assist;
-		this.lookup = new FieldIdentifierToFieldGetApplyTrans(assist);
+		this.fieldUtil = new GlobalFieldUtil(assist);
 	}
 
 	@Override
@@ -43,8 +44,8 @@ public class FieldExpRewriteTrans extends DepthFirstAnalysisCAdaptor
 		super.caseAFieldExpIR(node);
 		if (node.getType() instanceof AMethodTypeIR)
 		{
-			// its a call
-
+			// handled in CallRewriteTrans
+			return;
 		} else
 		{
 			// its a field
@@ -60,13 +61,13 @@ public class FieldExpRewriteTrans extends DepthFirstAnalysisCAdaptor
 				{
 					if (c.getName().equals(classType.getName()))
 					{
-						if (lookup.isStatic(c, node.getMemberName()))
+						if (fieldUtil.isStatic(c, node.getMemberName()))
 						{
-							lookup.replaceWithStaticReference(c, node.getMemberName(), node);
+							fieldUtil.replaceWithStaticReference(c, node.getMemberName(), node);
 							return;
 						}
 
-						fieldClassName = lookup.lookupFieldClass(c, node.getMemberName());
+						fieldClassName = fieldUtil.lookupFieldClass(c, node.getMemberName());
 
 						if (thisClassName != null && fieldClassName != null)
 						{
@@ -79,7 +80,7 @@ public class FieldExpRewriteTrans extends DepthFirstAnalysisCAdaptor
 							{
 								String fieldNameTmp = assist.getInfo().getTempVarNameGen().nextVarName(retPrefix);
 								SourceNode objSource = node.getObject().getSourceNode();
-								block.getLocalDefs().add(newDeclarationAssignment(fieldNameTmp, node.getObject().getType(), node.getObject(), objSource));
+								block.getLocalDefs().add(newDeclarationAssignment(fieldNameTmp, node.getObject().getType().clone(), node.getObject(), objSource));
 
 								AMacroApplyExpIR apply = newMacroApply(GET_FIELD);
 
@@ -102,5 +103,4 @@ public class FieldExpRewriteTrans extends DepthFirstAnalysisCAdaptor
 		}
 		logger.error("AFieldExpIR not replaced: {}", node);
 	}
-
 }

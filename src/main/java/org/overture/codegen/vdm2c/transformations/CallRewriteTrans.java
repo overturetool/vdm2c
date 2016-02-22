@@ -15,19 +15,22 @@ import org.overture.ast.types.AClassType;
 import org.overture.cgc.extast.analysis.DepthFirstAnalysisCAdaptor;
 import org.overture.codegen.ir.SExpIR;
 import org.overture.codegen.ir.SStmIR;
+import org.overture.codegen.ir.STypeIR;
 import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.declarations.AMethodDeclIR;
 import org.overture.codegen.ir.declarations.SClassDeclIR;
 import org.overture.codegen.ir.expressions.AApplyExpIR;
+import org.overture.codegen.ir.expressions.AFieldExpIR;
 import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
 import org.overture.codegen.ir.statements.ACallObjectExpStmIR;
 import org.overture.codegen.ir.statements.ACallObjectStmIR;
 import org.overture.codegen.ir.statements.APlainCallStmIR;
-import org.overture.codegen.ir.statements.AReturnStmIR;
+import org.overture.codegen.ir.types.AClassTypeIR;
 import org.overture.codegen.ir.types.AMethodTypeIR;
 import org.overture.codegen.ir.types.ASeqSeqTypeIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.extast.expressions.AMacroApplyExpIR;
+import org.overture.codegen.vdm2c.utils.CTransUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,23 +52,21 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 	}
 
 	@Override
-	public void caseAReturnStmIR(AReturnStmIR node) throws AnalysisException
-	{
-		// TODO Auto-generated method stub
-		super.caseAReturnStmIR(node);
-	}
-
-	@Override
 	public void caseAPlainCallStmIR(APlainCallStmIR node)
 			throws AnalysisException
 	{
-		if ((node.getClassType() + "").equals("IO"))
-		{
-			return;// FIXME handle external stuff
-		}
 		// op(a,d,f); --no root, so current class is the root.
 
-		SClassDeclIR cDef = node.getAncestor(SClassDeclIR.class);
+		SClassDeclIR cDef = null;
+
+		if (node.getClassType() instanceof AClassTypeIR)
+		{
+			cDef = CTransUtil.getClass(assist, ((AClassTypeIR) node.getClassType()).getName());
+		} else
+		{
+			cDef = node.getAncestor(SClassDeclIR.class);
+		}
+
 		List<PDefinition> tmp = methodCollector.collectCompatibleMethods((SClassDefinition) cDef.getSourceNode().getVdmNode(), node.getName(), node.getSourceNode().getVdmNode(), methodCollector.getArgTypes(node.getSourceNode().getVdmNode()));
 
 		List<AMethodDeclIR> resolvedMethods = lookupVdmFunOpToMethods(tmp);
@@ -77,17 +78,17 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 
 	}
 
-	SExpIR createLocalPtrApply(AMethodDeclIR method, String thisName,
+	AMacroApplyExpIR createLocalPtrApply(AMethodDeclIR method, String thisName,
 			List<SExpIR> linkedList) throws AnalysisException
 	{
 		AMethodDeclIR selectedMethod = method;
 		String thisType = thisName;
 		String methodOwnerType = selectedMethod.getAncestor(SClassDeclIR.class).getName();
 		String thisArgs = "this";
-		String methodId = String.format("CLASS_%s_%s", methodOwnerType, selectedMethod.getName());
+		String methodId = String.format(CTransUtil.METHOD_CALL_ID_PATTERN, methodOwnerType, selectedMethod.getName());
 
-		AMacroApplyExpIR apply = newMacroApply("CALL_FUNC_PTR", createIdentifier(thisType, null), createIdentifier(methodOwnerType, null), createIdentifier(thisArgs, null), createIdentifier(methodId, null));
-
+		AMacroApplyExpIR apply = newMacroApply(CTransUtil.CALL_FUNC_PTR, createIdentifier(thisType, null), createIdentifier(methodOwnerType, null), createIdentifier(thisArgs, null), createIdentifier(methodId, null));
+		apply.setType(method.getMethodType().getResult().clone());
 		for (SExpIR arg : linkedList)
 		{
 			arg.apply(THIS);
@@ -96,17 +97,17 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 		return apply;
 	}
 
-	SExpIR createClassApply(AMethodDeclIR method, String thisName,
+	AMacroApplyExpIR createClassApply(AMethodDeclIR method, String thisName,
 			SExpIR classValue, List<SExpIR> linkedList)
 			throws AnalysisException
 	{
 		AMethodDeclIR selectedMethod = method;
 		String thisType = thisName;
 		String methodOwnerType = selectedMethod.getAncestor(SClassDeclIR.class).getName();
-		String methodId = String.format("CLASS_%s_%s", methodOwnerType, selectedMethod.getName());
+		String methodId = String.format(CTransUtil.METHOD_CALL_ID_PATTERN, methodOwnerType, selectedMethod.getName());
 		// CALL_FUNC(thisTypeName,funcTname,classValue,id, args...
-		AMacroApplyExpIR apply = newMacroApply("CALL_FUNC", createIdentifier(thisType, null), createIdentifier(methodOwnerType, null), classValue, createIdentifier(methodId, null));
-
+		AMacroApplyExpIR apply = newMacroApply(CTransUtil.CALL_FUNC, createIdentifier(thisType, null), createIdentifier(methodOwnerType, null), classValue, createIdentifier(methodId, null));
+		apply.setType(method.getMethodType().getResult().clone());
 		for (SExpIR arg : linkedList)
 		{
 			arg.apply(THIS);
@@ -147,34 +148,92 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 	@Override
 	public void caseAApplyExpIR(AApplyExpIR node) throws AnalysisException
 	{
-		if (node.getRoot() instanceof AIdentifierVarExpIR)
+		SExpIR rootNode = node.getRoot();
+		if (rootNode instanceof AIdentifierVarExpIR)
 		{
-			AIdentifierVarExpIR root = (AIdentifierVarExpIR) node.getRoot();
-			if (root.getType() instanceof AMethodTypeIR)
-			{
-				// this is a call
-				String name = root.getName();
-				SClassDeclIR cDef = node.getAncestor(SClassDeclIR.class);
-				List<PDefinition> tmp = methodCollector.collectCompatibleMethods((SClassDefinition) cDef.getSourceNode().getVdmNode(), name, node.getSourceNode().getVdmNode(), methodCollector.getArgTypes(node.getSourceNode().getVdmNode()));
-				List<AMethodDeclIR> resolvedMethods = lookupVdmFunOpToMethods(tmp);
-				if (resolvedMethods.isEmpty())
-				{
-					logger.error("Generator error unable to find method for: {}", node);
-					return;
-				}
-				SExpIR apply = createLocalPtrApply(resolvedMethods.get(0), cDef.getName(), node.getArgs());
-				apply.setSourceNode(node.getSourceNode());
-				assist.replaceNodeWith(node, apply);
-			} else if (root.getType() instanceof ASeqSeqTypeIR)
-			{
-				// sequence index
-				AApplyExpIR seqIndexApply = newApply("vdmSeqIndex", node.getRoot());
-				seqIndexApply.getArgs().addAll(node.getArgs());
-				seqIndexApply.setSourceNode(node.getSourceNode());
-				seqIndexApply.setType(node.getType());
+			AIdentifierVarExpIR root = (AIdentifierVarExpIR) rootNode;
+			replaceApplyWithMacro(root.getType(), root.getName(), null, node);
 
-				assist.replaceNodeWith(node, seqIndexApply);
-				seqIndexApply.apply(THIS);
+		} else if (rootNode instanceof AFieldExpIR)
+		{
+			AFieldExpIR field = (AFieldExpIR) rootNode;
+			replaceApplyWithMacro(field.getType(), field.getMemberName(), field.getObject(), node);
+		}
+	}
+
+	void replaceApplyWithMacro(STypeIR type, String callName, SExpIR object,
+			AApplyExpIR originalApply) throws AnalysisException
+	{
+		if (type instanceof AMethodTypeIR)
+		{
+			// this is a call
+			String name = callName;
+			SClassDeclIR cDef = null;
+
+			if (object == null)
+			{
+				cDef = originalApply.getAncestor(SClassDeclIR.class);
+			} else
+			{
+				if (object.getType() instanceof AClassTypeIR)
+				{
+					String owningClassName = ((AClassTypeIR) object.getType()).getName();
+					cDef = CTransUtil.getClass(assist, owningClassName);
+				} else
+				{
+					logger.error("unable to obtain class type for call: {}", originalApply);
+				}
+			}
+
+			INode vdmNode = originalApply.getSourceNode().getVdmNode();
+			List<PDefinition> tmp = methodCollector.collectCompatibleMethods((SClassDefinition) cDef.getSourceNode().getVdmNode(), name, vdmNode, methodCollector.getArgTypes(vdmNode));
+			List<AMethodDeclIR> resolvedMethods = lookupVdmFunOpToMethods(tmp);
+			if (resolvedMethods.isEmpty())
+			{
+				logger.error("Generator error unable to find method for: {}", originalApply);
+				return;
+			}
+			AMacroApplyExpIR apply = null;
+
+			if (object == null)
+			{
+				apply = createLocalPtrApply(resolvedMethods.get(0), cDef.getName(), originalApply.getArgs());
+
+			} else
+			{
+				apply = createClassApply(resolvedMethods.get(0), cDef.getName(), object, originalApply.getArgs());
+				
+			}
+			apply.setSourceNode(originalApply.getSourceNode());
+			assist.replaceNodeWith(originalApply, apply);
+
+			//if object call then apply transformation to object too
+			if(object!=null)
+			{
+				apply.getArgs().get(2).apply(THIS);
+			}
+			
+			//apply transformation to all arguments
+			for (int i = 4; i < apply.getArgs().size(); i++)
+			{
+				apply.getArgs().get(i).apply(THIS);
+			}
+		} else if (type instanceof ASeqSeqTypeIR)
+		{
+			// sequence index
+			AApplyExpIR seqIndexApply = newApply("vdmSeqIndex", originalApply.getRoot());
+			seqIndexApply.getArgs().addAll(originalApply.getArgs());
+			seqIndexApply.setSourceNode(originalApply.getSourceNode());
+			seqIndexApply.setType(originalApply.getType());
+
+			assist.replaceNodeWith(originalApply, seqIndexApply);
+			seqIndexApply.apply(THIS);
+		}else
+		{
+			//no rewrite but run on args too
+			for (SExpIR arg : originalApply.getArgs())
+			{
+				arg.apply(THIS);
 			}
 		}
 	}
@@ -207,6 +266,7 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 			throws AnalysisException
 	{
 		// TODO Auto-generated method stub
+		logger.error("Reached unhandled call rewrite: {}", node);
 		super.caseACallObjectStmIR(node);
 	}
 }

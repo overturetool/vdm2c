@@ -51,6 +51,10 @@ public class CTransUtil
 
 	public static final String GET_FIELD = "GET_FIELD";
 
+	public static final String METHOD_CALL_ID_PATTERN = "CLASS_%s_%s";
+	public static final String CALL_FUNC = "CALL_FUNC";
+	public static final String CALL_FUNC_PTR = "CALL_FUNC_PTR";
+
 	// public static AIdentifierVarExpIR createIdentifier(String name,
 	// org.overture.ast.node.INode derrivedFrom)
 	// {
@@ -236,7 +240,10 @@ public class CTransUtil
 	{
 		AApplyExpIR apply = newApply(string);
 		apply.setSourceNode(node.getSourceNode());
-		apply.setType(node.getType());
+		if (node.getType() != null)
+		{
+			apply.setType(node.getType().clone());
+		}
 		assist.getAssist().replaceNodeWith(node, apply);
 		for (SExpIR arg : args)
 		{
@@ -315,15 +322,26 @@ public class CTransUtil
 		return false;
 	}
 
+	public static PDefinition unwrapInheritedDef(PDefinition def)
+	{
+		while (def instanceof AInheritedDefinition)
+		{
+			def = ((AInheritedDefinition) def).getSuperdef();
+		}
+		return def;
+	}
+
 	public static boolean isValueDefinition(AExplicitVarExpIR node)
 	{
 		INode vdmNode = node.getSourceNode().getVdmNode();
 		if (vdmNode instanceof AVariableExp)
 		{
 			AVariableExp varExp = (AVariableExp) vdmNode;
-			if (varExp.getVardef() instanceof ALocalDefinition)
+
+			PDefinition def = unwrapInheritedDef(varExp.getVardef());
+			if (def instanceof ALocalDefinition)
 			{
-				ALocalDefinition local = (ALocalDefinition) varExp.getVardef();
+				ALocalDefinition local = (ALocalDefinition) def;
 				if (local.getValueDefinition())
 				{
 					return true;

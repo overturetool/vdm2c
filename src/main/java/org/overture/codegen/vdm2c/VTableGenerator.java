@@ -115,12 +115,12 @@ public class VTableGenerator
 		for (IRStatus<AClassHeaderDeclIR> headerStatus : headers)
 		{
 			AClassHeaderDeclIR header = headerStatus.getIrNode();
+			Vtables currentTable = header.getVtable();
 
 			for (SDeclIR sh : header.getFlattenedSupers())
 			{
 				AClassHeaderDeclIR superHeader = (AClassHeaderDeclIR) sh;
 				Vtables superTable = superHeader.getVtable();
-				Vtables currentTable = header.getVtable();
 
 				for (VEntry entry : currentTable.table)
 				{
