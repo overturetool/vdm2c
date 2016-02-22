@@ -27,7 +27,7 @@ public class NativeTestBase extends BaseGeneratorTest
 		@Override
 		public boolean accept(File dir, String name)
 		{
-			return new File(dir,name).isDirectory()
+			return new File(dir, name).isDirectory()
 					|| Dialect.VDM_RT.getFilter().accept(dir, name);
 		}
 	};
@@ -83,6 +83,15 @@ public class NativeTestBase extends BaseGeneratorTest
 
 	protected void generate(String... paths)
 	{
+		for (String string : paths)
+		{
+			if (!new File(string).exists())
+			{
+				Assert.fail("Input path does not exist: " + string);
+				return;
+			}
+			
+		}
 		List<String> args = new Vector<String>(Arrays.asList(new String[] {
 				"-dest", root.getAbsolutePath() }));
 		args.addAll(Arrays.asList(paths));

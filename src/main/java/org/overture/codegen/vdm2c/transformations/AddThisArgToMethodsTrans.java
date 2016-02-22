@@ -4,15 +4,15 @@ import static org.overture.codegen.vdm2c.utils.CTransUtil.addArgument;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newExternalType;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newTvpType;
 
+import org.overture.cgc.extast.analysis.DepthFirstAnalysisCAdaptor;
 import org.overture.codegen.ir.analysis.AnalysisException;
-import org.overture.codegen.ir.analysis.DepthFirstAnalysisAdaptor;
 import org.overture.codegen.ir.declarations.AMethodDeclIR;
 import org.overture.codegen.ir.declarations.SClassDeclIR;
 import org.overture.codegen.ir.types.AVoidTypeIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.Vdm2cTag;
 
-public class AddThisArgToMethodsTrans extends DepthFirstAnalysisAdaptor
+public class AddThisArgToMethodsTrans extends DepthFirstAnalysisCAdaptor
 {
 
 	public AddThisArgToMethodsTrans(TransAssistantIR transformationAssistant)
@@ -36,6 +36,7 @@ public class AddThisArgToMethodsTrans extends DepthFirstAnalysisAdaptor
 			}
 			SClassDeclIR cDef = node.getAncestor(SClassDeclIR.class);
 			addArgument("this", newExternalType(cDef.getName() + "CLASS"), 0, node.getFormalParams());
+			node.setAccess("private");
 		}
 	}
 

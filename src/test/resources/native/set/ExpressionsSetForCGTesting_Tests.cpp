@@ -15,7 +15,7 @@ extern "C"
 
 }
 
-#define CHECK(methodId) TVP c=ExpressionSetForCGTesting._new();\
+#define CHECK(methodId) TVP c=_Z25ExpressionSetForCGTestingEV(NULL);\
 TVP res=CALL_FUNC(ExpressionSetForCGTesting,ExpressionSetForCGTesting,c,methodId);\
 EXPECT_EQ (true,res->value.boolVal);\
 vdmFree(res);\

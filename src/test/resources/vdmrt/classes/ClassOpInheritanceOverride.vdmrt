@@ -1,0 +1,28 @@
+class ClassOpInheritanceOverrideDepth0 is subclass of ClassOpInheritanceOverrideDepth1
+
+operations
+
+public op: () ==> bool
+op()==return true;
+
+end ClassOpInheritanceOverrideDepth0
+
+class ClassOpInheritanceOverrideDepth1 --is subclass of ClassOpDepth2
+
+operations
+
+public op: () ==> bool
+op()==return false;
+
+end ClassOpInheritanceOverrideDepth1 
+
+/*
+class ClassOpDepth2
+
+operations
+
+public op: () ==> bool
+op()==return false;
+
+end ClassOpDepth2
+*/

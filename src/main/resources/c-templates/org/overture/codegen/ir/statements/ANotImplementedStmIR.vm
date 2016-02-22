@@ -1,1 +1,1 @@
-throw new UnsupportedOperationException()
+assert(false &&" unsupported construct: not yet implemented")

@@ -1,3 +1,10 @@
+class ClassValue0
+
+values 
+ public value0 : int = 66;
+
+end ClassValue0
+
 class ClassValue
 
 values 
@@ -7,4 +14,8 @@ operations
  public op1: () ==> bool
  op1()== return value1 = 1;
  
+ public opOtherValue: () ==> bool
+ opOtherValue()== return ClassValue0`value0 = 66;
+
+
 end ClassValue

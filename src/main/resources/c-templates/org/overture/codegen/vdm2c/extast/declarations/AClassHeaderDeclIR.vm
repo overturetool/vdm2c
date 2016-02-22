@@ -17,11 +17,26 @@
 \#include "$String.format("%s.h",$typeName)"
 #end
 
-//values / global const
+#[[
+/* -------------------------------
+ *
+ * values / global const
+ *
+ --------------------------------- */ 
+ ]]#
 #foreach( $val in $node.getValues() )
-extern const TVP $val.getName();
+extern TVP $val.getName();
 #end
 
+#[[
+/* -------------------------------
+ *
+ * The class
+ *
+ --------------------------------- */ 
+ ]]#
+
+//class id
 \#define $String.format("CLASS_ID_%s_ID %d",$cname, $CFormat.getClassId($cname))
 
 \#define $String.format("%s struct %s*",$cstructname,$cname)
@@ -39,19 +54,45 @@ struct $cname
 	$CFormat.format($node.getState())
 };
 
-/* public access functions*/
-#foreach( $method in $node.getMethods() )
-#if($method.getIsConstructor()|| $method.getIsStatic()) $CFormat.format($method.getMethodType().getResult()) $method.getName()($CFormat.format($method.getFormalParams()));
+#[[
+/* -------------------------------
+ *
+ * Constructors
+ *
+ --------------------------------- */ 
+ ]]#
+
+#foreach( $method in $node.getOriginalDef().getMethods() )
+#if($method.getIsConstructor()) 
+	$CFormat.formatSource($method)
+	$CFormat.format($method.getMethodType().getResult()) $method.getName()($CFormat.format($method.getFormalParams()).replace("this","this_"));
 #end
 #end
 
-/* internal use only*/
+#[[
+/* -------------------------------
+ *
+ * public access functions
+ *
+ --------------------------------- */ 
+ ]]#
+#foreach( $method in $node.getOriginalDef().getMethods() )
+#if($CFormat.isPublic($method)) 
+	$CFormat.format($method.getMethodType().getResult()) $method.getName()($CFormat.format($method.getFormalParams()).replace("this","this_"));
+#end
+#end
+
+#[[
+/* -------------------------------
+ *
+ * Internal
+ *
+ --------------------------------- */ 
+ ]]#
+
 void ${cname}_free_fields(${cstructname});
 $cstructname ${cname}_Constructor(${cstructname});
 
-extern const struct ${cname}Class
-{
-	TVP (*_new)();
-} $cname;
+
 
 #endif /* $cdefname */

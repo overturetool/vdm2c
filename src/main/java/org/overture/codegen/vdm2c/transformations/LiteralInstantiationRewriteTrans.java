@@ -2,8 +2,8 @@ package org.overture.codegen.vdm2c.transformations;
 
 import static org.overture.codegen.vdm2c.utils.CTransUtil.rewriteToApply;
 
+import org.overture.cgc.extast.analysis.DepthFirstAnalysisCAdaptor;
 import org.overture.codegen.ir.analysis.AnalysisException;
-import org.overture.codegen.ir.analysis.DepthFirstAnalysisAdaptor;
 import org.overture.codegen.ir.analysis.intf.IAnalysis;
 import org.overture.codegen.ir.expressions.ABoolLiteralExpIR;
 import org.overture.codegen.ir.expressions.ACharLiteralExpIR;
@@ -18,8 +18,8 @@ import org.overture.codegen.vdm2c.utils.IApplyAssistant;
  * 
  * @author kel
  */
-public class LiteralInstantiationRewriteTrans extends DepthFirstAnalysisAdaptor
-		implements IApplyAssistant
+public class LiteralInstantiationRewriteTrans extends
+		DepthFirstAnalysisCAdaptor implements IApplyAssistant
 {
 	public TransAssistantIR assist;
 
@@ -70,7 +70,7 @@ public class LiteralInstantiationRewriteTrans extends DepthFirstAnalysisAdaptor
 
 	public void caseARealLiteralExpIR(
 			org.overture.codegen.ir.expressions.ARealLiteralExpIR node)
-					throws AnalysisException
+			throws AnalysisException
 	{
 		rewriteToApply(this, node, "newReal", node);
 	};

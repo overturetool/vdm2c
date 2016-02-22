@@ -12,12 +12,14 @@ import org.overture.codegen.ir.STypeIR;
 import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.analysis.DepthFirstAnalysisAdaptor;
 import org.overture.codegen.ir.analysis.intf.IAnalysis;
+import org.overture.codegen.ir.declarations.AVarDeclIR;
 import org.overture.codegen.ir.expressions.AApplyExpIR;
 import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
 import org.overture.codegen.ir.patterns.AIdentifierPatternIR;
 import org.overture.codegen.ir.statements.AAssignToExpStmIR;
 import org.overture.codegen.ir.statements.ABlockStmIR;
 import org.overture.codegen.ir.statements.AReturnStmIR;
+import org.overture.codegen.ir.types.AExternalTypeIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.extast.statements.ALocalVariableDeclarationStmIR;
 import org.overture.codegen.vdm2c.utils.IApplyAssistant;
@@ -101,9 +103,11 @@ public class FreeLocalBlockDeclsTrans extends DepthFirstAnalysisAdaptor implemen
 		{
 			if (stm instanceof ALocalVariableDeclarationStmIR)
 			{						
-				if (((ALocalVariableDeclarationStmIR) stm).getDecleration().getPattern() instanceof AIdentifierPatternIR)
+				AVarDeclIR decleration = ((ALocalVariableDeclarationStmIR) stm).getDecleration();
+				if ((decleration.getPattern() instanceof AIdentifierPatternIR) &&
+						!(decleration.getType() instanceof AExternalTypeIR))
 				{
-					applyexpr = newApply("vdmFree", newIdentifier(((AIdentifierPatternIR) ((ALocalVariableDeclarationStmIR) stm).getDecleration().getPattern()).getName(), null));
+					applyexpr = newApply("vdmFree", newIdentifier(((AIdentifierPatternIR) decleration.getPattern()).getName(), null));
 					((ABlockStmIR) node).getStatements().add(node.getStatements().size() - addoffset, toStm(applyexpr));
 				}
 			}
@@ -115,7 +119,7 @@ public class FreeLocalBlockDeclsTrans extends DepthFirstAnalysisAdaptor implemen
 		{
 			if (stm instanceof ALocalVariableDeclarationStmIR)
 			{
-				if(((ALocalVariableDeclarationStmIR) stm).getDecleration().getType() instanceof STypeIR)
+				if(!(((ALocalVariableDeclarationStmIR) stm).getDecleration().getType() instanceof AExternalTypeIR))
 				{
 					rewriteToApply(this,
 							((ALocalVariableDeclarationStmIR) stm).getDecleration().getExp(),

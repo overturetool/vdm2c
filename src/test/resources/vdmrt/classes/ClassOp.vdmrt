@@ -1,0 +1,8 @@
+class ClassOp
+
+operations
+
+public op: () ==> bool
+op()==return true;
+
+end ClassOp

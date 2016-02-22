@@ -1,0 +1,19 @@
+class ClassOpInheritanceDepth0 is subclass of ClassOpInheritanceDepth1
+
+
+end ClassOpInheritanceDepth0
+
+class ClassOpInheritanceDepth1 is subclass of ClassOpInheritanceDepth2
+
+
+end ClassOpInheritanceDepth1 
+
+
+class ClassOpInheritanceDepth2
+
+operations
+
+public op: () ==> bool
+op()==return true;
+
+end ClassOpInheritanceDepth2

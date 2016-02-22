@@ -14,8 +14,8 @@ import static org.overture.codegen.vdm2c.utils.CTransUtil.newTvpType;
 import java.util.Collections;
 import java.util.LinkedList;
 
+import org.overture.cgc.extast.analysis.DepthFirstAnalysisCAdaptor;
 import org.overture.codegen.ir.analysis.AnalysisException;
-import org.overture.codegen.ir.analysis.DepthFirstAnalysisAdaptor;
 import org.overture.codegen.ir.declarations.AMethodDeclIR;
 import org.overture.codegen.ir.declarations.SClassDeclIR;
 import org.overture.codegen.ir.expressions.AAddrEqualsBinaryExpIR;
@@ -26,7 +26,7 @@ import org.overture.codegen.ir.statements.AIfStmIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.utils.NameMangler;
 
-public class CtorTrans extends DepthFirstAnalysisAdaptor
+public class CtorTrans extends DepthFirstAnalysisCAdaptor
 {
 	// private static final String _CTOR = "_ctor";
 
@@ -43,7 +43,7 @@ public class CtorTrans extends DepthFirstAnalysisAdaptor
 	{
 		if (node.getIsConstructor())
 		{
-			node.setStatic(true);// make available in the class header
+			node.setStatic(false);// make available in the class header
 
 			// rename
 			node.setName(NameMangler.mangle(node));
@@ -57,11 +57,11 @@ public class CtorTrans extends DepthFirstAnalysisAdaptor
 			String bufName = "__buf";
 
 			AIfStmIR ifStm = new AIfStmIR();
-			
+
 			AAddrEqualsBinaryExpIR addrEquals = new AAddrEqualsBinaryExpIR();
 			addrEquals.setLeft(createIdentifier("this", null));
 			addrEquals.setRight(new ANullExpIR());
-			
+
 			ifStm.setIfExp(addrEquals);
 
 			ABlockStmIR initClassBlock = new ABlockStmIR();

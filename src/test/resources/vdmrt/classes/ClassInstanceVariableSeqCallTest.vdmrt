@@ -1,0 +1,8 @@
+class ClassInstanceVariableSeqCallTest is subclass of TestCase,ClassInstanceVariableSeqCaller
+
+operations
+
+public testCall : () ==>()
+testCall()==assertTrue( call());
+
+end ClassInstanceVariableSeqCallTest

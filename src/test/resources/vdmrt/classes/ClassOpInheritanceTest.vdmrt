@@ -1,0 +1,8 @@
+class ClassOpInheritanceTest is subclass of TestCase,ClassOpInheritanceDepth0
+
+operations
+
+public testSumFields : () ==>()
+testSumFields()==assertTrue( op());
+
+end ClassOpInheritanceTest

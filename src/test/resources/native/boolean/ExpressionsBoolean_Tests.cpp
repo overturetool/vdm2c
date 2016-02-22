@@ -16,7 +16,7 @@ extern "C"
 
 }
 
-#define CHECK(methodId) TVP c=ExpressionBoolean._new();\
+#define CHECK(methodId) TVP c=_Z17ExpressionBooleanEV(NULL);\
 TVP res=CALL_FUNC(ExpressionBoolean,ExpressionBoolean,c,methodId);\
 EXPECT_EQ (true,res->value.boolVal);\
 vdmFree(res);\

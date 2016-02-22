@@ -1,21 +1,31 @@
 package org.overture.codegen.vdm2c.transformations;
 
+import static org.overture.codegen.vdm2c.utils.CTransUtil.GET_FIELD_PTR;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.SET_FIELD_PTR;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.createIdentifier;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.exp2Stm;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.newApply;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newDeclarationAssignment;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.newIdentifier;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newMacroApply;
+
+import java.util.List;
+import java.util.Vector;
 
 import org.overture.ast.definitions.AClassClassDefinition;
 import org.overture.ast.definitions.AInheritedDefinition;
 import org.overture.ast.definitions.AInstanceVariableDefinition;
 import org.overture.ast.definitions.ALocalDefinition;
 import org.overture.ast.definitions.PDefinition;
+import org.overture.ast.definitions.SClassDefinition;
 import org.overture.ast.expressions.AVariableExp;
 import org.overture.ast.node.INode;
+import org.overture.ast.statements.AIdentifierStateDesignator;
 import org.overture.ast.types.AFunctionType;
 import org.overture.ast.types.AOperationType;
+import org.overture.cgc.extast.analysis.DepthFirstAnalysisCAdaptor;
+import org.overture.codegen.ir.SExpIR;
 import org.overture.codegen.ir.analysis.AnalysisException;
-import org.overture.codegen.ir.analysis.DepthFirstAnalysisAdaptor;
 import org.overture.codegen.ir.declarations.ADefaultClassDeclIR;
 import org.overture.codegen.ir.declarations.AFieldDeclIR;
 import org.overture.codegen.ir.declarations.AVarDeclIR;
@@ -27,10 +37,15 @@ import org.overture.codegen.ir.statements.AAssignToExpStmIR;
 import org.overture.codegen.ir.statements.ABlockStmIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.extast.expressions.AMacroApplyExpIR;
+import org.overture.codegen.vdm2c.utils.CTransUtil;
+import org.overture.codegen.vdm2c.utils.NameConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FieldIdentifierToFieldGetApplyTrans extends
-		DepthFirstAnalysisAdaptor
+		DepthFirstAnalysisCAdaptor
 {
+	final static Logger logger = LoggerFactory.getLogger(FieldIdentifierToFieldGetApplyTrans.class);
 	public TransAssistantIR assist;
 
 	final static String fieldPrefix = "field_tmp_";
@@ -49,6 +64,9 @@ public class FieldIdentifierToFieldGetApplyTrans extends
 			return;
 		}
 
+		String thisClassName = null;
+		String fieldClassName = null;
+
 		INode vdmNode = node.getSourceNode().getVdmNode();
 		if (vdmNode instanceof AVariableExp)
 		{
@@ -60,24 +78,90 @@ public class FieldIdentifierToFieldGetApplyTrans extends
 				return;
 			}
 
-			String thisClassName = varExp.getAncestor(AClassClassDefinition.class).getName().getName();// the containing
-																										// class
-			String fieldClassName = null;
+			thisClassName = varExp.getAncestor(AClassClassDefinition.class).getName().getName();// the containing
+																								// class
 
 			PDefinition vardef = varExp.getVardef();
+
+			if (vardef instanceof AInheritedDefinition)
+			{
+				PDefinition superDef = ((AInheritedDefinition) vardef).getSuperdef();
+				if (superDef instanceof AInstanceVariableDefinition)
+				{
+					if (vardef.getAccess().getStatic() != null)
+					{
+						replaceWithStaticReference(vardef.getClassDefinition(), node);
+						return;
+					}
+				}
+			}
+
 			if (vardef instanceof AInstanceVariableDefinition)
 			{
+				if (vardef.getAccess().getStatic() != null)
+				{
+					replaceWithStaticReference(vardef.getClassDefinition(), node);
+					return;
+				}
 				fieldClassName = thisClassName;
 			} else if (vardef instanceof AInheritedDefinition)
 			{
 				AInheritedDefinition idef = (AInheritedDefinition) vardef;
 				fieldClassName = idef.getClassDefinition().getName().getName();
-			}else if (vardef instanceof ALocalDefinition && ((ALocalDefinition)vardef).getValueDefinition())
+			} else if (vardef instanceof ALocalDefinition
+					&& ((ALocalDefinition) vardef).getValueDefinition())
 			{
+				if (vardef.getAccess().getStatic() != null)
+				{
+					replaceWithStaticReference(vardef.getClassDefinition(), node);
+					return;
+				}
 				return;
 			}
 
-			AMacroApplyExpIR apply = newMacroApply("GET_FIELD_PTR");
+		} else if (vdmNode instanceof AIdentifierStateDesignator)
+		{
+			AIdentifierStateDesignator designator = (AIdentifierStateDesignator) vdmNode;
+
+			// why is the definition not kept here? we dont know what this points to
+
+			AClassClassDefinition thisClass = designator.getAncestor(AClassClassDefinition.class);// the containing
+																									// class
+			thisClassName = thisClass.getName().getName();
+
+			// while (thisClass != null && fieldClassName == null)
+			{
+				List<PDefinition> definitons = new Vector<PDefinition>();
+				definitons.addAll(thisClass.getDefinitions());
+				definitons.addAll(thisClass.getAllInheritedDefinitions());
+				for (PDefinition def : definitons)
+				{
+					if (def instanceof AInheritedDefinition)
+					{
+						def = ((AInheritedDefinition) def).getSuperdef();
+					}
+
+					if (def instanceof AInstanceVariableDefinition)
+					{
+						if (def.getName().getName().equals(designator.getName().getName()))
+						{
+							fieldClassName = def.getClassDefinition().getName().getName();
+							break;
+						}
+					}
+				}
+			}
+
+			if (fieldClassName == null)
+			{
+				logger.warn("Field class name not found: {}", node);
+			}
+		}
+
+		if (thisClassName != null && fieldClassName != null)
+		{
+
+			AMacroApplyExpIR apply = newMacroApply(GET_FIELD_PTR);
 			assist.replaceNodeWith(node, apply);
 
 			// add this type
@@ -91,7 +175,31 @@ public class FieldIdentifierToFieldGetApplyTrans extends
 		}
 	}
 
-	String lookupFieldClass(SClassDeclIR node, String name)
+	private void replaceWithStaticReference(SClassDefinition classDefinition,
+			AIdentifierVarExpIR node)
+	{
+		SClassDeclIR classDef = CTransUtil.getClass(assist, classDefinition.getName().getName());
+		replaceWithStaticReference(classDef, node);
+	}
+
+	void replaceWithStaticReference(SClassDeclIR classDef,
+			AIdentifierVarExpIR identifier)
+	{
+		replaceWithStaticReference(classDef, identifier.getName(), identifier);
+	}
+
+	void replaceWithStaticReference(SClassDeclIR classDef, String name,
+			SExpIR node)
+	{
+
+		AFieldDeclIR field = lookupField(classDef, name);
+		AIdentifierVarExpIR newIdentifier = newIdentifier(field.getName(), node.getSourceNode());
+		newIdentifier.setType(node.getType());
+		newIdentifier.setIsLocal(false);
+		assist.replaceNodeWith(node, newApply("vdmClone", newIdentifier));
+	}
+
+	public String lookupFieldClass(SClassDeclIR node, String name)
 	{
 		for (AFieldDeclIR f : node.getFields())
 		{
@@ -119,6 +227,43 @@ public class FieldIdentifierToFieldGetApplyTrans extends
 		return null;
 	}
 
+	public AFieldDeclIR lookupField(SClassDeclIR node, String name)
+	{
+		for (AFieldDeclIR f : node.getFields())
+		{
+			if (f.getName().equals(name)
+					|| f.getStatic()
+					&& f.getName().equals(NameConverter.getCFieldNameFromOriginal(name)))
+			{
+				return f;
+			}
+		}
+
+		for (ATokenNameIR superName : node.getSuperNames())
+		{
+			for (SClassDeclIR def : assist.getInfo().getClasses())
+			{
+				if (def.getName().equals(superName))
+				{
+					AFieldDeclIR n = lookupField(def, name);
+					if (n != null)
+					{
+						return n;
+					}
+				}
+			}
+		}
+
+		return null;
+	}
+
+	public boolean isStatic(SClassDeclIR classDef, String name)
+	{
+		AFieldDeclIR field = lookupField(classDef, name);
+
+		return field.getStatic();
+	}
+
 	@Override
 	public void caseAAssignToExpStmIR(AAssignToExpStmIR node)
 			throws AnalysisException
@@ -131,8 +276,18 @@ public class FieldIdentifierToFieldGetApplyTrans extends
 
 		AIdentifierVarExpIR target = (AIdentifierVarExpIR) node.getTarget();
 		// class
-		String thisClassName = target.getSourceNode().getVdmNode().getAncestor(AClassClassDefinition.class).getName().getName();// the
-																																// containing
+
+		if (isStatic(node.getAncestor(SClassDeclIR.class), target.getName()))
+		{
+			AIdentifierVarExpIR id = createIdentifier(NameConverter.getCFieldNameFromOriginal(target.getName()), target.getSourceNode());
+			id.setType(target.getType().clone());
+			assist.replaceNodeWith(node.getTarget(), id);
+			return;
+		}
+		AClassClassDefinition classDef = target.getSourceNode().getVdmNode().getAncestor(AClassClassDefinition.class);
+
+		String thisClassName = classDef.getName().getName();// the
+															// containing
 		// field owner
 		String fieldClassName = lookupFieldClass(target.getAncestor(ADefaultClassDeclIR.class), target.getName());
 
@@ -146,7 +301,7 @@ public class FieldIdentifierToFieldGetApplyTrans extends
 
 		assist.replaceNodeWith(node, replBlock);
 
-		AMacroApplyExpIR apply = newMacroApply("SET_FIELD_PTR");// new AApplyExpIR();
+		AMacroApplyExpIR apply = newMacroApply(SET_FIELD_PTR);// new AApplyExpIR();
 		apply.setSourceNode(target.getSourceNode());
 
 		// add this type

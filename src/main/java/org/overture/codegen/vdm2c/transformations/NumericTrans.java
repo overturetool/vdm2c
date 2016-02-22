@@ -2,8 +2,8 @@ package org.overture.codegen.vdm2c.transformations;
 
 import static org.overture.codegen.vdm2c.utils.CTransUtil.rewriteToApply;
 
+import org.overture.cgc.extast.analysis.DepthFirstAnalysisCAdaptor;
 import org.overture.codegen.ir.analysis.AnalysisException;
-import org.overture.codegen.ir.analysis.DepthFirstAnalysisAdaptor;
 import org.overture.codegen.ir.analysis.intf.IAnalysis;
 import org.overture.codegen.ir.expressions.ADivideNumericBinaryExpIR;
 import org.overture.codegen.ir.expressions.AGreaterEqualNumericBinaryExpIR;
@@ -22,7 +22,7 @@ import org.overture.codegen.vdm2c.utils.IApplyAssistant;
  * 
  * @author kel
  */
-public class NumericTrans extends DepthFirstAnalysisAdaptor implements
+public class NumericTrans extends DepthFirstAnalysisCAdaptor implements
 		IApplyAssistant
 {
 	public TransAssistantIR assist;

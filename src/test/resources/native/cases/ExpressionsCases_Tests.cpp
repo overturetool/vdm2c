@@ -16,7 +16,7 @@ extern "C"
 
 }
 
-#define CHECK(methodId) TVP c=ExpressionCases._new();\
+#define CHECK(methodId) TVP c=_Z15ExpressionCasesEV(NULL);\
 TVP res=CALL_FUNC(ExpressionCases,ExpressionCases,c,methodId);\
 EXPECT_EQ (true,res->value.boolVal);\
 vdmFree(res);\

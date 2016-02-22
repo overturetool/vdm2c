@@ -4,15 +4,27 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.overture.ast.definitions.AInheritedDefinition;
+import org.overture.ast.definitions.AInstanceVariableDefinition;
+import org.overture.ast.definitions.ALocalDefinition;
+import org.overture.ast.definitions.AValueDefinition;
+import org.overture.ast.definitions.PDefinition;
+import org.overture.ast.expressions.AVariableExp;
+import org.overture.ast.node.INode;
 import org.overture.codegen.ir.SExpIR;
 import org.overture.codegen.ir.SPatternIR;
 import org.overture.codegen.ir.SStmIR;
 import org.overture.codegen.ir.STypeIR;
+import org.overture.codegen.ir.SourceNode;
 import org.overture.codegen.ir.analysis.AnalysisException;
+import org.overture.codegen.ir.declarations.AFieldDeclIR;
 import org.overture.codegen.ir.declarations.AFormalParamLocalParamIR;
+import org.overture.codegen.ir.declarations.AMethodDeclIR;
 import org.overture.codegen.ir.declarations.AVarDeclIR;
+import org.overture.codegen.ir.declarations.SClassDeclIR;
 import org.overture.codegen.ir.expressions.AApplyExpIR;
 import org.overture.codegen.ir.expressions.ACastUnaryExpIR;
+import org.overture.codegen.ir.expressions.AExplicitVarExpIR;
 import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
 import org.overture.codegen.ir.expressions.AIntLiteralExpIR;
 import org.overture.codegen.ir.patterns.AIdentifierPatternIR;
@@ -20,7 +32,10 @@ import org.overture.codegen.ir.statements.AAssignToExpStmIR;
 import org.overture.codegen.ir.statements.AExpStmIR;
 import org.overture.codegen.ir.statements.AReturnStmIR;
 import org.overture.codegen.ir.types.AExternalTypeIR;
-import org.overture.codegen.ir.SourceNode;
+import org.overture.codegen.ir.types.AMethodTypeIR;
+import org.overture.codegen.trans.assistants.TransAssistantIR;
+import org.overture.codegen.vdm2c.Vdm2cTag;
+import org.overture.codegen.vdm2c.Vdm2cTag.MethodTag;
 import org.overture.codegen.vdm2c.extast.expressions.AArrayIndexExpIR;
 import org.overture.codegen.vdm2c.extast.expressions.ACExpIR;
 import org.overture.codegen.vdm2c.extast.expressions.AMacroApplyExpIR;
@@ -31,6 +46,11 @@ import org.overture.codegen.vdm2c.extast.statements.ALocalVariableDeclarationStm
 
 public class CTransUtil
 {
+	public static final String GET_FIELD_PTR = "GET_FIELD_PTR";
+	public static final String SET_FIELD_PTR = "SET_FIELD_PTR";
+
+	public static final String GET_FIELD = "GET_FIELD";
+
 	// public static AIdentifierVarExpIR createIdentifier(String name,
 	// org.overture.ast.node.INode derrivedFrom)
 	// {
@@ -64,7 +84,6 @@ public class CTransUtil
 		return ident;
 	}
 
-	
 	public static AVarDeclIR newDeclarationAssignment(SPatternIR varName,
 			STypeIR varType, SExpIR value, SourceNode derrivedFrom)
 	{
@@ -75,8 +94,7 @@ public class CTransUtil
 		retVar.setExp(value);
 		return retVar;
 	}
-	
-	
+
 	public static AVarDeclIR newDeclarationAssignment(String varName,
 			STypeIR varType, SExpIR value, SourceNode derrivedFrom)
 	{
@@ -228,6 +246,7 @@ public class CTransUtil
 				arg.apply(assist);
 			}
 		}
+		apply.setSourceNode(node.getSourceNode());
 		return apply;
 	}
 
@@ -237,17 +256,137 @@ public class CTransUtil
 		exp.setValue(i);
 		return exp;
 	}
+
 	public static SExpIR newParen(SExpIR exp)
 	{
 		AParenExpIR parent = new AParenExpIR();
 		parent.setExp(exp);
 		return parent;
 	}
-	
+
 	public static SStmIR newLocalDefinition(AVarDeclIR decl)
 	{
 		ALocalVariableDeclarationStmIR localDef = new ALocalVariableDeclarationStmIR();
 		localDef.setDecleration(decl);
+		localDef.setSourceNode(decl.getSourceNode());
 		return localDef;
 	}
+
+	public static AMethodDeclIR newMethod(String name, SStmIR body,
+			STypeIR returnType, boolean mangleName) throws AnalysisException
+	{
+		AMethodDeclIR method = new AMethodDeclIR();
+		method.setAbstract(false);
+		method.setAsync(false);
+		method.setImplicit(false);
+		method.setStatic(true);
+		method.setIsConstructor(false);
+		method.setBody(body);
+		AMethodTypeIR mtype = new AMethodTypeIR();
+		mtype.setResult(returnType);
+		method.setMethodType(mtype);
+		method.setName(name);
+		if (mangleName)
+		{
+			method.setName(NameMangler.mangle(method));
+		}
+		return method;
+	}
+
+	public static AMethodDeclIR newInternalMethod(String name, SStmIR body,
+			STypeIR returnType, boolean mangleName) throws AnalysisException
+	{
+		AMethodDeclIR method = newMethod(name, body, returnType, mangleName);
+		method.setTag(new Vdm2cTag().addMethodTag(MethodTag.Internal));
+		return method;
+	}
+
+	public static boolean isValueDefinition(AFieldDeclIR node)
+	{
+
+		if (node.getSourceNode() != null
+				&& node.getSourceNode().getVdmNode() != null)
+		{
+			INode vdmNode = node.getSourceNode().getVdmNode();
+			return vdmNode instanceof AValueDefinition
+					|| vdmNode instanceof ALocalDefinition
+					&& ((ALocalDefinition) vdmNode).getValueDefinition();
+		}
+		return false;
+	}
+
+	public static boolean isValueDefinition(AExplicitVarExpIR node)
+	{
+		INode vdmNode = node.getSourceNode().getVdmNode();
+		if (vdmNode instanceof AVariableExp)
+		{
+			AVariableExp varExp = (AVariableExp) vdmNode;
+			if (varExp.getVardef() instanceof ALocalDefinition)
+			{
+				ALocalDefinition local = (ALocalDefinition) varExp.getVardef();
+				if (local.getValueDefinition())
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	public static boolean isStaticDefinition(AFieldDeclIR node)
+	{
+
+		if (node.getSourceNode() != null
+				&& node.getSourceNode().getVdmNode() != null)
+		{
+			INode vdmNode = node.getSourceNode().getVdmNode();
+			if (vdmNode instanceof AInstanceVariableDefinition)
+			{
+				AInstanceVariableDefinition field = (AInstanceVariableDefinition) vdmNode;
+				if (field.getAccess().getStatic() != null)
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	public static boolean isStaticFieldDefinition(AExplicitVarExpIR node)
+	{
+		INode vdmNode = node.getSourceNode().getVdmNode();
+		if (vdmNode instanceof AVariableExp)
+		{
+			AVariableExp varExp = (AVariableExp) vdmNode;
+			PDefinition def = varExp.getVardef();
+
+			if (def instanceof AInheritedDefinition)
+			{
+				def = ((AInheritedDefinition) def).getSuperdef();
+			}
+
+			if (def instanceof AInstanceVariableDefinition)
+			{
+				AInstanceVariableDefinition field = (AInstanceVariableDefinition) def;
+				if (field.getAccess().getStatic() != null)
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	public static SClassDeclIR getClass(TransAssistantIR assist, String name)
+	{
+		for (SClassDeclIR c : assist.getInfo().getClasses())
+		{
+			if (c.getName().equals(name))
+			{
+				return c;
+			}
+		}
+		return null;
+	}
+
 }

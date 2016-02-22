@@ -2,18 +2,37 @@ package org.overture.codegen.vdm2c.transformations;
 
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newLocalDefinition;
 
+import org.overture.cgc.extast.analysis.DepthFirstAnalysisCAdaptor;
+import org.overture.codegen.ir.SStmIR;
 import org.overture.codegen.ir.analysis.AnalysisException;
-import org.overture.codegen.ir.analysis.DepthFirstAnalysisAdaptor;
 import org.overture.codegen.ir.statements.ABlockStmIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
+import org.overture.codegen.vdm2c.extast.statements.ALocalVariableDeclarationStmIR;
 
-public class ScopeCleanerTrans extends DepthFirstAnalysisAdaptor
+public class ScopeCleanerTrans extends DepthFirstAnalysisCAdaptor
 {
 	public TransAssistantIR assist;
 
 	public ScopeCleanerTrans(TransAssistantIR assist)
 	{
 		this.assist = assist;
+	}
+
+	static boolean hasDeclerations(ABlockStmIR block)
+	{
+		if (!block.getLocalDefs().isEmpty())
+		{
+			return true;
+		}
+
+		for (SStmIR stm : block.getStatements())
+		{
+			if (stm instanceof ALocalVariableDeclarationStmIR)
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Override
@@ -29,6 +48,25 @@ public class ScopeCleanerTrans extends DepthFirstAnalysisAdaptor
 		if (node.getLocalDefs().isEmpty() && node.getStatements().isEmpty())
 		{
 			node.parent().removeChild(node);
+		}
+
+		// one block has one other block and no decls.
+		if (node.getStatements().size() == 1
+				&& node.getStatements().get(0) instanceof ABlockStmIR)
+		{
+			ABlockStmIR nestedBlock = (ABlockStmIR) node.getStatements().get(0);
+			if (!hasDeclerations(node) || !hasDeclerations(nestedBlock))
+			{
+				node.getLocalDefs().addAll(nestedBlock.getLocalDefs());
+				node.getStatements().addAll(nestedBlock.getStatements());
+				node.removeChild(nestedBlock);
+			}
+		}
+
+		// convert all declerations to statements with local definitions
+		for (int i = node.getLocalDefs().size() - 1; i >= 0; i--)
+		{
+			node.getStatements().add(0, newLocalDefinition(node.getLocalDefs().get(i)));
 		}
 
 		// remove unnecessary scopes

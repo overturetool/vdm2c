@@ -16,7 +16,7 @@ extern "C"
 
 }
 
-#define CHECK(methodId) TVP c=ExpressionForLoop._new();\
+#define CHECK(methodId) TVP c=_Z17ExpressionForLoopEV(NULL);\
 TVP res=CALL_FUNC(ExpressionForLoop,ExpressionForLoop,c,methodId);\
 EXPECT_EQ (true,res->value.boolVal);\
 vdmFree(res);\

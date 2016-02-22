@@ -12,6 +12,7 @@ import org.overture.ast.definitions.SOperationDefinition;
 import org.overture.ast.expressions.AApplyExp;
 import org.overture.ast.expressions.PExp;
 import org.overture.ast.node.INode;
+import org.overture.ast.statements.ACallObjectStm;
 import org.overture.ast.statements.ACallStm;
 import org.overture.ast.types.AFunctionType;
 import org.overture.ast.types.AOperationType;
@@ -39,7 +40,9 @@ public class CompatibleMethodCollector
 
 					TypeComparator tcomp = new TypeComparator(new TypeCheckerAssistantFactory());
 					if (tcomp.compatible(argTypes, callArgTypes))
+					{
 						methods.add(def);
+					}
 				}
 			}
 		}
@@ -71,9 +74,18 @@ public class CompatibleMethodCollector
 				argTypes.add(pExp.getType());
 			}
 			return argTypes;
-		}else if(node instanceof AApplyExp)
+		} else if (node instanceof AApplyExp)
 		{
 			LinkedList<PExp> cargs = ((AApplyExp) node).getArgs();
+			List<PType> argTypes = new Vector<PType>();
+			for (PExp pExp : cargs)
+			{
+				argTypes.add(pExp.getType());
+			}
+			return argTypes;
+		} else if (node instanceof ACallObjectStm)
+		{
+			LinkedList<PExp> cargs = ((ACallObjectStm) node).getArgs();
 			List<PType> argTypes = new Vector<PType>();
 			for (PExp pExp : cargs)
 			{

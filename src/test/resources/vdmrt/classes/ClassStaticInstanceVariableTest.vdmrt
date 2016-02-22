@@ -1,0 +1,8 @@
+class ClassStaticInstanceVariableTest  is subclass of TestCase,UseClassStaticInstanceVariable
+
+operations
+
+public testOp : () ==>()
+testOp()==assertTrue( op());
+
+end ClassStaticInstanceVariableTest

@@ -2,6 +2,7 @@ package org.overture.codegen.vdm2c.transformations;
 
 import java.util.List;
 
+import org.overture.codegen.ir.ITempVarGen;
 import org.overture.codegen.ir.SExpIR;
 import org.overture.codegen.ir.SStmIR;
 import org.overture.codegen.ir.STypeIR;
@@ -10,7 +11,6 @@ import org.overture.codegen.ir.expressions.ACompSetExpIR;
 import org.overture.codegen.ir.expressions.AEnumSetExpIR;
 import org.overture.codegen.ir.patterns.ASetMultipleBindIR;
 import org.overture.codegen.ir.statements.ABlockStmIR;
-import org.overture.codegen.ir.ITempVarGen;
 import org.overture.codegen.trans.Exp2StmTrans;
 import org.overture.codegen.trans.Exp2StmVarPrefixes;
 import org.overture.codegen.trans.IterationVarPrefixes;
@@ -20,6 +20,11 @@ import org.overture.codegen.trans.iterator.ILanguageIterator;
 import org.overture.codegen.trans.quantifier.Exists1CounterData;
 import org.overture.codegen.vdm2c.utils.CSetCompStrategy;
 
+/**
+ * This must only be used before any C nodes are introduced. It runs of the base DepthFirst Visitor
+ * 
+ * @author kel
+ */
 public class CExp2StmTrans extends Exp2StmTrans
 {
 
@@ -30,7 +35,7 @@ public class CExp2StmTrans extends Exp2StmTrans
 		super(iteVarPrefixes, transAssistant, counterData, langIterator, prefixes);
 		// TODO Auto-generated constructor stub
 	}
-	
+
 	@Override
 	public void caseACompSetExpIR(ACompSetExpIR node) throws AnalysisException
 	{
@@ -62,6 +67,5 @@ public class CExp2StmTrans extends Exp2StmTrans
 
 		block.apply(this);
 	}
-
 
 }
