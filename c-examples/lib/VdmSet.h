@@ -50,6 +50,7 @@ struct TypedValue* newSetVarToGrow(size_t size, size_t expected_size, ...);
 
 void vdmSetGrow(TVP set, TVP element);
 void vdmSetFit(TVP set);
+TVP vdmSetEnumerateSetOfInts(TVP lower, TVP upper);
 TVP vdmSetElementAt(TVP set, int loc);
 TVP vdmSetMemberOf(TVP set, TVP element);
 TVP vdmSetNotMemberOf(TVP set, TVP element);
