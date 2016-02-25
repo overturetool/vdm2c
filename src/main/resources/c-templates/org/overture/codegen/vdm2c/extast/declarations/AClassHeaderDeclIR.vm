@@ -20,6 +20,21 @@
 #[[
 /* -------------------------------
  *
+ * Quotes
+ *
+ --------------------------------- */ 
+ ]]#
+#foreach( $val in $node.getQuotes() )
+	#set($qn = $String.format("QUOTE_%S",$val.getName()))
+#ifndef $qn
+\#define $qn $val.getId()
+#endif /* $qn */
+
+#end
+
+#[[
+/* -------------------------------
+ *
  * values / global const
  *
  --------------------------------- */ 

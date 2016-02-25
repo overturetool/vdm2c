@@ -44,9 +44,12 @@ IR = #decl
     	[includes]:eString*
     	[vtable]:eVtables
     	(values):IR.#decl.field*
+    	[quotes]:IR.#decl.quote*
     | {classState} (fields):IR.#decl.field*
     | {array} [static]:java_Boolean [type]:IR.#type [name]:java_String [size]:java_Integer [initial]:struct*
+    | {quote} [name]:java_String [id]:java_Integer
        ;
+ 
        
 
 struct  {-> package='org.overture.codegen.vdm2c.extast.declarations'}

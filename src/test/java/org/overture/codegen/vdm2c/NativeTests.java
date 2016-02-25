@@ -80,5 +80,14 @@ public class NativeTests extends NativeTestBase
 		generate(getPath("expressions/RTConstructs.vdmrt"));
 		compileAndTest(getTestCppFile("rt/RTConstructs_Tests.cpp"));
 	}
+	
+	@ConditionalIgnore(condition = HasVdmLib.class)
+	@Test
+	public void ExpressionQuote() throws IOException, InterruptedException,
+			CMakeGenerateException
+	{
+		generate(getPath("expressions/ExpressionQuote.vdmrt"));
+		compileAndTest();
+	}
 
 }
