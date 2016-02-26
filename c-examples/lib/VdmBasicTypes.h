@@ -32,6 +32,7 @@
 
 #include "Vdm.h"
 
+#define ASSERT_CHECK_CHAR(s) assert((s->type ==  VDM_CHAR) && "Value is not a character")
 
 /*
  * Boolean
