@@ -26,6 +26,6 @@ public class Dot
 	public static void makeImage(INode node, File output)
 			throws GraphVizException
 	{
-		makeImage(new File("dot"), node, "svg", output);
+		makeImage(new File("dot"), node, "pdf", output);
 	}
 }

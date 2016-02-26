@@ -15,7 +15,7 @@ orExp()== true or false;
 --  It was implemented in the library for the sake of bi-implication.
 
 protected implicationExp: () -> bool
-implicationExp()== true => false;
+implicationExp()== false => true;
 
 protected biimplicationExp: () -> bool
 biimplicationExp()== false <=> false;

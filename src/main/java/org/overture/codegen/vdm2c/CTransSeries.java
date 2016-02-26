@@ -45,6 +45,7 @@ import org.overture.codegen.vdm2c.transformations.ExtractRetValTrans;
 import org.overture.codegen.vdm2c.transformations.FieldExpRewriteTrans;
 import org.overture.codegen.vdm2c.transformations.FieldIdentifierToFieldGetApplyTrans;
 import org.overture.codegen.vdm2c.transformations.ForLoopTrans;
+import org.overture.codegen.vdm2c.transformations.FreeLocalBlockDeclsTrans;
 import org.overture.codegen.vdm2c.transformations.IfTrans;
 import org.overture.codegen.vdm2c.transformations.IgnoreRenamingTrans;
 import org.overture.codegen.vdm2c.transformations.InitializerExtractorTrans;
@@ -155,7 +156,6 @@ public class CTransSeries
 		transformations.add(new ValueAccessRenameTrans(transAssistant));
 		transformations.add(new StaticFieldAccessRenameTrans(transAssistant));
 		transformations.add(new LetTrans(transAssistant));
-		
 
 		/**
 		 * Phase #2 - Not defined yet.
@@ -173,11 +173,9 @@ public class CTransSeries
 		transformations.add(new CtorTrans(transAssistant));
 		transformations.add(new NewRewriteTrans(transAssistant));
 		transformations.add(new IgnoreRenamingTrans(transAssistant));
-
 		transformations.add(new ForLoopTrans(transAssistant));
 		transformations.add(new IfTrans(transAssistant));
 		transformations.add(new MapSeqUpdateRewriteTrans(transAssistant));
-
 		transformations.add(new SubClassResponsibilityMethodsTrans(transAssistant));
 		
 		// ExtractEmbeddedCreationsTrans requires that blocks doesn't have any local decelerations but that all is statements
@@ -190,6 +188,11 @@ public class CTransSeries
 		transformations.add(new RemoveCWrappersTrans(transAssistant));
 		transformations.add(new ScopeCleanerTrans(transAssistant));
 		transformations.add(new MethodVisibilityTrans(transAssistant));
+		// transformations.add(new VisualizeIRAST(transAssistant));
+		if(System.getProperty("disable.memmanagement") == null)
+		{			
+			transformations.add(new FreeLocalBlockDeclsTrans(transAssistant));
+		}
 
 		return transformations;
 	}

@@ -1,0 +1,8 @@
+class VisualizeIRAST
+
+operations
+test2 : () ==> bool
+test2() ==
+	let thevar = 1 in return true;
+	
+end VisualizeIRAST

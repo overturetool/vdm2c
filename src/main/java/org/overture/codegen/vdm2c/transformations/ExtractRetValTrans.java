@@ -1,8 +1,11 @@
 package org.overture.codegen.vdm2c.transformations;
 
+import static org.overture.codegen.vdm2c.utils.CTransUtil.newApply;
+
 import org.overture.cgc.extast.analysis.DepthFirstAnalysisCAdaptor;
 import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.declarations.AVarDeclIR;
+import org.overture.codegen.ir.expressions.AApplyExpIR;
 import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
 import org.overture.codegen.ir.patterns.AIdentifierPatternIR;
 import org.overture.codegen.ir.statements.ABlockStmIR;
@@ -40,7 +43,10 @@ public class ExtractRetValTrans extends DepthFirstAnalysisCAdaptor
 		retVar.setType(node.getExp().getType().clone());
 		retVar.setPattern(id);
 		retVar.setSourceNode(node.getExp().getSourceNode());
-		retVar.setExp(node.getExp());
+		
+		AApplyExpIR applyexpr = newApply("vdmClone", node.getExp());
+
+		retVar.setExp(applyexpr);
 
 		AIdentifierVarExpIR retVarOcc = new AIdentifierVarExpIR();
 		retVarOcc.setType(retVar.getType().clone());

@@ -1,0 +1,16 @@
+class SubclassResponsibility
+operations
+public a : () ==> ()
+a() == is subclass responsibility;
+
+public b : () ==> int
+b() == is subclass responsibility;
+
+functions
+public f : () -> int
+f() == is subclass responsibility;
+
+public g : int -> int
+g(p) == is subclass responsibility;
+
+end SubclassResponsibility

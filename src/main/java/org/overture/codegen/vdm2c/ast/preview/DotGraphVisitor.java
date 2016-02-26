@@ -35,7 +35,7 @@ import org.overture.codegen.ir.IToken;
 import org.overture.codegen.ir.NodeList;
 import org.overture.codegen.ir.analysis.AnalysisException;
 
- class DotGraphVisitor extends QuestionCAdaptor<DotGraphVisitor.DotPair>
+public class DotGraphVisitor extends QuestionCAdaptor<DotGraphVisitor.DotPair>
 {
 
 	public static class DotPair

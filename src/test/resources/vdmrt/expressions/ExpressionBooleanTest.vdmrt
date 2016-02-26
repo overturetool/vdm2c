@@ -11,7 +11,7 @@ public testorExp : () ==>()
 testorExp()== assertTrue(orExp());
 
 public testimplicationExp : () ==>()
-testimplicationExp()== assertFalse(implicationExp());
+testimplicationExp()== assertTrue(implicationExp());
 
 public testbiimplicationExp : () ==>()
 testbiimplicationExp()== assertTrue(biimplicationExp());

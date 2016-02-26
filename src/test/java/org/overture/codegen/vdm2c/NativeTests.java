@@ -90,4 +90,13 @@ public class NativeTests extends NativeTestBase
 		compileAndTest();
 	}
 
+	@ConditionalIgnore(condition = HasVdmLib.class)
+	@Test
+	public void SubclassResponsibility() throws IOException, InterruptedException,
+			CMakeGenerateException
+	{
+		generate(getPath("classes/SubclassResponsibility.vdmrt"));
+		compileAndTest(getTestCppFile("classes/ClassSubclassResponsibility_Tests.cpp"));
+	}
+
 }

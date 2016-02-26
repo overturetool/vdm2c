@@ -23,17 +23,17 @@ vdmFree(res);\
 vdmFree(c)
 
 
-TEST(ExpressionLet, notExp)
+TEST(ExpressionLet, letBlockScope)
 {
 	CHECK(CLASS_ExpressionLet__Z13letBlockScopeEV);
 }
 
-TEST(ExpressionLet, andExp)
+TEST(ExpressionLet, letPatternIdentifier)
 {
 	CHECK(CLASS_ExpressionLet__Z20letPatternIdentifierEV);
 }
 
-TEST(ExpressionLet, orExp)
+TEST(ExpressionLet, letPatternDontCare)
 {
 	CHECK(CLASS_ExpressionLet__Z18letPatternDontCareEV);
 }
