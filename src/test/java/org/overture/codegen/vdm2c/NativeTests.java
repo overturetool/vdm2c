@@ -107,5 +107,10 @@ public class NativeTests extends NativeTestBase
 		generate(getPath("lib/IO.vdmrt"));
 		compileAndTest(getTestCppFile("classes/ClassIO_Tests.cpp"));
 	}
-
+	public void ExpressionSetRange() throws IOException, InterruptedException,
+			CMakeGenerateException
+	{
+		generate(getPath("expressions/ExpressionSetRange.vdmrt"));
+		compileAndTest();
+	}
 }
