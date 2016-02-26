@@ -1,8 +1,8 @@
 /*
- * ExpressionsSeq_Tests.cpp
+ * ClassSubclassResponsibility_Tests.cpp
  *
  *  Created on: Jan 10, 2016
- *      Author: kel
+ *      Author: Victor Bandur
  */
 
 
