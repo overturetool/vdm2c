@@ -25,6 +25,7 @@ import org.overture.codegen.ir.types.AClassTypeIR;
 import org.overture.codegen.utils.GeneratedData;
 import org.overture.codegen.utils.GeneratedModule;
 import org.overture.codegen.vdm2c.extast.declarations.AClassHeaderDeclIR;
+import org.overture.codegen.vdm2c.sourceformat.ISourceFileFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,6 +34,7 @@ public class CGen extends CodeGenBase
 	final static Logger logger = LoggerFactory.getLogger(CGen.class);
 	final static org.overture.codegen.logging.ILogger console = org.overture.codegen.logging.Logger.getLog();
 	final File outputFolder;
+	private ISourceFileFormatter formatter;
 
 	public CGen(File outputFolder)
 	{
@@ -243,17 +245,11 @@ public class CGen extends CodeGenBase
 		output.write(writer.toString());
 		output.close();
 
-		// FIXME: remove once finished developing the basic stuff
-		if (System.getProperty("user.name").equals("kel"))
+		if(formatter!=null)
 		{
-			Runtime.getRuntime().exec("/usr/local/bin/clang-format -i -style='{BreakBeforeBraces: GNU}' "
-					+ file.getAbsolutePath());
+			formatter.format(file);
 		}
-		if (System.getProperty("user.name").equals("mot"))
-		{
-			Runtime.getRuntime().exec("clang-format -i -style='{BreakBeforeBraces:GNU}' '"
-					+ file.getAbsolutePath() + "'");
-		}
+		
 	}
 
 	private StringWriter emitCode(INode node, CFormat my_formatter)
@@ -307,5 +303,10 @@ public class CGen extends CodeGenBase
 		}
 		return filtered;
 
+	}
+
+	public void setSourceCodeFormatter(ISourceFileFormatter formatter)
+	{
+		this.formatter = formatter;
 	}
 }

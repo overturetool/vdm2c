@@ -17,6 +17,7 @@ import org.overture.ast.lex.Dialect;
 import org.overture.codegen.utils.GeneralUtils;
 import org.overture.codegen.utils.GeneratedData;
 import org.overture.codegen.utils.GeneratedModule;
+import org.overture.codegen.vdm2c.sourceformat.ISourceFileFormatter;
 import org.overture.config.Settings;
 import org.overture.typechecker.util.TypeCheckerUtil;
 import org.overture.typechecker.util.TypeCheckerUtil.TypeCheckResult;
@@ -35,6 +36,7 @@ public class CGenMain
 		// add t option
 		Option verboseOpt = Option.builder("v").longOpt("verbose").desc("Print processing information").build();
 		Option sourceOpt = Option.builder("sf").longOpt("folder").desc("Path to a source folder containing VDM files").hasArg().build();
+		Option formatOpt = Option.builder("fm").longOpt("formatter").desc("Name of the formatter which should be loaded from the class path").hasArg().build();
 		Option destOpt = Option.builder("dest").longOpt("destination").desc("Output directory").hasArg().required().build();
 		Option helpOpt = Option.builder("h").longOpt("help").desc("Show this description").build();
 
@@ -42,6 +44,7 @@ public class CGenMain
 		options.addOption(sourceOpt);
 		options.addOption(destOpt);
 		options.addOption(helpOpt);
+		options.addOption(formatOpt);
 
 		CommandLineParser parser = new DefaultParser();
 		CommandLine cmd = null;
@@ -58,13 +61,39 @@ public class CGenMain
 		List<File> files = new LinkedList<File>();
 		File outputDir = null;
 		boolean print = false;
+		ISourceFileFormatter formatter = null;
 
 		print = cmd.hasOption(verboseOpt.getOpt());
-		
+
 		if (cmd.hasOption(helpOpt.getOpt()))
 		{
 			showHelp(options);
 			return;
+		}
+
+		if (cmd.hasOption(formatOpt.getOpt()))
+		{
+			String formatterClassName = cmd.getOptionValue(formatOpt.getOpt());
+			try
+			{
+				Class<?> formatterClass = Class.forName(formatterClassName);
+				try
+				{
+					formatter = (ISourceFileFormatter) formatterClass.newInstance();
+				} catch (InstantiationException e)
+				{
+					System.err.println(String.format("Unable to invoke default constructor for formatter '%s'", formatterClassName));
+					return;
+				} catch (IllegalAccessException e)
+				{
+					System.err.println(String.format("Unable to access class for formatter '%s'", formatterClassName));
+					return;
+				}
+			} catch (ClassNotFoundException e)
+			{
+				System.err.println(String.format("Formatter '%s' not found in class path", formatterClassName));
+				return;
+			}
 		}
 
 		if (cmd.hasOption(sourceOpt.getOpt()))
@@ -123,8 +152,8 @@ public class CGenMain
 			// List<SClassDefinition> res = vdm_ast.result;
 
 			TypeCheckResult<List<SClassDefinition>> res = TypeCheckerUtil.typeCheckRt(files);
-			
-			if(!res.parserResult.errors.isEmpty())
+
+			if (!res.parserResult.errors.isEmpty())
 			{
 				System.err.println(res.parserResult.getErrorString());
 			}
@@ -138,9 +167,14 @@ public class CGenMain
 			List<SClassDefinition> ast = res.result;
 
 			CGen cGen = new CGen(outputDir);
+			if(formatter!=null)
+			{
+				cGen.setSourceCodeFormatter(formatter);
+			}
 
 			GeneratedData data = cGen.generate(CGen.filter(ast, org.overture.ast.node.INode.class));// .generateCFromVdm(ast,
 																									// outputDir);
+			
 			System.out.println("C code generated to folder: "
 					+ outputDir.getAbsolutePath());
 

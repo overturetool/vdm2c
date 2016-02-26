@@ -17,6 +17,8 @@ import org.overture.codegen.vdm2c.CMakeUtil.CMakeGenerateException;
 
 public class NativeTestBase extends BaseGeneratorTest
 {
+	private static final String FORMATTER = "formatter";
+
 	final static String VDM_LIB_PATH = System.getProperty("VDM_LIB_PATH");
 
 	final static String testResourcedVdmRtPath = "src/test/resources/vdmrt/".replace('/', File.separatorChar);
@@ -95,6 +97,13 @@ public class NativeTestBase extends BaseGeneratorTest
 		List<String> args = new Vector<String>(Arrays.asList(new String[] {
 				"-dest", root.getAbsolutePath() }));
 		args.addAll(Arrays.asList(paths));
+		
+		if(System.getProperty(FORMATTER)!=null)
+		{
+			args.add("-formatter");
+			args.add(System.getProperty(FORMATTER));
+		}
+		
 		CGenMain.main(args.toArray(new String[] {}));
 	}
 
