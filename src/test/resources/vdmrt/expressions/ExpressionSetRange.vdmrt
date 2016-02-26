@@ -1,0 +1,28 @@
+class ExpressionSetRange
+
+
+functions
+
+setRange: () -> bool
+setRange()== card {val1, ... ,2} = 2;
+
+seqSetRange : ()->bool
+seqSetRange()==len [0 | i in set {val1,...,2}] =2;
+
+seqSetRange2 : ()->bool
+seqSetRange2()==len [0 | i in set {val1,...,val2}] =2;
+
+
+instance variables
+
+private inst1: seq of real := [0 | i in set {val1,...,VAL2}];
+
+values
+
+/* overture bug if values are in the end of the file with no types then they never get checked and end up as untypeddefinitions in the variable expression reference, and the type of both will be set as unknown (which matches any thing so probably not possible to detect in the overture tool)*/
+val1:int = 1;
+val2 :int= 2;
+VAL2:int = 2;
+
+
+end ExpressionSetRange
