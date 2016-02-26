@@ -192,6 +192,52 @@ void vdmSetFit(TVP set)
 
 
 
+TVP vdmSetEnumerateSetOfInts(TVP lower, TVP upper)
+{
+	struct TypedValue** theset;
+	int l, u, count;
+
+	//Wrong parameter types.
+	if(lower->type != VDM_INT || upper->type != VDM_INT)
+	{
+		return NULL;
+	}
+
+	//For faster access.
+	l = lower->value.intVal;
+	u = upper->value.intVal;
+
+	//Some special cases.
+	if (u < l)
+	{
+		return NULL;
+	}
+
+	if(l == u)
+	{
+		return newSetVar(1, newInt(u));
+	}
+
+	//The common case.
+	theset = (struct TypedValue**)calloc(u - l + 1, sizeof(struct TypedValue*));
+	count = 0;
+
+	for (int i = l; i <= u; i++)
+	{
+		vdmSetAdd(theset, &count, newInt(i));
+	}
+
+	TVP res = newCollectionWithValues(VDM_SET, count, theset);
+
+	for(int i = 0; i < count; i++)
+	{
+		vdmFree(theset[i]);
+	}
+	free(theset);
+	return res;
+}
+
+
 TVP vdmSetElementAt(TVP set, int loc)
 {
 	UNWRAP_COLLECTION(col, set);
@@ -503,47 +549,47 @@ TVP vdmSetDinter(TVP set)
 TVP vdmSetPower(TVP set)
 {
 	TVP set1;
-		TVP set2;
-		TVP set3;
-		TVP powerset;
-		struct Collection *powercol;
-		int powercolsize;
+	TVP set2;
+	TVP set3;
+	TVP powerset;
+	struct Collection *powercol;
+	int powercolsize;
 
-		ASSERT_CHECK(set);
+	ASSERT_CHECK(set);
 
-		UNWRAP_COLLECTION(col, set);
+	UNWRAP_COLLECTION(col, set);
 
-		//Initialize powerset to contain the empty set.
-		powerset = newSetVar(0, NULL);
+	//Initialize powerset to contain the empty set.
+	powerset = newSetVar(0, NULL);
 
-		set1 = newSetVar(0, NULL);
-		set2 = newSetVar(1, set1);
-		vdmFree(set1);
-		set1 = vdmSetUnion(powerset, set2);
-		vdmFree(set2);
-		vdmFree(powerset);
-		powerset = set1;
+	set1 = newSetVar(0, NULL);
+	set2 = newSetVar(1, set1);
+	vdmFree(set1);
+	set1 = vdmSetUnion(powerset, set2);
+	vdmFree(set2);
+	vdmFree(powerset);
+	powerset = set1;
 
-		for(int i = 0; i < col->size; i++)
+	for(int i = 0; i < col->size; i++)
+	{
+		powercolsize = ((struct Collection*)powerset->value.ptr)->size;
+		for(int j = 0; j < powercolsize; j++)
 		{
-			powercolsize = ((struct Collection*)powerset->value.ptr)->size;
-			for(int j = 0; j < powercolsize; j++)
-			{
-				powercol = (struct Collection*)powerset->value.ptr;
+			powercol = (struct Collection*)powerset->value.ptr;
 
-				set1 = newSetVar(1, (col->value)[i]);
-				set2 = vdmSetUnion((powercol->value)[j], set1);
-				vdmFree(set1);
-				set1 = newSetVar(1, set2);
-				vdmFree(set2);
-				set3 = vdmSetUnion(powerset, set1);
-				vdmFree(set1);
-				vdmFree(powerset);
-				powerset = set3;
-			}
+			set1 = newSetVar(1, (col->value)[i]);
+			set2 = vdmSetUnion((powercol->value)[j], set1);
+			vdmFree(set1);
+			set1 = newSetVar(1, set2);
+			vdmFree(set2);
+			set3 = vdmSetUnion(powerset, set1);
+			vdmFree(set1);
+			vdmFree(powerset);
+			powerset = set3;
 		}
+	}
 
-		return powerset;
+	return powerset;
 
 	return powerset;
 }

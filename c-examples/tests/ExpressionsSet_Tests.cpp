@@ -119,10 +119,54 @@ TEST(Expression_Set, setFit)
 	res = vdmEquals(set1, set2);
 	EXPECT_EQ(true, res->value.boolVal);
 
-
+	//Clean up.
 	vdmFree(res);
 	vdmFree(set1);
 	vdmFree(set2);
+}
+
+
+TEST(Expression_Set, setEnumerateSetOfInts)
+{
+	TVP l = newInt(0);
+	TVP u = newInt(3);
+	TVP tmp;
+	TVP res;
+	TVP set = vdmSetEnumerateSetOfInts(l, u);
+
+	res = vdmSetMemberOf(set, l);
+	EXPECT_EQ(true, res->value.boolVal);
+	vdmFree(res);
+
+	res = vdmSetMemberOf(set, u);
+	EXPECT_EQ(true, res->value.boolVal);
+	vdmFree(res);
+
+	tmp = newInt(1);
+	res = vdmSetMemberOf(set, tmp);
+	EXPECT_EQ(true, res->value.boolVal);
+	vdmFree(res);
+	vdmFree(tmp);
+
+	tmp = newInt(2);
+	res = vdmSetMemberOf(set, tmp);
+	EXPECT_EQ(true, res->value.boolVal);
+	vdmFree(res);
+	vdmFree(tmp);
+
+	tmp = newInt(6);
+	res = vdmSetMemberOf(set, tmp);
+	EXPECT_EQ(false, res->value.boolVal);
+	vdmFree(res);
+	vdmFree(tmp);
+
+	res = vdmSetCard(set);
+	EXPECT_EQ(4, res->value.intVal);
+	vdmFree(res);
+
+	vdmFree(l);
+	vdmFree(u);
+	vdmFree(set);
 }
 
 
@@ -147,6 +191,7 @@ TEST(Expression_Set, setElementAt)
 		vdmFree(res);
 	}
 
+	//Clean up.
 	vdmFree(set);
 }
 
@@ -204,7 +249,7 @@ TEST(Expression_Set, setComprehension)
 		free(buf);
 	}
 
-//	COMPREHENSION(exp,var,S,vdmLessThan(var,t));
+	//	COMPREHENSION(exp,var,S,vdmLessThan(var,t));
 	EXPECT_EQ(VDM_SET, comp->type);
 	UNWRAP_COLLECTION(col, comp);
 	EXPECT_EQ(3, col->size);
@@ -359,8 +404,8 @@ TEST(Expression_Set, setUnion)
 
 	//Ensure that there are no other elements.
 	EXPECT_EQ(true, ((struct Collection*)(unionset->value.ptr))->size <= \
-				((struct Collection*)(set1->value.ptr))->size + \
-				((struct Collection*)(set2->value.ptr))->size);
+			((struct Collection*)(set1->value.ptr))->size + \
+			((struct Collection*)(set2->value.ptr))->size);
 
 	//Wrap up.
 	vdmFree(set1);
@@ -973,4 +1018,4 @@ TEST(Expression_SetRandom, setMemTest)
 		}
 	}
 }
-*/
+ */

@@ -136,7 +136,14 @@ struct TypedValue* vdmClone(struct TypedValue* x)
 {
 
 	//vdmClone struct
-	struct TypedValue* tmp = newTypeValue(x->type, x->value);
+	struct TypedValue* tmp;
+
+	if(x == NULL)
+	{
+		return NULL;
+	}
+
+	tmp = newTypeValue(x->type, x->value);
 
 	//FIXME vdmClone any pointers
 	switch (tmp->type)
