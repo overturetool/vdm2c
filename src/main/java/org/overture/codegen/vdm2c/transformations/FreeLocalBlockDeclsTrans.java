@@ -8,7 +8,6 @@ import static org.overture.codegen.vdm2c.utils.CTransUtil.toStm;
 import java.util.LinkedList;
 
 import org.overture.codegen.ir.SStmIR;
-import org.overture.codegen.ir.STypeIR;
 import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.analysis.DepthFirstAnalysisAdaptor;
 import org.overture.codegen.ir.analysis.intf.IAnalysis;
@@ -27,7 +26,7 @@ import org.overture.codegen.vdm2c.utils.IApplyAssistant;
 public class FreeLocalBlockDeclsTrans extends DepthFirstAnalysisAdaptor implements IApplyAssistant
 {
 	public TransAssistantIR assist;
-	
+
 	@Override
 	public TransAssistantIR getAssist()
 	{
@@ -44,7 +43,7 @@ public class FreeLocalBlockDeclsTrans extends DepthFirstAnalysisAdaptor implemen
 	{
 		this.assist = assist;
 	}
-	
+
 	@Override
 	public void caseAAssignToExpStmIR(AAssignToExpStmIR node)
 			throws AnalysisException
@@ -52,7 +51,7 @@ public class FreeLocalBlockDeclsTrans extends DepthFirstAnalysisAdaptor implemen
 		// TODO Auto-generated method stub
 		super.caseAAssignToExpStmIR(node);
 	}
-	
+
 	@Override
 	public void caseABlockStmIR(ABlockStmIR node) throws AnalysisException
 	{
@@ -70,7 +69,7 @@ public class FreeLocalBlockDeclsTrans extends DepthFirstAnalysisAdaptor implemen
 		//Where to insert the vdmFree statements if this block does
 		//not end in a return statement.
 		addoffset = 0;
-		
+
 		//Phase to insert vdmFree statements for local definitions.
 		//If this statement block ends in a return statement, ignore the return variable.
 		if(stms.getLast() instanceof AReturnStmIR)
@@ -88,16 +87,19 @@ public class FreeLocalBlockDeclsTrans extends DepthFirstAnalysisAdaptor implemen
 				{
 					if(stm instanceof ALocalVariableDeclarationStmIR)
 					{
-						if(((AIdentifierPatternIR) ((ALocalVariableDeclarationStmIR) stm).getDecleration().getPattern()).getName().equals(toomit.getName()))
+						if(((ALocalVariableDeclarationStmIR) stm).getDecleration().getPattern() instanceof AIdentifierPatternIR)
 						{
-							stms.remove(stm);
-							break;
+							if(((AIdentifierPatternIR) ((ALocalVariableDeclarationStmIR) stm).getDecleration().getPattern()).getName().equals(toomit.getName()))
+							{
+								stms.remove(stm);
+								break;
+							}
 						}
 					}
 				}
 			}
 		}	
-		
+
 		//Determine which declarations need vdmFree statements.
 		for (SStmIR stm : stms)
 		{
@@ -112,7 +114,7 @@ public class FreeLocalBlockDeclsTrans extends DepthFirstAnalysisAdaptor implemen
 				}
 			}
 		}
-		
+
 		//Phase to change assignments to vdmClone.  This is the brutal
 		//way to deal with the problem of pointer aliasing.
 		for(SStmIR stm : ((ABlockStmIR) node).getStatements())
