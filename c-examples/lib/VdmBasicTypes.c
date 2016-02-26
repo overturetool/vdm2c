@@ -34,6 +34,7 @@
 #define ASSERT_CHECK_NUMERIC(s) assert((s->type == VDM_INT||s->type == VDM_NAT||s->type == VDM_NAT1||s->type == VDM_REAL||s->type == VDM_RAT) && "Value is not numeric")
 #define ASSERT_CHECK_REAL(s) assert((s->type ==  VDM_REAL) && "Value is not real")
 #define ASSERT_CHECK_INT(s) assert((s->type ==  VDM_INT) && "Value is not integer")
+#define ASSERT_CHECK_CHAR(s) assert((s->type ==  VDM_CHAR) && "Value is not a character")
 
 /*
  * Boolean
