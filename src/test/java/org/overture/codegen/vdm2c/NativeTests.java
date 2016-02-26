@@ -83,6 +83,15 @@ public class NativeTests extends NativeTestBase
 	
 	@ConditionalIgnore(condition = HasVdmLib.class)
 	@Test
+	public void ExpressionQuote() throws IOException, InterruptedException,
+			CMakeGenerateException
+	{
+		generate(getPath("expressions/ExpressionQuote.vdmrt"));
+		compileAndTest();
+	}
+
+	@ConditionalIgnore(condition = HasVdmLib.class)
+	@Test
 	public void SubclassResponsibility() throws IOException, InterruptedException,
 			CMakeGenerateException
 	{

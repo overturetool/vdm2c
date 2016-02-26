@@ -1,6 +1,5 @@
 package org.overture.codegen.vdm2c.transformations;
 
-import static org.overture.codegen.vdm2c.utils.CTransUtil.newApply;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.rewriteToApply;
 
 import org.overture.cgc.extast.analysis.DepthFirstAnalysisCAdaptor;

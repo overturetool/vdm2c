@@ -1,0 +1,23 @@
+class ExpressionQuote
+
+
+
+values
+
+value1 = <Q1>;
+
+instance variables
+
+field1 : <Q1> | <Q2> := <Q1>;
+
+
+operations
+
+op : <Q1> ==> <Q2>
+op(a)== 
+	if a =<Q1> then 
+		return <Q2> 
+	else 
+		return <Q2>;
+
+end ExpressionQuote

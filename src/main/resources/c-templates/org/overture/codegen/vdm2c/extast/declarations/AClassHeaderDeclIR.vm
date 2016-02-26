@@ -20,6 +20,21 @@
 #[[
 /* -------------------------------
  *
+ * Quotes
+ *
+ --------------------------------- */ 
+ ]]#
+#foreach( $val in $node.getQuotes() )
+	#set($qn = $String.format("QUOTE_%S",$val.getName()))
+#ifndef $qn
+\#define $qn $val.getId()
+#endif /* $qn */
+
+#end
+
+#[[
+/* -------------------------------
+ *
  * values / global const
  *
  --------------------------------- */ 
@@ -77,7 +92,7 @@ struct $cname
  --------------------------------- */ 
  ]]#
 #foreach( $method in $node.getOriginalDef().getMethods() )
-#if($CFormat.isPublic($method)) 
+#if($CFormat.isPublic($method) && !$method.getIsConstructor()) 
 	$CFormat.format($method.getMethodType().getResult()) $method.getName()($CFormat.format($method.getFormalParams()).replace("this","this_"));
 #end
 #end

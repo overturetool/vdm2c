@@ -23,6 +23,8 @@ import org.overture.codegen.ir.types.ARecordTypeIR;
 import org.overture.codegen.vdm2c.ast.CGenClonableString;
 import org.overture.codegen.vdm2c.extast.declarations.AClassHeaderDeclIR;
 import org.overture.codegen.vdm2c.extast.declarations.AClassStateDeclIR;
+import org.overture.codegen.vdm2c.extast.declarations.AQuoteDeclIR;
+import org.overture.codegen.vdm2c.utils.QuoteNamesCollector;
 
 public class ClassHeaderGenerator
 {
@@ -65,6 +67,17 @@ public class ClassHeaderGenerator
 			header.setIncludes(includes);
 
 			header.setName(classDef.getName().toString());
+			
+			QuoteNamesCollector quoteCollector = new QuoteNamesCollector();
+			classDef.apply(quoteCollector);
+			
+			for (String quote : quoteCollector.getQuotes())
+			{
+				AQuoteDeclIR qDef = new AQuoteDeclIR();
+				qDef.setName(quote);
+				qDef.setId(quote.hashCode());
+				header.getQuotes().add(qDef);
+			}
 
 			list.add(new IRStatus<PIR>(irStatus.getVdmNode(), header.getName(), header, new HashSet<VdmNodeInfo>()));
 			classHeaders.add(header);
