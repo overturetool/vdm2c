@@ -66,7 +66,7 @@ TVP vdmGreaterOrEqual(TVP a,TVP b);
 TVP vdmLessThan(TVP a,TVP b);
 TVP vdmLessOrEqual(TVP a,TVP b);
 
-
+char* printBool(TVP val);
 /*
  * internal use
 */

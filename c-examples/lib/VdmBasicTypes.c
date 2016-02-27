@@ -360,3 +360,25 @@ TVP vdmLessOrEqual(TVP a,TVP b)
 	return newBool(av<=bv);
 }
 
+
+
+//Pretty printing functions for basic types.
+char* printBool(TVP val)
+{
+	ASSERT_CHECK_BOOL(val);
+
+	char* str;
+
+	if(val->value.boolVal)
+	{
+		str = (char*)malloc(5 * sizeof(char));
+		sprintf(str, "true");
+	}
+	else
+	{
+		str = (char*)malloc(6 * sizeof(char));
+		sprintf(str, "false");
+	}
+
+	return str;
+}
