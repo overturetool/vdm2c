@@ -382,3 +382,26 @@ char* printBool(TVP val)
 
 	return str;
 }
+
+
+
+char* printInt(TVP val)
+{
+	ASSERT_CHECK_NUMERIC(val);
+
+	char* str;
+	int tmpval = val->value.intVal;
+	int numdigits;
+
+	numdigits = 0;
+	while(tmpval != 0)
+	{
+		numdigits += 1;
+		tmpval = tmpval / 10;
+	}
+
+	str = (char*)malloc((numdigits + 2) * sizeof(char));
+	sprintf(str, "%d", val->value.intVal);
+
+	return str;
+}

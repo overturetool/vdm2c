@@ -30,9 +30,6 @@ extern "C"
 }
 
 
-
-
-
 TEST(PrettyPrint, printBool)
 {
 	char* str;
@@ -53,3 +50,22 @@ TEST(PrettyPrint, printBool)
 }
 
 
+
+TEST(PrettyPrint, printInt)
+{
+	char* str;
+	TVP val;
+
+	val = newInt(1234);
+
+	str = printInt(val);
+	printf("%s\n", str);
+	free(str);
+	vdmFree(val);
+
+	val = newInt(-12345);
+	str = printInt(val);
+	printf("%s\n", str);
+	free(str);
+	vdmFree(val);
+}
