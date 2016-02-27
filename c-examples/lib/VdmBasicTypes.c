@@ -400,6 +400,7 @@ char* printInt(TVP val)
 		tmpval = tmpval / 10;
 	}
 
+	//Allow one extra space for negative numbers.
 	str = (char*)malloc((numdigits + 2) * sizeof(char));
 	sprintf(str, "%d", val->value.intVal);
 
