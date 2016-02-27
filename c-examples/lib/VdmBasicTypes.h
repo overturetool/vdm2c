@@ -68,6 +68,7 @@ TVP vdmLessOrEqual(TVP a,TVP b);
 
 char* printBool(TVP val);
 char* printInt(TVP val);
+char* printChar(TVP val);
 /*
  * internal use
 */

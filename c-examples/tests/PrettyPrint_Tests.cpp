@@ -69,3 +69,18 @@ TEST(PrettyPrint, printInt)
 	free(str);
 	vdmFree(val);
 }
+
+
+
+TEST(PrettyPrint, printChar)
+{
+	char* str;
+	TVP val;
+
+	val = newChar('z');
+
+	str = printChar(val);
+	printf("%s\n", str);
+	free(str);
+	vdmFree(val);
+}

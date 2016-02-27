@@ -385,6 +385,22 @@ char* printBool(TVP val)
 
 
 
+char* printChar(TVP val)
+{
+	ASSERT_CHECK_CHAR(val);
+
+	char* str;
+
+	str = (char*)malloc(2 * sizeof(char));
+
+	str[0] = val->value.charVal;
+	str[1] = 0;
+
+	return str;
+}
+
+
+
 char* printInt(TVP val)
 {
 	ASSERT_CHECK_NUMERIC(val);
