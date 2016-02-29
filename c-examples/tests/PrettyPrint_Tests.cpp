@@ -30,71 +30,38 @@ extern "C"
 }
 
 
-TEST(PrettyPrint, printBool)
+
+TEST(PrettyPrint, print)
 {
-	char* str;
 	TVP val;
 
 	val = newBool(true);
-
-	str = printBool(val);
-	printf("%s\n", str);
-	free(str);
+	vdm_IO_print(val);
+	printf("\n");
 	vdmFree(val);
 
 	val = newBool(false);
-	str = printBool(val);
-	printf("%s\n", str);
-	free(str);
+	vdm_IO_print(val);
+	printf("\n");
 	vdmFree(val);
-}
-
-
-
-TEST(PrettyPrint, printInt)
-{
-	char* str;
-	TVP val;
 
 	val = newInt(1234);
-
-	str = printInt(val);
-	printf("%s\n", str);
-	free(str);
+	vdm_IO_print(val);
+	printf("\n");
 	vdmFree(val);
 
 	val = newInt(-12345);
-	str = printInt(val);
-	printf("%s\n", str);
-	free(str);
+	vdm_IO_print(val);
+	printf("\n");
 	vdmFree(val);
-}
-
-
-
-TEST(PrettyPrint, printChar)
-{
-	char* str;
-	TVP val;
 
 	val = newChar('z');
-
-	str = printChar(val);
-	printf("%s\n", str);
-	free(str);
+	vdm_IO_print(val);
+	printf("\n");
 	vdmFree(val);
-}
-
-
-
-TEST(PrettyPrint, printDouble)
-{
-	char* str;
-	TVP val;
 
 	val = newReal(12.34);
-	str = printDouble(val);
-	printf("%s\n", str);
-	free(str);
+	vdm_IO_print(val);
+	printf("\n");
 	vdmFree(val);
 }
