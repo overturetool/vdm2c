@@ -115,8 +115,6 @@ struct OptionalType
 
 
 
-
-
 struct TypedValue* newTypeValue(vdmtype type, TypedValueType value);
 
 
@@ -144,5 +142,13 @@ TVP vdmInEquals(struct TypedValue* a, struct TypedValue* b);
 bool collectionEqual(TVP col1,TVP col2);
 
 void recursiveFree(struct TypedValue* ptr);
+
+
+
+//Pretty printing functions.
+char* printBool(TVP val);
+char* printInt(TVP val);
+char* printChar(TVP val);
+char* printDouble(TVP val);
 
 #endif /* TYPEDVALUE_H_ */
