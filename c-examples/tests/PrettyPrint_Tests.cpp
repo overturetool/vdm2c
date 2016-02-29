@@ -33,40 +33,4 @@ extern "C"
 
 TEST(PrettyPrint, print)
 {
-	TVP val;
-
-	val = newBool(true);
-	vdm_IO_print(val);
-	printf("\n");
-	vdmFree(val);
-
-	val = newBool(false);
-	vdm_IO_print(val);
-	printf("\n");
-	vdmFree(val);
-
-	val = newInt(1234);
-	vdm_IO_print(val);
-	printf("\n");
-	vdmFree(val);
-
-	val = newInt(-12345);
-	vdm_IO_print(val);
-	printf("\n");
-	vdmFree(val);
-
-	val = newChar('z');
-	vdm_IO_print(val);
-	printf("\n");
-	vdmFree(val);
-
-	val = newReal(12.34);
-	vdm_IO_print(val);
-	printf("\n");
-	vdmFree(val);
-
-//	val = newSetVar(2, newInt(1), newInt(2));
-//	vdm_IO_print(val);
-//	printf("\n");
-//	vdmFree(val);
 }

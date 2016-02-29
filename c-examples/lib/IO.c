@@ -72,7 +72,11 @@ void vdm_IO_printf(TVP format, TVP args)
 
 void vdm_IO_println(TVP arg)
 {
-	//TODO.
+	char* str;
+
+	str = printVdmBasicValue(arg);
+	printf("%s\n", str);
+	free(str);
 
 	return;
 }
