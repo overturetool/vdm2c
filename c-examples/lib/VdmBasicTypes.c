@@ -422,3 +422,51 @@ char* printInt(TVP val)
 
 	return str;
 }
+
+
+
+char* printDouble(TVP val)
+{
+	ASSERT_CHECK_NUMERIC(val);
+
+	char* str;
+
+	//Rounding in doubles does not allow this way of counting digits.
+	/*
+	int numwholes, numdecimals;
+	int numint, numtmpint;
+	double numdouble, numtmpdouble;
+
+	numdouble = val->value.doubleVal;
+	numint = numdouble;
+
+	//Count number of whole digits.
+	numtmpint = numint;
+	numwholes = 0;
+	while(numtmpint != 0)
+	{
+		numwholes += 1;
+		numtmpint = numtmpint / 10;
+	}
+
+	//Count number of decimal digits.
+	numdouble -= numint;
+	numdouble *= 10;
+	numint = numdouble;
+
+	numdecimals = 0;
+	numtmpdouble = numdouble - ((double)numint);
+	while(numtmpdouble != 0)
+	{
+		numdecimals += 1;
+		numdouble *= 10;
+		numint = numdouble;
+		numtmpdouble = numdouble - (numint * 1.0);
+	}
+	*/
+
+	str = (char*)malloc(1000 * sizeof(char));
+	sprintf(str, "%f", val->value.doubleVal);
+
+	return str;
+}

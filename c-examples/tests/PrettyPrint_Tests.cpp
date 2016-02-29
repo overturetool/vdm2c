@@ -84,3 +84,17 @@ TEST(PrettyPrint, printChar)
 	free(str);
 	vdmFree(val);
 }
+
+
+
+TEST(PrettyPrint, printDouble)
+{
+	char* str;
+	TVP val;
+
+	val = newReal(12.34);
+	str = printDouble(val);
+	printf("%s\n", str);
+	free(str);
+	vdmFree(val);
+}
