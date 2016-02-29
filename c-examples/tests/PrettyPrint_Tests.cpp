@@ -64,4 +64,9 @@ TEST(PrettyPrint, print)
 	vdm_IO_print(val);
 	printf("\n");
 	vdmFree(val);
+
+//	val = newSetVar(2, newInt(1), newInt(2));
+//	vdm_IO_print(val);
+//	printf("\n");
+//	vdmFree(val);
 }

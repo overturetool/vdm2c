@@ -34,4 +34,10 @@ extern "C"
 TEST(ClassIO, print)
 {
 	vdm_IO_echo(newSeqVar(4, newChar('a'), newChar('b'), newChar('c'), newChar('\n')));
+	vdm_IO_print(newInt(1234));
+	vdm_IO_print(newInt(-1234));
+	vdm_IO_print(newBool(true));
+	vdm_IO_print(newBool(false));
+	vdm_IO_print(newChar('z'));
+	vdm_IO_print(newReal(12.34));
 }

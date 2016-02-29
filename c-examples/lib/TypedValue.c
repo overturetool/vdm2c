@@ -478,6 +478,9 @@ char* printDouble(TVP val)
 char* printVdmBasicValue(TVP val)
 {
 	char* str;
+	char** strcol;
+	struct Collection* col;
+	int i;
 
 	switch(val->type)
 	{
@@ -496,8 +499,22 @@ char* printVdmBasicValue(TVP val)
 	case VDM_REAL:
 		str = printDouble(val);
 		break;
+	case VDM_SET:
+		//Can not use UNWRAP_COLLECTION here because it includes a declaration.
+		col = (struct Collection*)val->value.ptr;
+		strcol = (char**)(col->size * sizeof(char*));
+
+		for(i = 0; i < col->size; i++)
+		{
+			strcol[i] = printVdmBasicValue(col->value[i]);
+			printf("%s\n", strcol[i]);
+		}
+
+		break;
 	default:
+		//Must return a valid pointer.
 		str = (char*)malloc(1);
+		str[0] = 0;
 		return str;
 	}
 
