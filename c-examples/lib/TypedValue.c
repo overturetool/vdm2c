@@ -479,6 +479,7 @@ char* printDouble(TVP val)
 //TODO:  Should change this to printVdmTypedValue
 char* printVdmBasicValue(TVP val)
 {
+	char ldelim, rdelim;
 	char* str;
 	char* strtmp;
 	char** strcol;
@@ -486,6 +487,22 @@ char* printVdmBasicValue(TVP val)
 	int i;
 	int totallen;
 
+	//Set up delimiters in case of collections.
+	switch(val->type)
+	{
+	case VDM_SET:
+		ldelim = '{';
+		rdelim = '}';
+		break;
+	case VDM_SEQ:
+		ldelim = '[';
+		rdelim = ']';
+		break;
+	default:
+		break;
+	}
+
+	//Main operation.
 	switch(val->type)
 	{
 	case VDM_BOOL:
@@ -504,6 +521,7 @@ char* printVdmBasicValue(TVP val)
 		str = printDouble(val);
 		break;
 	case VDM_SET:
+	case VDM_SEQ:
 		//Can not use UNWRAP_COLLECTION here because it includes a declaration.
 		col = (struct Collection*)val->value.ptr;
 		strcol = (char**)malloc(col->size * sizeof(char*));
@@ -519,14 +537,14 @@ char* printVdmBasicValue(TVP val)
 		//Compose full string.
 		str = (char*)malloc((2 + 1 + col->size * 2 + totallen));
 		strtmp = str;
-		sprintf(str, "{");
+		sprintf(str, "%c", ldelim);
 		str += sizeof(char);
 		for(i = 0; i < col->size - 1; i++)
 		{
 			sprintf(str, "%s, ", strcol[i]);
 			str += (strlen(strcol[i]) + 2) * sizeof(char);
 		}
-		sprintf(str, "%s}", strcol[i]);
+		sprintf(str, "%s%c", strcol[i], rdelim);
 		str = strtmp;
 
 		//Clean up.

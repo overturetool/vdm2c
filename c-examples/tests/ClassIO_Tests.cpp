@@ -51,4 +51,5 @@ TEST(ClassIO, print)
 	vdm_IO_println(newReal(12.34));
 	vdm_IO_println(newSetVar(2, newInt(1), newInt(2)));
 	vdm_IO_println(newSetVar(2, newSetVar(2, newInt(3), newInt(4)), newSetVar(2, newChar('b'), newChar('z'))));
+	vdm_IO_println(newSeqVar(2, newSetVar(2, newInt(3), newInt(4)), newSeqVar(2, newChar('b'), newChar('z'))));
 }
