@@ -27,6 +27,8 @@
  *      Author: kel
  */
 
+#include <string.h>
+
 #include "TypedValue.h"
 #include "VdmMap.h"
 #include "VdmClass.h"
@@ -55,45 +57,45 @@ struct TypedValue* newTypeValue(vdmtype type, TypedValueType value)
 struct TypedValue* newInt(int x)
 {
 	return newTypeValue(VDM_INT, (TypedValueType
-			)
+	)
 			{ .intVal = x });
 }
 struct TypedValue* newNat1(int x)
 {
 	return newTypeValue(VDM_NAT1, (TypedValueType
-			)
+	)
 			{ .intVal = x });
 }
 
 struct TypedValue* newNat(int x)
 {
 	return newTypeValue(VDM_NAT, (TypedValueType
-			)
+	)
 			{ .intVal = x });
 }
 
 struct TypedValue* newBool(bool x)
 {
 	return newTypeValue(VDM_BOOL, (TypedValueType
-			)
+	)
 			{ .boolVal = x });
 }
 struct TypedValue* newReal(double x)
 {
 	return newTypeValue(VDM_REAL, (TypedValueType
-			)
+	)
 			{ .doubleVal = x });
 }
 struct TypedValue* newChar(char x)
 {
 	return newTypeValue(VDM_CHAR, (TypedValueType
-			)
+	)
 			{ .charVal = x });
 }
 struct TypedValue* newQuote(unsigned int x)
 {
 	return newTypeValue(VDM_QUOTE, (TypedValueType
-			)
+	)
 			{ .uintVal = x });
 }
 
@@ -105,7 +107,7 @@ struct TypedValue* newCollection(size_t size, vdmtype type)
 	ptr->size = size;
 	ptr->value = (struct TypedValue**) calloc(size, sizeof(struct TypedValue*)); //I know this is slower than malloc but better for products
 	return newTypeValue(type, (TypedValueType
-			)
+	)
 			{ .ptr = ptr });
 }
 
@@ -193,9 +195,9 @@ struct TypedValue* vdmClone(struct TypedValue* x)
 		tmp->value.ptr = ptr;
 		break;
 	}
-//	case VDM_OPTIONAL:
-//		//TODO
-//		break;
+	//	case VDM_OPTIONAL:
+	//		//TODO
+	//		break;
 	case VDM_RECORD:
 	{
 		ASSERT_CHECK_RECORD(tmp);
@@ -267,10 +269,10 @@ bool equals(struct TypedValue* a, struct TypedValue* b)
 		//FIXME
 		return collectionEqual(a, b);
 	}
-//	case VDM_OPTIONAL:
-//	{
-//		break;
-//	}
+	//	case VDM_OPTIONAL:
+	//	{
+	//		break;
+	//	}
 	case VDM_RECORD:
 	{
 		ASSERT_CHECK_RECORD(a);
@@ -350,9 +352,9 @@ void recursiveFree(struct TypedValue* ptr)
 		ptr->value.ptr = NULL;
 		break;
 	}
-//	case VDM_OPTIONAL:
-//		//TODO
-//		break;
+	//	case VDM_OPTIONAL:
+	//		//TODO
+	//		break;
 	case VDM_RECORD:
 	{
 		//handle smart pointer
@@ -474,13 +476,15 @@ char* printDouble(TVP val)
 }
 
 
-
+//TODO:  Should change this to printVdmTypedValue
 char* printVdmBasicValue(TVP val)
 {
 	char* str;
+	char* strtmp;
 	char** strcol;
 	struct Collection* col;
 	int i;
+	int totallen;
 
 	switch(val->type)
 	{
@@ -502,20 +506,33 @@ char* printVdmBasicValue(TVP val)
 	case VDM_SET:
 		//Can not use UNWRAP_COLLECTION here because it includes a declaration.
 		col = (struct Collection*)val->value.ptr;
-		strcol = (char**)(col->size * sizeof(char*));
+		strcol = (char**)malloc(col->size * sizeof(char*));
+		totallen = 0;
 
 		for(i = 0; i < col->size; i++)
 		{
-			strcol[i] = printVdmBasicValue(col->value[i]);
-			printf("%s\n", strcol[i]);
+			strcol[i] = printVdmBasicValue((col->value)[i]);
+			totallen += strlen(strcol[i]);
 		}
 
+		//Compose full string.
+		str = (char*)malloc((2 + 1 + col->size * 2 + totallen));
+		strtmp = str;
+		sprintf(str, "{");
+		str += sizeof(char);
+		for(i = 0; i < col->size - 1; i++)
+		{
+			sprintf(str, "%s, ", strcol[i]);
+			str += (strlen(strcol[i]) + 2) * sizeof(char);
+		}
+		sprintf(str, "%s}", strcol[i]);
+		str = strtmp;
 		break;
 	default:
 		//Must return a valid pointer.
 		str = (char*)malloc(1);
 		str[0] = 0;
-		return str;
+		break;
 	}
 
 	return str;
