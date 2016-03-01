@@ -509,6 +509,7 @@ char* printVdmBasicValue(TVP val)
 		strcol = (char**)malloc(col->size * sizeof(char*));
 		totallen = 0;
 
+		//Get pretty printed representations of contents recursively.
 		for(i = 0; i < col->size; i++)
 		{
 			strcol[i] = printVdmBasicValue((col->value)[i]);
@@ -527,6 +528,14 @@ char* printVdmBasicValue(TVP val)
 		}
 		sprintf(str, "%s}", strcol[i]);
 		str = strtmp;
+
+		//Clean up.
+		for(i = 0; i < col->size; i++)
+		{
+			free(strcol[i]);
+		}
+		free(strcol);
+
 		break;
 	default:
 		//Must return a valid pointer.
