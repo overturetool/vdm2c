@@ -4,6 +4,7 @@ import static org.overture.codegen.vdm2c.utils.CTransUtil.GET_FIELD_PTR;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.SET_FIELD_PTR;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.createIdentifier;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.exp2Stm;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.newApply;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newDeclarationAssignment;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newMacroApply;
 
@@ -198,6 +199,7 @@ public class FieldIdentifierToFieldGetApplyTrans extends
 
 		// process right side of assignment
 		node.getExp().apply(THIS);
+//		AVarDeclIR retVar = newDeclarationAssignment(name, node.getExp().getType().clone(), newApply("vdmClone", node.getExp().clone()), node.getExp().getSourceNode());
 		AVarDeclIR retVar = newDeclarationAssignment(name, node.getExp().getType().clone(), node.getExp(), node.getExp().getSourceNode());
 
 		ABlockStmIR replBlock = new ABlockStmIR();
