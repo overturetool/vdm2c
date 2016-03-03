@@ -1,0 +1,10 @@
+class IOLibTest is subclass of TestCase, IOLib
+
+operations
+
+public testusePrint : () ==> ()
+testusePrint() ==
+	assertTrue(usePrint());
+	
+
+end IOLibTest

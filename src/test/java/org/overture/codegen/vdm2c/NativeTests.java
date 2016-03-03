@@ -101,16 +101,19 @@ public class NativeTests extends NativeTestBase
 	
 	@ConditionalIgnore(condition = HasVdmLib.class)
 	@Test
-	public void IOLibrary() throws IOException, InterruptedException,
-			CMakeGenerateException
-	{
-		generate(getPath("lib/IO.vdmrt"));
-		compileAndTest(getTestCppFile("classes/ClassIO_Tests.cpp"));
-	}
 	public void ExpressionSetRange() throws IOException, InterruptedException,
 			CMakeGenerateException
 	{
 		generate(getPath("expressions/ExpressionSetRange.vdmrt"));
 		compileAndTest();
+	}
+	
+	@ConditionalIgnore(condition = HasVdmLib.class)
+	@Test
+	public void OtherIOLib() throws IOException, InterruptedException,
+			CMakeGenerateException
+	{
+		generate(getPath("other/IOLib.vdmrt"), getPath("lib/IO.vdmrt"));
+		compileAndTest(getTestCppFile("classes/ClassIO_Tests.cpp"));
 	}
 }
