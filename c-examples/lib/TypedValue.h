@@ -150,5 +150,6 @@ char* printBool(TVP val);
 char* printInt(TVP val);
 char* printChar(TVP val);
 char* printDouble(TVP val);
+char* printVdmBasicValue(TVP val);
 
 #endif /* TYPEDVALUE_H_ */

@@ -33,7 +33,9 @@ extern "C"
 
 TEST(ClassIO, print)
 {
-	vdm_IO_echo(newSeqVar(4, newChar('a'), newChar('b'), newChar('c'), newChar('\n')));
+	vdm_IO_echo(newSeqVar(3, newChar('a'), newChar('b'), newChar('c')));
+	vdm_IO_print(newSeqVar(4, newChar('a'), newChar('b'), newChar('c'), newChar('d')));
+	vdm_IO_println(newSeqVar(4, newChar('a'), newInt(33), newChar('c'), newChar('d')));
 
 	vdm_IO_print(newInt(1234));
 	vdm_IO_print(newInt(-1234));
