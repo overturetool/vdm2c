@@ -59,7 +59,7 @@ public class CForIterator extends AbstractLanguageIterator
 			List<SPatternIR> patterns, SPatternIR pattern)
 			throws AnalysisException
 	{
-		return newApply("vdmLessThan", newIdentifier(iteratorName, null), newApply("vdmSetCard", newIdentifier(setName, null)));
+		return newApply("toBool", newApply("vdmLessThan", newIdentifier(iteratorName, null), newApply("vdmSetCard", newIdentifier(setName, null))));
 	}
 
 	@Override
@@ -78,7 +78,7 @@ public class CForIterator extends AbstractLanguageIterator
 		setId.setIsLocal(true);
 		AIdentifierVarExpIR itrId = newIdentifier(iteratorName, null);
 		itrId.setIsLocal(true);
-		return newDeclarationAssignment(pattern, newTvpType(), newApply("vdmSetElementAt", setId, itrId), null);
+		return newDeclarationAssignment(pattern, newTvpType(), newApply("vdmSetElementAt", setId, newApply("toInteger", itrId)), null);
 	}
 
 	@Override
