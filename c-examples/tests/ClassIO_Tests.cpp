@@ -33,5 +33,25 @@ extern "C"
 
 TEST(ClassIO, print)
 {
-	vdm_IO_echo(newSeqVar(4, newChar('a'), newChar('b'), newChar('c'), newChar('\n')));
+	vdm_IO_echo(newSeqVar(3, newChar('a'), newChar('b'), newChar('c')));
+	vdm_IO_print(newSeqVar(4, newChar('a'), newChar('b'), newChar('c'), newChar('d')));
+	vdm_IO_println(newSeqVar(4, newChar('a'), newInt(33), newChar('c'), newChar('d')));
+
+	vdm_IO_print(newInt(1234));
+	vdm_IO_print(newInt(-1234));
+	vdm_IO_print(newBool(true));
+	vdm_IO_print(newBool(false));
+	vdm_IO_print(newChar('z'));
+	vdm_IO_print(newReal(12.34));
+	vdm_IO_print(newSetVar(2, newInt(1), newInt(2)));
+
+	vdm_IO_println(newInt(1234));
+	vdm_IO_println(newInt(-1234));
+	vdm_IO_println(newBool(true));
+	vdm_IO_println(newBool(false));
+	vdm_IO_println(newChar('z'));
+	vdm_IO_println(newReal(12.34));
+	vdm_IO_println(newSetVar(2, newInt(1), newInt(2)));
+	vdm_IO_println(newSetVar(2, newSetVar(2, newInt(3), newInt(4)), newSetVar(2, newChar('b'), newChar('z'))));
+	vdm_IO_println(newSeqVar(2, newSetVar(2, newInt(3), newInt(4)), newSeqVar(2, newChar('b'), newChar('z'))));
 }

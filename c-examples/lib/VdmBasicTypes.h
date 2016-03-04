@@ -66,7 +66,6 @@ TVP vdmGreaterOrEqual(TVP a,TVP b);
 TVP vdmLessThan(TVP a,TVP b);
 TVP vdmLessOrEqual(TVP a,TVP b);
 
-
 /*
  * internal use
 */

@@ -27,14 +27,17 @@
  *      Author: kel
  */
 
-#include "VdmBasicTypes.h"
+#include "Vdm.h"
 #include <math.h>
+
+
 
 #define ASSERT_CHECK_BOOL(s) assert(s->type == VDM_BOOL && "Value is not a boolean")
 #define ASSERT_CHECK_NUMERIC(s) assert((s->type == VDM_INT||s->type == VDM_NAT||s->type == VDM_NAT1||s->type == VDM_REAL||s->type == VDM_RAT) && "Value is not numeric")
 #define ASSERT_CHECK_REAL(s) assert((s->type ==  VDM_REAL) && "Value is not real")
 #define ASSERT_CHECK_INT(s) assert((s->type ==  VDM_INT) && "Value is not integer")
 #define ASSERT_CHECK_CHAR(s) assert((s->type ==  VDM_CHAR) && "Value is not a character")
+
 
 /*
  * Boolean
@@ -84,13 +87,13 @@ bool isNumber(TVP val)
 {
 	switch(val->type)
 	{
-		case VDM_INT:
-		case VDM_NAT:
-		case VDM_NAT1:
-		case VDM_REAL:
-		case VDM_RAT:
+	case VDM_INT:
+	case VDM_NAT:
+	case VDM_NAT1:
+	case VDM_REAL:
+	case VDM_RAT:
 		return true;
-		default:
+	default:
 		return false;
 	}
 }
@@ -105,14 +108,14 @@ double toDouble(TVP a)
 {
 	switch(a->type)
 	{
-		case VDM_INT:
-		case VDM_NAT:
-		case VDM_NAT1:
+	case VDM_INT:
+	case VDM_NAT:
+	case VDM_NAT1:
 		return (double) a->value.intVal;
-		case VDM_REAL:
-		case VDM_RAT:
+	case VDM_REAL:
+	case VDM_RAT:
 		return a->value.doubleVal;
-		default:
+	default:
 		FATAL_ERROR("Invalid type");
 		return 0;
 	}
@@ -122,13 +125,13 @@ int toInteger(TVP a)
 {
 	switch(a->type)
 	{
-		case VDM_INT:
-		case VDM_NAT:
-		case VDM_NAT1:
+	case VDM_INT:
+	case VDM_NAT:
+	case VDM_NAT1:
 		return a->value.intVal;
-		case VDM_REAL:
+	case VDM_REAL:
 		//return a->value.doubleVal;
-		default:
+	default:
 		FATAL_ERROR("Invalid type");
 		return 0;
 	}
@@ -146,13 +149,13 @@ TVP vdmMinus(TVP arg)
 
 	switch(arg->type)
 	{
-		case VDM_INT:
-		case VDM_NAT:
-		case VDM_NAT1:
+	case VDM_INT:
+	case VDM_NAT:
+	case VDM_NAT1:
 		return newInt(-arg->value.intVal);
-		case VDM_REAL:
+	case VDM_REAL:
 		return newReal(-arg->value.doubleVal);
-		default:
+	default:
 		FATAL_ERROR("Invalid type");
 		return NULL;
 	}
@@ -164,13 +167,13 @@ TVP vdmAbs(TVP arg)
 
 	switch(arg->type)
 	{
-		case VDM_INT:
-		case VDM_NAT:
-		case VDM_NAT1:
+	case VDM_INT:
+	case VDM_NAT:
+	case VDM_NAT1:
 		return newInt(abs(arg->value.intVal));
-		case VDM_REAL:
+	case VDM_REAL:
 		return newReal(fabs(arg->value.doubleVal));
-		default:
+	default:
 		FATAL_ERROR("Invalid type");
 		return NULL;
 	}
@@ -208,22 +211,22 @@ TVP vdmDifference(TVP a,TVP b)
 
 TVP vdmProduct(TVP a,TVP b)
 {	ASSERT_CHECK_NUMERIC(a);
-	ASSERT_CHECK_NUMERIC(b);
+ASSERT_CHECK_NUMERIC(b);
 
-	double av = toDouble(a);
-	double bv=toDouble(b);
+double av = toDouble(a);
+double bv=toDouble(b);
 
-	return newReal(av*bv);
+return newReal(av*bv);
 }
 
 TVP vdmDivision(TVP a,TVP b)
 {	ASSERT_CHECK_NUMERIC(a);
-	ASSERT_CHECK_NUMERIC(b);
+ASSERT_CHECK_NUMERIC(b);
 
-	double av = toDouble(a);
-	double bv = toDouble(b);
+double av = toDouble(a);
+double bv = toDouble(b);
 
-	return newReal(av/bv);
+return newReal(av/bv);
 }
 
 static long divi(double lv, double rv)
@@ -249,114 +252,113 @@ static long divi(double lv, double rv)
 
 TVP vdmDiv(TVP a,TVP b)
 {	ASSERT_CHECK_NUMERIC(a);
-	ASSERT_CHECK_NUMERIC(b);
+ASSERT_CHECK_NUMERIC(b);
 
-	//See https://github.com/overturetool/overture/blob/development/core/interpreter/src/main/java/org/overture/interpreter/eval/BinaryExpressionEvaluator.java#L444
+//See https://github.com/overturetool/overture/blob/development/core/interpreter/src/main/java/org/overture/interpreter/eval/BinaryExpressionEvaluator.java#L444
 
-	ASSERT_CHECK_INT(a);
-	ASSERT_CHECK_INT(b);
+ASSERT_CHECK_INT(a);
+ASSERT_CHECK_INT(b);
 
-	int av = toDouble(a);
-	int bv = toDouble(b);
+int av = toDouble(a);
+int bv = toDouble(b);
 
-	return newInt(divi(av,bv));
+return newInt(divi(av,bv));
 }
 
 TVP vdmRem(TVP a,TVP b)
 {	ASSERT_CHECK_NUMERIC(a);
-	ASSERT_CHECK_NUMERIC(b);
+ASSERT_CHECK_NUMERIC(b);
 
-	//See https://github.com/overturetool/overture/blob/development/core/interpreter/src/main/java/org/overture/interpreter/eval/BinaryExpressionEvaluator.java#L628
-	ASSERT_CHECK_INT(a);
-	ASSERT_CHECK_INT(b);
+//See https://github.com/overturetool/overture/blob/development/core/interpreter/src/main/java/org/overture/interpreter/eval/BinaryExpressionEvaluator.java#L628
+ASSERT_CHECK_INT(a);
+ASSERT_CHECK_INT(b);
 
-	int av = toDouble(a);
-	int bv = toDouble(b);
+int av = toDouble(a);
+int bv = toDouble(b);
 
-	return newInt(av-bv*divi(av,bv));
+return newInt(av-bv*divi(av,bv));
 }
 
 TVP vdmMod(TVP a,TVP b)
 {	ASSERT_CHECK_NUMERIC(a);
-	ASSERT_CHECK_NUMERIC(b);
+ASSERT_CHECK_NUMERIC(b);
 
-	//See https://github.com/overturetool/overture/blob/development/core/interpreter/src/main/java/org/overture/interpreter/eval/BinaryExpressionEvaluator.java#L575
-	ASSERT_CHECK_INT(a);
-	ASSERT_CHECK_INT(b);
+//See https://github.com/overturetool/overture/blob/development/core/interpreter/src/main/java/org/overture/interpreter/eval/BinaryExpressionEvaluator.java#L575
+ASSERT_CHECK_INT(a);
+ASSERT_CHECK_INT(b);
 
-	double lv =(int) toDouble(a);
-	double rv = (int)toDouble(b);
+double lv =(int) toDouble(a);
+double rv = (int)toDouble(b);
 
-	return newReal(lv-rv*(long) floor(lv/rv));
+return newReal(lv-rv*(long) floor(lv/rv));
 }
 
 TVP vdmPower(TVP a,TVP b)
 {	ASSERT_CHECK_NUMERIC(a);
-	ASSERT_CHECK_NUMERIC(b);
+ASSERT_CHECK_NUMERIC(b);
 
-	double av = toDouble(a);
-	double bv = toDouble(b);
+double av = toDouble(a);
+double bv = toDouble(b);
 
-	return newReal(pow(av,bv));
+return newReal(pow(av,bv));
 }
 
 TVP vdmEqual(TVP a,TVP b)
 {	ASSERT_CHECK_NUMERIC(a);
-	ASSERT_CHECK_NUMERIC(b);
+ASSERT_CHECK_NUMERIC(b);
 
-	double av = toDouble(a);
-	double bv = toDouble(b);
+double av = toDouble(a);
+double bv = toDouble(b);
 
-	return newBool(av==bv);
+return newBool(av==bv);
 }
 
 TVP vdmNotEqual(TVP a,TVP b)
 {	ASSERT_CHECK_NUMERIC(a);
-	ASSERT_CHECK_NUMERIC(b);
+ASSERT_CHECK_NUMERIC(b);
 
-	double av = toDouble(a);
-	double bv = toDouble(b);
+double av = toDouble(a);
+double bv = toDouble(b);
 
-	return newBool(av!=bv);
+return newBool(av!=bv);
 }
 
 TVP vdmGreaterThan(TVP a,TVP b)
 {	ASSERT_CHECK_NUMERIC(a);
-	ASSERT_CHECK_NUMERIC(b);
+ASSERT_CHECK_NUMERIC(b);
 
-	double av = toDouble(a);
-	double bv = toDouble(b);
+double av = toDouble(a);
+double bv = toDouble(b);
 
-	return newBool(av>bv);
+return newBool(av>bv);
 }
 
 TVP vdmGreaterOrEqual(TVP a,TVP b)
 {	ASSERT_CHECK_NUMERIC(a);
-	ASSERT_CHECK_NUMERIC(b);
+ASSERT_CHECK_NUMERIC(b);
 
-	double av = toDouble(a);
-	double bv = toDouble(b);
+double av = toDouble(a);
+double bv = toDouble(b);
 
-	return newBool(av>=bv);
+return newBool(av>=bv);
 }
 
 TVP vdmLessThan(TVP a,TVP b)
 {	ASSERT_CHECK_NUMERIC(a);
-	ASSERT_CHECK_NUMERIC(b);
+ASSERT_CHECK_NUMERIC(b);
 
-	double av = toDouble(a);
-	double bv = toDouble(b);
+double av = toDouble(a);
+double bv = toDouble(b);
 
-	return newBool(av<bv);
+return newBool(av<bv);
 }
 
 TVP vdmLessOrEqual(TVP a,TVP b)
 {	ASSERT_CHECK_NUMERIC(a);
-	ASSERT_CHECK_NUMERIC(b);
+ASSERT_CHECK_NUMERIC(b);
 
-	double av = toDouble(a);
-	double bv = toDouble(b);
+double av = toDouble(a);
+double bv = toDouble(b);
 
-	return newBool(av<=bv);
+return newBool(av<=bv);
 }
-

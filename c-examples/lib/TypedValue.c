@@ -27,11 +27,23 @@
  *      Author: kel
  */
 
+#include <string.h>
+
 #include "TypedValue.h"
 #include "VdmMap.h"
 #include "VdmClass.h"
 #include "VdmRecord.h"
 #include "VdmBasicTypes.h"
+
+
+
+#define ASSERT_CHECK_BOOL(s) assert(s->type == VDM_BOOL && "Value is not a boolean")
+#define ASSERT_CHECK_NUMERIC(s) assert((s->type == VDM_INT||s->type == VDM_NAT||s->type == VDM_NAT1||s->type == VDM_REAL||s->type == VDM_RAT) && "Value is not numeric")
+#define ASSERT_CHECK_REAL(s) assert((s->type ==  VDM_REAL) && "Value is not real")
+#define ASSERT_CHECK_INT(s) assert((s->type ==  VDM_INT) && "Value is not integer")
+#define ASSERT_CHECK_CHAR(s) assert((s->type ==  VDM_CHAR) && "Value is not a character")
+
+
 
 struct TypedValue* newTypeValue(vdmtype type, TypedValueType value)
 {
@@ -45,45 +57,45 @@ struct TypedValue* newTypeValue(vdmtype type, TypedValueType value)
 struct TypedValue* newInt(int x)
 {
 	return newTypeValue(VDM_INT, (TypedValueType
-			)
+	)
 			{ .intVal = x });
 }
 struct TypedValue* newNat1(int x)
 {
 	return newTypeValue(VDM_NAT1, (TypedValueType
-			)
+	)
 			{ .intVal = x });
 }
 
 struct TypedValue* newNat(int x)
 {
 	return newTypeValue(VDM_NAT, (TypedValueType
-			)
+	)
 			{ .intVal = x });
 }
 
 struct TypedValue* newBool(bool x)
 {
 	return newTypeValue(VDM_BOOL, (TypedValueType
-			)
+	)
 			{ .boolVal = x });
 }
 struct TypedValue* newReal(double x)
 {
 	return newTypeValue(VDM_REAL, (TypedValueType
-			)
+	)
 			{ .doubleVal = x });
 }
 struct TypedValue* newChar(char x)
 {
 	return newTypeValue(VDM_CHAR, (TypedValueType
-			)
+	)
 			{ .charVal = x });
 }
 struct TypedValue* newQuote(unsigned int x)
 {
 	return newTypeValue(VDM_QUOTE, (TypedValueType
-			)
+	)
 			{ .uintVal = x });
 }
 
@@ -95,7 +107,7 @@ struct TypedValue* newCollection(size_t size, vdmtype type)
 	ptr->size = size;
 	ptr->value = (struct TypedValue**) calloc(size, sizeof(struct TypedValue*)); //I know this is slower than malloc but better for products
 	return newTypeValue(type, (TypedValueType
-			)
+	)
 			{ .ptr = ptr });
 }
 
@@ -183,9 +195,9 @@ struct TypedValue* vdmClone(struct TypedValue* x)
 		tmp->value.ptr = ptr;
 		break;
 	}
-//	case VDM_OPTIONAL:
-//		//TODO
-//		break;
+	//	case VDM_OPTIONAL:
+	//		//TODO
+	//		break;
 	case VDM_RECORD:
 	{
 		ASSERT_CHECK_RECORD(tmp);
@@ -257,10 +269,10 @@ bool equals(struct TypedValue* a, struct TypedValue* b)
 		//FIXME
 		return collectionEqual(a, b);
 	}
-//	case VDM_OPTIONAL:
-//	{
-//		break;
-//	}
+	//	case VDM_OPTIONAL:
+	//	{
+	//		break;
+	//	}
 	case VDM_RECORD:
 	{
 		ASSERT_CHECK_RECORD(a);
@@ -340,9 +352,9 @@ void recursiveFree(struct TypedValue* ptr)
 		ptr->value.ptr = NULL;
 		break;
 	}
-//	case VDM_OPTIONAL:
-//		//TODO
-//		break;
+	//	case VDM_OPTIONAL:
+	//		//TODO
+	//		break;
 	case VDM_RECORD:
 	{
 		//handle smart pointer
@@ -380,3 +392,175 @@ TVP vdmEquals(struct TypedValue* a, struct TypedValue* b)
 
 TVP vdmInEquals(struct TypedValue* a, struct TypedValue* b)
 {	return newBool(!equals(a,b));}
+
+
+
+
+
+
+//Pretty printing functions for basic types.
+char* printBool(TVP val)
+{
+	ASSERT_CHECK_BOOL(val);
+
+	char* str;
+
+	if(val->value.boolVal)
+	{
+		str = (char*)malloc(5 * sizeof(char));
+		sprintf(str, "true");
+	}
+	else
+	{
+		str = (char*)malloc(6 * sizeof(char));
+		sprintf(str, "false");
+	}
+
+	return str;
+}
+
+
+
+char* printChar(TVP val)
+{
+	ASSERT_CHECK_CHAR(val);
+
+	char* str;
+
+	str = (char*)malloc(2 * sizeof(char));
+
+	str[0] = val->value.charVal;
+	str[1] = 0;
+
+	return str;
+}
+
+
+
+char* printInt(TVP val)
+{
+	ASSERT_CHECK_NUMERIC(val);
+
+	char* str;
+	int tmpval = val->value.intVal;
+	int numdigits;
+
+	numdigits = 0;
+	while(tmpval != 0)
+	{
+		numdigits += 1;
+		tmpval = tmpval / 10;
+	}
+
+	//Allow one extra space for negative numbers.
+	str = (char*)malloc((numdigits + 2) * sizeof(char));
+	sprintf(str, "%d", val->value.intVal);
+
+	return str;
+}
+
+
+
+char* printDouble(TVP val)
+{
+	ASSERT_CHECK_NUMERIC(val);
+
+	char* str;
+
+	//Rounding behaviour for doubles in the less significant digits
+	//makes it impossible to count digits using subtraction and multiplication by 10.
+	str = (char*)malloc(1000 * sizeof(char));
+	sprintf(str, "%f", val->value.doubleVal);
+
+	return str;
+}
+
+
+//TODO:  Should change this to printVdmTypedValue
+char* printVdmBasicValue(TVP val)
+{
+	char ldelim, rdelim;
+	char* str;
+	char* strtmp;
+	char** strcol;
+	struct Collection* col;
+	int i;
+	int totallen;
+
+	//Set up delimiters in case of collections.
+	switch(val->type)
+	{
+	case VDM_SET:
+		ldelim = '{';
+		rdelim = '}';
+		break;
+	case VDM_SEQ:
+		ldelim = '[';
+		rdelim = ']';
+		break;
+	default:
+		break;
+	}
+
+	//Main operation.
+	switch(val->type)
+	{
+	case VDM_BOOL:
+		str = printBool(val);
+		break;
+	case VDM_CHAR:
+		str = printChar(val);
+		break;
+	case VDM_INT:
+	case VDM_NAT:
+	case VDM_NAT1:
+		str = printInt(val);
+		break;
+	case VDM_RAT:
+	case VDM_REAL:
+		str = printDouble(val);
+		break;
+	case VDM_SET:
+	case VDM_SEQ:
+		//Can not use UNWRAP_COLLECTION here because it includes a declaration.
+		col = (struct Collection*)val->value.ptr;
+		strcol = (char**)malloc(col->size * sizeof(char*));
+		totallen = 0;
+
+		//Get pretty printed representations of contents recursively.
+		for(i = 0; i < col->size; i++)
+		{
+			strcol[i] = printVdmBasicValue((col->value)[i]);
+			totallen += strlen(strcol[i]);
+		}
+
+		//Compose full string.
+		str = (char*)malloc((2 + 1 + col->size * 2 + totallen));
+		strtmp = str;
+		sprintf(str, "%c", ldelim);
+		str += sizeof(char);
+		for(i = 0; i < col->size - 1; i++)
+		{
+			sprintf(str, "%s, ", strcol[i]);
+			str += (strlen(strcol[i]) + 2) * sizeof(char);
+		}
+		sprintf(str, "%s%c", strcol[i], rdelim);
+		str = strtmp;
+
+		//Clean up.
+		for(i = 0; i < col->size; i++)
+		{
+			free(strcol[i]);
+		}
+		free(strcol);
+
+		break;
+	default:
+		//Must return a valid pointer.
+		str = (char*)malloc(1);
+		str[0] = 0;
+		break;
+	}
+
+	return str;
+}
