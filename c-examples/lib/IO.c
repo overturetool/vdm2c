@@ -4,12 +4,11 @@
  *  Created on: Feb 25, 2016
  *      Author: mot
  */
+#ifndef CUSTOM_IO
 
-#include "TypedValue.h"
-#include "Vdm.h"
 #include "IO.h"
 
-#ifndef CUSTOM_IO
+
 
 char* unpackString(TVP charseq)
 {
