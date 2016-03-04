@@ -128,17 +128,17 @@ TEST(Expression_Set, setFit)
 
 TEST(Expression_Set, setEnumerateSetOfInts)
 {
-	TVP l = newInt(0);
-	TVP u = newInt(3);
+	int l = 0;
+	int u = 3;
 	TVP tmp;
 	TVP res;
 	TVP set = vdmSetEnumerateSetOfInts(l, u);
 
-	res = vdmSetMemberOf(set, l);
+	res = vdmSetMemberOf(set, newInt(l));
 	EXPECT_EQ(true, res->value.boolVal);
 	vdmFree(res);
 
-	res = vdmSetMemberOf(set, u);
+	res = vdmSetMemberOf(set, newInt(u));
 	EXPECT_EQ(true, res->value.boolVal);
 	vdmFree(res);
 
@@ -164,8 +164,6 @@ TEST(Expression_Set, setEnumerateSetOfInts)
 	EXPECT_EQ(4, res->value.intVal);
 	vdmFree(res);
 
-	vdmFree(l);
-	vdmFree(u);
 	vdmFree(set);
 }
 

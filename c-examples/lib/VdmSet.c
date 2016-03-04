@@ -192,37 +192,37 @@ void vdmSetFit(TVP set)
 
 
 
-TVP vdmSetEnumerateSetOfInts(TVP lower, TVP upper)
+TVP vdmSetEnumerateSetOfInts(int lower, int upper)
 {
 	struct TypedValue** theset;
-	int l, u, count;
+	int count;
 
 	//Wrong parameter types.
-	if(lower->type != VDM_INT || upper->type != VDM_INT)
-	{
-		return NULL;
-	}
+//	if(lower->type != VDM_INT || upper->type != VDM_INT)
+//	{
+//		return NULL;
+//	}
 
 	//For faster access.
-	l = lower->value.intVal;
-	u = upper->value.intVal;
+//	l = lower->value.intVal;
+//	u = upper->value.intVal;
 
 	//Some special cases.
-	if (u < l)
+	if (upper < lower)
 	{
 		return NULL;
 	}
 
-	if(l == u)
+	if(lower == upper)
 	{
-		return newSetVar(1, newInt(u));
+		return newSetVar(1, newInt(upper));
 	}
 
 	//The common case.
-	theset = (struct TypedValue**)calloc(u - l + 1, sizeof(struct TypedValue*));
+	theset = (struct TypedValue**)calloc(upper - lower + 1, sizeof(struct TypedValue*));
 	count = 0;
 
-	for (int i = l; i <= u; i++)
+	for (int i = lower; i <= upper; i++)
 	{
 		vdmSetAdd(theset, &count, newInt(i));
 	}
