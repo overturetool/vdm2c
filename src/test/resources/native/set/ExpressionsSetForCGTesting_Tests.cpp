@@ -31,6 +31,11 @@ vdmFree(c)
 //#define CLASS_ExpressionSetForCGTesting__Z9setDinterEV 11
 //#define CLASS_ExpressionSetForCGTesting__Z8setPowerEV 12
 
+TEST(ExpressionSetForCGTesting, setRange)
+{
+CHECK(CLASS_ExpressionSetForCGTesting__Z8setRangeEV);
+}
+
 TEST(ExpressionSetForCGTesting, inset)
 {
 CHECK(CLASS_ExpressionSetForCGTesting__Z8setInsetEV);

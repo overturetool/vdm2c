@@ -1,7 +1,9 @@
 class ExpressionSetForCGTesting
 functions
 
-
+protected setRange: () -> bool
+setRange() ==
+	card {1, ... ,6} = 6;
 
 protected setInset: () -> bool
 setInset() ==

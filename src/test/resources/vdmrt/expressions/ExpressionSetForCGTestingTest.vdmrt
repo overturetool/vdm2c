@@ -1,6 +1,9 @@
 class ExpressionSetForCGTestingTest is subclass of TestCase,ExpressionSetForCGTesting
 operations
 
+public testsetRange: () ==> ()
+testsetRange() == assertTrue(setRange());
+
 public testsetInset : () ==>()
 testsetInset() == assertTrue(setInset());
 
