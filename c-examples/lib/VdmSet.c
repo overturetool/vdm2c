@@ -198,14 +198,14 @@ TVP vdmSetEnumerateSetOfInts(int lower, int upper)
 	int count;
 
 	//Wrong parameter types.
-//	if(lower->type != VDM_INT || upper->type != VDM_INT)
-//	{
-//		return NULL;
-//	}
+	//	if(lower->type != VDM_INT || upper->type != VDM_INT)
+	//	{
+	//		return NULL;
+	//	}
 
 	//For faster access.
-//	l = lower->value.intVal;
-//	u = upper->value.intVal;
+	//	l = lower->value.intVal;
+	//	u = upper->value.intVal;
 
 	//Some special cases.
 	if (upper < lower)

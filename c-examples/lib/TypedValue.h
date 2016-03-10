@@ -58,7 +58,7 @@ typedef enum
 	VDM_MAP,
 	VDM_PRODUCT,
 	VDM_QUOTE,
-//	VDM_OPTIONAL, think we will handle this with a TVP == NULL
+	//	VDM_OPTIONAL, think we will handle this with a TVP == NULL
 	VDM_RECORD,
 	VDM_CLASS
 } vdmtype;
@@ -86,7 +86,7 @@ typedef union TypedValueType
 } TypedValueType;
 
 
- struct TypedValue
+struct TypedValue
 {
 	vdmtype type;
 	TypedValueType value;
