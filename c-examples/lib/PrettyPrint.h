@@ -1,13 +1,3 @@
-//User has not provided their own IO library.
-#ifndef CUSTOM_IO
-
-#ifndef IO_H_
-#define IO_H_
-
-#include "TypedValue.h"
-#include "Vdm.h"
-
-
 /*
  * #%~
  * The VDM to C Code Generator
@@ -31,22 +21,31 @@
  */
 
 /*
- * IO.h
+ * PrettyPrint.h
  *
- *  Created on: February, 2015
+ *  Created on: Nov 20, 2015
  *      Author: Victor Bandur
  */
 
+#ifndef PRETTYPRINT_H_
+#define PRETTYPRINT_H_
 
-TVP vdm_IO_freadval(TVP filename);
-TVP vdm_IO_fwriteval(TVP filename, TVP val, TVP fdir);
-TVP vdm_IO_writeval(TVP val);
-void vdm_IO_printf(TVP format, TVP args);
-void vdm_IO_println(TVP arg);
-void vdm_IO_print(TVP arg);
-TVP vdm_IO_ferror();
-TVP vdm_IO_fecho(TVP filename, TVP text, TVP fdir);
-TVP vdm_IO_echo(TVP text);
+#include <stdlib.h>
+#include <stdbool.h>
 
-#endif /* IO_H_ */
-#endif /* CUSTOM_IO */
+#include "TypedValue.h"
+
+//Eclipse hack
+#if !defined(va_arg)
+#define va_arg(ap,TVP) NULL //just for Eclipse must not be defined
+#endif
+
+
+//Pretty printing functions.
+char* printBool(TVP val);
+char* printInt(TVP val);
+char* printChar(TVP val);
+char* printDouble(TVP val);
+char* printVdmBasicValue(TVP val);
+
+#endif /* PRETTYPRINT_H_ */

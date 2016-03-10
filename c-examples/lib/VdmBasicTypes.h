@@ -68,7 +68,7 @@ TVP vdmLessOrEqual(TVP a,TVP b);
 
 /*
  * internal use
-*/
+ */
 bool isNumber(TVP val);
 int toInteger(TVP a);
 double toDouble(TVP a);
