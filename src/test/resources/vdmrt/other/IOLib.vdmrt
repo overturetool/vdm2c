@@ -6,7 +6,7 @@ operations
 public usePrint : () ==> bool
 usePrint() ==
 (
-	IO`println(12345);
+	--IO`println(12345);
 	return true;
 	)
 
