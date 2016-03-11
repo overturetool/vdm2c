@@ -6,6 +6,7 @@
 
 #include "TypedValue.h"
 #include "Vdm.h"
+#include "PrettyPrint.h"
 
 
 /*
