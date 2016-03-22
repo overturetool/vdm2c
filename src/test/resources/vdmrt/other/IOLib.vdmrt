@@ -7,6 +7,7 @@ public usePrint : () ==> bool
 usePrint() ==
 (
 	IO`println("Hello, world!");
+	IO`println(time);
 	return true;
 	)
 
