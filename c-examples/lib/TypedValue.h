@@ -32,7 +32,6 @@
 
 #include <stdlib.h>
 #include <stdbool.h>
-#include <time.h>
 
 
 //Eclipse hack
