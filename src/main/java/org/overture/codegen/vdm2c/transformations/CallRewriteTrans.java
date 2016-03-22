@@ -3,7 +3,9 @@ package org.overture.codegen.vdm2c.transformations;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.createIdentifier;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.exp2Stm;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newApply;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.newDeclarationAssignment;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newMacroApply;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.newTvpType;
 
 import java.util.List;
 import java.util.Vector;
@@ -22,15 +24,20 @@ import org.overture.codegen.ir.declarations.SClassDeclIR;
 import org.overture.codegen.ir.expressions.AApplyExpIR;
 import org.overture.codegen.ir.expressions.AFieldExpIR;
 import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
+import org.overture.codegen.ir.expressions.ANullExpIR;
 import org.overture.codegen.ir.statements.ACallObjectExpStmIR;
 import org.overture.codegen.ir.statements.ACallObjectStmIR;
 import org.overture.codegen.ir.statements.APlainCallStmIR;
+import org.overture.codegen.ir.statements.ABlockStmIR;
 import org.overture.codegen.ir.types.AClassTypeIR;
 import org.overture.codegen.ir.types.AMethodTypeIR;
 import org.overture.codegen.ir.types.ASeqSeqTypeIR;
+import org.overture.codegen.trans.AssignStmTrans;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.extast.expressions.AMacroApplyExpIR;
 import org.overture.codegen.vdm2c.utils.CTransUtil;
+import org.overture.codegen.vdm2c.utils.NameMangler;
+import org.overture.interpreter.messages.Console;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,10 +78,59 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 
 		List<AMethodDeclIR> resolvedMethods = lookupVdmFunOpToMethods(tmp);
 
-		// FIXME: we need to consider all methods not only the first one
-		SStmIR apple = exp2Stm(createLocalPtrApply(resolvedMethods.get(0), cDef.getName(), node.getArgs()));
-		apple.setSourceNode(node.getSourceNode());
-		assist.replaceNodeWith(node, apple);
+		//Calls to static methods must be treated differently.
+		if(node.getIsStatic())
+		{
+			SStmIR staticcall;
+			String tmpVarName = assist.getInfo().getTempVarNameGen().nextVarName("TmpVar");
+			
+//			//Declare and initialize temporary object for class containing static method in static init function.
+			String a = node.getClassType().toString();
+			AMethodDeclIR constr = new AMethodDeclIR();
+			AMethodDeclIR enclosing = new AMethodDeclIR();
+			org.overture.codegen.ir.INode tmpnode = node;
+			
+			//Find the constructor to call, get its name.
+			for (AMethodDeclIR method : cDef.getMethods())
+			{
+				if (method.getIsConstructor())
+				{
+					constr = method;
+					break;
+				}
+			}
+
+			//Find enclosing method of the static call.
+			//Handle case of static call outside of method.
+			while(!(tmpnode instanceof AMethodDeclIR))
+			{
+				tmpnode = tmpnode.parent();
+			}
+			enclosing = (AMethodDeclIR)tmpnode;
+			
+			//Handle case where body is not a block, but just a single statement.
+			((ABlockStmIR)enclosing.getBody()).getLocalDefs().add(newDeclarationAssignment(
+						tmpVarName,
+						newTvpType(),
+						newApply(NameMangler.mangle(constr), new ANullExpIR()),
+						null));
+				
+			//Call static function instead.
+			staticcall = exp2Stm(createLocalPtrApply(resolvedMethods.get(0), cDef.getName(), node.getArgs()));
+			
+//			//Free the temporary object.  should be taken care of by other transformations.
+			
+			//replace node.
+			staticcall.setSourceNode(node.getSourceNode());
+			assist.replaceNodeWith(node, staticcall);
+		}
+		else
+		{
+			// FIXME: we need to consider all methods not only the first one
+			SStmIR apple = exp2Stm(createLocalPtrApply(resolvedMethods.get(0), cDef.getName(), node.getArgs()));
+			apple.setSourceNode(node.getSourceNode());
+			assist.replaceNodeWith(node, apple);
+		}
 
 	}
 
@@ -99,7 +155,7 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 
 	AMacroApplyExpIR createClassApply(AMethodDeclIR method, String thisName,
 			SExpIR classValue, List<SExpIR> linkedList)
-			throws AnalysisException
+					throws AnalysisException
 	{
 		AMethodDeclIR selectedMethod = method;
 		String thisType = thisName;
@@ -202,7 +258,7 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 			} else
 			{
 				apply = createClassApply(resolvedMethods.get(0), cDef.getName(), object, originalApply.getArgs());
-				
+
 			}
 			apply.setSourceNode(originalApply.getSourceNode());
 			assist.replaceNodeWith(originalApply, apply);
@@ -212,7 +268,7 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 			{
 				apply.getArgs().get(2).apply(THIS);
 			}
-			
+
 			//apply transformation to all arguments
 			for (int i = 4; i < apply.getArgs().size(); i++)
 			{
@@ -237,6 +293,7 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 			}
 		}
 	}
+
 
 	@Override
 	public void caseACallObjectExpStmIR(ACallObjectExpStmIR node)
