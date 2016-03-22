@@ -15,7 +15,9 @@ import org.overture.ast.definitions.SClassDefinition;
 import org.overture.ast.node.INode;
 import org.overture.ast.types.AClassType;
 import org.overture.cgc.extast.analysis.DepthFirstAnalysisCAdaptor;
+import org.overture.cgc.extast.node.SCExpExpBase;
 import org.overture.codegen.ir.SExpIR;
+import org.overture.codegen.ir.SExpIRBase;
 import org.overture.codegen.ir.SStmIR;
 import org.overture.codegen.ir.STypeIR;
 import org.overture.codegen.ir.analysis.AnalysisException;
@@ -34,6 +36,7 @@ import org.overture.codegen.ir.types.AMethodTypeIR;
 import org.overture.codegen.ir.types.ASeqSeqTypeIR;
 import org.overture.codegen.trans.AssignStmTrans;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
+import org.overture.codegen.vdm2c.extast.expressions.ACExpIR;
 import org.overture.codegen.vdm2c.extast.expressions.AMacroApplyExpIR;
 import org.overture.codegen.vdm2c.utils.CTransUtil;
 import org.overture.codegen.vdm2c.utils.NameMangler;
@@ -116,8 +119,8 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 						null));
 				
 			//Call static function instead.
-			staticcall = exp2Stm(createLocalPtrApply(resolvedMethods.get(0), cDef.getName(), node.getArgs()));
-			
+			//staticcall = exp2Stm(createLocalPtrApply(resolvedMethods.get(0), cDef.getName(), node.getArgs()));
+			staticcall = exp2Stm(createClassApply(resolvedMethods.get(0), cDef.getName(), createIdentifier(tmpVarName, null), node.getArgs()));
 //			//Free the temporary object.  should be taken care of by other transformations.
 			
 			//replace node.
