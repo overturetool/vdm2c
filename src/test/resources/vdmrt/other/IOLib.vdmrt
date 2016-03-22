@@ -6,7 +6,8 @@ operations
 public usePrint : () ==> bool
 usePrint() ==
 (
-	--IO`println(12345);
+	IO`println("Hello, world!");
+	IO`println(time);
 	return true;
 	)
 

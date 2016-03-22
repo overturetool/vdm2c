@@ -11,7 +11,7 @@ public class NativeClassesTests extends NativeTestBase
 
 	@ConditionalIgnore(condition = HasVdmLib.class)
 	@Test
-	public void ClassValues() throws IOException, InterruptedException,
+	public void ClassValue() throws IOException, InterruptedException,
 			CMakeGenerateException
 	{
 		generate(getPath("classes/ClassValue.vdmrt"));
@@ -107,6 +107,15 @@ public class NativeClassesTests extends NativeTestBase
 	{
 		generate(getPath("classes/ClassStaticInstanceVariable.vdmrt"));
 		compileAndTest();
+	}
+	
+	@ConditionalIgnore(condition = HasVdmLib.class)
+	@Test
+	public void ClassStaticMethodAccess() throws IOException,
+			InterruptedException, CMakeGenerateException
+	{
+		generate(getPath("classes/ClassStatic.vdmrt"));
+		compileAndTest(getTestCppFile("classes/ClassStaticMethodAccess_Tests.cpp"));
 	}
 	
 	@ConditionalIgnore(condition = HasVdmLib.class)
