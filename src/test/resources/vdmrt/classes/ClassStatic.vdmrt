@@ -11,6 +11,16 @@ end ClassStatic
 
 
 
+class ClassStatic1 is subclass of ClassStatic
+
+operations
+	public static staticOp1 : () ==> bool
+	staticOp1() == return false;
+
+end ClassStatic1
+
+
+
 class ClassStaticUser
 
 operations
@@ -21,5 +31,10 @@ operations
 
 	public getStaticOperation : () ==> bool
 	getStaticOperation() == ClassStatic`staticOp1();
+	
+	
+	
+	public getOverriddenStaticOperation : () ==> bool
+	getOverriddenStaticOperation() == ClassStatic1`staticOp1();
  
 end ClassStaticUser
