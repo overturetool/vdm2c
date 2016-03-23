@@ -25,4 +25,9 @@ TEST(Class_StaticMethodAccess, getStaticOperation)
 {
 	CHECK(CLASS_ClassStaticUser__Z18getStaticOperationEV);
 }
-
+/*
+TEST(Class_StaticMethodAccess, getStaticField)
+{
+	CHECK(CLASS_ClassStaticUser__Z14getStaticFieldEV);
+}
+*/
