@@ -1,24 +1,40 @@
 class ClassStatic
 
---instance variables
---	public static field1 : int := 1;
+instance variables
+	public static field1 : int := 1;
 	
 operations
- public static staticOp1 : () ==> bool
- staticOp1() == return true;
+	public static staticOp1 : () ==> bool
+	staticOp1() == return true;
  
 end ClassStatic
+
+
+
+class ClassStatic1 is subclass of ClassStatic
+
+operations
+	public static staticOp1 : () ==> bool
+	staticOp1() == return false;
+
+end ClassStatic1
 
 
 
 class ClassStaticUser
 
 operations
- --public getStaticField : () ==> bool
- --getStaticField()== return ClassStatic`field1 = 1;
+	public getStaticField : () ==> bool
+	getStaticField()== return ClassStatic`field1 = 1;
 
 
- public getStaticOperation : () ==> bool
- getStaticOperation() == ClassStatic`staticOp1();
+
+	public getStaticOperation : () ==> bool
+	getStaticOperation() == ClassStatic`staticOp1();
+	
+	
+	
+	public getOverriddenStaticOperation : () ==> bool
+	getOverriddenStaticOperation() == ClassStatic1`staticOp1();
  
 end ClassStaticUser
