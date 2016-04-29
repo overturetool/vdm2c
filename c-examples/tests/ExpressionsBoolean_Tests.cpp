@@ -98,6 +98,30 @@ TEST(Expression_Boolean, orExp)
 	vdmFree(res);
 
 	vdmFree(t);
+	t = NULL;
+	res = vdmOr(t, t1);
+	EXPECT_EQ(NULL, res);
+	vdmFree(res);
+
+	vdmFree(t1);
+	t = newBool(false);
+	t1 = NULL;
+	res = vdmOr(t, t1);
+	EXPECT_EQ(NULL, res);
+	vdmFree(res);
+
+	t1 = newBool(true);
+	res = vdmOr(t, t1);
+	EXPECT_EQ(true, res->value.boolVal);
+	vdmFree(res);
+
+	vdmFree(t);
+	t = NULL;
+	res = vdmOr(t1, t);
+	EXPECT_EQ(true, res->value.boolVal);
+
+	vdmFree(res);
+	vdmFree(t);
 	vdmFree(t1);
 }
 
