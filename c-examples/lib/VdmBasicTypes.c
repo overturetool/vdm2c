@@ -45,25 +45,50 @@
 
 TVP vdmNot(TVP arg)
 {
+	if(arg == NULL)
+		return NULL;
+
 	ASSERT_CHECK_BOOL(arg);
+
 	return newBool(!arg->value.boolVal);
 }
 
 TVP vdmAnd(TVP a,TVP b)
 {
+	if(a == NULL)
+		return NULL;
+
 	ASSERT_CHECK_BOOL(a);
+	if(!a->value.boolVal)
+		return newBool(false);
+
+	if(b == NULL)
+		return NULL;
+
 	ASSERT_CHECK_BOOL(b);
-	return newBool(a->value.boolVal && b->value.boolVal);
+	return newBool(b->value.boolVal);
 }
 TVP vdmOr(TVP a,TVP b)
 {
+	if(a == NULL)
+		return NULL;
+
 	ASSERT_CHECK_BOOL(a);
+	if(a->value.boolVal)
+		return newBool(true);
+
+	if(b == NULL)
+		return NULL;
+
 	ASSERT_CHECK_BOOL(b);
-	return newBool(a->value.boolVal || b->value.boolVal);
+	return newBool(b->value.boolVal);
 }
 
 TVP vdmXor(TVP a,TVP b)
 {
+	if(a == NULL || b == NULL)
+		return NULL;
+
 	ASSERT_CHECK_BOOL(a);
 	ASSERT_CHECK_BOOL(b);
 	return newBool((!(a->value.boolVal) && b->value.boolVal) || ((a->value.boolVal) && !(b->value.boolVal)));
@@ -71,13 +96,25 @@ TVP vdmXor(TVP a,TVP b)
 
 TVP vdmImplies(TVP a,TVP b)
 {
+	if(a == NULL)
+		return NULL;
+
 	ASSERT_CHECK_BOOL(a);
+	if(!a->value.boolVal)
+		return newBool(true);
+
+	if(b == NULL)
+		return NULL;
+
 	ASSERT_CHECK_BOOL(b);
-	return newBool(!a->value.boolVal || b->value.boolVal);
+	return newBool(b->value.boolVal);
 }
 
 TVP vdmBiimplication(TVP a,TVP b)
 {
+	if(a == NULL || b == NULL)
+		return NULL;
+
 	ASSERT_CHECK_BOOL(a);
 	ASSERT_CHECK_BOOL(b);
 	return newBool((!a->value.boolVal || b->value.boolVal) && (!b->value.boolVal || a->value.boolVal));
