@@ -137,6 +137,12 @@ TEST(Expression_Boolean, xorExp)
 	vdmFree(res);
 
 	vdmFree(t);
+	t = NULL;
+	res = vdmXor(t, t1);
+	EXPECT_EQ(NULL, res);
+
+	vdmFree(res);
+	vdmFree(t);
 	vdmFree(t1);
 }
 
@@ -151,6 +157,30 @@ TEST(Expression_Boolean, implicationExp)
 	EXPECT_EQ (false,res->value.boolVal);
 	vdmFree(res);
 
+	vdmFree(t);
+	t = NULL;
+	res = vdmImplies(t, t1);
+	EXPECT_EQ(NULL, res);
+	vdmFree(res);
+
+	vdmFree(t1);
+	t = newBool(true);
+	t1 = NULL;
+	res = vdmImplies(t, t1);
+	EXPECT_EQ(NULL, res);
+	vdmFree(res);
+
+	t1 = newBool(false);
+	res = vdmImplies(t, t1);
+	EXPECT_EQ(false, res->value.boolVal);
+	vdmFree(res);
+
+	vdmFree(t);
+	t = NULL;
+	res = vdmImplies(t1, t);
+	EXPECT_EQ(true, res->value.boolVal);
+
+	vdmFree(res);
 	vdmFree(t);
 	vdmFree(t1);
 }
@@ -170,6 +200,11 @@ TEST(Expression_Boolean, biimplicationExp)
 
 	vdmFree(t);
 	vdmFree(t1);
+	t = NULL;
+	t1 = NULL;
+	res = vdmBiimplication(t, t1);
+	EXPECT_EQ(NULL, res);
+	res = vdmBiimplication(t1, t);
 }
 
 TEST(Expression_Boolean, equalityExp)
