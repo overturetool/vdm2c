@@ -39,6 +39,10 @@ TEST(Expression_Boolean, notExp)
 	vdmFree(res);
 
 	vdmFree(t);
+	t = NULL;
+	res = vdmNot(t);
+	EXPECT_EQ(NULL, res);
+
 }
 
 TEST(Expression_Boolean, andExp)
@@ -53,7 +57,33 @@ TEST(Expression_Boolean, andExp)
 	vdmFree(res);
 
 	vdmFree(t);
+
+	t = NULL;
+	res = vdmAnd(t, t1);
+	EXPECT_EQ(NULL, res);
+	vdmFree(res);
+
 	vdmFree(t1);
+	t = newBool(true);
+	t1 = NULL;
+	res = vdmAnd(t, t1);
+	EXPECT_EQ(NULL, res);
+	vdmFree(res);
+
+	t1 = newBool(false);
+	res = vdmAnd(t, t1);
+	EXPECT_EQ(false, res->value.boolVal);
+	vdmFree(res);
+
+	vdmFree(t);
+	t = NULL;
+	res = vdmAnd(t1, t);
+	EXPECT_EQ(false, res->value.boolVal);
+
+	vdmFree(res);
+	vdmFree(t);
+	vdmFree(t1);
+
 }
 
 TEST(Expression_Boolean, orExp)
