@@ -28,6 +28,7 @@ import org.overture.codegen.ir.declarations.AFieldDeclIR;
 import org.overture.codegen.ir.declarations.AVarDeclIR;
 import org.overture.codegen.ir.declarations.SClassDeclIR;
 import org.overture.codegen.ir.expressions.AApplyExpIR;
+import org.overture.codegen.ir.expressions.AExplicitVarExpIR;
 import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
 import org.overture.codegen.ir.statements.AAssignToExpStmIR;
 import org.overture.codegen.ir.statements.ABlockStmIR;
@@ -39,7 +40,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class FieldIdentifierToFieldGetApplyTrans extends
-		DepthFirstAnalysisCAdaptor
+DepthFirstAnalysisCAdaptor
 {
 	final static Logger logger = LoggerFactory.getLogger(FieldIdentifierToFieldGetApplyTrans.class);
 	public TransAssistantIR assist;
@@ -77,7 +78,7 @@ public class FieldIdentifierToFieldGetApplyTrans extends
 			}
 
 			thisClassName = varExp.getAncestor(AClassClassDefinition.class).getName().getName();// the containing
-																								// class
+			// class
 			fieldClassName = thisClassName; // default to same class
 
 			if (varExp.getVardef() instanceof AInheritedDefinition)
@@ -114,7 +115,7 @@ public class FieldIdentifierToFieldGetApplyTrans extends
 			// why is the definition not kept here? we dont know what this points to
 
 			AClassClassDefinition thisClass = designator.getAncestor(AClassClassDefinition.class);// the containing
-																									// class
+			// class
 			thisClassName = thisClass.getName().getName();
 
 			// while (thisClass != null && fieldClassName == null)
@@ -176,62 +177,127 @@ public class FieldIdentifierToFieldGetApplyTrans extends
 			return;
 		}
 
-		AIdentifierVarExpIR target = (AIdentifierVarExpIR) node.getTarget();
-		// class
-
-		SClassDeclIR cDef = node.getAncestor(SClassDeclIR.class);
-		if (fieldUtil.isStatic(cDef, target.getName()))
+		if(node.getTarget() instanceof AIdentifierVarExpIR)
 		{
-			AFieldDeclIR field = fieldUtil.lookupField(cDef, target.getName());
-			AIdentifierVarExpIR id = createIdentifier(field.getName(), target.getSourceNode());
-			id.setType(target.getType().clone());
-			assist.replaceNodeWith(node.getTarget(), id);
-			return;
+			AIdentifierVarExpIR target = (AIdentifierVarExpIR) node.getTarget();
+
+			// class
+
+			SClassDeclIR cDef = node.getAncestor(SClassDeclIR.class);
+			if (fieldUtil.isStatic(cDef, target.getName()))
+			{
+				AFieldDeclIR field = fieldUtil.lookupField(cDef, target.getName());
+				AIdentifierVarExpIR id = createIdentifier(field.getName(), target.getSourceNode());
+				id.setType(target.getType().clone());
+				assist.replaceNodeWith(node.getTarget(), id);
+				return;
+			}
+			AClassClassDefinition classDef = target.getSourceNode().getVdmNode().getAncestor(AClassClassDefinition.class);
+
+			String thisClassName = classDef.getName().getName();// the
+			// containing
+			// field owner
+			String fieldClassName = fieldUtil.lookupFieldClass(target.getAncestor(ADefaultClassDeclIR.class), target.getName());
+
+			String name = assist.getInfo().getTempVarNameGen().nextVarName(fieldPrefix);
+
+			// process right side of assignment
+			node.getExp().apply(THIS);
+			AVarDeclIR retVar = newDeclarationAssignment(name, node.getExp().getType().clone(), newApply("vdmClone", node.getExp().clone()), node.getExp().getSourceNode());
+
+			ABlockStmIR replBlock = new ABlockStmIR();
+			replBlock.setScoped(true);
+			replBlock.getLocalDefs().add(retVar);
+
+			assist.replaceNodeWith(node, replBlock);
+
+			AMacroApplyExpIR apply = newMacroApply(SET_FIELD_PTR);// new AApplyExpIR();
+			apply.setSourceNode(target.getSourceNode());
+
+			// add this type
+			apply.getArgs().add(createIdentifier(thisClassName, target.getSourceNode()));
+
+			// add field owner type
+			apply.getArgs().add(createIdentifier(fieldClassName, target.getSourceNode()));
+			// add this
+			apply.getArgs().add(createIdentifier("this", target.getSourceNode()));
+
+			// add field name
+			apply.getArgs().add(createIdentifier(target.getName(), target.getSourceNode()));
+
+			// add new value
+			retVar.getSourceNode();
+			apply.getArgs().add(createIdentifier(name, retVar.getSourceNode()));
+
+			replBlock.getStatements().add(exp2Stm(apply));
+
+			AApplyExpIR vdmFree = new AApplyExpIR();
+			vdmFree.setRoot(createIdentifier("vdmFree", node.getSourceNode()));
+			vdmFree.getArgs().add(createIdentifier(name, retVar.getSourceNode()));
+
+			replBlock.getStatements().add(exp2Stm(vdmFree));
 		}
-		AClassClassDefinition classDef = target.getSourceNode().getVdmNode().getAncestor(AClassClassDefinition.class);
+		else if(node.getTarget() instanceof AExplicitVarExpIR)
+		{
+			AExplicitVarExpIR target = (AExplicitVarExpIR) node.getTarget();
 
-		String thisClassName = classDef.getName().getName();// the
-															// containing
-		// field owner
-		String fieldClassName = fieldUtil.lookupFieldClass(target.getAncestor(ADefaultClassDeclIR.class), target.getName());
+			// class
 
-		String name = assist.getInfo().getTempVarNameGen().nextVarName(fieldPrefix);
+			SClassDeclIR cDef = node.getAncestor(SClassDeclIR.class);
+			/*
+			if (fieldUtil.isStatic(cDef, target.getName()))
+			{
+				AFieldDeclIR field = fieldUtil.lookupField(cDef, target.getName());
+				AIdentifierVarExpIR id = createIdentifier(field.getName(), target.getSourceNode());
+				id.setType(target.getType().clone());
+				assist.replaceNodeWith(node.getTarget(), id);
+				return;
+			}
+			*/
+			AClassClassDefinition classDef = target.getSourceNode().getVdmNode().getAncestor(AClassClassDefinition.class);
 
-		// process right side of assignment
-		node.getExp().apply(THIS);
-		AVarDeclIR retVar = newDeclarationAssignment(name, node.getExp().getType().clone(), newApply("vdmClone", node.getExp().clone()), node.getExp().getSourceNode());
+			String thisClassName = classDef.getName().getName();// the
+			// containing
+			// field owner
+			String fieldClassName = fieldUtil.lookupFieldClass(target.getAncestor(ADefaultClassDeclIR.class), target.getName());
 
-		ABlockStmIR replBlock = new ABlockStmIR();
-		replBlock.setScoped(true);
-		replBlock.getLocalDefs().add(retVar);
+			String name = assist.getInfo().getTempVarNameGen().nextVarName(fieldPrefix);
 
-		assist.replaceNodeWith(node, replBlock);
+			// process right side of assignment
+			node.getExp().apply(THIS);
+			AVarDeclIR retVar = newDeclarationAssignment(name, node.getExp().getType().clone(), newApply("vdmClone", node.getExp().clone()), node.getExp().getSourceNode());
 
-		AMacroApplyExpIR apply = newMacroApply(SET_FIELD_PTR);// new AApplyExpIR();
-		apply.setSourceNode(target.getSourceNode());
+			ABlockStmIR replBlock = new ABlockStmIR();
+			replBlock.setScoped(true);
+			replBlock.getLocalDefs().add(retVar);
 
-		// add this type
-		apply.getArgs().add(createIdentifier(thisClassName, target.getSourceNode()));
+			assist.replaceNodeWith(node, replBlock);
 
-		// add field owner type
-		apply.getArgs().add(createIdentifier(fieldClassName, target.getSourceNode()));
-		// add this
-		apply.getArgs().add(createIdentifier("this", target.getSourceNode()));
+			AMacroApplyExpIR apply = newMacroApply(SET_FIELD_PTR);// new AApplyExpIR();
+			apply.setSourceNode(target.getSourceNode());
 
-		// add field name
-		apply.getArgs().add(createIdentifier(target.getName(), target.getSourceNode()));
+			// add this type
+			apply.getArgs().add(createIdentifier(thisClassName, target.getSourceNode()));
 
-		// add new value
-		retVar.getSourceNode();
-		apply.getArgs().add(createIdentifier(name, retVar.getSourceNode()));
+			// add field owner type
+			apply.getArgs().add(createIdentifier(fieldClassName, target.getSourceNode()));
+			// add this
+			apply.getArgs().add(createIdentifier("this", target.getSourceNode()));
 
-		replBlock.getStatements().add(exp2Stm(apply));
+			// add field name
+			apply.getArgs().add(createIdentifier(target.getName(), target.getSourceNode()));
 
-		AApplyExpIR vdmFree = new AApplyExpIR();
-		vdmFree.setRoot(createIdentifier("vdmFree", node.getSourceNode()));
-		vdmFree.getArgs().add(createIdentifier(name, retVar.getSourceNode()));
+			// add new value
+			retVar.getSourceNode();
+			apply.getArgs().add(createIdentifier(name, retVar.getSourceNode()));
 
-		replBlock.getStatements().add(exp2Stm(vdmFree));
+			replBlock.getStatements().add(exp2Stm(apply));
+
+			AApplyExpIR vdmFree = new AApplyExpIR();
+			vdmFree.setRoot(createIdentifier("vdmFree", node.getSourceNode()));
+			vdmFree.getArgs().add(createIdentifier(name, retVar.getSourceNode()));
+
+			replBlock.getStatements().add(exp2Stm(vdmFree));
+		}
 	}
-
 }
