@@ -150,8 +150,9 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 		apply.setType(method.getMethodType().getResult().clone());
 		for (SExpIR arg : linkedList)
 		{
-			arg.apply(THIS);
-			apply.getArgs().add(arg);
+			SExpIR arg0 = arg.clone();
+			arg0.apply(THIS);
+			apply.getArgs().add(arg0);
 		}
 		return apply;
 	}
@@ -187,8 +188,9 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 			{
 				for (AMethodDeclIR m : cgClass.getMethods())
 				{
-					if (!m.getIsConstructor() && m.getSourceNode() != null
-							&& m.getSourceNode().getVdmNode() == def)
+					//if (!m.getIsConstructor() && m.getSourceNode() != null && m.getSourceNode().getVdmNode() == def)
+					//Do not need to check whether a constructor is being called because Overture blocks only allows constructors to call constructors.
+					if (m.getSourceNode() != null && m.getSourceNode().getVdmNode() == def)
 					{
 						methods.add(m);
 					}

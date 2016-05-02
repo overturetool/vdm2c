@@ -14,6 +14,8 @@ setField1(v)== field1:=v;
 
 end ClassStaticInstanceVariable
 
+
+
 class ClassStaticInstanceVariable0 is subclass of ClassStaticInstanceVariable
 
 operations
@@ -24,6 +26,7 @@ getField1FromBase()==return field1;
 end ClassStaticInstanceVariable0
 
 
+
 class UseClassStaticInstanceVariable
 
 operations
@@ -31,5 +34,11 @@ operations
 public op : () ==> bool
 op()==return ClassStaticInstanceVariable`field1=9;
 
+public op2 : () ==> bool
+op2() ==
+(
+	ClassStaticInstanceVariable`field1 := 10;
+	return ClassStaticInstanceVariable`field1 = 10;
+)
 
 end UseClassStaticInstanceVariable
