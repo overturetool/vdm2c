@@ -1,0 +1,26 @@
+class ClassFun
+
+functions
+
+public static fn: () -> bool
+fn()== true;
+
+
+operations
+public op:  () ==> bool
+op() ==
+	return fn();
+
+end ClassFun
+
+
+
+class ClassFunCall
+instance variables
+	fnc : ClassFun := new ClassFun();
+	
+operations
+	public op:  () ==> bool
+	op() ==
+		return ClassFun`fn()
+end ClassFunCall
