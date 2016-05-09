@@ -12,6 +12,7 @@ import java.util.Vector;
 
 import org.overture.ast.definitions.PDefinition;
 import org.overture.ast.definitions.SClassDefinition;
+import org.overture.ast.expressions.AVariableExp;
 import org.overture.ast.node.INode;
 import org.overture.ast.types.AClassType;
 import org.overture.cgc.extast.analysis.DepthFirstAnalysisCAdaptor;
@@ -222,7 +223,12 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 		} else if (rootNode instanceof AExplicitVarExpIR)
 		{
 			AExplicitVarExpIR root = (AExplicitVarExpIR) rootNode;
-			replaceApplyWithMacro(root.getType(), root.getName(), null, node);
+			//This null should be the source class of the static function.
+			replaceApplyWithMacro(root.getType(), root.getName(),
+					
+					rootNode
+					
+					, node);
 		}
 	}
 
@@ -240,9 +246,11 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 				cDef = originalApply.getAncestor(SClassDeclIR.class);
 			} else
 			{
-				if (object.getType() instanceof AClassTypeIR)
+//				if (object.getType() instanceof AClassTypeIR)
+				if (object instanceof AExplicitVarExpIR)
 				{
-					String owningClassName = ((AClassTypeIR) object.getType()).getName();
+//					String owningClassName = ((AExplicitVarExpIR) object.getType()).getName();
+					String owningClassName = ((AVariableExp)((AExplicitVarExpIR) object).getSourceNode().getVdmNode()).getName().getModule();
 					cDef = CTransUtil.getClass(assist, owningClassName);
 				} else
 				{
