@@ -241,6 +241,7 @@ DepthFirstAnalysisCAdaptor
 
 			replBlock.getStatements().add(exp2Stm(vdmFree));
 		}
+		//I think these two cases should be made more generic for static function and operation calls, not only in the context of an assignment.
 		else if(node.getTarget() instanceof AExplicitVarExpIR)
 		{
 			//Name of class containing the field being referenced.

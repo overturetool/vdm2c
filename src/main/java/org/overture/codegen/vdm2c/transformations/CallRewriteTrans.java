@@ -24,6 +24,7 @@ import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.declarations.AMethodDeclIR;
 import org.overture.codegen.ir.declarations.SClassDeclIR;
 import org.overture.codegen.ir.expressions.AApplyExpIR;
+import org.overture.codegen.ir.expressions.AExplicitVarExpIR;
 import org.overture.codegen.ir.expressions.AFieldExpIR;
 import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
 import org.overture.codegen.ir.expressions.ANullExpIR;
@@ -60,7 +61,7 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 	{
 		this.assist = assist;
 	}
-
+	
 	@Override
 	public void caseAPlainCallStmIR(APlainCallStmIR node)
 			throws AnalysisException
@@ -88,7 +89,6 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 			String tmpVarName = assist.getInfo().getTempVarNameGen().nextVarName("TmpVar");
 			
 //			//Declare and initialize temporary object for class containing static method in static init function.
-			String a = node.getClassType().toString();
 			AMethodDeclIR constr = new AMethodDeclIR();
 			AMethodDeclIR enclosing = new AMethodDeclIR();
 			org.overture.codegen.ir.INode tmpnode = node;
@@ -219,6 +219,10 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 		{
 			AFieldExpIR field = (AFieldExpIR) rootNode;
 			replaceApplyWithMacro(field.getType(), field.getMemberName(), field.getObject(), node);
+		} else if (rootNode instanceof AExplicitVarExpIR)
+		{
+			AExplicitVarExpIR root = (AExplicitVarExpIR) rootNode;
+			replaceApplyWithMacro(root.getType(), root.getName(), null, node);
 		}
 	}
 
@@ -249,6 +253,8 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 			INode vdmNode = originalApply.getSourceNode().getVdmNode();
 			List<PDefinition> tmp = methodCollector.collectCompatibleMethods((SClassDefinition) cDef.getSourceNode().getVdmNode(), name, vdmNode, methodCollector.getArgTypes(vdmNode));
 			List<AMethodDeclIR> resolvedMethods = lookupVdmFunOpToMethods(tmp);
+			
+			//This is the error.
 			if (resolvedMethods.isEmpty())
 			{
 				logger.error("Generator error unable to find method for: {}", originalApply);
@@ -297,9 +303,8 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 				arg.apply(THIS);
 			}
 		}
-	}
-
-
+	}	
+	
 	@Override
 	public void caseACallObjectExpStmIR(ACallObjectExpStmIR node)
 			throws AnalysisException
