@@ -219,12 +219,12 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 		if (rootNode instanceof AIdentifierVarExpIR)
 		{
 			AIdentifierVarExpIR root = (AIdentifierVarExpIR) rootNode;
-			replaceApplyWithMacro(root.getType(), root.getName(), null, node);
+			replaceNonStaticApplyWithMacro(root.getType(), root.getName(), null, node);
 
 		} else if (rootNode instanceof AFieldExpIR)
 		{
 			AFieldExpIR field = (AFieldExpIR) rootNode;
-			replaceApplyWithMacro(field.getType(), field.getMemberName(), field.getObject(), node);
+			replaceNonStaticApplyWithMacro(field.getType(), field.getMemberName(), field.getObject(), node);
 		} else if (rootNode instanceof AExplicitVarExpIR)
 		{
 			AExplicitVarExpIR root = (AExplicitVarExpIR) rootNode;
@@ -285,7 +285,8 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 	 * @param originalApply
 	 * @throws AnalysisException
 	 */
-	void replaceApplyWithMacro(	STypeIR applyType,
+	void replaceNonStaticApplyWithMacro(
+								STypeIR applyType,
 								String callName,
 								SExpIR object,
 								AApplyExpIR originalApply) throws AnalysisException
@@ -302,10 +303,9 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 				cDef = originalApply.getAncestor(SClassDeclIR.class);
 			} else
 			{
-				//Can this ever be the case for object of type SExprIR??
 				if (object.getType() instanceof AClassTypeIR)
 				{
-					String owningClassName = ((AVariableExp)((AExplicitVarExpIR) object).getSourceNode().getVdmNode()).getName().getModule();
+					String owningClassName = ((AClassTypeIR) object.getType()).getName();
 					cDef = CTransUtil.getClass(assist, owningClassName);
 				} else
 				{
