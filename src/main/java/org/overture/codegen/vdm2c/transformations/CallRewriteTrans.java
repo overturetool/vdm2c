@@ -211,7 +211,7 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 	public void caseAApplyExpIR(AApplyExpIR node) throws AnalysisException
 	{
 		SExpIR rootNode = node.getRoot();
-		SStmIR staticcall;
+		AMacroApplyExpIR staticcall;
 		List<PDefinition> tmp;
 
 		List<AMethodDeclIR> resolvedMethods;
@@ -232,15 +232,7 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 			String owningClassName = ((AVariableExp)((AExplicitVarExpIR) root).getSourceNode().getVdmNode()).getName().getModule();
 			SClassDeclIR cDef = CTransUtil.getClass(assist, owningClassName);
 			tmp = methodCollector.collectCompatibleMethods((SClassDefinition) cDef.getSourceNode().getVdmNode(), root.getName(), node.getSourceNode().getVdmNode(), methodCollector.getArgTypes(node.getSourceNode().getVdmNode()));
-			resolvedMethods = lookupVdmFunOpToMethods(tmp);
-			/*
-			//This null should be the source class of the static function.
-			replaceApplyWithMacro(root.getType(), root.getName(),
-					
-					cDef
-					
-					, node);
-					*/
+			resolvedMethods = lookupVdmFunOpToMethods(tmp);			
 					
 			String tmpVarName = assist.getInfo().getTempVarNameGen().nextVarName("TmpVar");
 			
@@ -275,8 +267,6 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 						null));
 				
 			//Call static function instead.
-			//staticcall = exp2Stm(createLocalPtrApply(resolvedMethods.get(0), cDef.getName(), node.getArgs()));
-//			staticcall = exp2Stm(createClassApply(resolvedMethods.get(0), cDef.getName(), createIdentifier(tmpVarName, null), node.getArgs()));
 			staticcall = createClassApply(resolvedMethods.get(0), cDef.getName(), createIdentifier(tmpVarName, null), node.getArgs());
 //			//Free the temporary object.  should be taken care of by other transformations.
 			
