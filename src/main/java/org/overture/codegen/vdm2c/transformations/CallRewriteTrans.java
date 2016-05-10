@@ -223,19 +223,25 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 		} else if (rootNode instanceof AExplicitVarExpIR)
 		{
 			AExplicitVarExpIR root = (AExplicitVarExpIR) rootNode;
+			
+			String owningClassName = ((AVariableExp)((AExplicitVarExpIR) root).getSourceNode().getVdmNode()).getName().getModule();
+			SClassDeclIR cDef = CTransUtil.getClass(assist, owningClassName);
+			
 			//This null should be the source class of the static function.
 			replaceApplyWithMacro(root.getType(), root.getName(),
 					
-					rootNode
+					node
 					
 					, node);
 		}
 	}
 
-	void replaceApplyWithMacro(STypeIR type, String callName, SExpIR object,
-			AApplyExpIR originalApply) throws AnalysisException
+	void replaceApplyWithMacro(	STypeIR applyType,
+								String callName,
+								SExpIR object,
+								AApplyExpIR originalApply) throws AnalysisException
 	{
-		if (type instanceof AMethodTypeIR)
+		if (applyType instanceof AMethodTypeIR)
 		{
 			// this is a call
 			String name = callName;
@@ -246,12 +252,11 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 				cDef = originalApply.getAncestor(SClassDeclIR.class);
 			} else
 			{
-//				if (object.getType() instanceof AClassTypeIR)
-				if (object instanceof AExplicitVarExpIR)
+				if (object.getType() instanceof AClassTypeIR)
 				{
 //					String owningClassName = ((AExplicitVarExpIR) object.getType()).getName();
-					String owningClassName = ((AVariableExp)((AExplicitVarExpIR) object).getSourceNode().getVdmNode()).getName().getModule();
-					cDef = CTransUtil.getClass(assist, owningClassName);
+//					String owningClassName = ((AVariableExp)((AExplicitVarExpIR) object).getSourceNode().getVdmNode()).getName().getModule();
+//					cDef = CTransUtil.getClass(assist, owningClassName);
 				} else
 				{
 					logger.error("unable to obtain class type for call: {}", originalApply);
@@ -293,7 +298,7 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 			{
 				apply.getArgs().get(i).apply(THIS);
 			}
-		} else if (type instanceof ASeqSeqTypeIR)
+		} else if (applyType instanceof ASeqSeqTypeIR)
 		{
 			// sequence index
 			AApplyExpIR seqIndexApply = newApply("vdmSeqIndex", originalApply.getRoot());
