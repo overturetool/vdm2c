@@ -211,6 +211,11 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 	public void caseAApplyExpIR(AApplyExpIR node) throws AnalysisException
 	{
 		SExpIR rootNode = node.getRoot();
+		SStmIR staticcall;
+		List<PDefinition> tmp;
+
+		List<AMethodDeclIR> resolvedMethods;
+		
 		if (rootNode instanceof AIdentifierVarExpIR)
 		{
 			AIdentifierVarExpIR root = (AIdentifierVarExpIR) rootNode;
@@ -226,16 +231,70 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 			
 			String owningClassName = ((AVariableExp)((AExplicitVarExpIR) root).getSourceNode().getVdmNode()).getName().getModule();
 			SClassDeclIR cDef = CTransUtil.getClass(assist, owningClassName);
-			
+			tmp = methodCollector.collectCompatibleMethods((SClassDefinition) cDef.getSourceNode().getVdmNode(), root.getName(), node.getSourceNode().getVdmNode(), methodCollector.getArgTypes(node.getSourceNode().getVdmNode()));
+			resolvedMethods = lookupVdmFunOpToMethods(tmp);
+			/*
 			//This null should be the source class of the static function.
 			replaceApplyWithMacro(root.getType(), root.getName(),
 					
-					node
+					cDef
 					
 					, node);
+					*/
+					
+			String tmpVarName = assist.getInfo().getTempVarNameGen().nextVarName("TmpVar");
+			
+//			//Declare and initialize temporary object for class containing static method in static init function.
+			AMethodDeclIR constr = new AMethodDeclIR();
+			AMethodDeclIR enclosing = new AMethodDeclIR();
+			org.overture.codegen.ir.INode tmpnode = node;
+			
+			//Find the constructor to call, get its name.
+			for (AMethodDeclIR method : cDef.getMethods())
+			{
+				if (method.getIsConstructor())
+				{
+					constr = method;
+					break;
+				}
+			}
+
+			//Find enclosing method of the static call.
+			//Handle case of static call outside of method.
+			while(!(tmpnode instanceof AMethodDeclIR))
+			{
+				tmpnode = tmpnode.parent();
+			}
+			enclosing = (AMethodDeclIR)tmpnode;
+			
+			//Handle case where body is not a block, but just a single statement.
+			((ABlockStmIR)enclosing.getBody()).getLocalDefs().add(newDeclarationAssignment(
+						tmpVarName,
+						newTvpType(),
+						newApply(NameMangler.mangle(constr), new ANullExpIR()),
+						null));
+				
+			//Call static function instead.
+			//staticcall = exp2Stm(createLocalPtrApply(resolvedMethods.get(0), cDef.getName(), node.getArgs()));
+//			staticcall = exp2Stm(createClassApply(resolvedMethods.get(0), cDef.getName(), createIdentifier(tmpVarName, null), node.getArgs()));
+			staticcall = createClassApply(resolvedMethods.get(0), cDef.getName(), createIdentifier(tmpVarName, null), node.getArgs());
+//			//Free the temporary object.  should be taken care of by other transformations.
+			
+			//replace node.
+			staticcall.setSourceNode(node.getSourceNode());
+			assist.replaceNodeWith(node, staticcall);		
+					
 		}
 	}
 
+	/**This was created not with static calls in mind.
+	 * 
+	 * @param applyType
+	 * @param callName
+	 * @param object
+	 * @param originalApply
+	 * @throws AnalysisException
+	 */
 	void replaceApplyWithMacro(	STypeIR applyType,
 								String callName,
 								SExpIR object,
@@ -247,16 +306,17 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 			String name = callName;
 			SClassDeclIR cDef = null;
 
+			//Applied function is inside the current class.
 			if (object == null)
 			{
 				cDef = originalApply.getAncestor(SClassDeclIR.class);
 			} else
 			{
+				//Can this ever be the case for object of type SExprIR??
 				if (object.getType() instanceof AClassTypeIR)
 				{
-//					String owningClassName = ((AExplicitVarExpIR) object.getType()).getName();
-//					String owningClassName = ((AVariableExp)((AExplicitVarExpIR) object).getSourceNode().getVdmNode()).getName().getModule();
-//					cDef = CTransUtil.getClass(assist, owningClassName);
+					String owningClassName = ((AVariableExp)((AExplicitVarExpIR) object).getSourceNode().getVdmNode()).getName().getModule();
+					cDef = CTransUtil.getClass(assist, owningClassName);
 				} else
 				{
 					logger.error("unable to obtain class type for call: {}", originalApply);
