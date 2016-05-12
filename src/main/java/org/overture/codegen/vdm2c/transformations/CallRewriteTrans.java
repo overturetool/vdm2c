@@ -189,8 +189,7 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 			{
 				for (AMethodDeclIR m : cgClass.getMethods())
 				{
-					//if (!m.getIsConstructor() && m.getSourceNode() != null && m.getSourceNode().getVdmNode() == def)
-					//Do not need to check whether a constructor is being called because Overture blocks only allows constructors to call constructors.
+					//Do not need to check whether a constructor is being called because Overture only allows constructors to call constructors.
 					if (m.getSourceNode() != null && m.getSourceNode().getVdmNode() == def)
 					{
 						methods.add(m);
@@ -211,8 +210,6 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 	public void caseAApplyExpIR(AApplyExpIR node) throws AnalysisException
 	{
 		SExpIR rootNode = node.getRoot();
-		AMacroApplyExpIR staticcall;
-		List<PDefinition> tmp;
 
 		List<AMethodDeclIR> resolvedMethods;
 		
@@ -227,16 +224,19 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 			replaceNonStaticApplyWithMacro(field.getType(), field.getMemberName(), field.getObject(), node);
 		} else if (rootNode instanceof AExplicitVarExpIR)
 		{
+			//This is very similar to the static case for methods.  Refactor both out into functions.
 			AExplicitVarExpIR root = (AExplicitVarExpIR) rootNode;
-			
+			AMacroApplyExpIR staticcall;
+			List<PDefinition> tmp;
 			String owningClassName = ((AVariableExp)((AExplicitVarExpIR) root).getSourceNode().getVdmNode()).getName().getModule();
 			SClassDeclIR cDef = CTransUtil.getClass(assist, owningClassName);
+			
 			tmp = methodCollector.collectCompatibleMethods((SClassDefinition) cDef.getSourceNode().getVdmNode(), root.getName(), node.getSourceNode().getVdmNode(), methodCollector.getArgTypes(node.getSourceNode().getVdmNode()));
 			resolvedMethods = lookupVdmFunOpToMethods(tmp);			
 					
 			String tmpVarName = assist.getInfo().getTempVarNameGen().nextVarName("TmpVar");
 			
-//			//Declare and initialize temporary object for class containing static method in static init function.
+			//Declare and initialize temporary object for class containing static method in static init function.
 			AMethodDeclIR constr = new AMethodDeclIR();
 			AMethodDeclIR enclosing = new AMethodDeclIR();
 			org.overture.codegen.ir.INode tmpnode = node;
@@ -255,6 +255,7 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 			//Handle case of static call outside of method.
 			while(!(tmpnode instanceof AMethodDeclIR))
 			{
+				//TODO:  Something before this leaves parent node null.
 				tmpnode = tmpnode.parent();
 			}
 			enclosing = (AMethodDeclIR)tmpnode;
@@ -268,7 +269,7 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 				
 			//Call static function instead.
 			staticcall = createClassApply(resolvedMethods.get(0), cDef.getName(), createIdentifier(tmpVarName, null), node.getArgs());
-//			//Free the temporary object.  should be taken care of by other transformations.
+			//Free the temporary object.  should be taken care of by other transformations.
 			
 			//replace node.
 			staticcall.setSourceNode(node.getSourceNode());
