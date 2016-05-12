@@ -156,14 +156,14 @@ the manifests, though.
 
 	<repositories>
 		<repository>
-			<id>eclipse-luna</id>
+			<id>eclipse-mars</id>
 			<layout>p2</layout>
-			<url>http://download.eclipse.org/releases/luna</url>
+			<url>http://download.eclipse.org/releases/mars</url>
 		</repository>
 
- <repository>
+ 	<repository>
       <id>overture.au.dk Eclipse P2 repo for overture RELEASE</id>
-      <url>http://dl.bintray.com/overturetool/overturetool/</url>
+      <url>http://dl.bintray.com/overturetool/overturetool-development</url>
       <layout>p2</layout>
     </repository>
 	
