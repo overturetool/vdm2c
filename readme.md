@@ -40,3 +40,4 @@ https://marketplace.eclipse.org/content/veloeclipse
 # Transformation Rules
 
 All nodes that is shared between VDM and C must have a C plain C template. This means it **cannot** use the VDM library for code generation.
+
