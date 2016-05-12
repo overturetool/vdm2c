@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature id="org.overturetool.vdm2c.ide.features.cgen">
+      <category name="org.overturetool.vdm2c.ide.id"/>
+   </feature>
+   <category-def name="org.overturetool.vdm2c.ide.id" label="Overture C Code Generator">
+      <description>
+         This feature adds the VDM 2 C code generator to the Overture IDE
+      </description>
+   </category-def>
+</site>
