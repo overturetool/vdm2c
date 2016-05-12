@@ -3,36 +3,15 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.overturetool.core</groupId>
-		<artifactId>codegen</artifactId>
-		<version><!--Replaceable: Main Version-->2.3.1-SNAPSHOT</version>
+		<groupId>org.overturetool.vdm2c</groupId>
+		<artifactId>core</artifactId>
+		 <version>0.0.1-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
-	<groupId>org.overturetool.core.codegen</groupId>
+	<groupId>org.overturetool.vdm2c.core</groupId>
 	<artifactId>vdm2c</artifactId>
 	<name>The C Code Generator</name>
-
-
-	<repositories>
-		<repository>
-			<id>vdm2c.overture.au.dk</id>
-			<name>vdm2c.overture.au.dk-releases</name>
-			<releases>
-				<enabled>false</enabled>
-				<updatePolicy>daily</updatePolicy>
-				<checksumPolicy>warn</checksumPolicy>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>always</updatePolicy>
-				<checksumPolicy>warn</checksumPolicy>
-			</snapshots>
-			<url>http://overture.au.dk/artifactory/overture-development-vdm2c</url>
-			<layout>default</layout>
-		</repository>
-	</repositories>
-
 
 	<dependencies>
 		<dependency>
@@ -43,27 +22,27 @@
 		<dependency>
 			<groupId>org.overturetool.core</groupId>
 			<artifactId>typechecker</artifactId>
-			<version>${project.version}</version>
+			<version>${overture.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.overturetool.core.codegen</groupId>
 			<artifactId>platform</artifactId>
-			<version>${project.version}</version>
+			<version>${overture.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.overturetool.core.codegen</groupId>
 			<artifactId>ir</artifactId>
-			<version>${project.version}</version>
+			<version>${overture.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.overturetool.core</groupId>
 			<artifactId>testframework</artifactId>
-			<version>${project.version}</version>
+			<version>${overture.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.overturetool.core.testing</groupId>
 			<artifactId>framework</artifactId>
-			<version>${project.version}</version>
+			<version>${overture.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
