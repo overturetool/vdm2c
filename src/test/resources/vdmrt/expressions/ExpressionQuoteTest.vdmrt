@@ -1,0 +1,8 @@
+class ExpressionQuoteTest is subclass of TestCase,ExpressionQuote
+
+operations
+
+public testquoteComparison : () ==>()
+testquoteComparison()== assertTrue(op(<Q1>) = <Q2>);
+
+end ExpressionQuoteTest
