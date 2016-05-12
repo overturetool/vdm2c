@@ -1,0 +1,34 @@
+class ClassFun
+
+functions
+
+public static fn: () -> bool
+fn()== true;
+end ClassFun
+
+
+
+class ClassFunCall
+
+functions
+	--public fn : () -> bool
+	--fn() == true;
+	--Defining a fn here overrides the outer one (wrongly)
+	--and the call gets generated correctly.
+	
+	public localfn : () -> bool
+	localfn() == ClassFun`fn();
+
+operations
+	
+	
+	public op:  () ==> bool
+	op() ==	ClassFun`fn();
+end ClassFunCall
+
+--Check the generated code for the above and determine what
+--it means in each context.  Because the case is 
+--caseAApplyExpIR i expected the function one to work, because
+--that should be when it's an expression, but it's the 
+--operation that works.  In the case of the function it does
+--not match the case override.

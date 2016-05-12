@@ -12,6 +12,7 @@ import java.util.Vector;
 
 import org.overture.ast.definitions.PDefinition;
 import org.overture.ast.definitions.SClassDefinition;
+import org.overture.ast.expressions.AVariableExp;
 import org.overture.ast.node.INode;
 import org.overture.ast.types.AClassType;
 import org.overture.cgc.extast.analysis.DepthFirstAnalysisCAdaptor;
@@ -24,6 +25,7 @@ import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.declarations.AMethodDeclIR;
 import org.overture.codegen.ir.declarations.SClassDeclIR;
 import org.overture.codegen.ir.expressions.AApplyExpIR;
+import org.overture.codegen.ir.expressions.AExplicitVarExpIR;
 import org.overture.codegen.ir.expressions.AFieldExpIR;
 import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
 import org.overture.codegen.ir.expressions.ANullExpIR;
@@ -60,7 +62,7 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 	{
 		this.assist = assist;
 	}
-
+	
 	@Override
 	public void caseAPlainCallStmIR(APlainCallStmIR node)
 			throws AnalysisException
@@ -88,7 +90,6 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 			String tmpVarName = assist.getInfo().getTempVarNameGen().nextVarName("TmpVar");
 			
 //			//Declare and initialize temporary object for class containing static method in static init function.
-			String a = node.getClassType().toString();
 			AMethodDeclIR constr = new AMethodDeclIR();
 			AMethodDeclIR enclosing = new AMethodDeclIR();
 			org.overture.codegen.ir.INode tmpnode = node;
@@ -188,8 +189,7 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 			{
 				for (AMethodDeclIR m : cgClass.getMethods())
 				{
-					//if (!m.getIsConstructor() && m.getSourceNode() != null && m.getSourceNode().getVdmNode() == def)
-					//Do not need to check whether a constructor is being called because Overture blocks only allows constructors to call constructors.
+					//Do not need to check whether a constructor is being called because Overture only allows constructors to call constructors.
 					if (m.getSourceNode() != null && m.getSourceNode().getVdmNode() == def)
 					{
 						methods.add(m);
@@ -210,27 +210,95 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 	public void caseAApplyExpIR(AApplyExpIR node) throws AnalysisException
 	{
 		SExpIR rootNode = node.getRoot();
+
+		List<AMethodDeclIR> resolvedMethods;
+		
 		if (rootNode instanceof AIdentifierVarExpIR)
 		{
 			AIdentifierVarExpIR root = (AIdentifierVarExpIR) rootNode;
-			replaceApplyWithMacro(root.getType(), root.getName(), null, node);
+			replaceNonStaticApplyWithMacro(root.getType(), root.getName(), null, node);
 
 		} else if (rootNode instanceof AFieldExpIR)
 		{
 			AFieldExpIR field = (AFieldExpIR) rootNode;
-			replaceApplyWithMacro(field.getType(), field.getMemberName(), field.getObject(), node);
+			replaceNonStaticApplyWithMacro(field.getType(), field.getMemberName(), field.getObject(), node);
+		} else if (rootNode instanceof AExplicitVarExpIR)
+		{
+			//This is very similar to the static case for methods.  Refactor both out into functions.
+			AExplicitVarExpIR root = (AExplicitVarExpIR) rootNode;
+			AMacroApplyExpIR staticcall;
+			List<PDefinition> tmp;
+			String owningClassName = ((AVariableExp)((AExplicitVarExpIR) root).getSourceNode().getVdmNode()).getName().getModule();
+			SClassDeclIR cDef = CTransUtil.getClass(assist, owningClassName);
+			
+			tmp = methodCollector.collectCompatibleMethods((SClassDefinition) cDef.getSourceNode().getVdmNode(), root.getName(), node.getSourceNode().getVdmNode(), methodCollector.getArgTypes(node.getSourceNode().getVdmNode()));
+			resolvedMethods = lookupVdmFunOpToMethods(tmp);			
+					
+			String tmpVarName = assist.getInfo().getTempVarNameGen().nextVarName("TmpVar");
+			
+			//Declare and initialize temporary object for class containing static method in static init function.
+			AMethodDeclIR constr = new AMethodDeclIR();
+			AMethodDeclIR enclosing = new AMethodDeclIR();
+			org.overture.codegen.ir.INode tmpnode = node;
+			
+			//Find the constructor to call, get its name.
+			for (AMethodDeclIR method : cDef.getMethods())
+			{
+				if (method.getIsConstructor())
+				{
+					constr = method;
+					break;
+				}
+			}
+
+			//Find enclosing method of the static call.
+			//Handle case of static call outside of method.
+			while(!(tmpnode instanceof AMethodDeclIR))
+			{
+				//TODO:  Something before this leaves parent node null.
+				tmpnode = tmpnode.parent();
+			}
+			enclosing = (AMethodDeclIR)tmpnode;
+			
+			//Handle case where body is not a block, but just a single statement.
+			((ABlockStmIR)enclosing.getBody()).getLocalDefs().add(newDeclarationAssignment(
+						tmpVarName,
+						newTvpType(),
+						newApply(NameMangler.mangle(constr), new ANullExpIR()),
+						null));
+				
+			//Call static function instead.
+			staticcall = createClassApply(resolvedMethods.get(0), cDef.getName(), createIdentifier(tmpVarName, null), node.getArgs());
+			//Free the temporary object.  should be taken care of by other transformations.
+			
+			//replace node.
+			staticcall.setSourceNode(node.getSourceNode());
+			assist.replaceNodeWith(node, staticcall);		
+					
 		}
 	}
 
-	void replaceApplyWithMacro(STypeIR type, String callName, SExpIR object,
-			AApplyExpIR originalApply) throws AnalysisException
+	/**This was created not with static calls in mind.
+	 * 
+	 * @param applyType
+	 * @param callName
+	 * @param object
+	 * @param originalApply
+	 * @throws AnalysisException
+	 */
+	void replaceNonStaticApplyWithMacro(
+								STypeIR applyType,
+								String callName,
+								SExpIR object,
+								AApplyExpIR originalApply) throws AnalysisException
 	{
-		if (type instanceof AMethodTypeIR)
+		if (applyType instanceof AMethodTypeIR)
 		{
 			// this is a call
 			String name = callName;
 			SClassDeclIR cDef = null;
 
+			//Applied function is inside the current class.
 			if (object == null)
 			{
 				cDef = originalApply.getAncestor(SClassDeclIR.class);
@@ -249,6 +317,8 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 			INode vdmNode = originalApply.getSourceNode().getVdmNode();
 			List<PDefinition> tmp = methodCollector.collectCompatibleMethods((SClassDefinition) cDef.getSourceNode().getVdmNode(), name, vdmNode, methodCollector.getArgTypes(vdmNode));
 			List<AMethodDeclIR> resolvedMethods = lookupVdmFunOpToMethods(tmp);
+			
+			//This is the error.
 			if (resolvedMethods.isEmpty())
 			{
 				logger.error("Generator error unable to find method for: {}", originalApply);
@@ -279,7 +349,7 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 			{
 				apply.getArgs().get(i).apply(THIS);
 			}
-		} else if (type instanceof ASeqSeqTypeIR)
+		} else if (applyType instanceof ASeqSeqTypeIR)
 		{
 			// sequence index
 			AApplyExpIR seqIndexApply = newApply("vdmSeqIndex", originalApply.getRoot());
@@ -297,9 +367,8 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 				arg.apply(THIS);
 			}
 		}
-	}
-
-
+	}	
+	
 	@Override
 	public void caseACallObjectExpStmIR(ACallObjectExpStmIR node)
 			throws AnalysisException

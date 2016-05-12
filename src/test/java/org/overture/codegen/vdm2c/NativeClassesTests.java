@@ -129,6 +129,15 @@ public class NativeClassesTests extends NativeTestBase
 	
 	@ConditionalIgnore(condition = HasVdmLib.class)
 	@Test
+	public void ClassFunCall() throws IOException,
+			InterruptedException, CMakeGenerateException
+	{
+		generate(getPath("classes/ClassFun.vdmrt"));
+		compileAndTest(getTestCppFile("classes/ClassStaticFun_Tests.cpp"));
+	}
+	
+	@ConditionalIgnore(condition = HasVdmLib.class)
+	@Test
 	public void ClassOpOpCall() throws IOException,
 			InterruptedException, CMakeGenerateException
 	{
@@ -171,6 +180,7 @@ public class NativeClassesTests extends NativeTestBase
 		generate(getPath("classes/ClassOpOverride.vdmrt"));
 		compileAndTest();
 	}
+	
 	@ConditionalIgnore(condition = HasVdmLib.class)
 	@Test
 	public void ClassOpOverrideMiddle() throws IOException,
@@ -187,7 +197,5 @@ public class NativeClassesTests extends NativeTestBase
 	{
 		generate(getPath("classes/ClassValueInheritance.vdmrt"));
 		compileAndTest();
-	}
-	
-	
+	}	
 }
