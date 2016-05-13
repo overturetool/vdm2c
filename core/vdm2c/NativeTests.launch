@@ -14,5 +14,5 @@
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="org.overture.codegen.vdm2c.NativeTests"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="vdm2c"/>
 <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.m2e.launchconfig.sourcepathProvider"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-DVDM_LIB_PATH=&quot;/home/mot/Overture/vdm2c-exploration/c-examples/lib&quot;&#10;-Dvdm2c.external.tests.path=&quot;/home/mot/Desktop/Crescendo Examples/LawnMover&quot;"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-DVDM_LIB_PATH=&quot;/home/mot/Overture/vdm2c-exploration/c-examples/lib&quot;&#10;-Dvdm2c.external.tests.path=&quot;/home/mot/Desktop/Lawnmower/LawnMover&quot;"/>
 </launchConfiguration>
