@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.overturetool.vdm2c</groupId>
 		<artifactId>core</artifactId>
-		 <version>0.0.1-SNAPSHOT</version>
+		<version>0.0.1-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
@@ -99,41 +99,7 @@
 				</configuration>
 			</plugin>
 
-			<plugin>
-				<groupId>org.jacoco</groupId>
-				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.7.5.201505241946</version>
-
-				<configuration>
-					<destFile>${basedir}/target/coverage-reports/jacoco-unit.exec</destFile>
-					<dataFile>${basedir}/target/coverage-reports/jacoco-unit.exec</dataFile>
-					<excludes>
-        <exclude>org/overture/cgc/extast/analysis/**/*.*</exclude>
-				<exclude>org/overture/codegen/vdm2c/extast/expressions/**/*</exclude>
-				<exclude>org/overture/codegen/vdm2c/extast/declarations/**/*</exclude>
-				<exclude>org/overture/codegen/vdm2c/extast/statements/**/*</exclude>
-				<exclude>org/overture/cgc/extast/node/**/*</exclude>
-				<exclude>org/overture/codegen/vdm2c/ast/preview/**/*</exclude>
 				
-    </excludes>
-				</configuration>
-				<executions>
-					<execution>
-						<id>jacoco-initialize</id>
-						<goals>
-							<goal>prepare-agent</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>jacoco-site</id>
-						<phase>package</phase>
-						<goals>
-							<goal>report</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			
 			<plugin>
 				<groupId>org.overturetool.astcreator</groupId>
 				<artifactId>astcreator-plugin</artifactId>
