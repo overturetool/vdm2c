@@ -16,9 +16,7 @@ import org.overture.ast.expressions.AVariableExp;
 import org.overture.ast.node.INode;
 import org.overture.ast.types.AClassType;
 import org.overture.cgc.extast.analysis.DepthFirstAnalysisCAdaptor;
-import org.overture.cgc.extast.node.SCExpExpBase;
 import org.overture.codegen.ir.SExpIR;
-import org.overture.codegen.ir.SExpIRBase;
 import org.overture.codegen.ir.SStmIR;
 import org.overture.codegen.ir.STypeIR;
 import org.overture.codegen.ir.analysis.AnalysisException;
@@ -29,20 +27,17 @@ import org.overture.codegen.ir.expressions.AExplicitVarExpIR;
 import org.overture.codegen.ir.expressions.AFieldExpIR;
 import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
 import org.overture.codegen.ir.expressions.ANullExpIR;
+import org.overture.codegen.ir.statements.ABlockStmIR;
 import org.overture.codegen.ir.statements.ACallObjectExpStmIR;
 import org.overture.codegen.ir.statements.ACallObjectStmIR;
 import org.overture.codegen.ir.statements.APlainCallStmIR;
-import org.overture.codegen.ir.statements.ABlockStmIR;
 import org.overture.codegen.ir.types.AClassTypeIR;
 import org.overture.codegen.ir.types.AMethodTypeIR;
 import org.overture.codegen.ir.types.ASeqSeqTypeIR;
-import org.overture.codegen.trans.AssignStmTrans;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
-import org.overture.codegen.vdm2c.extast.expressions.ACExpIR;
 import org.overture.codegen.vdm2c.extast.expressions.AMacroApplyExpIR;
 import org.overture.codegen.vdm2c.utils.CTransUtil;
 import org.overture.codegen.vdm2c.utils.NameMangler;
-import org.overture.interpreter.messages.Console;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -111,7 +106,6 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 				tmpnode = tmpnode.parent();
 			}
 			enclosing = (AMethodDeclIR)tmpnode;
-			
 			//Handle case where body is not a block, but just a single statement.
 			((ABlockStmIR)enclosing.getBody()).getLocalDefs().add(newDeclarationAssignment(
 						tmpVarName,
@@ -339,7 +333,7 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 			assist.replaceNodeWith(originalApply, apply);
 
 			//if object call then apply transformation to object too
-			if(object!=null)
+			if(object != null)
 			{
 				apply.getArgs().get(2).apply(THIS);
 			}

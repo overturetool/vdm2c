@@ -175,7 +175,7 @@ public class CTransSeries
 		transformations.add(new IgnoreRenamingTrans(transAssistant));
 		transformations.add(new ForLoopTrans(transAssistant));
 		transformations.add(new IfTrans(transAssistant));
-		transformations.add(new MapSeqUpdateRewriteTrans(transAssistant));
+//		transformations.add(new MapSeqUpdateRewriteTrans(transAssistant));
 		transformations.add(new SubClassResponsibilityMethodsTrans(transAssistant));
 		
 		// ExtractEmbeddedCreationsTrans requires that blocks doesn't have any local decelerations but that all is statements
@@ -191,7 +191,7 @@ public class CTransSeries
 		// transformations.add(new VisualizeIRAST(transAssistant));
 		if(System.getProperty("disable.memmanagement") == null)
 		{			
-			transformations.add(new FreeLocalBlockDeclsTrans(transAssistant));
+//			transformations.add(new FreeLocalBlockDeclsTrans(transAssistant));
 		}
 
 		return transformations;

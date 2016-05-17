@@ -10,19 +10,31 @@ import org.overture.test.framework.ConditionalIgnoreMethodRule.ConditionalIgnore
 public class ExternalTests extends NativeTestBase
 {
 	final static String ExternalTestsPathProperty = "vdm2c.external.tests.path";
+	final static String SingleExternalTestPathProperty = "vdm2c.external.tests.single.path";
 
 	@ConditionalIgnore(condition = HasVdmLib.class)
 	@Test
 	public void externalTest() throws IOException, InterruptedException,
-			CMakeGenerateException
+	CMakeGenerateException
 	{
 		String path = System.getProperty(ExternalTestsPathProperty);
-		if (path == null)
+		String singletestpath = System.getProperty(SingleExternalTestPathProperty);
+		
+		if (path == null && singletestpath == null)
 			return;
 
-		String[] filePaths = getFilePaths(new File(path), vdmRtFileFilter);
-		generate(filePaths);
-		compileAndTest();
+		if(path != null)
+		{
+			String[] filePaths = getFilePaths(new File(path), vdmRtFileFilter);
+			generate(filePaths);
+			compileAndTest();
+		}
+
+		if(singletestpath != null)
+		{
+			generate(singletestpath);
+			compileAndTest();
+		}
 	}
 
 }
