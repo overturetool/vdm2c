@@ -143,12 +143,22 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 
 		AMacroApplyExpIR apply = newMacroApply(CTransUtil.CALL_FUNC_PTR, createIdentifier(thisType, null), createIdentifier(methodOwnerType, null), createIdentifier(thisArgs, null), createIdentifier(methodId, null));
 		apply.setType(method.getMethodType().getResult().clone());
-		for (SExpIR arg : linkedList)
+		
+		//The call to clone() leaves the parent field null.
+//		for (SExpIR arg : linkedList)
+//		{
+//			SExpIR arg0 = arg.clone();
+//			arg0.apply(THIS);
+//			apply.getArgs().add(arg0);
+//			apply.getArgs().add(arg);
+//		}
+		
+		for(int i = 0; i < apply.getArgs().size(); i++)
 		{
-			SExpIR arg0 = arg.clone();
-			arg0.apply(THIS);
-			apply.getArgs().add(arg0);
+			apply.getArgs().get(i).apply(THIS);
 		}
+		
+		apply.setArgs(linkedList);
 		return apply;
 	}
 
