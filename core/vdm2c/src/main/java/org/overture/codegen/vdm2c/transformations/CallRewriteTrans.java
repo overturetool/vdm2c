@@ -153,12 +153,12 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 //			apply.getArgs().add(arg);
 //		}
 		
-		for(int i = 0; i < apply.getArgs().size(); i++)
+		for(int i = 0; i < linkedList.size(); i++)
 		{
-			apply.getArgs().get(i).apply(THIS);
+			linkedList.get(i).apply(THIS);
+			apply.getArgs().add(linkedList.get(i));
 		}
 		
-		apply.setArgs(linkedList);
 		return apply;
 	}
 
