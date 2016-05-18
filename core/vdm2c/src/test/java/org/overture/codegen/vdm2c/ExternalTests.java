@@ -27,13 +27,13 @@ public class ExternalTests extends NativeTestBase
 		{
 			String[] filePaths = getFilePaths(new File(path), vdmRtFileFilter);
 			generate(filePaths);
-			compileAndTest();
+//			compileAndTest();
 		}
 
 		if(singletestpath != null)
 		{
 			generate(singletestpath);
-			compileAndTest();
+//			compileAndTest();
 		}
 	}
 
