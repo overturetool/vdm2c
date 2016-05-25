@@ -6,7 +6,9 @@
  */
 #ifndef CUSTOM_IO
 
-#include "IO.h"
+#include "TypedValue.h"
+#include "Vdm.h"
+#include "IOLib.h"
 
 
 

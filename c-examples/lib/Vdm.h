@@ -53,6 +53,6 @@
 #include "VdmProduct.h"
 #include "VdmRecord.h"
 #include "PatternBindMatch.h"
-#include "IO.h"
+#include "IOLib.h"
 
 #endif /* LIB_VDM_H_ */

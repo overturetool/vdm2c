@@ -25,7 +25,7 @@
 extern "C"
 {
 #include "lib/Vdm.h"
-#include "lib/IO.h"
+#include "lib/IOLib.h"
 #include <stdio.h>
 #include <math.h>
 }
