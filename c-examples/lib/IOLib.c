@@ -7,7 +7,7 @@
 
 #include "TypedValue.h"
 #include "Vdm.h"
-#include "IO.h"
+#include "IOLib.h"
 
 #ifndef CUSTOM_IO
 
