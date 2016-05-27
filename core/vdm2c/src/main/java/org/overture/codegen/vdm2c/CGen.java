@@ -272,7 +272,7 @@ public class CGen extends CodeGenBase
 		{
 			for (IrNodeInfo n : my_formatter.GetMergeVisitor().getUnsupportedInTargLang())
 			{
-				logger.warn("Merg reached unsupported template: {}", n);
+				logger.warn("Merge reached unsupported template: {}", n);
 			}
 
 			// throw new
