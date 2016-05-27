@@ -123,7 +123,7 @@ public class Vdm2CCommand extends AbstractHandler
 			return null;
 		}
 
-		CodeGenConsole.GetInstance().println("Starting VDM to C code generation.);"
+		CodeGenConsole.GetInstance().println("Starting VDM to C code generation.");
 		CodeGenConsole.GetInstance().println("Please note that this process does not provide the native C libraries automatically.");
 
 		Job codeGenerate = new Job("VDM to C code generation")
