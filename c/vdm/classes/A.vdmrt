@@ -1,0 +1,18 @@
+class A
+
+instance variables
+
+protected field1 : int := 4;
+--public fDub : int :=999;
+
+
+operations
+
+public calc:int*int==>real
+calc(x,y)==return x+y;
+
+
+public sum : ()==>int
+sum()==return field1;
+
+end A

@@ -91,3 +91,31 @@ generated/
 # Vim Swap Files #
 ##################
 *.swp
+
+
+
+
+# OSX
+.DS_Store
+
+# Eclipse
+.cproject
+.project
+.settings/
+
+# CMake
+
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Makefile
+cmake_install.cmake
+install_manifest.txt
+CTestTestfile.cmake
+Testing/
+Debug/
+
+# Project files
+c/c-examples/c-examples
+c/vdm/generated
+c/generator-test/generator-test

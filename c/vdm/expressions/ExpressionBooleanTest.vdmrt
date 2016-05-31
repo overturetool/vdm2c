@@ -1,0 +1,28 @@
+class ExpressionBooleanTest is subclass of TestCase,ExpressionBoolean
+operations
+
+public testnotExp : () ==>()
+testnotExp()== assertTrue(notExp());
+
+public testandExp : () ==>()
+testandExp()== assertFalse(andExp());
+
+public testorExp : () ==>()
+testorExp()== assertTrue(orExp());
+
+public testimplicationExp : () ==>()
+testimplicationExp()== assertFalse(implicationExp());
+
+public testbiimplicationExp : () ==>()
+testbiimplicationExp()== assertTrue(biimplicationExp());
+
+public testequalityExp : () ==>()
+testequalityExp()== assertTrue(equalityExp());
+
+public testinequalityExp : () ==>()
+testinequalityExp()== assertTrue(inequalityExp());
+
+
+
+
+end ExpressionBooleanTest
