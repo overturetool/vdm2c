@@ -36,12 +36,8 @@ SET(CMAKE_VERBOSE_MAKEFILE ON)
 #set(CMAKE_CXX_FLAGS_DEBUG " -O0 -g3 -Wall")
 
 
-#file(GLOB C_FILES ../c-examples/*.c ../c-examples/classes/*.c ../c-examples/lib/*.c ../c-examples/records/*.c ../c-examples/tests/*.c)
-file(GLOB C_FILES ../c-examples/*.c  ../c-examples/lib/*.c ../c-examples/tests/*.c )
-#file(GLOB CPP_FILES ../c-examples/tests/*.cpp)
+file(GLOB C_FILES ../c-examples/*.c  ../vdmclib/src/*.c ../c-examples/tests/*.c )
 
-#file(GLOB CPP_FILES ../c-examples/tests/ClassATest.cpp ../c-examples/tests/ClassCTest.cpp)
-#file(GLOB CPP_FILES tests/*.cpp)
 
 SET(EXT_C_FILES  CACHE PATH "location of external generates c files")
 
@@ -86,7 +82,7 @@ message(STATUS "C_GEN_FILES:  ${C_GEN_FILES}")
 
 add_executable(${PROJECT_NAME} ${C_FILES} ${C_GEN_FILES} ${CPP_FILES})
 
-include_directories(../c-examples/;../c-examples/lib/;${EXT_C_FILES})
+include_directories(../c-examples/;../vdmclib/src;${EXT_C_FILES})
 
 include_directories(${gtest_SOURCE_DIR}/include)
 INCLUDE_DIRECTORIES(

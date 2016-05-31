@@ -24,7 +24,7 @@
 
 extern "C"
 {
-#include "lib/Vdm.h"
+#include "Vdm.h"
 #include "classes/A.h"
 #include "classes/B.h"
 #include "classes/C.h"

@@ -10,7 +10,7 @@
 
 extern "C"
 {
-#include "lib/Vdm.h"
+#include "Vdm.h"
 #include <stdio.h>
 #include "ExpressionForLoop.h"
 #ifdef VDM_CG

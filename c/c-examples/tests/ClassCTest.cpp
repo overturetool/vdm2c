@@ -31,7 +31,7 @@
 
 extern "C"
 {
-#include "lib/Vdm.h"
+#include "Vdm.h"
 
 #include "C.h"
 #include <stdio.h>

@@ -26,7 +26,7 @@
 
 extern "C"
 {
-#include "lib/Vdm.h"
+#include "Vdm.h"
 #include "records/R1.h"
 #include "records/R1.h"
 #include <stdio.h>

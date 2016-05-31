@@ -10,11 +10,11 @@
 
 extern "C"
 {
-#include "lib/TypedValue.h"
-#include "lib/VdmSeq.h"
+#include "TypedValue.h"
+#include "VdmSeq.h"
 #include <stdio.h>
 #include "ExpressionSeq.h"
-#include "lib/VdmClass.h"
+#include "VdmClass.h"
 #ifdef VDM_CG
 #include "MethodNameMap.h"
 #endif

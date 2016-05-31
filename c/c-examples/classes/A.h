@@ -30,9 +30,7 @@
 #ifndef CLASSES_A_H_
 #define CLASSES_A_H_
 
-#include "TypedValue.h"
-#include "VdmClass.h"
-#include "VdmBasicTypes.h"
+#include "Vdm.h"
 
 #define CLASS_ID_A_ID 124
 
