@@ -50,6 +50,11 @@
 									<artifactId>vdm2c</artifactId>
 									<version>${project.version}</version>
 								</artifactItem>
+									<artifactItem>
+									<groupId>org.overturetool.vdm2c.c</groupId>
+									<artifactId>vdmclib</artifactId>
+									<version>${project.version}</version>
+								</artifactItem>
 								<artifactItem>
 									<groupId>org.apache.velocity</groupId>
 									<artifactId>velocity</artifactId>

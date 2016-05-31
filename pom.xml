@@ -41,8 +41,7 @@
 	
 
 	<modules>
-		<!--module>native-fmi</module-->
-		<!--module>java-fmi</module-->
+		<module>c</module>
 		<module>core</module>
 		
 	</modules>
