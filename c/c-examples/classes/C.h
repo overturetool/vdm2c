@@ -31,9 +31,9 @@
 #ifndef CLCSSES_C_H_
 #define CLCSSES_C_H_
 
-#include "../lib/TypedValue.h"
-#include "../lib/VdmClass.h"
-#include "../lib/VdmBasicTypes.h"
+#include "TypedValue.h"
+#include "VdmClass.h"
+#include "VdmBasicTypes.h"
 
 #define CLASS_ID_C_ID 126
 

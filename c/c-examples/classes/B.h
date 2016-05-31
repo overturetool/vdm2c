@@ -31,7 +31,7 @@
 #ifndef CLASSES_B_H_
 #define CLASSES_B_H_
 
-#include "../lib/TypedValue.h"
+#include "TypedValue.h"
 #include "A.h"
 #include "C.h"
 

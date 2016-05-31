@@ -41,6 +41,7 @@ file(GLOB CPP_FILES tests/*.cpp)
 
 add_executable(${PROJECT_NAME} ${C_FILES} ${CPP_FILES})
 
+include_directories(../vdmclib/src)
 include_directories(classes)  
 include_directories(${gtest_SOURCE_DIR}/include)
 INCLUDE_DIRECTORIES(
