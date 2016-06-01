@@ -219,6 +219,9 @@ public class Vdm2CCommand extends AbstractHandler
 //						
 //						
 						CodeGenConsole.GetInstance().println("Code generation completed successfully.");
+						CodeGenConsole.GetInstance().println("Copying native library files."); //mvn install in vdm2c and mvn package here makes this work
+						//Copy files from vdmclib.jar.
+//						copyNativeLibFiles(cCodeOutputFolder);
 //
 //					} catch (Exception e)
 //					{
@@ -261,50 +264,51 @@ public class Vdm2CCommand extends AbstractHandler
 		return null;
 	}
 
-//	private void copyNativeLibFiles(File outfolder)
-//	{
-//		try
-//		{
-//			//Locate JAR first.
-//			//String a = System.getProperty("user.dir");
-//			JarFile jar = new JarFile("../../ide/cgen/jars/vdmclib.jar");
-//			Enumeration jarentries = jar.entries();
-//
-//			while (jarentries.hasMoreElements())
-//			{
-//				JarEntry file = (JarEntry) jarentries.nextElement();
-//				File f = new File(outfolder.toString() + File.separator + file.getName());
-//				if(file.getName().contains("META"))
-//				{
-//					continue;
-//				}
-//				if (file.isDirectory())
-//				{				
-//					f.mkdir();
-//					continue;
-//				}
-//				InputStream is = jar.getInputStream(file); // get the input stream
-//				FileOutputStream fos = new java.io.FileOutputStream(f);
-//
-//				while (is.available() > 0) {  // write contents of 'is' to 'fos'
-//					fos.write(is.read());
-//				}
-//				fos.close();
-//				is.close();	
-//			}
-//			
-//			jar.close();
-//		} catch (FileNotFoundException e)
-//		{
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (IOException e)
-//		{
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//
-//	}
+	private void copyNativeLibFiles(File outfolder)
+	{
+		try
+		{
+			//Locate JAR first.
+			//String a = System.getProperty("user.dir");
+			
+			JarFile jar = new JarFile(getClass().getResource("vdmclib.jar").toString());
+			Enumeration jarentries = jar.entries();
+
+			while (jarentries.hasMoreElements())
+			{
+				JarEntry file = (JarEntry) jarentries.nextElement();
+				File f = new File(outfolder.toString() + File.separator + file.getName());
+				if(file.getName().contains("META"))
+				{
+					continue;
+				}
+				if (file.isDirectory())
+				{				
+					f.mkdir();
+					continue;
+				}
+				InputStream is = jar.getInputStream(file); // get the input stream
+				FileOutputStream fos = new java.io.FileOutputStream(f);
+
+				while (is.available() > 0) {  // write contents of 'is' to 'fos'
+					fos.write(is.read());
+				}
+				fos.close();
+				is.close();	
+			}
+			
+			jar.close();
+		} catch (FileNotFoundException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
 	
 	public IRSettings getIrSettings(final IProject project)
 	{
