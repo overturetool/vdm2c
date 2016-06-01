@@ -65,7 +65,6 @@ public class CGen extends CodeGenBase
 		CFormat my_formatter = consFormatter(statuses);
 		writeHeaders(outputFolder, statuses, my_formatter);
 		writeClasses(outputFolder, statuses, my_formatter);
-		copyNativeLibFiles(outputFolder);
 
 		/**
 		 * FIXME: PVJ: This method does not return the generated data as it should. Instead the method writes the
@@ -76,51 +75,6 @@ public class CGen extends CodeGenBase
 		data.setClasses(generated);
 
 		return data;
-	}
-
-	private void copyNativeLibFiles(File outfolder)
-	{
-		try
-		{
-			//Locate JAR first.
-			//String a = System.getProperty("user.dir");
-			JarFile jar = new JarFile("../../ide/cgen/jars/vdmclib.jar");
-			Enumeration jarentries = jar.entries();
-
-			while (jarentries.hasMoreElements())
-			{
-				JarEntry file = (JarEntry) jarentries.nextElement();
-				File f = new File(outfolder.toString() + File.separator + file.getName());
-				if(file.getName().contains("META"))
-				{
-					continue;
-				}
-				if (file.isDirectory())
-				{				
-					f.mkdir();
-					continue;
-				}
-				InputStream is = jar.getInputStream(file); // get the input stream
-				FileOutputStream fos = new java.io.FileOutputStream(f);
-
-				while (is.available() > 0) {  // write contents of 'is' to 'fos'
-					fos.write(is.read());
-				}
-				fos.close();
-				is.close();	
-			}
-			
-			jar.close();
-		} catch (FileNotFoundException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
 	}
 
 	private List<IRStatus<PIR>> replaceSystemClassWithClass(
