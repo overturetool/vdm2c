@@ -83,15 +83,15 @@ public class CGen extends CodeGenBase
 		try
 		{
 			//Locate JAR first.
-			
-			JarFile jar = new JarFile("");
+			//String a = System.getProperty("user.dir");
+			JarFile jar = new JarFile("../../ide/cgen/jars/vdmclib.jar");
 			Enumeration jarentries = jar.entries();
 
 			while (jarentries.hasMoreElements())
 			{
-				JarEntry file = (java.util.jar.JarEntry) jarentries.nextElement();
-				File f = new File(outfolder.toString() + java.io.File.separator + file.getName());
-				if(file.toString().contains("META"))
+				JarEntry file = (JarEntry) jarentries.nextElement();
+				File f = new File(outfolder.toString() + File.separator + file.getName());
+				if(file.getName().contains("META"))
 				{
 					continue;
 				}
@@ -108,8 +108,9 @@ public class CGen extends CodeGenBase
 				}
 				fos.close();
 				is.close();	
-				jar.close();
 			}
+			
+			jar.close();
 		} catch (FileNotFoundException e)
 		{
 			// TODO Auto-generated catch block
