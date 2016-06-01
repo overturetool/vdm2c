@@ -9,6 +9,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.net.URL;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
@@ -81,7 +82,9 @@ public class CGen extends CodeGenBase
 	{
 		try
 		{
-			JarFile jar = new JarFile("/home/mot/Overture/vdm2c/ide/cgen/jars/vdmclib.jar");
+			//Locate JAR first.
+			
+			JarFile jar = new JarFile("");
 			Enumeration jarentries = jar.entries();
 
 			while (jarentries.hasMoreElements())
@@ -104,7 +107,8 @@ public class CGen extends CodeGenBase
 					fos.write(is.read());
 				}
 				fos.close();
-				is.close();			
+				is.close();	
+				jar.close();
 			}
 		} catch (FileNotFoundException e)
 		{
