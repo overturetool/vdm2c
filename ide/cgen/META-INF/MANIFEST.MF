@@ -31,6 +31,7 @@ Bundle-ClassPath: .,
  jars/commons-lang.jar,
  jars/jalopy.jar,
  jars/velocity.jar,
-  jars/slf4j-api.jar,
+ jars/slf4j-api.jar,
  jars/log4j.jar,
- jars/slf4j-log4j12.jar
+ jars/slf4j-log4j12.jar,
+ jars/vdmclib.jar

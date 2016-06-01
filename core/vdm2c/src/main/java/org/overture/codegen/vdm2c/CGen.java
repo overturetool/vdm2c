@@ -2,12 +2,20 @@ package org.overture.codegen.vdm2c;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringWriter;
+import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+import java.util.jar.JarInputStream;
 
 import org.apache.commons.lang.time.StopWatch;
 import org.overture.ast.analysis.AnalysisException;
@@ -56,6 +64,7 @@ public class CGen extends CodeGenBase
 		CFormat my_formatter = consFormatter(statuses);
 		writeHeaders(outputFolder, statuses, my_formatter);
 		writeClasses(outputFolder, statuses, my_formatter);
+		copyNativeLibFiles(outputFolder);
 
 		/**
 		 * FIXME: PVJ: This method does not return the generated data as it should. Instead the method writes the
@@ -66,6 +75,47 @@ public class CGen extends CodeGenBase
 		data.setClasses(generated);
 
 		return data;
+	}
+
+	private void copyNativeLibFiles(File outfolder)
+	{
+		try
+		{
+			JarFile jar = new JarFile("/home/mot/Overture/vdm2c/ide/cgen/jars/vdmclib.jar");
+			Enumeration jarentries = jar.entries();
+
+			while (jarentries.hasMoreElements())
+			{
+				JarEntry file = (java.util.jar.JarEntry) jarentries.nextElement();
+				File f = new File(outfolder.toString() + java.io.File.separator + file.getName());
+				if(file.toString().contains("META"))
+				{
+					continue;
+				}
+				if (file.isDirectory())
+				{				
+					f.mkdir();
+					continue;
+				}
+				InputStream is = jar.getInputStream(file); // get the input stream
+				FileOutputStream fos = new java.io.FileOutputStream(f);
+
+				while (is.available() > 0) {  // write contents of 'is' to 'fos'
+					fos.write(is.read());
+				}
+				fos.close();
+				is.close();			
+			}
+		} catch (FileNotFoundException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 
 	private List<IRStatus<PIR>> replaceSystemClassWithClass(
@@ -231,8 +281,8 @@ public class CGen extends CodeGenBase
 
 	private void writeFile(INode node, String name, String extension,
 			CFormat my_formatter, File output_dir)
-			throws org.overture.codegen.ir.analysis.AnalysisException,
-			IOException
+					throws org.overture.codegen.ir.analysis.AnalysisException,
+					IOException
 	{
 		StringWriter writer = emitCode(node, my_formatter);
 
@@ -249,7 +299,7 @@ public class CGen extends CodeGenBase
 		{
 			formatter.format(file);
 		}
-		
+
 	}
 
 	private StringWriter emitCode(INode node, CFormat my_formatter)
