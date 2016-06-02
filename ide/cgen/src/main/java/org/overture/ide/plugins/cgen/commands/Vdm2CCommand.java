@@ -22,15 +22,11 @@
 package org.overture.ide.plugins.cgen.commands;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
-import java.nio.file.DirectoryStream;
-import java.util.Enumeration;
 import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
+import java.util.jar.JarInputStream;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -265,93 +261,51 @@ public class Vdm2CCommand extends AbstractHandler
 
 	private void copyNativeLibFiles(File outfolder)
 	{
-		//		try
-		//		{
-		//Locate JAR first.
-		JarFile jar = null;
+		File outputFile = null;
+		InputStream jarfile = null;
+		FileOutputStream fos = null;
+		JarInputStream jarstream = null;
+		JarEntry filejarentry = null;
 
 		try 
 		{
-			InputStream jarfile = Vdm2CCommand.class.getClassLoader().getResourceAsStream("jars/vdmclib.jar");
-			FileOutputStream outjarfile = new FileOutputStream("vdmclib.jar");
-			while(jarfile.available() > 0)
+			jarfile = Vdm2CCommand.class.getClassLoader().getResourceAsStream("jars/vdmclib.jar");
+			jarstream = new JarInputStream(jarfile);
+			filejarentry = jarstream.getNextJarEntry();
+
+			//Simply step through the JAR containing the library files and extract only the code files.
+			//These are copied to the source output folder.
+			while (filejarentry != null)
 			{
-				outjarfile.write(jarfile.read());
-			}
+				outputFile = new File(outfolder.toString() + File.separator + ".." + File.separator + filejarentry.getName());
 
-			outjarfile.close();
-			
-			jar = new JarFile("vdmclib.jar");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		Enumeration jarentries = jar.entries();
-
-		while (jarentries.hasMoreElements())
-		{
-			JarEntry file = (JarEntry) jarentries.nextElement();
-			File f = new File(outfolder.toString() + File.separator + ".." + File.separator + file.getName());
-			if(file.getName().contains("META"))
-			{
-				continue;
-			}
-			if (file.isDirectory())
-			{				
-				f.mkdir();
-				continue;
-			}
-			InputStream is = null;
-			try {
-				is = jar.getInputStream(file);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} // get the input stream
-			FileOutputStream fos = null;
-			try {
-				fos = new java.io.FileOutputStream(f);
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-			try {
-				while (is.available() > 0) 
-				{  // write contents of 'is' to 'fos'
-					try {
-						fos.write(is.read());
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+				if(filejarentry.getName().contains("META"))
+				{
+					filejarentry = jarstream.getNextJarEntry();
+					continue;
 				}
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			try {
+				if (filejarentry.isDirectory())
+				{				
+					outputFile.mkdir();
+					filejarentry = jarstream.getNextJarEntry();
+					continue;
+				}
+
+				fos = new java.io.FileOutputStream(outputFile);
+
+				while (jarstream.available() > 0) 
+				{
+					fos.write(jarstream.read());
+				}
+
+				filejarentry = jarstream.getNextJarEntry();
+				
 				fos.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
-			try {
-				is.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}	
-		}
-		try {
-			jar.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		//Delete temp jar file.
-
+			jarstream.close();
+			jarfile.close();
+		} catch (IOException e)
+		{e.printStackTrace();}
 	}
 
 	public IRSettings getIrSettings(final IProject project)
