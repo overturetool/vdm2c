@@ -295,12 +295,17 @@ public class Vdm2CCommand extends AbstractHandler
 
 				while (jarstream.available() > 0) 
 				{
-					fos.write(jarstream.read());
+					int b = jarstream.read();
+					if(b >= 0)
+					{
+						fos.write(b);
+					}
 				}
-
-				filejarentry = jarstream.getNextJarEntry();
-				
+				fos.flush();
 				fos.close();
+				jarstream.closeEntry();
+				filejarentry = jarstream.getNextJarEntry();
+
 			}
 			jarstream.close();
 			jarfile.close();
