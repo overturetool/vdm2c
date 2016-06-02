@@ -1,8 +1,8 @@
 /*
- * IO.c
+ * IOLib.c
  *
  *  Created on: Feb 25, 2016
- *      Author: mot
+ *      Author: Victor Bandur
  */
 #ifndef CUSTOM_IO
 
