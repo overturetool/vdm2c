@@ -2,21 +2,12 @@ package org.overture.codegen.vdm2c;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.StringWriter;
-import java.net.URL;
-import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
-import java.util.jar.JarInputStream;
 
 import org.apache.commons.lang.time.StopWatch;
 import org.overture.ast.analysis.AnalysisException;
@@ -30,6 +21,7 @@ import org.overture.codegen.ir.declarations.ADefaultClassDeclIR;
 import org.overture.codegen.ir.declarations.AFieldDeclIR;
 import org.overture.codegen.ir.declarations.ASystemClassDeclIR;
 import org.overture.codegen.ir.declarations.SClassDeclIR;
+import org.overture.codegen.ir.name.ATokenNameIR;
 import org.overture.codegen.ir.types.AClassTypeIR;
 import org.overture.codegen.utils.GeneratedData;
 import org.overture.codegen.utils.GeneratedModule;
@@ -55,6 +47,7 @@ public class CGen extends CodeGenBase
 			throws AnalysisException
 	{
 		statuses = replaceSystemClassWithClass(statuses);
+		statuses = ignoreVDMUnitTests(statuses);
 
 		generateClassHeaders(statuses);
 
@@ -75,6 +68,52 @@ public class CGen extends CodeGenBase
 		data.setClasses(generated);
 
 		return data;
+	}
+
+	private List<IRStatus<PIR>> ignoreVDMUnitTests(
+			List<IRStatus<PIR>> statuses)
+	{
+		IRStatus<PIR> status = null;
+		List<IRStatus<PIR>> newstatuses = new LinkedList<IRStatus<PIR>>();
+
+		for (IRStatus<PIR> irStatus : statuses)
+		{
+			newstatuses.add(irStatus);
+
+			//First remove all VDMUnited.vdmrt-related classes.
+			if (irStatus.getIrNode() instanceof ADefaultClassDeclIR)
+			{
+				if(irStatus.getIrNodeName().equals("Test") ||
+						irStatus.getIrNodeName().equals("TestCase") ||
+						irStatus.getIrNodeName().equals("TestSuite") ||
+						irStatus.getIrNodeName().equals("TestListener") ||
+						irStatus.getIrNodeName().equals("TestResult") ||
+						irStatus.getIrNodeName().equals("TestRunner") ||
+						irStatus.getIrNodeName().equals("Throwable") ||
+						irStatus.getIrNodeName().equals("Error") ||
+						irStatus.getIrNodeName().equals("AssertionFailedError") ||
+						irStatus.getIrNodeName().equals("Assert"))
+				{
+					newstatuses.remove(irStatus);
+					continue;
+				}
+				
+				//Next remove all test cases.
+				if(!((ADefaultClassDeclIR)irStatus.getIrNode()).getSuperNames().isEmpty())
+				{
+					for(ATokenNameIR i : ((ADefaultClassDeclIR)irStatus.getIrNode()).getSuperNames())
+					{
+						if(i.getName().equals("TestCase"))
+						{
+							newstatuses.remove(irStatus);		
+						}
+					}
+					continue;
+				}
+			}
+		}
+		
+		return newstatuses;
 	}
 
 	private List<IRStatus<PIR>> replaceSystemClassWithClass(
