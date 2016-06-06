@@ -15,6 +15,7 @@ import org.overture.ast.definitions.SClassDefinition;
 import org.overture.ast.expressions.AVariableExp;
 import org.overture.ast.node.INode;
 import org.overture.ast.types.AClassType;
+import org.overture.ast.types.AOptionalType;
 import org.overture.cgc.extast.analysis.DepthFirstAnalysisCAdaptor;
 import org.overture.codegen.ir.SExpIR;
 import org.overture.codegen.ir.SStmIR;
@@ -372,7 +373,17 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 
 		INode objectVdmType = node.getObj().getType().getSourceNode().getVdmNode();
 
-		SClassDefinition objectClass = ((AClassType) objectVdmType).getClassdef();
+		SClassDefinition objectClass;
+		
+		if(objectVdmType instanceof AOptionalType)
+		{
+//			objectClass = (SClassDefinition) ((AClassType)((AOptionalType)objectVdmType).getType()).getClassdef();
+			objectClass = ((AClassType)((AOptionalType)objectVdmType).getType()).getClassdef();
+		}
+		else
+		{
+		objectClass = ((AClassType) objectVdmType).getClassdef();
+		}
 
 		List<PDefinition> tmp = methodCollector.collectCompatibleMethods(objectClass, node.getFieldName(), node.getSourceNode().getVdmNode(), methodCollector.getArgTypes(node.getSourceNode().getVdmNode()));
 
