@@ -48,6 +48,7 @@ import org.overture.codegen.vdm2c.transformations.ForLoopTrans;
 import org.overture.codegen.vdm2c.transformations.FreeLocalBlockDeclsTrans;
 import org.overture.codegen.vdm2c.transformations.IfTrans;
 import org.overture.codegen.vdm2c.transformations.IgnoreRenamingTrans;
+import org.overture.codegen.vdm2c.transformations.IgnoreVDMUnitTrans;
 import org.overture.codegen.vdm2c.transformations.InitializerExtractorTrans;
 import org.overture.codegen.vdm2c.transformations.IsNotYetSpecifiedTrans;
 import org.overture.codegen.vdm2c.transformations.LetTrans;
@@ -106,6 +107,7 @@ public class CTransSeries
 		 * - Do weeding here
 		 */
 		// Construct the transformations
+//		transformations.add(new IgnoreVDMUnitTrans(transAssistant));
 		transformations.add(new FuncTrans(transAssistant));
 		transformations.add(new InitializerExtractorTrans(transAssistant));
 		transformations.add(new RemoveRTConstructs(transAssistant));
