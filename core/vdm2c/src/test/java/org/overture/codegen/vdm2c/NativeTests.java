@@ -107,4 +107,13 @@ public class NativeTests extends NativeTestBase
 		generate(getPath("other/IOLib.vdmrt"), getPath("lib/IO.vdmrt"));
 		compileAndTest(getTestCppFile("classes/ClassIO_Tests.cpp"));
 	}
+	
+	@ConditionalIgnore(condition = HasVdmLib.class)
+	@Test
+	public void OtherIgnoreVDMUnit() throws IOException, InterruptedException,
+			CMakeGenerateException
+	{
+		generate(getPath("other/VDMUnitTest.vdmrt"), getPath("lib/VDMUnit.vdmrt"), getPath("lib/IO.vdmrt"));
+		compileAndTest(getTestCppFile("other/IgnoreVDMUnit_Tests.cpp"));
+	}
 }

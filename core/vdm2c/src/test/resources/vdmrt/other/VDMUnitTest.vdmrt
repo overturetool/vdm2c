@@ -1,0 +1,8 @@
+class VDMUnitTest is subclass of TestCase
+
+operations
+
+public testIgnoreVDMUnit : () ==> ()
+testIgnoreVDMUnit() ==
+	return;
+end VDMUnitTest
