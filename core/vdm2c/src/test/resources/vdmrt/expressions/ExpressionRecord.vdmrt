@@ -1,0 +1,14 @@
+class ExpressionRecord
+types
+	public rectype = int * int;
+instance variables
+	rec1 : rectype := mk_(0, 0);
+	
+operations
+public rec1explicitassign : () ==> rectype
+rec1explicitassign() ==
+	(
+	rec1 := mk_(1, 2);
+	return rec1;
+	)
+end ExpressionRecord

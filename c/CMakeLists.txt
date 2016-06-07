@@ -11,5 +11,4 @@ set(CMAKE_COLOR_MAKEFILE   ON)
 
 
 add_subdirectory(third_party/googletest/googletest)
-add_subdirectory(c-examples)
-add_subdirectory(generator-test)
+add_subdirectory(vdmclib)
