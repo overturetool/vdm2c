@@ -15,8 +15,8 @@ extern "C"
 #include "ClassFieldAccessAccessor.h"
 }
 
-#define CHECK(methodId) TVP c=_Z30ClassInstanceVariableSeqAssignEV(NULL);\
-TVP res=CALL_FUNC(ClassInstanceVariableSeqAssign,ClassInstanceVariableSeqAssign,c,methodId);\
+#define CHECK(methodId) TVP c=_Z24ClassFieldAccessAccessorEV(NULL);\
+TVP res=CALL_FUNC(ClassFieldAccessAccessor,ClassFieldAccessAccessor,c,methodId);\
 EXPECT_EQ (true,res->value.boolVal);\
 vdmFree(res);\
 vdmFree(c)
@@ -24,7 +24,7 @@ vdmFree(c)
 
 TEST(ClassInstanceVariableSeqAssign, call)
 {
-	CHECK(CLASS_ClassInstanceVariableSeqAssign__Z9getField0EV);
+	CHECK(CLASS_ClassFieldAccessAccessor__Z8setFieldEV);
 }
 
 

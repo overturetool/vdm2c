@@ -125,7 +125,7 @@ public class NativeClassesTests extends NativeTestBase
 			InterruptedException, CMakeGenerateException
 	{
 		generate(getPath("classes/ClassFieldAccess.vdmrt"));
-//		compileAndTest();
+		compileAndTest(getTestCppFile("classes/ClassFieldAccess_Tests.cpp"));
 	}
 	
 	@ConditionalIgnore(condition = HasVdmLib.class)
