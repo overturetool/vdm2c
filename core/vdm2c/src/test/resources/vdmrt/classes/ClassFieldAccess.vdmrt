@@ -22,6 +22,8 @@ opStatic(-)== return true;
 
 end ClassFieldAccess
 
+
+
 system ClassFieldHolder
 
 instance variables
@@ -31,13 +33,16 @@ public static v : ClassFieldAccess := new ClassFieldAccess();
 end ClassFieldHolder
 
 
+
 class ClassFieldAccessAccessor
 
 values
 
 c : ClassFieldAccess = new ClassFieldAccess();
 
+instance variables
 
+cinst : ClassFieldAccess := new ClassFieldAccess();
 
 operations
 
@@ -58,5 +63,12 @@ accessOpStaticField()== return ClassFieldHolder`v.opStatic(1);
 
 public accessFun : ()==> bool
 accessFun()== return c.fun();
+
+public setField : () ==> bool
+setField() ==
+(
+	cinst.field := 10;
+	return cinst.field = 10;
+)
 
 end ClassFieldAccessAccessor

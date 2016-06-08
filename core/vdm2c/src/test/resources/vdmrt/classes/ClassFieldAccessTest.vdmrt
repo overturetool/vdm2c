@@ -17,4 +17,7 @@ testAccessOpStatic()==assertTrue( accessOpStatic());
 public testAccessFun : () ==>()
 testAccessFun()==assertTrue( accessFun());
 
+public testSetField : () ==> ()
+testSetField() == assertTrue(setField());
+
 end ClassFieldAccessTest

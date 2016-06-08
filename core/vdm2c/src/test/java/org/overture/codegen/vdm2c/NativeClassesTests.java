@@ -43,6 +43,7 @@ public class NativeClassesTests extends NativeTestBase
 			InterruptedException, CMakeGenerateException
 	{
 		generate(getPath("classes/ClassInstanceVariableSeqAssign.vdmrt"));
+//		compileAndTest(getTestCppFile("classes/ClassInstanceVariableSeqAssign_Tests.cpp"));
 		compileAndTest();
 	}
 	
@@ -124,7 +125,7 @@ public class NativeClassesTests extends NativeTestBase
 			InterruptedException, CMakeGenerateException
 	{
 		generate(getPath("classes/ClassFieldAccess.vdmrt"));
-		compileAndTest();
+//		compileAndTest();
 	}
 	
 	@ConditionalIgnore(condition = HasVdmLib.class)
