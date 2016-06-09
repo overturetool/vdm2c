@@ -282,7 +282,7 @@ public class Vdm2CCommand extends AbstractHandler
 			//These are copied to the source output folder.
 			while (filejarentry != null)
 			{
-				outputFile = new File(outfolder.toString() + File.separator + filejarentry.getName().replace(File.separator+"src/", ""));
+				outputFile = new File(outfolder.toString() + File.separator + filejarentry.getName().replace("src" + File.separator, ""));
 
 				if(filejarentry.getName().contains("META"))
 				{
