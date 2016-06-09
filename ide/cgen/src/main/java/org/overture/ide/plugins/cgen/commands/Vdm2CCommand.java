@@ -216,7 +216,7 @@ public class Vdm2CCommand extends AbstractHandler
 					CodeGenConsole.GetInstance().println("Code generation completed successfully.");
 					CodeGenConsole.GetInstance().println("Copying native library files."); //mvn install in vdm2c and mvn package here makes this work
 					//Copy files from vdmclib.jar.
-					copyNativeLibFiles(cCodeOutputFolder);
+					copyNativeLibFiles(new File(cCodeOutputFolder + File.separator + "nativelib"));
 					//
 					//					} catch (Exception e)
 					//					{
@@ -267,6 +267,11 @@ public class Vdm2CCommand extends AbstractHandler
 		JarInputStream jarstream = null;
 		JarEntry filejarentry = null;
 
+		if(!outfolder.exists())
+		{
+			outfolder.mkdir();
+		}
+		
 		try 
 		{
 			jarfile = Vdm2CCommand.class.getClassLoader().getResourceAsStream("jars/vdmclib.jar");
