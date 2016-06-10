@@ -352,22 +352,34 @@ void ht_set( hashtable_t *hashtable, TVP key, TVP value ) {
 TVP ht_get( hashtable_t *hashtable, TVP key ) {
 	int bin = 0;
 	entry_t *pair;
+	TVP compres;
 
 	bin = ht_hash( hashtable, key );
 
 	/* Step through the bin, looking for our value. */
 	pair = hashtable->table[ bin ];
 
-	//TODO THIS IS THE PROBLEM.
-	while( pair != NULL && pair->key != NULL && strcmp( key, pair->key ) > 0 ) {
+	if(pair != NULL && pair->key != NULL)
+	{
+		compres = vdmEquals(key, pair->key);
+	}
+	while( pair != NULL && pair->key != NULL && !compres->value.boolVal )
+	{
 		pair = pair->next;
+		if(pair != NULL && pair->key != NULL)
+		{
+			vdmFree(compres);
+			compres = vdmEquals(key, pair->key);
+		}
 	}
 
 	/* Did we actually find anything? */
-	if( pair == NULL || pair->key == NULL || strcmp( key, pair->key ) != 0 ) {
+	if( pair == NULL || pair->key == NULL || !compres->value.boolVal ) {
+		vdmFree(compres);
 		return NULL;
 
 	} else {
+		vdmFree(compres);
 		return pair->value;
 	}
 
