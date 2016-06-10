@@ -34,7 +34,7 @@ TVP createMap1()
 	//{}
 	TVP map = newMap();
 
-	//maplet1 1|->2
+//	//maplet1 1|->2
 	TVP key1 = newInt(1);
 	TVP val1 =newInt(2);
 	vdmMapAdd(map,key1,val1);
@@ -157,7 +157,6 @@ TEST(Expression_Map, mapApply)
 	recursiveFree (TEST_TRUE);
 }
 
-
 TEST(Expression_Map, mapDom)
 {
 	//map1: {1|->2,3|->4,6|->7}
@@ -184,7 +183,6 @@ TEST(Expression_Map, mapRng)
 	TVP res = vdmSetMemberOf(map_rng,newInt(4));
 	EXPECT_EQ(true, res->value.boolVal);
 }
-
 
 TEST(Expression_Map, mapMunion)
 {
@@ -380,4 +378,3 @@ TEST(Expression_Map, mapInEquals)
 	bool map_not_eq2 = vdmMapInEquals(map1,map3);
 	EXPECT_EQ(true, map_not_eq2);
 }
-
