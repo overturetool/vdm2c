@@ -302,7 +302,7 @@ void ht_set( hashtable_t *hashtable, TVP key, TVP value ) {
 	{
 		compres = vdmEquals(key, next->key);
 	}
-	while( next != NULL && next->key != NULL && compres->value.boolVal ) {
+	while( next != NULL && next->key != NULL && !compres->value.boolVal ) {
 		last = next;
 		next = next->next;
 
@@ -357,6 +357,8 @@ TVP ht_get( hashtable_t *hashtable, TVP key ) {
 
 	/* Step through the bin, looking for our value. */
 	pair = hashtable->table[ bin ];
+
+	//TODO THIS IS THE PROBLEM.
 	while( pair != NULL && pair->key != NULL && strcmp( key, pair->key ) > 0 ) {
 		pair = pair->next;
 	}
@@ -392,7 +394,7 @@ void vdmMapAdd(TVP map, TVP key, TVP value)
 
 	UNWRAP_MAP(m,map);
 
-	ht_set(m->table, vdmClone(key), vdmClone(value));
+	ht_set(m->table, key, value);
 }
 
 
@@ -403,7 +405,7 @@ TVP vdmMapApply(TVP map, TVP key)
 	ASSERT_CHECK(map);
 	UNWRAP_MAP(m,map);
 
-	return ht_get(m->table, key);
+	return vdmClone(ht_get(m->table, key));
 }
 
 
@@ -514,6 +516,8 @@ TVP vdmMapMunion(TVP map1, TVP map2)
 	TVP map1resrng;
 	TVP map2resrng;
 	TVP res;
+	TVP key;
+	TVP val;
 
 	//Assert map
 	ASSERT_CHECK(map1);
@@ -525,6 +529,7 @@ TVP vdmMapMunion(TVP map1, TVP map2)
 	dominter = vdmSetInter(dom1set, dom2set);
 	vdmFree(dom1set);
 	vdmFree(dom2set);
+
 	map1res = vdmMapDomRestrictTo(dominter, map1);
 	map2res = vdmMapDomRestrictTo(dominter, map2);
 	vdmFree(dominter);
@@ -542,20 +547,24 @@ TVP vdmMapMunion(TVP map1, TVP map2)
 	UNWRAP_COLLECTION(d1,map1_dom);
 
 	// Add key/val for map1
-	for (int i=0; i<d1->size; i++){
-		TVP key = d1->value[i];
-		TVP val = vdmMapApply(map1,key);
+	for (int i=0; i<d1->size; i++)
+	{
+		key = d1->value[i];
+		val = vdmMapApply(map1,key);
 		vdmMapAdd(map,key,val);
+		vdmFree(val);
 	}
 
 	TVP map2_dom = vdmMapDom(map2);
 	UNWRAP_COLLECTION(d2,map2_dom);
 
 	// Add key/val for map2
-	for (int i=0; i<d2->size; i++){
-		TVP key = d2->value[i];
-		TVP val = vdmMapApply(map2,key);
+	for (int i=0; i<d2->size; i++)
+	{
+		key = d2->value[i];
+		val = vdmMapApply(map2,key);
 		vdmMapAdd(map,key,val);
+		vdmFree(val);
 	}
 
 	return map;
@@ -611,17 +620,25 @@ TVP vdmMapDomRestrictTo(TVP set,TVP map)
 {
 	ASSERT_CHECK(map);
 
+	TVP key;
+
 	TVP map_res = newMap();
+	TVP res;
 
 	TVP map_dom = vdmMapDom(map);
 	UNWRAP_COLLECTION(m,map_dom);
 
-	for(int i=0; i<m->size;i++){
-		TVP key = m->value[i];
-		if(vdmSetMemberOf(set,key)->value.boolVal){
+	for(int i=0; i<m->size;i++)
+	{
+		key = m->value[i];
+		res = vdmSetMemberOf(set, key);
+		if(res->value.boolVal)
+		{
 			TVP val = vdmMapApply(map,key);
 			vdmMapAdd(map_res,key,val);
+			vdmFree(val);
 		}
+		vdmFree(res);
 	}
 
 	return map_res;

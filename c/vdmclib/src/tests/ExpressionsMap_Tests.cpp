@@ -259,6 +259,11 @@ TEST(Expression_Map, mapDomRestrictTo)
 	TVP res = vdmSetMemberOf(map_dom,newInt(3));
 
 	EXPECT_EQ(false, res->value.boolVal);
+
+	vdmFree(res);
+	res = vdmSetMemberOf(map_dom, newInt(1));
+	EXPECT_EQ(true, res->value.boolVal);
+	vdmFree(res);
 }
 
 TEST(Expression_Map, mapDomRestrictBy)
