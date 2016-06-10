@@ -33,13 +33,17 @@
 
 #define ASSERT_CHECK(s) assert(s->type == VDM_MAP && "Value is not a map")
 
+
+
+#ifdef WITH_GLIB_HASH
+
 struct TypedValue* newMap()
 {
 	struct Map* ptr = (struct Map*) malloc(sizeof(struct Map));
 	ptr->table = g_hash_table_new_full(vdm_typedvalue_hash, vdm_typedvalue_equal, vdm_g_free, vdm_g_free);
 
 	return newTypeValue(VDM_MAP, (TypedValueType
-			)
+	)
 			{ .ptr = ptr });
 }
 
@@ -69,7 +73,7 @@ void print_iterator(gpointer item, gpointer prefix) {
 	//FIXME you cannot print a union type like this printf("%d \n", item2->value);
 }
 void print_iterator_short(gpointer item) {
- printf("%s\n", item);
+	printf("%s\n", item);
 }
 
 int getGreater(int a, int b){
@@ -92,7 +96,7 @@ TVP vdmMapDom(TVP map)
 
 	int i;
 	for (iterator = dom, i=0; iterator; iterator = iterator->next,i++)
-		 arr[i]=(TVP) iterator->data;
+		arr[i]=(TVP) iterator->data;
 
 	TVP res = newSetWithValues(set_size, arr);
 
@@ -117,7 +121,7 @@ TVP vdmMapRng(TVP map)
 
 	int i;
 	for (iterator = dom, i=0; iterator; iterator = iterator->next,i++)
-		 arr[i]=(TVP) iterator->data;
+		arr[i]=(TVP) iterator->data;
 
 	TVP res = newSetWithValues(set_size, arr);
 
@@ -220,7 +224,7 @@ TVP vdmMapOverride(TVP map1, TVP map2)
 
 TVP vdmMapMerge(TVP set)
 {
-// TODO unwrap set, creat a new map to return and set munion on it. Then return it
+	// TODO unwrap set, creat a new map to return and set munion on it. Then return it
 
 	TVP map = newMap();
 
@@ -405,54 +409,54 @@ guint vdm_typedvalue_hash(gconstpointer v)
 	TVP tv = (TVP)v;
 	switch(tv->type)
 	{
-		case VDM_INT:
-		case VDM_NAT1:
-		case VDM_NAT:
+	case VDM_INT:
+	case VDM_NAT1:
+	case VDM_NAT:
 		return g_int_hash(&tv->value.intVal);
-		case VDM_BOOL:
+	case VDM_BOOL:
 		return g_int_hash(&tv->value.boolVal);
-		case VDM_CHAR:
+	case VDM_CHAR:
 		return g_int_hash(&tv->value.charVal);
-		case VDM_REAL:
-		case VDM_RAT:
+	case VDM_REAL:
+	case VDM_RAT:
 		return g_double_hash(&tv->value.doubleVal);
-		case VDM_QUOTE:
+	case VDM_QUOTE:
 		return g_int_hash(&tv->value.uintVal);
-		case VDM_MAP:
+	case VDM_MAP:
 		//todo
 		break;
-		case VDM_PRODUCT:
-		case VDM_SEQ:
-		case VDM_SET:
-		{
-//			UNWRAP_COLLECTION(cptr,tmp);
-//
-//			struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
-//
-//			//copy (size)
-//			*ptr = *cptr;
-//			ptr->value = (struct TypedValue**) malloc(sizeof(struct TypedValue) * ptr->size);
-//
-//			for (int i = 0; i < cptr->size; i++)
-//			{
-//				ptr->value[i] = vdmClone(cptr->value[i]);
-//			}
-//
-//			tmp->value.ptr = ptr;
-			break;
-		}
-//		case VDM_OPTIONAL:
-//		//TODO
-//		break;
-		case VDM_RECORD:
-		{
-			//TODO duplicate (memcpy) and duplicate what ever any pointers points to except if a class
-			break;
-		}
-		case VDM_CLASS:
-		{
-			break;
-		}
+	case VDM_PRODUCT:
+	case VDM_SEQ:
+	case VDM_SET:
+	{
+		//			UNWRAP_COLLECTION(cptr,tmp);
+		//
+		//			struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
+		//
+		//			//copy (size)
+		//			*ptr = *cptr;
+		//			ptr->value = (struct TypedValue**) malloc(sizeof(struct TypedValue) * ptr->size);
+		//
+		//			for (int i = 0; i < cptr->size; i++)
+		//			{
+		//				ptr->value[i] = vdmClone(cptr->value[i]);
+		//			}
+		//
+		//			tmp->value.ptr = ptr;
+		break;
+	}
+	//		case VDM_OPTIONAL:
+	//		//TODO
+	//		break;
+	case VDM_RECORD:
+	{
+		//TODO duplicate (memcpy) and duplicate what ever any pointers points to except if a class
+		break;
+	}
+	case VDM_CLASS:
+	{
+		break;
+	}
 	}
 
 	return 0; //really bad hash
@@ -472,3 +476,235 @@ void vdm_g_free(gpointer mem)
 	TVP a = (TVP)mem;
 	recursiveFree(a);
 }
+
+
+
+#else
+
+
+
+hashtable_t *ht_create( int size ) {
+
+	hashtable_t *hashtable = NULL;
+	int i;
+
+	if( size < 1 ) return NULL;
+
+	/* Allocate the table itself. */
+	if( ( hashtable = malloc( sizeof( hashtable_t ) ) ) == NULL ) {
+		return NULL;
+	}
+
+	/* Allocate pointers to the head nodes. */
+	if( ( hashtable->table = malloc( sizeof( entry_t * ) * size ) ) == NULL ) {
+		return NULL;
+	}
+	for( i = 0; i < size; i++ ) {
+		hashtable->table[i] = NULL;
+	}
+
+	hashtable->size = size;
+
+	return hashtable;
+}
+
+
+
+/* Hash a string for a particular hash table. */
+int ht_hash( hashtable_t *hashtable, TVP key ) {
+
+	unsigned long int hashval;
+	int i = 0;
+
+	/*
+	 * Create hash
+	while( hashval < ULONG_MAX && i < strlen( key ) ) {
+		hashval = hashval << 8;
+		hashval += key[ i ];
+		i++;
+	}
+	return hashval % hashtable->size;
+	 */
+
+	//TODO:  Figure out hash function for TVP
+	return 0;
+}
+
+
+
+/* Create a key-value pair. */
+entry_t *ht_newpair( TVP key, TVP value ) {
+	entry_t *newpair;
+
+	if( ( newpair = malloc( sizeof( entry_t ) ) ) == NULL ) {
+		return NULL;
+	}
+
+	if( ( newpair->key = vdmClone(key) ) == NULL ) {
+		return NULL;
+	}
+
+	if( ( newpair->value = vdmClone(value) ) == NULL ) {
+		return NULL;
+	}
+
+	newpair->next = NULL;
+
+	return newpair;
+}
+
+
+
+/* Insert a key-value pair into a hash table. */
+void ht_set( hashtable_t *hashtable, TVP key, TVP value ) {
+	int bin = 0;
+	entry_t *newpair = NULL;
+	entry_t *next = NULL;
+	entry_t *last = NULL;
+	TVP compres;
+
+	bin = ht_hash( hashtable, key );
+
+	next = hashtable->table[ bin ];
+
+	while( next != NULL && next->key != NULL && strcmp( key, next->key ) > 0 ) {
+		last = next;
+		next = next->next;
+	}
+
+	/* There's already a pair.  Let's replace that string. */
+
+	compres = vdmEquals(key, next->key);
+	if( next != NULL && next->key != NULL && compres->value.boolVal == 0 ) {
+
+		free( next->value );
+		next->value = vdmClone(value);
+
+		/* Nope, could't find it.  Time to grow a pair. */
+	} else {
+		newpair = ht_newpair( key, value );
+
+		/* We're at the start of the linked list in this bin. */
+		if( next == hashtable->table[ bin ] ) {
+			newpair->next = next;
+			hashtable->table[ bin ] = newpair;
+
+			/* We're at the end of the linked list in this bin. */
+		} else if ( next == NULL ) {
+			last->next = newpair;
+
+			/* We're in the middle of the list. */
+		} else  {
+			newpair->next = next;
+			last->next = newpair;
+		}
+	}
+
+	vdmFree(compres);
+}
+
+
+TVP ht_get( hashtable_t *hashtable, TVP key ) {
+	int bin = 0;
+	entry_t *pair;
+
+	bin = ht_hash( hashtable, key );
+
+	/* Step through the bin, looking for our value. */
+	pair = hashtable->table[ bin ];
+	while( pair != NULL && pair->key != NULL && strcmp( key, pair->key ) > 0 ) {
+		pair = pair->next;
+	}
+
+	/* Did we actually find anything? */
+	if( pair == NULL || pair->key == NULL || strcmp( key, pair->key ) != 0 ) {
+		return NULL;
+
+	} else {
+		return pair->value;
+	}
+
+}
+
+
+
+struct TypedValue* newMap()
+{
+	struct Map* ptr = (struct Map*) malloc(sizeof(struct Map));
+	//TODO:  work out initial size.
+	ptr->table =  ht_create(10);
+
+	return newTypeValue(VDM_MAP, (TypedValueType
+	)
+			{ .ptr = ptr });
+}
+
+
+
+void vdmMapAdd(TVP map, TVP key, TVP value)
+{
+	ASSERT_CHECK(map);
+
+	UNWRAP_MAP(m,map);
+
+	g_hash_table_insert(m->table, vdmClone(key), vdmClone(value));
+
+}
+
+
+
+// TODO: Apply does not work, if they key is not found
+TVP vdmMapApply(TVP map, TVP key)
+{
+	ASSERT_CHECK(map);
+	UNWRAP_MAP(m,map);
+
+	return ht_get(m->table, key);
+}
+
+
+
+TVP vdmMapDom(TVP map)
+{
+	//Assert map
+	ASSERT_CHECK(map);
+
+	// Get map size
+	UNWRAP_MAP(m,map);
+
+	int i;
+	int mapsize = 0;
+	entry_t currentry;
+
+	for(i = 0; i < m->table->size; i++)
+	{
+		currentry = m->table[i];
+
+		while(currentry != NULL)
+		{
+			mapsize += 1;
+			currentry = currentry->next;
+		}
+	}
+
+	TVP arr[mapsize];
+
+	//Reusing this variable.
+	mapsize = 0;
+	//Get keys.
+	for(i = 0; i < m->table->size; i++)
+	{
+		currentry = m->table[i];
+
+		while(currentry != NULL)
+		{
+			arr[mapsize] = currentry->key;
+			mapsize += 1;
+		}
+	}
+
+	TVP res = newSetWithValues(mapsize, arr);
+	return res;
+}
+
+#endif

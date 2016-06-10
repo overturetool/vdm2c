@@ -20,6 +20,8 @@
  * #~%
  */
 
+#ifdef WITH_GLIB_HASH
+
 #include "gtest/gtest.h"
 
 #include <stdio.h>
@@ -142,3 +144,4 @@ TEST(HashTable, typedHash)
 	g_hash_table_foreach(table, (GHFunc) print_data, NULL);
 
 }
+#endif

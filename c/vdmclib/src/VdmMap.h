@@ -32,16 +32,45 @@
 
 #include "TypedValue.h"
 #include "VdmSet.h"
+
+#ifdef WITH_GLIB_HASH
 #include <glib.h>
+#else
+#include <limits.h>
+#endif
+
 
 #include <assert.h>
 
 #define UNWRAP_MAP(var,map) struct Map* var = (struct Map*)map->value.ptr
 
+
+struct entry_s {
+	TVP key;
+	TVP value;
+	struct entry_s *next;
+};
+
+typedef struct entry_s entry_t;
+
+struct hashtable_s {
+	int size;
+	struct entry_s **table;
+};
+
+typedef struct hashtable_s hashtable_t;
+
 struct Map
 {
+#ifdef WITH_GLIB_HASH
 	GHashTable *table;
+#else
+	hashtable_t *table;
+#endif
 };
+
+hashtable_t *ht_create( int size );
+
 
 struct TypedValue* newMap();
 
@@ -64,8 +93,10 @@ TVP vdmMapInverse(TVP map);
 bool vdmMapEquals(TVP map1, TVP map2);
 bool vdmMapInEquals(TVP map1, TVP map2);
 
+#ifdef WITH_GLIB_HASH
 guint vdm_typedvalue_hash(gconstpointer v);
 gboolean vdm_typedvalue_equal(gconstpointer v1, gconstpointer v2);
 void vdm_g_free(gpointer mem);
+#endif
 
 #endif /* LIB_VDMMAP_H_ */
