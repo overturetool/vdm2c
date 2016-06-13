@@ -1,4 +1,7 @@
 BINARY=TestBinary
 
-all: *.c *.h
-	gcc `pkg-config --cflags --libs glib-2.0` -lm -std=c11 -o $(BINARY) *.c
+all:
+	cd nativelib && gcc -c -std=c11 -Inativelib *.c
+	gcc -c -std=c11 -Inativelib *.c
+	gcc -lm -std=c11 -o $(BINARY) *.o nativelib/*.o
+
