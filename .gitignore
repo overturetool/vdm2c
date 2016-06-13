@@ -119,4 +119,5 @@ Debug/
 c/c-examples/c-examples
 c/vdm/generated
 c/generator-test/generator-test
+c/**/report.xml
 c/vdmclib/src/vdmclib
