@@ -298,7 +298,6 @@ public class Vdm2CCommand extends AbstractHandler
 				if(filejarentry.getName().contains("SampleMakefile"))
 				{
 					outputFile.renameTo(new File(outputFile.getAbsolutePath().replace("nativelib" + File.separator,  "")));
-					outputFile.renameTo(new File(outputFile.getAbsolutePath() + File.separator + ".."));
 				}
 
 				fos = new java.io.FileOutputStream(outputFile);
