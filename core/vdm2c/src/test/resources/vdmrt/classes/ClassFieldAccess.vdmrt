@@ -24,7 +24,7 @@ end ClassFieldAccess
 
 
 
-system ClassFieldHolder
+class ClassFieldHolder
 
 instance variables
 
