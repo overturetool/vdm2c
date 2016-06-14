@@ -80,8 +80,8 @@ public class CtorTrans extends DepthFirstAnalysisCAdaptor
 			replBlock.getStatements().add(node.getBody());
 
 			// debug
-			replBlock.getStatements().add(exp2Stm(newApply("printf", createIdentifier("\"calling constructor: "
-					+ cDef.getName() + "\\n\"", null))));
+//			replBlock.getStatements().add(exp2Stm(newApply("printf", createIdentifier("\"calling constructor: "
+//					+ cDef.getName() + "\\n\"", null))));
 
 			// call super constructors in reverse order
 			if (cDef != null && !cDef.getSuperNames().isEmpty())
