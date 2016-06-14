@@ -19,6 +19,7 @@ import org.overture.codegen.ir.PIR;
 import org.overture.codegen.ir.analysis.DepthFirstAnalysisAdaptor;
 import org.overture.codegen.ir.declarations.ADefaultClassDeclIR;
 import org.overture.codegen.ir.declarations.AFieldDeclIR;
+import org.overture.codegen.ir.declarations.AMethodDeclIR;
 import org.overture.codegen.ir.declarations.ASystemClassDeclIR;
 import org.overture.codegen.ir.declarations.SClassDeclIR;
 import org.overture.codegen.ir.name.ATokenNameIR;
@@ -49,9 +50,9 @@ public class CGen extends CodeGenBase
 		statuses = replaceSystemClassWithClass(statuses);
 		statuses = ignoreVDMUnitTests(statuses);
 
+		applyTransformations(statuses);
 		generateClassHeaders(statuses);
 
-		applyTransformations(statuses);
 
 		VTableGenerator.generate(IRStatus.extract(statuses, AClassHeaderDeclIR.class));
 
@@ -97,7 +98,7 @@ public class CGen extends CodeGenBase
 					newstatuses.remove(irStatus);
 					continue;
 				}
-				
+
 				//Next remove all test cases.
 				if(!((ADefaultClassDeclIR)irStatus.getIrNode()).getSuperNames().isEmpty())
 				{
@@ -112,7 +113,7 @@ public class CGen extends CodeGenBase
 				}
 			}
 		}
-		
+
 		return newstatuses;
 	}
 
@@ -133,6 +134,7 @@ public class CGen extends CodeGenBase
 		{
 			ASystemClassDeclIR systemDef = (ASystemClassDeclIR) status.getIrNode();
 			ADefaultClassDeclIR cDef = new ADefaultClassDeclIR();
+			cDef.setSourceNode(systemDef.getSourceNode());
 			cDef.setName(systemDef.getName());
 			for (AFieldDeclIR f : systemDef.getFields())
 			{
@@ -151,6 +153,11 @@ public class CGen extends CodeGenBase
 				cDef.getFields().add(f.clone());
 			}
 			// FIXME: add and filter the constructur for RT calls on cpus and busses
+
+			for(AMethodDeclIR i : systemDef.getMethods())
+			{
+				cDef.getMethods().add(i.clone());
+			}
 
 			status.setIrNode(cDef);
 		}

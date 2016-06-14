@@ -5,8 +5,8 @@ import static org.overture.codegen.vdm2c.utils.CTransUtil.SET_FIELD_PTR;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.createIdentifier;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.exp2Stm;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newApply;
-import static org.overture.codegen.vdm2c.utils.CTransUtil.newDeclarationAssignment;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newAssignment;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.newDeclarationAssignment;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newIdentifier;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newMacroApply;
 
@@ -17,7 +17,9 @@ import org.overture.ast.definitions.AClassClassDefinition;
 import org.overture.ast.definitions.AInheritedDefinition;
 import org.overture.ast.definitions.AInstanceVariableDefinition;
 import org.overture.ast.definitions.ALocalDefinition;
+import org.overture.ast.definitions.ASystemClassDefinition;
 import org.overture.ast.definitions.PDefinition;
+import org.overture.ast.definitions.SClassDefinitionBase;
 import org.overture.ast.expressions.AVariableExp;
 import org.overture.ast.node.INode;
 import org.overture.ast.statements.AIdentifierStateDesignator;
@@ -33,7 +35,6 @@ import org.overture.codegen.ir.expressions.AApplyExpIR;
 import org.overture.codegen.ir.expressions.AExplicitVarExpIR;
 import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
 import org.overture.codegen.ir.statements.AAssignToExpStmIR;
-import org.overture.codegen.ir.statements.AAssignmentStmIR;
 import org.overture.codegen.ir.statements.ABlockStmIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.extast.expressions.AMacroApplyExpIR;
@@ -196,11 +197,22 @@ DepthFirstAnalysisCAdaptor
 				assist.replaceNodeWith(node.getTarget(), id);
 				return;
 			}
-			AClassClassDefinition classDef = target.getSourceNode().getVdmNode().getAncestor(AClassClassDefinition.class);
+			SClassDefinitionBase classDef;
+			String thisClassName;
 
-			String thisClassName = classDef.getName().getName();// the
-			// containing
-			// field owner
+			if(target.getSourceNode().getVdmNode().getAncestor(AClassClassDefinition.class) != null)
+			{
+				classDef = target.getSourceNode().getVdmNode().getAncestor(AClassClassDefinition.class);
+				thisClassName = classDef.getName().getName();// the containing field owner
+			}
+			else
+			{
+				classDef = target.getSourceNode().getVdmNode().getAncestor(ASystemClassDefinition.class);
+				thisClassName = classDef.getName().getName();// the containing field owner
+			}
+
+
+
 			String fieldClassName = fieldUtil.lookupFieldClass(target.getAncestor(ADefaultClassDeclIR.class), target.getName());
 
 			String name = assist.getInfo().getTempVarNameGen().nextVarName(fieldPrefix);
@@ -249,31 +261,31 @@ DepthFirstAnalysisCAdaptor
 
 			//This should be the target class, not the current node's class 
 			SClassDeclIR cDef = CTransUtil.getClass(assist,  fieldClassName);			
-			
+
 			//This assumes that the field is in the current class.
-//			if (fieldUtil.isStatic(cDef, target.getName()))
-//			{
-//				AFieldDeclIR field = fieldUtil.lookupField(cDef, target.getName());
-//				AIdentifierVarExpIR id = createIdentifier(field.getName(), target.getSourceNode());
-//				id.setType(target.getType().clone());
-//				assist.replaceNodeWith(node.getTarget(), id);
-//				return;
-//			}			
-			
+			//			if (fieldUtil.isStatic(cDef, target.getName()))
+			//			{
+			//				AFieldDeclIR field = fieldUtil.lookupField(cDef, target.getName());
+			//				AIdentifierVarExpIR id = createIdentifier(field.getName(), target.getSourceNode());
+			//				id.setType(target.getType().clone());
+			//				assist.replaceNodeWith(node.getTarget(), id);
+			//				return;
+			//			}			
+
 			String name = assist.getInfo().getTempVarNameGen().nextVarName(fieldPrefix);
 
 			// process right side of assignment
 			node.getExp().apply(THIS);
-			
+
 			AVarDeclIR rightToTemp = newDeclarationAssignment(name, node.getExp().getType().clone(), node.getExp().clone(), node.getExp().getSourceNode());
-			
-			
+
+
 			//The actual assignment to the static field.  The generator emits simple golbal variables for static fields.
 			AAssignToExpStmIR staticFieldAssign = 
 					newAssignment(newIdentifier(
 							NameConverter.getCName(fieldUtil.lookupField(cDef, node.getTarget().toString())), null),
 							newIdentifier(name, null));
-			
+
 			AVarDeclIR retVar = newDeclarationAssignment(name, node.getExp().getType().clone(), newApply("vdmClone", node.getExp().clone()), node.getExp().getSourceNode());
 
 			ABlockStmIR replBlock = new ABlockStmIR();
@@ -283,7 +295,7 @@ DepthFirstAnalysisCAdaptor
 			assist.replaceNodeWith(node, replBlock);
 
 			replBlock.getStatements().add(staticFieldAssign);
-			
+
 			AApplyExpIR vdmFree = new AApplyExpIR();
 			vdmFree.setRoot(createIdentifier("vdmFree", node.getSourceNode()));
 			vdmFree.getArgs().add(createIdentifier(name, retVar.getSourceNode()));
