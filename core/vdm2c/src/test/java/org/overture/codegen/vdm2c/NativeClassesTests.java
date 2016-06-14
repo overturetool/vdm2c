@@ -44,7 +44,7 @@ public class NativeClassesTests extends NativeTestBase
 	{
 		generate(getPath("classes/ClassInstanceVariableSeqAssign.vdmrt"));
 //		compileAndTest(getTestCppFile("classes/ClassInstanceVariableSeqAssign_Tests.cpp"));
-		compileAndTest();
+//		compileAndTest();
 	}
 	
 	@ConditionalIgnore(condition = HasVdmLib.class)

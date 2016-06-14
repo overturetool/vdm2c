@@ -50,8 +50,9 @@ public class CGen extends CodeGenBase
 		statuses = replaceSystemClassWithClass(statuses);
 		statuses = ignoreVDMUnitTests(statuses);
 
-		applyTransformations(statuses);
 		generateClassHeaders(statuses);
+		applyTransformations(statuses);
+		
 
 
 		VTableGenerator.generate(IRStatus.extract(statuses, AClassHeaderDeclIR.class));
@@ -148,11 +149,8 @@ public class CGen extends CodeGenBase
 					}
 				}
 
-				// if(f.getType() instanceof abus instanceof ABusClassDeclIR || f instanceof ACpuClassDeclIR)
-				// continue;
 				cDef.getFields().add(f.clone());
 			}
-			// FIXME: add and filter the constructur for RT calls on cpus and busses
 
 			for(AMethodDeclIR i : systemDef.getMethods())
 			{

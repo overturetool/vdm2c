@@ -55,14 +55,17 @@ public class ClassHeaderGenerator
 					state.getFields().add(field);
 				}
 			}
-
+			
 			header.setState(state);
 
 			List<CGenClonableString> includes = new Vector<CGenClonableString>();
 
 			for (String typeName : collectIncludeTypes(classDef).keySet())
 			{
-				includes.add(new CGenClonableString(typeName));
+				if(!typeName.contains("CPU") && !typeName.contains("BUS"))
+				{
+					includes.add(new CGenClonableString(typeName));
+				}
 			}
 			header.setIncludes(includes);
 
