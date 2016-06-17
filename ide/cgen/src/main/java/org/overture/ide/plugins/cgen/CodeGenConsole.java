@@ -114,10 +114,10 @@ public class CodeGenConsole implements ILogger
 	{
 		err.print(msg);
 	}
-	
+
 	public void activate()
 	{
-		if(codeGenConsole != null)
+		if (codeGenConsole != null)
 		{
 			codeGenConsole.activate();
 		}

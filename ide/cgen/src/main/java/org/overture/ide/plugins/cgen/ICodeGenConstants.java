@@ -32,25 +32,28 @@ public interface ICodeGenConstants
 
 	public static final String DISABLE_CLONING = PLUGIN_ID + ".disable_cloning";
 	public static final boolean DISABLE_CLONING_DEFAULT = false;
-	
-	public static final String GENERATE_CONCURRENCY_MECHANISMS = PLUGIN_ID + ".concurrency_mechanisms";
+
+	public static final String GENERATE_CONCURRENCY_MECHANISMS = PLUGIN_ID
+			+ ".concurrency_mechanisms";
 	public static final boolean GENERATE_CONCURRENCY_MECHANISMS_DEFAULT = false;
 
 	public static final String CLASSES_TO_SKIP = PLUGIN_ID + ".classes_to_skip";
 	public static final String CLASSES_TO_SKIP_DEFAULT = "";
-	
+
 	public static final String JAVA_PACKAGE = PLUGIN_ID + ".java_package";
 	public static final String JAVA_PACKAGE_DEFAULT = "";
-	
-	public static final String GENERATE_VDM_LOCATIONS_INFO = PLUGIN_ID + ".vdm_locations";
+
+	public static final String GENERATE_VDM_LOCATIONS_INFO = PLUGIN_ID
+			+ ".vdm_locations";
 	public static final boolean GENERATE_VDM_LOCATIONS_INFO_DEFAULT = false;
-	
+
 	// JML related
-	
+
 	public static final String GENERATE_JML = PLUGIN_ID + ".jml";
 	public static final boolean GENERATE_JML_DEFAULT = false;
-	
-	public static final String JML_USE_INVARIANT_FOR = PLUGIN_ID + ".jml_use_invariant_for";
+
+	public static final String JML_USE_INVARIANT_FOR = PLUGIN_ID
+			+ ".jml_use_invariant_for";
 	public static final boolean JML_USE_INVARIANT_FOR_DEFAULT = false;
 
 }

@@ -4,7 +4,7 @@ public class LaunchConfigData
 {
 	private String name;
 	private String exp;
-	
+
 	public LaunchConfigData(String name, String exp)
 	{
 		this.name = name;

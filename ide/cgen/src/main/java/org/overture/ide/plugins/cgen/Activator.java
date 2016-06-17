@@ -1,4 +1,4 @@
- /* #%~
+/* #%~
  * Code Generator Plugin
  * %%
  * Copyright (C) 2008 - 2014 Overture
@@ -103,27 +103,29 @@ public class Activator extends AbstractUIPlugin
 		store.setDefault(ICodeGenConstants.GENERATE_JML, ICodeGenConstants.GENERATE_JML_DEFAULT);
 		store.setDefault(ICodeGenConstants.JML_USE_INVARIANT_FOR, ICodeGenConstants.JML_USE_INVARIANT_FOR_DEFAULT);
 	}
-	
+
 	public static void savePluginSettings(boolean disableCloning,
-			boolean genAsStrings, boolean genConc, boolean genJml, boolean jmlInvFor, String userSpecifiedClassesToSkip, String javaPackage, boolean genVdmLoc)
+			boolean genAsStrings, boolean genConc, boolean genJml,
+			boolean jmlInvFor, String userSpecifiedClassesToSkip,
+			String javaPackage, boolean genVdmLoc)
 	{
 		Preferences prefs = InstanceScope.INSTANCE.getNode(ICodeGenConstants.PLUGIN_ID);
 		prefs.put(ICodeGenConstants.DISABLE_CLONING, new Boolean(disableCloning).toString());
 		prefs.put(ICodeGenConstants.GENERATE_CHAR_SEQUENCES_AS_STRINGS, new Boolean(genAsStrings).toString());
 		prefs.put(ICodeGenConstants.GENERATE_CONCURRENCY_MECHANISMS, new Boolean(genConc).toString());
-		
+
 		if (userSpecifiedClassesToSkip != null)
 		{
 			prefs.put(ICodeGenConstants.CLASSES_TO_SKIP, userSpecifiedClassesToSkip);
 		}
-		
+
 		if (javaPackage != null)
 		{
 			prefs.put(ICodeGenConstants.JAVA_PACKAGE, javaPackage);
 		}
-		
+
 		prefs.put(ICodeGenConstants.GENERATE_VDM_LOCATIONS_INFO, new Boolean(genVdmLoc).toString());
-		
+
 		prefs.put(ICodeGenConstants.GENERATE_JML, new Boolean(genJml).toString());
 		prefs.put(ICodeGenConstants.JML_USE_INVARIANT_FOR, new Boolean(jmlInvFor).toString());
 
