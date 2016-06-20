@@ -27,10 +27,10 @@ public class CGenerator
 		this.vdmProject = vdmProject;
 	}
 
-	public void generate(File cCodeOutputFolder) throws CoreException, AnalysisException
+	public void generate(File cCodeOutputFolder) throws CoreException,
+			AnalysisException
 	{
 		File eclipseProjectFolder = PluginVdm2CUtil.getEclipseProjectFolder(vdmProject);
-		
 
 		// Clean folder with generated Java code
 		GeneralUtils.deleteFolderContents(eclipseProjectFolder, true);
@@ -51,67 +51,6 @@ public class CGenerator
 			CodeGenConsole.GetInstance().println("Please refer to the Overture User Manual for a discussion of supported language features.");
 		}
 
-		// for (GeneratedModule module : generatedData.getClasses())
-		// {
-		//
-		// if (module.canBeGenerated())
-		// {
-		// CodeGenConsole.GetInstance().println(module.getContent());
-		// CodeGenConsole.GetInstance().println(module.getUnsupportedInIr());
-		// CodeGenConsole.GetInstance().println(module.getMergeErrors());
-		// CodeGenConsole.GetInstance().println(module.getUnsupportedInTargLang());
-		// }
-		// }
-
-		// File libFolder = PluginVdm2CUtil.getCodeGenRuntimeLibFolder(vdmProject);
-		//
-		// try
-		// {
-		// PluginVdm2CUtil.copyCodeGenFile(PluginVdm2CUtil.CODEGEN_RUNTIME_BIN_FILE, libFolder);
-		// outputRuntimeBinaries(libFolder);
-		// }
-		// catch(Exception e)
-		// {
-		// CodeGenConsole.GetInstance().printErrorln("Problems copying the Java code generator runtime library to "
-		// + libFolder.getAbsolutePath());
-		// CodeGenConsole.GetInstance().printErrorln("Reason: " + e.getMessage());
-		// }
-		//
-		// This should be where the VDM C lib gets copied.
-		// try
-		// {
-		// PluginVdm2CUtil.copyCodeGenFile(PluginVdm2CUtil.CODEGEN_RUNTIME_SOURCES_FILE, libFolder);
-		// outputRuntimeSources(libFolder);
-		// }
-		// catch(Exception e)
-		// {
-		// CodeGenConsole.GetInstance().printErrorln("Problems copying the Java code generator runtime library sources to "
-		// + libFolder.getAbsolutePath());
-		// CodeGenConsole.GetInstance().printErrorln("Reason: " + e.getMessage());
-		// }
-
-		// try
-		// {
-		// PluginVdm2CUtil.copyCodeGenFile(PluginVdm2CUtil.ECLIPSE_RES_FILES_FOLDER + "/"
-		// + PluginVdm2CUtil.ECLIPSE_PROJECT_TEMPLATE_FILE, PluginVdm2CUtil.ECLIPSE_PROJECT_FILE,
-		// eclipseProjectFolder);
-		//
-		// GeneralCodeGenUtils.replaceInFile(new File(eclipseProjectFolder,
-		// PluginVdm2CUtil.ECLIPSE_PROJECT_FILE), "%s", project.getName());
-		//
-		//
-		// PluginVdm2CUtil.copyCodeGenFile(PluginVdm2CUtil.ECLIPSE_RES_FILES_FOLDER + "/"
-		// + PluginVdm2CUtil.ECLIPSE_CLASSPATH_TEMPLATE_FILE, PluginVdm2CUtil.ECLIPSE_CLASSPATH_FILE,
-		// eclipseProjectFolder);
-		//
-		// // Always imports codegen-runtime.jar
-		// String classPathEntries = PluginVdm2CUtil.RUNTIME_CLASSPATH_ENTRY;
-		//
-		//
-		// GeneralCodeGenUtils.replaceInFile(new File(eclipseProjectFolder,
-		// PluginVdm2CUtil.ECLIPSE_CLASSPATH_FILE), "%s", classPathEntries);
-		//
-		//
 		CodeGenConsole.GetInstance().println("Code generation completed successfully.");
 		CodeGenConsole.GetInstance().println("Copying native library files."); // mvn install in vdm2c and
 																				// mvn package here makes
@@ -119,28 +58,6 @@ public class CGenerator
 		// Copy files from vdmclib.jar.
 		copyNativeLibFiles(new File(cCodeOutputFolder + File.separator
 				+ "nativelib"));
-		//
-		// } catch (Exception e)
-		// {
-		// e.printStackTrace();
-		// CodeGenConsole.GetInstance().printErrorln("Problems generating the eclipse project with the generated Java code");
-		// CodeGenConsole.GetInstance().printErrorln("Reason: "
-		// + e.getMessage());
-		// }
-		//
-		// // Output any warnings such as problems with the user's launch configuration
-		// outputWarnings(generatedData.getWarnings());
-		//
-		//
-		// // Summarize the code generation process
-		// int noOfClasses = generatedData.getClasses().size();
-		//
-		// String msg = String.format("...finished Java code generation (generated %s %s).",
-		// noOfClasses,
-		// noOfClasses == 1 ? "class" : "classes");
-		//
-		// CodeGenConsole.GetInstance().println(msg);
-		//
 
 	}
 
@@ -184,7 +101,8 @@ public class CGenerator
 				}
 				if (filejarentry.getName().contains("SampleMakefile"))
 				{
-					outputFile = new File(outputFile.getAbsolutePath().replace("nativelib" + File.separator,  ""));
+					outputFile = new File(outputFile.getAbsolutePath().replace("nativelib"
+							+ File.separator, ""));
 				}
 
 				fos = new java.io.FileOutputStream(outputFile);
