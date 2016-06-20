@@ -20,6 +20,7 @@
  * #~%
  */
 package org.overture.ide.plugins.cgen.preferences;
+
 //
 //import org.eclipse.core.runtime.preferences.InstanceScope;
 //import org.eclipse.jface.preference.IPreferenceStore;
@@ -272,4 +273,4 @@ package org.overture.ide.plugins.cgen.preferences;
 //			genVdmLocCheckBox.setSelection(preferences.getBoolean(ICodeGenConstants.GENERATE_VDM_LOCATIONS_INFO, ICodeGenConstants.GENERATE_VDM_LOCATIONS_INFO_DEFAULT));
 //		}
 //	}
-//}
+// }

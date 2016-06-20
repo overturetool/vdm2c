@@ -41,8 +41,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.eclipse.debug.core.DebugPlugin;
-import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -64,7 +62,6 @@ import org.overture.codegen.utils.GeneralCodeGenUtils;
 import org.overture.ide.core.resources.IVdmProject;
 import org.overture.ide.core.resources.IVdmSourceUnit;
 import org.overture.ide.core.utility.FileUtility;
-import org.overture.ide.debug.core.IDebugConstants;
 //import org.overture.ide.plugins.cgen.CodeGenConsole;
 import org.overture.ide.plugins.cgen.ICodeGenConstants;
 import org.overture.ide.plugins.cgen.commands.Vdm2CCommand;
@@ -72,13 +69,13 @@ import org.overture.ide.plugins.cgen.commands.Vdm2CCommand;
 public class PluginVdm2CUtil
 {
 	public static final String CODEGEN_RUNTIME_LIB_FOLDER = "lib";
-	
+
 	public static final String CODEGEN_RUNTIME_BIN_FILE = "codegen-runtime.jar";
 	public static final String CODEGEN_RUNTIME_SOURCES_FILE = "codegen-runtime-sources.jar";
 
 	public static final String VDM2JML_RUNTIME_BIN_FILE = "vdm2jml-runtime.jar";
 	public static final String VDM2JML_RUNTIME_SOURCES_FILE = "vdm2jml-runtime-sources.jar";
-	
+
 	public static final String ECLIPSE_CLASSPATH_TEMPLATE_FILE = "cg.classpath";
 	public static final String ECLIPSE_PROJECT_TEMPLATE_FILE = "cg.project";
 
@@ -86,14 +83,13 @@ public class PluginVdm2CUtil
 	public static final String ECLIPSE_CLASSPATH_FILE = ".classpath";
 	public static final String ECLIPSE_PROJECT_FILE = ".project";
 	public static final String ECLIPSE_RES_FILES_FOLDER = "eclipsefiles";
-	public static final String ECLIPSE_PROJECT_SRC_FOLDER = "src"; 
-	
+	public static final String ECLIPSE_PROJECT_SRC_FOLDER = "src";
+
 	public static final String RUNTIME_CLASSPATH_ENTRY = "<classpathentry kind=\"lib\" path=\"lib/codegen-runtime.jar\"/>\n";
 	public static final String VDM2JML_CLASSPATH_ENTRY = "<classpathentry kind=\"lib\" path=\"lib/vdm2jml-runtime.jar\"/>\n";
 
-
 	public static final String WARNING = "[WARNING]";
-	
+
 	private PluginVdm2CUtil()
 	{
 	}
@@ -129,7 +125,7 @@ public class PluginVdm2CUtil
 
 		return vdmProject;
 	}
-	
+
 	public static List<INode> getNodes(List<IVdmSourceUnit> sources)
 	{
 		List<INode> nodes = new ArrayList<INode>();
@@ -138,38 +134,37 @@ public class PluginVdm2CUtil
 		{
 			nodes.addAll(source.getParseList());
 		}
-		
+
 		return nodes;
 	}
 
-	public static List<SClassDefinition> getClasses(
-			List<IVdmSourceUnit> sources)
+	public static List<SClassDefinition> getClasses(List<IVdmSourceUnit> sources)
 	{
 		List<SClassDefinition> classes = new LinkedList<SClassDefinition>();
-		
-		for(INode n : getNodes(sources))
+
+		for (INode n : getNodes(sources))
 		{
-			if(n instanceof SClassDefinition)
+			if (n instanceof SClassDefinition)
 			{
 				classes.add((SClassDefinition) n);
 			}
 		}
-		
+
 		return classes;
 	}
-	
+
 	public static List<AModuleModules> getModules(List<IVdmSourceUnit> sources)
 	{
 		List<AModuleModules> modules = new LinkedList<AModuleModules>();
 
-		for(INode n : getNodes(sources))
+		for (INode n : getNodes(sources))
 		{
-			if(n instanceof AModuleModules)
+			if (n instanceof AModuleModules)
 			{
 				modules.add((AModuleModules) n);
 			}
 		}
-		
+
 		return modules;
 	}
 
@@ -177,19 +172,18 @@ public class PluginVdm2CUtil
 	{
 		return new File(getProjectDir(project), ECLIPSE_PROJECT_ROOT_FOLDER);
 	}
-	
 
 	public static File getCodeGenRuntimeLibFolder(IVdmProject project)
 	{
 		return getFolder(getEclipseProjectFolder(project), CODEGEN_RUNTIME_LIB_FOLDER);
 	}
-	
+
 	public static File getCCodeOutputFolder(IVdmProject project)
 			throws CoreException
 	{
 		File outputDir = getEclipseProjectFolder(project);
 		outputDir = getFolder(outputDir, ECLIPSE_PROJECT_SRC_FOLDER);
-		
+
 		return outputDir;
 	}
 
@@ -240,7 +234,8 @@ public class PluginVdm2CUtil
 		ILexLocation location = locationAssistant.findLocation(node);
 		if (location != null)
 		{
-			messageSb.append(" " + location.toShortString() + " in " + location.getFile().getAbsolutePath());
+			messageSb.append(" " + location.toShortString() + " in "
+					+ location.getFile().getAbsolutePath());
 		}
 
 		String reason = nodeInfo.getReason();
@@ -289,7 +284,7 @@ public class PluginVdm2CUtil
 	{
 		File resultingFolder = new File(parent, folder);
 		resultingFolder.mkdirs();
-		
+
 		return resultingFolder;
 	}
 
@@ -368,59 +363,56 @@ public class PluginVdm2CUtil
 					&& dialogResult[0] instanceof LaunchConfigData)
 			{
 				LaunchConfigData chosenConfig = (LaunchConfigData) dialogResult[0];
-				
+
 				return chosenConfig.getExp();
 			}
 		}
-		
+
 		return null;
 	}
 
-//	public static List<LaunchConfigData> getProjectLaunchConfigs(final IProject project)
-//	{
-//		List<LaunchConfigData> matches = new LinkedList<>();
-//
-//		try
-//		{
-//			ILaunchConfiguration[] configs = DebugPlugin.getDefault().getLaunchManager().getLaunchConfigurations();
-//
-//			for (ILaunchConfiguration launchConfig : configs)
-//			{
-//				String launchConfigProjectName = launchConfig.getAttribute(IDebugConstants.VDM_LAUNCH_CONFIG_PROJECT, "");
-//
-//				if (launchConfigProjectName != null && !launchConfigProjectName.equals("")
-//						&& launchConfigProjectName.equals(project.getName()))
-//				{
-//					String exp = launchConfig.getAttribute(IDebugConstants.VDM_LAUNCH_CONFIG_EXPRESSION, "");
-//					matches.add(new LaunchConfigData(launchConfig.getName(), exp));
-//				}
-//			}
-//		} catch (CoreException e)
-//		{
-//
-//			CodeGenConsole.GetInstance().printErrorln("Problem looking up launch configurations for project "
-//					+ project.getName() + ": " + e.getMessage());
-//			e.printStackTrace();
-//		}
-//		
-//		return matches;
-//	}
-	
+	// public static List<LaunchConfigData> getProjectLaunchConfigs(final IProject project)
+	// {
+	// List<LaunchConfigData> matches = new LinkedList<>();
+	//
+	// try
+	// {
+	// ILaunchConfiguration[] configs = DebugPlugin.getDefault().getLaunchManager().getLaunchConfigurations();
+	//
+	// for (ILaunchConfiguration launchConfig : configs)
+	// {
+	// String launchConfigProjectName = launchConfig.getAttribute(IDebugConstants.VDM_LAUNCH_CONFIG_PROJECT, "");
+	//
+	// if (launchConfigProjectName != null && !launchConfigProjectName.equals("")
+	// && launchConfigProjectName.equals(project.getName()))
+	// {
+	// String exp = launchConfig.getAttribute(IDebugConstants.VDM_LAUNCH_CONFIG_EXPRESSION, "");
+	// matches.add(new LaunchConfigData(launchConfig.getName(), exp));
+	// }
+	// }
+	// } catch (CoreException e)
+	// {
+	//
+	// CodeGenConsole.GetInstance().printErrorln("Problem looking up launch configurations for project "
+	// + project.getName() + ": " + e.getMessage());
+	// e.printStackTrace();
+	// }
+	//
+	// return matches;
+	// }
+
 	public static String dialect2Str(Dialect dialect)
 	{
-		if(dialect == Dialect.VDM_SL)
+		if (dialect == Dialect.VDM_SL)
 		{
 			return "VDM-SL";
-		}
-		else if(dialect == Dialect.VDM_PP)
+		} else if (dialect == Dialect.VDM_PP)
 		{
 			return "VDM++";
-		}
-		else if(dialect == Dialect.VDM_RT)
+		} else if (dialect == Dialect.VDM_RT)
 		{
 			return "VDM-RT";
-		}
-		else
+		} else
 		{
 			return null;
 		}
