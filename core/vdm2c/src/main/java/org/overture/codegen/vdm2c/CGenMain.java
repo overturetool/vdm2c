@@ -106,7 +106,7 @@ public class CGenMain
 				return;
 			}
 
-			files.addAll(filterFiles(GeneralUtils.getFiles(path)));
+			files.addAll(filterFiles(GeneralUtils.getFilesRecursively(path)));
 
 		}
 
