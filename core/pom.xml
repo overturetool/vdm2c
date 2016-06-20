@@ -34,26 +34,6 @@
         <artifactId>maven-javadoc-plugin</artifactId>
         <version>2.9</version>
       </plugin>
-<plugin>
-<artifactId>maven-assembly-plugin</artifactId>
-<configuration>
-<archive>
-<manifest>
-<addClasspath>true</addClasspath>
-<mainClass>org.overture.codegen.vdm2c.CGenMain</mainClass>
-</manifest>
-</archive>
-</configuration>
-<executions>
-<execution>
-<id>make-my-jar-with-dependencies</id>
-<phase>package</phase>
-<goals>
-<goal>single</goal>
-</goals>
-</execution>
-</executions>
-</plugin>
     </plugins>
   </build>
 
