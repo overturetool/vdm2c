@@ -22,6 +22,7 @@ import org.overture.ast.definitions.PDefinition;
 import org.overture.ast.definitions.SClassDefinitionBase;
 import org.overture.ast.expressions.AVariableExp;
 import org.overture.ast.node.INode;
+import org.overture.ast.statements.AFieldStateDesignator;
 import org.overture.ast.statements.AIdentifierStateDesignator;
 import org.overture.ast.types.AFunctionType;
 import org.overture.ast.types.AOperationType;
@@ -33,6 +34,7 @@ import org.overture.codegen.ir.declarations.AVarDeclIR;
 import org.overture.codegen.ir.declarations.SClassDeclIR;
 import org.overture.codegen.ir.expressions.AApplyExpIR;
 import org.overture.codegen.ir.expressions.AExplicitVarExpIR;
+import org.overture.codegen.ir.expressions.AFieldExpIR;
 import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
 import org.overture.codegen.ir.statements.AAssignToExpStmIR;
 import org.overture.codegen.ir.statements.ABlockStmIR;
@@ -302,5 +304,56 @@ DepthFirstAnalysisCAdaptor
 
 			replBlock.getStatements().add(exp2Stm(vdmFree));
 		}
+//		else if(node.getTarget() instanceof AFieldExpIR)
+//		{
+//			//Name of class containing the field being referenced.
+//			String fieldClassName = "ClassFieldAccessAccessor";
+//					//((AFieldStateDesignator)((AFieldExpIR)node.getTarget()).getSourceNode().getVdmNode()).toString();//.getName().getModule();
+//			
+//			
+//
+//			//This should be the target class, not the current node's class 
+//			SClassDeclIR cDef = CTransUtil.getClass(assist,  fieldClassName);			
+//
+//			//This assumes that the field is in the current class.
+//			//			if (fieldUtil.isStatic(cDef, target.getName()))
+//			//			{
+//			//				AFieldDeclIR field = fieldUtil.lookupField(cDef, target.getName());
+//			//				AIdentifierVarExpIR id = createIdentifier(field.getName(), target.getSourceNode());
+//			//				id.setType(target.getType().clone());
+//			//				assist.replaceNodeWith(node.getTarget(), id);
+//			//				return;
+//			//			}			
+//
+//			String name = assist.getInfo().getTempVarNameGen().nextVarName(fieldPrefix);
+//
+//			// process right side of assignment
+//			node.getExp().apply(THIS);
+//
+//			AVarDeclIR rightToTemp = newDeclarationAssignment(name, node.getExp().getType().clone(), node.getExp().clone(), node.getExp().getSourceNode());
+//
+//
+//			//The actual assignment to the static field.  The generator emits simple golbal variables for static fields.
+//			AAssignToExpStmIR staticFieldAssign = 
+//					newAssignment(newIdentifier(
+//							NameConverter.getCName(fieldUtil.lookupField(cDef, node.getTarget().toString())), null),
+//							newIdentifier(name, null));
+//
+//			AVarDeclIR retVar = newDeclarationAssignment(name, node.getExp().getType().clone(), newApply("vdmClone", node.getExp().clone()), node.getExp().getSourceNode());
+//
+//			ABlockStmIR replBlock = new ABlockStmIR();
+//			replBlock.setScoped(true);
+//			replBlock.getLocalDefs().add(rightToTemp);
+//
+//			assist.replaceNodeWith(node, replBlock);
+//
+//			replBlock.getStatements().add(staticFieldAssign);
+//
+//			AApplyExpIR vdmFree = new AApplyExpIR();
+//			vdmFree.setRoot(createIdentifier("vdmFree", node.getSourceNode()));
+//			vdmFree.getArgs().add(createIdentifier(name, retVar.getSourceNode()));
+//
+//			replBlock.getStatements().add(exp2Stm(vdmFree));
+//		}
 	}
 }
