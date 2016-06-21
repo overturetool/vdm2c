@@ -40,10 +40,10 @@ public class CreateGlobalStaticInitFunctionTrans extends
 			}
 		}
 
-		if (body.getStatements().isEmpty())
-		{
-			return;
-		}
+//		if (body.getStatements().isEmpty())
+//		{
+//			return;
+//		}
 
 		AMethodDeclIR method = newInternalMethod(String.format(GLOBAL_STATIC_INIT_FUNCTION_PATTERN, node.getName()), body, new AVoidTypeIR(), false);
 		method.setAccess("public");
@@ -63,10 +63,10 @@ public class CreateGlobalStaticInitFunctionTrans extends
 			}
 		}
 
-		if (body.getStatements().isEmpty())
-		{
-			return;
-		}
+//		if (body.getStatements().isEmpty())
+//		{
+//			return;
+//		}
 
 		AMethodDeclIR method = newInternalMethod(String.format(GLOBAL_STATIC_SHUTDOWN_FUNCTION_PATTERN, node.getName()), body, new AVoidTypeIR(), false);
 		method.setAccess("public");
