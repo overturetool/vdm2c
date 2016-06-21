@@ -40,11 +40,7 @@ public class CreateGlobalStaticInitFunctionTrans extends
 			}
 		}
 
-//		if (body.getStatements().isEmpty())
-//		{
-//			return;
-//		}
-
+		//Emit init function even if no static fields are present.  Simplifies FMU export.
 		AMethodDeclIR method = newInternalMethod(String.format(GLOBAL_STATIC_INIT_FUNCTION_PATTERN, node.getName()), body, new AVoidTypeIR(), false);
 		method.setAccess("public");
 		node.getMethods().add(method);
@@ -63,11 +59,7 @@ public class CreateGlobalStaticInitFunctionTrans extends
 			}
 		}
 
-//		if (body.getStatements().isEmpty())
-//		{
-//			return;
-//		}
-
+		//Emit shutdown function even if no static fields are present.  Simplifies FMU export.
 		AMethodDeclIR method = newInternalMethod(String.format(GLOBAL_STATIC_SHUTDOWN_FUNCTION_PATTERN, node.getName()), body, new AVoidTypeIR(), false);
 		method.setAccess("public");
 		node.getMethods().add(method);

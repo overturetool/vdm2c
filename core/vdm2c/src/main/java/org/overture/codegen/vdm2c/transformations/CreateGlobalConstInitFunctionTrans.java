@@ -39,11 +39,7 @@ public class CreateGlobalConstInitFunctionTrans extends
 			}
 		}
 
-//		if (body.getStatements().isEmpty())
-//		{
-//			return;
-//		}
-
+		//Emit init function even if no value fields are present.  Simplifies FMU export.
 		AMethodDeclIR method = newInternalMethod(String.format(GLOBAL_CONST_INIT_FUNCTION_PATTERN, node.getName()), body, new AVoidTypeIR(), false);
 		method.setAccess("public");
 		node.getMethods().add(method);
@@ -62,11 +58,7 @@ public class CreateGlobalConstInitFunctionTrans extends
 			}
 		}
 
-//		if (body.getStatements().isEmpty())
-//		{
-//			return;
-//		}
-
+		//Emit shutdown function even if no value fields are present.  Simplifies FMU export.
 		AMethodDeclIR method = newInternalMethod(String.format(GLOBAL_CONST_SHUTDOWN_FUNCTION_PATTERN, node.getName()), body, new AVoidTypeIR(), false);
 		method.setAccess("public");
 		node.getMethods().add(method);
