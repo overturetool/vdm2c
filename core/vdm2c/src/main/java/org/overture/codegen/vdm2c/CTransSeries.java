@@ -176,9 +176,9 @@ public class CTransSeries
 		transformations.add(new IfTrans(transAssistant));
 		transformations.add(new MapSeqUpdateRewriteTrans(transAssistant));
 		transformations.add(new SubClassResponsibilityMethodsTrans(transAssistant));
-		
-		// ExtractEmbeddedCreationsTrans requires that blocks doesn't have any local decelerations but that all is statements
 		transformations.add(new ScopeCleanerTrans(transAssistant));
+		
+//		ExtractEmbeddedCreationsTrans requires that blocks doesn't have any local decelerations but that all is statements
 		transformations.add(new ExtractEmbeddedCreationsTrans(transAssistant));
 
 		
@@ -187,7 +187,6 @@ public class CTransSeries
 		 * Phase #X - Remove any temporary nodes
 		 */
 		transformations.add(new RemoveCWrappersTrans(transAssistant));
-		transformations.add(new ScopeCleanerTrans(transAssistant));
 		transformations.add(new MethodVisibilityTrans(transAssistant));
 		// transformations.add(new VisualizeIRAST(transAssistant));
 		if(System.getProperty("disable.memmanagement") == null)
