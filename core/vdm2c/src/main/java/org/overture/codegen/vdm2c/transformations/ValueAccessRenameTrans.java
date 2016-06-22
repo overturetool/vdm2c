@@ -25,7 +25,7 @@ public class ValueAccessRenameTrans extends DepthFirstAnalysisCAdaptor
 	{
 		if (isValueDefinition(node))
 		{
-			fieldUtil.replace(node);
+			fieldUtil.replaceWithIdentifier(node);
 		}
 		super.caseAExplicitVarExpIR(node);
 	}

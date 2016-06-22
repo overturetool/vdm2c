@@ -35,7 +35,7 @@ import org.overture.codegen.trans.patterns.PatternTrans;
 import org.overture.codegen.trans.patterns.PatternVarPrefixes;
 import org.overture.codegen.trans.quantifier.Exists1CounterData;
 import org.overture.codegen.vdm2c.transformations.AddThisArgToMethodsTrans;
-import org.overture.codegen.vdm2c.transformations.CExp2StmTrans;
+import org.overture.codegen.vdm2c.transformations.SetCompToBlockTrans;
 import org.overture.codegen.vdm2c.transformations.CallRewriteTrans;
 import org.overture.codegen.vdm2c.transformations.CreateGlobalConstInitFunctionTrans;
 import org.overture.codegen.vdm2c.transformations.CreateGlobalStaticInitFunctionTrans;
@@ -47,7 +47,7 @@ import org.overture.codegen.vdm2c.transformations.FieldIdentifierToFieldGetApply
 import org.overture.codegen.vdm2c.transformations.ForLoopTrans;
 import org.overture.codegen.vdm2c.transformations.IfTrans;
 import org.overture.codegen.vdm2c.transformations.IgnoreRenamingTrans;
-import org.overture.codegen.vdm2c.transformations.InitializerExtractorTrans;
+import org.overture.codegen.vdm2c.transformations.FieldInitializerExtractorTrans;
 import org.overture.codegen.vdm2c.transformations.IsNotYetSpecifiedTrans;
 import org.overture.codegen.vdm2c.transformations.LetTrans;
 import org.overture.codegen.vdm2c.transformations.LiteralInstantiationRewriteTrans;
@@ -106,7 +106,7 @@ public class CTransSeries
 		 */
 		// Construct the transformations
 		transformations.add(new FuncTrans(transAssistant));
-		transformations.add(new InitializerExtractorTrans(transAssistant));
+		transformations.add(new FieldInitializerExtractorTrans(transAssistant));
 		transformations.add(new RemoveRTConstructs(transAssistant));
 
 		// Data and functionality to support the transformations
@@ -123,25 +123,25 @@ public class CTransSeries
 
 		// Construct the transformations
 		transformations.add(new AtomicStmTrans(transAssistant, varMan.atomicTmpVar()));
-		transformations.add(new FuncTrans(transAssistant));
 		transformations.add(new DivideTrans(info));
 		transformations.add(new CallObjStmTrans(info));
 		transformations.add(new AssignStmTrans(transAssistant));
 		// PrePostTrans prePostTr = new PrePostTrans(info);
 		transformations.add(new IfExpTrans(transAssistant));
+		
 		FuncValAssistant funcValAssist = new FuncValAssistant();
 		transformations.add(new FuncValTrans(transAssistant, funcValAssist, funcValPrefixes));
+		
 		// ILanguageIterator langIte = new JavaLanguageIterator(transAssist, iteVarPrefixes);
 		AbstractLanguageIterator langIte = new CForIterator(transAssistant, iteVarPrefixes);
 		transformations.add(new LetBeStTrans(transAssistant, langIte, iteVarPrefixes));
 
 		transformations.add(new WhileStmTrans(transAssistant, varMan.whileCond()));
-		transformations.add(new CExp2StmTrans(iteVarPrefixes, transAssistant, consExists1CounterData(), langIte, exp2stmPrefixes));
+		transformations.add(new SetCompToBlockTrans(iteVarPrefixes, transAssistant, consExists1CounterData(), langIte, exp2stmPrefixes));
 		transformations.add(new PatternTrans(iteVarPrefixes, transAssistant, patternPrefixes, varMan.casesExp()));
-		// transformations.add(new RemoveSetCompAddTrans(transAssist));
-
 		transformations.add(new MethodReturnInsertTrans(transAssistant));
-		/* C transformations */
+		
+		
 
 		/**
 		 * Phase #1 - Rewrite all standard C nodes to match C 1-to-1<br/>
@@ -156,6 +156,8 @@ public class CTransSeries
 		transformations.add(new StaticFieldAccessRenameTrans(transAssistant));
 		transformations.add(new LetTrans(transAssistant));
 
+		
+		
 		/**
 		 * Phase #2 - Not defined yet.
 		 */
@@ -163,9 +165,7 @@ public class CTransSeries
 		transformations.add(new CreateGlobalStaticInitFunctionTrans(transAssistant));
 		transformations.add(new AddThisArgToMethodsTrans(transAssistant));
 		transformations.add(new MangleMethodNamesTrans(transAssistant));
-		// not name mangle
 		transformations.add(new IsNotYetSpecifiedTrans(transAssistant));
-
 		transformations.add(new CallRewriteTrans(transAssistant));
 		transformations.add(new ExtractRetValTrans(transAssistant));
 		transformations.add(new FieldIdentifierToFieldGetApplyTrans(transAssistant));
@@ -181,6 +181,8 @@ public class CTransSeries
 		transformations.add(new ScopeCleanerTrans(transAssistant));
 		transformations.add(new ExtractEmbeddedCreationsTrans(transAssistant));
 
+		
+		
 		/**
 		 * Phase #X - Remove any temporary nodes
 		 */

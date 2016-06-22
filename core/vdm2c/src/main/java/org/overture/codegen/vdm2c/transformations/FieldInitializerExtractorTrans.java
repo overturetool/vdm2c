@@ -15,12 +15,12 @@ import org.overture.codegen.ir.declarations.SClassDeclIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.utils.NameMangler;
 
-public class InitializerExtractorTrans extends DepthFirstAnalysisCAdaptor
+public class FieldInitializerExtractorTrans extends DepthFirstAnalysisCAdaptor
 {
 	private static final String FIELD_INITIALIZER = "fieldInitializer";
 	public TransAssistantIR assist;
 
-	public InitializerExtractorTrans(TransAssistantIR assist)
+	public FieldInitializerExtractorTrans(TransAssistantIR assist)
 	{
 		this.assist = assist;
 	}

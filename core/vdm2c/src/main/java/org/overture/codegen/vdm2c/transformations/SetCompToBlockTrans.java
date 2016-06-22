@@ -25,10 +25,10 @@ import org.overture.codegen.vdm2c.utils.CSetCompStrategy;
  * 
  * @author kel
  */
-public class CExp2StmTrans extends Exp2StmTrans
+public class SetCompToBlockTrans extends Exp2StmTrans
 {
 
-	public CExp2StmTrans(IterationVarPrefixes iteVarPrefixes,
+	public SetCompToBlockTrans(IterationVarPrefixes iteVarPrefixes,
 			TransAssistantIR transAssistant, Exists1CounterData counterData,
 			ILanguageIterator langIterator, Exp2StmVarPrefixes prefixes)
 	{

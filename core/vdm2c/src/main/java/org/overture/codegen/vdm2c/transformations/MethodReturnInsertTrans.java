@@ -65,11 +65,11 @@ public class MethodReturnInsertTrans extends DepthFirstAnalysisCAdaptor
 
 		} else if (body instanceof AElseIfStmIR)
 		{
-AElseIfStmIR elif = (AElseIfStmIR) body;
-insertReturn(elif.getThenStm());
-//if(elif.getThenStm().getElseIf()!=null)
-//insertReturn(toStm(elif.getElseIf()));
-return;
+			AElseIfStmIR elif = (AElseIfStmIR) body;
+			insertReturn(elif.getThenStm());
+			//if(elif.getThenStm().getElseIf()!=null)
+			//insertReturn(toStm(elif.getElseIf()));
+			return;
 
 		} else if (body instanceof AIfStmIR)
 		{

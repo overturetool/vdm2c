@@ -26,7 +26,7 @@ public class GlobalFieldUtil
 		this.assist = assist;
 	}
 
-	public void replace(AExplicitVarExpIR node)
+	public void replaceWithIdentifier(AExplicitVarExpIR node)
 	{
 		AFieldDeclIR field = lookupField(CTransUtil.getClass(assist, ((AClassTypeIR) node.getClassType()).getName()), node.getName());
 		AIdentifierVarExpIR identifier = newIdentifier(NameConverter.getCName(field), node.getSourceNode());
