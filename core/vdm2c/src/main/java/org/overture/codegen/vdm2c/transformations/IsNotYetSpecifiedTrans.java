@@ -41,7 +41,7 @@ public class IsNotYetSpecifiedTrans extends DepthFirstAnalysisCAdaptor
 		String name = String.format(externalMethodName, classDef.getName(), NameMangler.getName(method.getName()));
 		AMethodDeclIR externMethod = newInternalMethod(name, null, method.getMethodType().getResult().clone(),true);
 		externMethod.setFormalParams((List<? extends AFormalParamLocalParamIR>) method.getFormalParams().clone());
-		// remove this
+		// remove "this" added by "AddThisArgToMethodTrans".
 		externMethod.getFormalParams().remove(0);
 
 		externMethod.setName(name);
@@ -60,7 +60,7 @@ public class IsNotYetSpecifiedTrans extends DepthFirstAnalysisCAdaptor
 				throw new AnalysisException("Found not supported pattern in call to external 'is not yet specified' method");
 			}
 		}
-		// remove this
+		// remove "this" added by "AddThisArgToMethodTrans".
 		apply.getArgs().remove(0);
 
 		// handle both functions and operations
