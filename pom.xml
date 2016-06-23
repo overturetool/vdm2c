@@ -359,21 +359,21 @@ http://mojo.codehaus.org/versions-maven-plugin/
 		<url>http://overturetool.org/</url>
 	</organization>
 
-	<inceptionYear>2015</inceptionYear>
+	<inceptionYear>2016</inceptionYear>
 
 
-<distributionManagement>
+	<distributionManagement>
     <repository>
-        <id>overture.au.dk</id>
-        <name>overture.au.dk-releases</name>
-        <url>http://overture.au.dk/artifactory/overture-development-vdm2c</url>
+      <id>overture.au.dk</id>
+      <name>overture.au.dk-releases</name>
+      <url>http://overture.au.dk/artifactory/overture-vdm2c</url>
     </repository>
     <snapshotRepository>
-        <id>overture.au.dk</id>
-        <name>overture.au.dk-snapshots</name>
-        <url>http://overture.au.dk/artifactory/overture-development-vdm2c</url>
+      <id>overture.au.dk</id>
+      <name>overture.au.dk-snapshots</name>
+      <url>http://overture.au.dk/artifactory/overture-vdm2c</url>
     </snapshotRepository>
-</distributionManagement>
+	</distributionManagement>
 
 
 
