@@ -16,10 +16,10 @@ public class CExamplesTest extends BaseGeneratorTest
 	public void ExpressionForLoop() throws IOException, InterruptedException,
 			CMakeGenerateException
 	{
-		String outputFolder = new File("target/test-cgen/"
-				+ CExamplesTest.class.getSimpleName()
-				+ "/ExpressionForLoop".replace('/', File.separatorChar)).getAbsolutePath();
-
+		//Example.
+		
+		String outputFolder = "";
+		
 		CGenMain.main(new String[] { "-dest", outputFolder,
 				getPath("expressions/ExpressionForLoop.vdmrt") });
 

@@ -12,6 +12,7 @@ import org.overture.codegen.ir.statements.ABlockStmIR;
 import org.overture.codegen.ir.statements.AReturnStmIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 
+//Extract return value to local variable and return that.
 public class ExtractRetValTrans extends DepthFirstAnalysisCAdaptor
 {
 	public TransAssistantIR assist;

@@ -51,12 +51,4 @@ public class NewRewriteTrans extends DepthFirstAnalysisCAdaptor
 		}
 
 	}
-
-	@Override
-	public void caseANewObjectDesignatorIR(ANewObjectDesignatorIR node)
-			throws AnalysisException
-	{
-		// TODO Auto-generated method stub
-		super.caseANewObjectDesignatorIR(node);
-	}
 }

@@ -35,19 +35,19 @@ import org.overture.codegen.trans.patterns.PatternTrans;
 import org.overture.codegen.trans.patterns.PatternVarPrefixes;
 import org.overture.codegen.trans.quantifier.Exists1CounterData;
 import org.overture.codegen.vdm2c.transformations.AddThisArgToMethodsTrans;
-import org.overture.codegen.vdm2c.transformations.SetCompToBlockTrans;
 import org.overture.codegen.vdm2c.transformations.CallRewriteTrans;
 import org.overture.codegen.vdm2c.transformations.CreateGlobalConstInitFunctionTrans;
 import org.overture.codegen.vdm2c.transformations.CreateGlobalStaticInitFunctionTrans;
 import org.overture.codegen.vdm2c.transformations.CtorTrans;
 import org.overture.codegen.vdm2c.transformations.ExtractEmbeddedCreationsTrans;
 import org.overture.codegen.vdm2c.transformations.ExtractRetValTrans;
+import org.overture.codegen.vdm2c.transformations.FieldAssignToFieldSetMacroTrans;
 import org.overture.codegen.vdm2c.transformations.FieldExpRewriteTrans;
-import org.overture.codegen.vdm2c.transformations.FieldIdentifierToFieldGetApplyTrans;
+import org.overture.codegen.vdm2c.transformations.FieldInitializerExtractorTrans;
+import org.overture.codegen.vdm2c.transformations.FieldReadToFieldGetMacroTrans;
 import org.overture.codegen.vdm2c.transformations.ForLoopTrans;
 import org.overture.codegen.vdm2c.transformations.IfTrans;
 import org.overture.codegen.vdm2c.transformations.IgnoreRenamingTrans;
-import org.overture.codegen.vdm2c.transformations.FieldInitializerExtractorTrans;
 import org.overture.codegen.vdm2c.transformations.IsNotYetSpecifiedTrans;
 import org.overture.codegen.vdm2c.transformations.LetTrans;
 import org.overture.codegen.vdm2c.transformations.LiteralInstantiationRewriteTrans;
@@ -62,6 +62,7 @@ import org.overture.codegen.vdm2c.transformations.RemoveCWrappersTrans;
 import org.overture.codegen.vdm2c.transformations.RemoveRTConstructs;
 import org.overture.codegen.vdm2c.transformations.RenameFieldsTrans;
 import org.overture.codegen.vdm2c.transformations.ScopeCleanerTrans;
+import org.overture.codegen.vdm2c.transformations.SetCompToBlockTrans;
 import org.overture.codegen.vdm2c.transformations.StaticFieldAccessRenameTrans;
 import org.overture.codegen.vdm2c.transformations.SubClassResponsibilityMethodsTrans;
 import org.overture.codegen.vdm2c.transformations.ValueAccessRenameTrans;
@@ -168,7 +169,8 @@ public class CTransSeries
 		transformations.add(new IsNotYetSpecifiedTrans(transAssistant));
 		transformations.add(new CallRewriteTrans(transAssistant));
 		transformations.add(new ExtractRetValTrans(transAssistant));
-		transformations.add(new FieldIdentifierToFieldGetApplyTrans(transAssistant));
+		transformations.add(new FieldAssignToFieldSetMacroTrans(transAssistant));
+		transformations.add(new FieldReadToFieldGetMacroTrans(transAssistant));
 		transformations.add(new CtorTrans(transAssistant));
 		transformations.add(new NewRewriteTrans(transAssistant));
 		transformations.add(new IgnoreRenamingTrans(transAssistant));
@@ -188,11 +190,6 @@ public class CTransSeries
 		 */
 		transformations.add(new RemoveCWrappersTrans(transAssistant));
 		transformations.add(new MethodVisibilityTrans(transAssistant));
-		// transformations.add(new VisualizeIRAST(transAssistant));
-		if(System.getProperty("disable.memmanagement") == null)
-		{			
-//			transformations.add(new FreeLocalBlockDeclsTrans(transAssistant));
-		}
 
 		return transformations;
 	}

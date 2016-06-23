@@ -3,18 +3,37 @@ class ClassFieldAccess
 instance variables
 
 public field : int := 9;
+public field2 : int := 11;
 
 public static fieldStatic : bool := true;
+
+
 
 functions
 
 public fun: ()->bool
 fun()==true;
 
+
+
 operations
 
 public op : int ==>bool
 op(-)==return true;
+
+public op2 : () ==> bool
+op2() ==
+(
+	field := 10;
+	return field = 10;
+);
+
+public op3 : () ==> bool
+op3() ==
+(
+	field := field2;
+	return field = 11;
+);
 
 
 public static opStatic : int ==> bool
@@ -67,8 +86,8 @@ accessFun()== return c.fun();
 public setField : () ==> bool
 setField() ==
 (
-	cinst.field := 10;
-	return cinst.field = 10;
+	cinst.field := 99;
+	return cinst.field = 99;
 )
 
 end ClassFieldAccessAccessor
