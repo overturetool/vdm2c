@@ -16,7 +16,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<overture.version>2.3.1-SNAPSHOT</overture.version>
+		<overture.version>2.3.6</overture.version>
 	</properties>
 
 
@@ -316,9 +316,9 @@ http://mojo.codehaus.org/versions-maven-plugin/
 	</build>
 
 	<scm>
-		<url>git@github.com:overturetool/overture.git</url>
-		<connection>scm:git:git://github.com/overturetool/overture.git</connection>
-		<developerConnection>scm:git:git@github.com:overturetool/overture.git</developerConnection>
+		<url>git@github.com:overturetool/vdm2c.git</url>
+		<connection>scm:git:git://github.com/overturetool/vdm2c.git</connection>
+		<developerConnection>scm:git:git@github.com:overturetool/vdm2c.git</developerConnection>
 		<tag>HEAD</tag>
 	</scm>
 
@@ -359,5 +359,22 @@ http://mojo.codehaus.org/versions-maven-plugin/
 		<url>http://overturetool.org/</url>
 	</organization>
 
-	<inceptionYear>2015</inceptionYear>
+	<inceptionYear>2016</inceptionYear>
+
+
+	<distributionManagement>
+    <repository>
+      <id>overture.au.dk</id>
+      <name>overture.au.dk-releases</name>
+      <url>http://overture.au.dk/artifactory/overture-vdm2c</url>
+    </repository>
+    <snapshotRepository>
+      <id>overture.au.dk</id>
+      <name>overture.au.dk-snapshots</name>
+      <url>http://overture.au.dk/artifactory/overture-vdm2c</url>
+    </snapshotRepository>
+	</distributionManagement>
+
+
+
 </project>
