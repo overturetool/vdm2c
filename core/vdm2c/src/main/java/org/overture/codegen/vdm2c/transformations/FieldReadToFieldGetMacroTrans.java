@@ -21,6 +21,7 @@ import org.overture.ast.types.AFunctionType;
 import org.overture.ast.types.AOperationType;
 import org.overture.cgc.extast.analysis.DepthFirstAnalysisCAdaptor;
 import org.overture.codegen.ir.analysis.AnalysisException;
+import org.overture.codegen.ir.expressions.AFieldExpIR;
 import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
 import org.overture.codegen.ir.statements.AAssignToExpStmIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
@@ -47,6 +48,19 @@ DepthFirstAnalysisCAdaptor
 		this.assist = assist;
 		this.fieldUtil = new GlobalFieldUtil(assist);
 	}
+	
+	
+	@Override
+	public void caseAFieldExpIR(AFieldExpIR node) throws AnalysisException
+	{
+		// TODO Auto-generated method stub
+		super.caseAFieldExpIR(node);
+		
+		
+		//Differentiate here between public field get and set.
+		
+	}
+	
 
 	@Override
 	public void caseAIdentifierVarExpIR(AIdentifierVarExpIR node)

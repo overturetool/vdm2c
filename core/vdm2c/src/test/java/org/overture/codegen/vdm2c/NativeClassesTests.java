@@ -130,11 +130,11 @@ public class NativeClassesTests extends NativeTestBase
 	
 	@ConditionalIgnore(condition = HasVdmLib.class)
 	@Test
-	public void ClassStaticFieldsTMP() throws IOException,
+	public void ClassPublicFieldsTMP() throws IOException,
 			InterruptedException, CMakeGenerateException
 	{
-		generate(getPath("classes/ClassStaticFieldsTMP.vdmrt"));
-		compileAndTest();
+		generate(getPath("classes/ClassPublicFieldsTMP.vdmrt"));
+//		compileAndTest();
 	}
 	
 	@ConditionalIgnore(condition = HasVdmLib.class)
