@@ -85,7 +85,7 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 			SStmIR staticcall;
 			String tmpVarName = assist.getInfo().getTempVarNameGen().nextVarName("TmpVar");
 			
-//			//Declare and initialize temporary object for class containing static method in static init function.
+			//Declare and initialize temporary object for class containing static method in static init function.
 			AMethodDeclIR constr = new AMethodDeclIR();
 			AMethodDeclIR enclosing = new AMethodDeclIR();
 			org.overture.codegen.ir.INode tmpnode = node;
@@ -115,7 +115,6 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 						null));
 				
 			//Call static function instead.
-			//staticcall = exp2Stm(createLocalPtrApply(resolvedMethods.get(0), cDef.getName(), node.getArgs()));
 			staticcall = exp2Stm(createClassApply(resolvedMethods.get(0), cDef.getName(), createIdentifier(tmpVarName, null), node.getArgs()));
 //			//Free the temporary object.  should be taken care of by other transformations.
 			
@@ -125,6 +124,7 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 		}
 		else
 		{
+			//Not a static method.
 			// FIXME: we need to consider all methods not only the first one
 			SStmIR apple = exp2Stm(createLocalPtrApply(resolvedMethods.get(0), cDef.getName(), node.getArgs()));
 			apple.setSourceNode(node.getSourceNode());
@@ -205,16 +205,21 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 	@Override
 	public void caseAApplyExpIR(AApplyExpIR node) throws AnalysisException
 	{
+		//Map or sequence lookup, or function call.
+		
 		SExpIR rootNode = node.getRoot();
 
 		List<AMethodDeclIR> resolvedMethods;
 		
+		//Local map or sequence lookup.
 		if (rootNode instanceof AIdentifierVarExpIR)
 		{
 			AIdentifierVarExpIR root = (AIdentifierVarExpIR) rootNode;
 			replaceNonStaticApplyWithMacro(root.getType(), root.getName(), null, node);
 
-		} else if (rootNode instanceof AFieldExpIR)
+		} 
+		//Field variable, map or sequence.
+		else if (rootNode instanceof AFieldExpIR)
 		{
 			AFieldExpIR field = (AFieldExpIR) rootNode;
 			replaceNonStaticApplyWithMacro(field.getType(), field.getMemberName(), field.getObject(), node);
@@ -251,7 +256,6 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 			//Handle case of static call outside of method.
 			while(!(tmpnode instanceof AMethodDeclIR))
 			{
-				//TODO:  Something before this leaves parent node null.
 				tmpnode = tmpnode.parent();
 			}
 			enclosing = (AMethodDeclIR)tmpnode;
@@ -369,6 +373,7 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 	public void caseACallObjectExpStmIR(ACallObjectExpStmIR node)
 			throws AnalysisException
 	{
+		//Method call on an object.
 		super.caseACallObjectExpStmIR(node);
 
 		INode objectVdmType = node.getObj().getType().getSourceNode().getVdmNode();
