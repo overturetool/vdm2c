@@ -1,0 +1,8 @@
+class ClassInstanceVariableSeqAssignTest is subclass of TestCase, ClassInstanceVariableSeqAssign
+
+operations
+
+public testGetField0Test : () ==>()
+testGetField0Test()==assertTrue( getField0Test());
+
+end ClassInstanceVariableSeqAssignTest
