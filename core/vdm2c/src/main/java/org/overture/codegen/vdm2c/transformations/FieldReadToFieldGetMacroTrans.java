@@ -51,6 +51,7 @@ DepthFirstAnalysisCAdaptor
 	}
 
 
+	//The case obj.field where the public field of an instance of an external class is read.
 	@Override
 	public void caseAFieldExpIR(AFieldExpIR node) throws AnalysisException
 	{
@@ -164,68 +165,78 @@ DepthFirstAnalysisCAdaptor
 //		}	
 	}
 
-
-//		@Override
-//		public void caseAIdentifierVarExpIR(AIdentifierVarExpIR node)
-//				throws AnalysisException
-//		{
-//			if (node.getIsLocal())
-//			{
-//				return;
-//			}
-//			
-//			if(node.parent() instanceof AAssignToExpStmIR)
-//			{
-//				//Assignment handled differently in its own transformation.
-//				return;
-//			}
+	//The case field where a field local to this class is read.
+		@Override
+		public void caseAIdentifierVarExpIR(AIdentifierVarExpIR node)
+				throws AnalysisException
+		{
+			String thisClassName = null;
+			String fieldClassName = null;
+	
+			//The only way to differentiate a variable expression from, say, a function call at this level is to check the VDM node.
+						
+			INode vdmNode = null;
+			
+			//Some transformed nodes have null sources because they are new in the tree.
+			if(node.getSourceNode() != null)
+			{
+				vdmNode = node.getSourceNode().getVdmNode();	
+			}
+			
+			if (vdmNode instanceof AVariableExp)
+			{
+				if(node.parent() instanceof AAssignToExpStmIR)
+				{
+					if(node == ((AAssignToExpStmIR)node.parent()).getTarget())
+					{
+						//Assignment handled differently in its own transformation.
+						return;
+					}
+				}
+				
+				//This kind of node appears all over the place.  Need to make sure it is a field of the current class.
+				
+				AVariableExp varExp = (AVariableExp) vdmNode;
+	
+				if (varExp.getType() instanceof AFunctionType
+						|| varExp.getType() instanceof AOperationType)
+				{
+					return;
+				}
+	
+				thisClassName = varExp.getAncestor(AClassClassDefinition.class).getName().getName();// the containing
+				// class
+				fieldClassName = thisClassName; // default to same class
+	
+				if (varExp.getVardef() instanceof AInheritedDefinition)
+				{
+					AInheritedDefinition idef = (AInheritedDefinition) varExp.getVardef();
+					fieldClassName = idef.getClassDefinition().getName().getName();
+				}
+	
+				PDefinition vardef = CTransUtil.unwrapInheritedDef(varExp.getVardef());
+	
+				if (vardef instanceof AInstanceVariableDefinition)
+				{
+					if (vardef.getAccess().getStatic() != null)
+					{
+						fieldUtil.replaceWithStaticReference(vardef.getClassDefinition(), node);
+						return;
+					}
+	
+				} else if (vardef instanceof ALocalDefinition
+						&& ((ALocalDefinition) vardef).getValueDefinition())
+				{
+					if (vardef.getAccess().getStatic() != null)
+					{
+						fieldUtil.replaceWithStaticReference(vardef.getClassDefinition(), node);
+						return;
+					}
+					return;
+				}
 //	
-//			String thisClassName = null;
-//			String fieldClassName = null;
-//	
-//			INode vdmNode = node.getSourceNode().getVdmNode();
-//			if (vdmNode instanceof AVariableExp)
-//			{
-//				AVariableExp varExp = (AVariableExp) vdmNode;
-//	
-//				if (varExp.getType() instanceof AFunctionType
-//						|| varExp.getType() instanceof AOperationType)
-//				{
-//					return;
-//				}
-//	
-//				thisClassName = varExp.getAncestor(AClassClassDefinition.class).getName().getName();// the containing
-//				// class
-//				fieldClassName = thisClassName; // default to same class
-//	
-//				if (varExp.getVardef() instanceof AInheritedDefinition)
-//				{
-//					AInheritedDefinition idef = (AInheritedDefinition) varExp.getVardef();
-//					fieldClassName = idef.getClassDefinition().getName().getName();
-//				}
-//	
-//				PDefinition vardef = CTransUtil.unwrapInheritedDef(varExp.getVardef());
-//	
-//				if (vardef instanceof AInstanceVariableDefinition)
-//				{
-//					if (vardef.getAccess().getStatic() != null)
-//					{
-//						fieldUtil.replaceWithStaticReference(vardef.getClassDefinition(), node);
-//						return;
-//					}
-//	
-//				} else if (vardef instanceof ALocalDefinition
-//						&& ((ALocalDefinition) vardef).getValueDefinition())
-//				{
-//					if (vardef.getAccess().getStatic() != null)
-//					{
-//						fieldUtil.replaceWithStaticReference(vardef.getClassDefinition(), node);
-//						return;
-//					}
-//					return;
-//				}
-//	
-//			} else if (vdmNode instanceof AIdentifierStateDesignator)
+			} 
+//				else if (vdmNode instanceof AIdentifierStateDesignator)
 //			{
 //				AIdentifierStateDesignator designator = (AIdentifierStateDesignator) vdmNode;
 //	
@@ -273,21 +284,21 @@ DepthFirstAnalysisCAdaptor
 //				}
 //			}
 //	
-//			if (thisClassName != null && fieldClassName != null)
-//			{
-//	
-//				AMacroApplyExpIR apply = newMacroApply(GET_FIELD_PTR);
-//				assist.replaceNodeWith(node, apply);
-//	
-//				// add this type
-//				apply.getArgs().add(createIdentifier(thisClassName, node.getSourceNode()));
-//				// add field owner type
-//				apply.getArgs().add(createIdentifier(fieldClassName, node.getSourceNode()));
-//				// add this
-//				apply.getArgs().add(createIdentifier("this", node.getSourceNode()));
-//				// add field name
-//				apply.getArgs().add(node);
-//				apply.setType(node.getType());
-//			}
-//		}
+			if (thisClassName != null && fieldClassName != null)
+			{
+	
+				AMacroApplyExpIR apply = newMacroApply(GET_FIELD_PTR);
+				assist.replaceNodeWith(node, apply);
+	
+				// add this type
+				apply.getArgs().add(createIdentifier(thisClassName, node.getSourceNode()));
+				// add field owner type
+				apply.getArgs().add(createIdentifier(fieldClassName, node.getSourceNode()));
+				// add this
+				apply.getArgs().add(createIdentifier("this", node.getSourceNode()));
+				// add field name
+				apply.getArgs().add(node);
+				apply.setType(node.getType());
+			}
+		}
 }
