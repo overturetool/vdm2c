@@ -3,6 +3,12 @@ types
 	Mytype = int | bool;
 
 instance variables
-	instvar : Mytype := false;
-				
+	var1 : Mytype := false;
+	var2 : Mytype := 3;
+
+operations
+	fun : () ==> Mytype
+	fun()==
+		return var1 and var2;
+			
 end ClassScratchWork

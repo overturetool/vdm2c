@@ -24,6 +24,8 @@ import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.expressions.AFieldExpIR;
 import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
 import org.overture.codegen.ir.statements.AAssignToExpStmIR;
+import org.overture.codegen.ir.statements.AFieldStateDesignatorIR;
+import org.overture.codegen.ir.statements.AIdentifierStateDesignatorIR;
 import org.overture.codegen.ir.types.AClassTypeIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.extast.expressions.AMacroApplyExpIR;
@@ -165,7 +167,28 @@ DepthFirstAnalysisCAdaptor
 //		}	
 	}
 
+	
+	//These two are for when the field is getting assigned to.
+	
+//	@Override
+//	public void caseAFieldStateDesignatorIR(AFieldStateDesignatorIR node)
+//			throws AnalysisException
+//	{
+//		// TODO Auto-generated method stub
+//		super.caseAFieldStateDesignatorIR(node);
+//	}
+//	
+//	@Override
+//	public void caseAIdentifierStateDesignatorIR(
+//			AIdentifierStateDesignatorIR node) throws AnalysisException
+//	{
+//		// TODO Auto-generated method stub
+//		super.caseAIdentifierStateDesignatorIR(node);
+//	}
+	
 	//The case field where a field local to this class is read.
+	//Need to determine whether the identifier expression refers to a field or to some other variable.  Can be done by searchgin through
+	//the fields of the class, or by using !isLocal().
 		@Override
 		public void caseAIdentifierVarExpIR(AIdentifierVarExpIR node)
 				throws AnalysisException
