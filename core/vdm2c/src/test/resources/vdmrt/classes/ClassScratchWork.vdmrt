@@ -1,0 +1,8 @@
+class ClassScratchWork
+types
+	Mytype = int | bool;
+
+instance variables
+	instvar : Mytype := false;
+				
+end ClassScratchWork
