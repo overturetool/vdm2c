@@ -47,21 +47,22 @@ DepthFirstAnalysisCAdaptor
 		
 		//Differentiate here between public field get and set.
 
+		//The remainder of the transformation does not yet deal with inherited field definitions.
+		String thisClassName = node.getAncestor(SClassDeclIR.class).getName();
+		String fieldClassName = null;
+		AFieldExpIR tmpnode = node.clone();
+		
+		
+		
+		
 
-		//Ensure we are not in an assignment statement.
-		if(node.parent() instanceof AAssignToExpStmIR)
+		for(SClassDeclIR c : assist.getInfo().getClasses())
 		{
-			if(((AAssignToExpStmIR)node.parent()).getTarget() == node)
+			if(fieldUtil.lookupField(c,  node.getMemberName()) != null)
 			{
-				//Current field expression is the target of an assignment.  This is handled elsewhere.
-				return;
+				fieldClassName = fieldUtil.lookupFieldClass(c, node.getMemberName());
 			}
 		}
-
-		//The remainder of the transformation does not yet deal with inherited field definitions.
-//		String thisClassName = node.getAncestor(SClassDeclIR.class).getName();
-		String fieldClassName = ((AClassTypeIR)((AIdentifierVarExpIR)node.getObject()).getType()).getName();
-		AFieldExpIR tmpnode = node.clone();
 
 		AMacroApplyExpIR apply = newMacroApply(GET_FIELD_PTR);
 		assist.replaceNodeWith(node, apply);
@@ -193,6 +194,11 @@ DepthFirstAnalysisCAdaptor
 					((AAssignToExpStmIR)node.parent()).getTarget() == node)
 			{
 				//Current field is being assigned to, handled elsewhere.
+				return;
+			}
+			
+			if(node.parent() instanceof AFieldExpIR)
+			{
 				return;
 			}
 			
