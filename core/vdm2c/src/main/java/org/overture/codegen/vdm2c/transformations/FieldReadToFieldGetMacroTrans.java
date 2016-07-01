@@ -187,13 +187,12 @@ DepthFirstAnalysisCAdaptor
 				
 				return;
 			}
-			if(node.parent() instanceof AAssignToExpStmIR)
+			if(node.parent() instanceof AAssignToExpStmIR &&
+					((AAssignToExpStmIR)node.parent()).getTarget() == node)
 			{
+				//Current field is being assigned to, handled elsewhere.
 				return;
 			}
-			
-				
-	
 			
 			thisClassName = node.getSourceNode().getVdmNode().getAncestor(SClassDefinitionBase.class).getName().getName();
 			fieldClassName = thisClassName; // default to same class

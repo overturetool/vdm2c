@@ -14,10 +14,47 @@ public getField1Test : () ==> bool
 getField1Test() ==
 	return getField1() = 9;
 	
+	
+	
 public getFieldSum : () ==> int
 getFieldSum() == return field1 + field2;
 
+public getFieldSumTest : () ==> bool
+getFieldSumTest() ==
+	return getFieldSum() = 19;
+
+
+	
 public setField1: int ==> ()
 setField1(v)== field1:=v;
+
+public setField1Test : () ==> bool
+setField1Test() ==
+(
+	setField1(11);
+	return field1 = 11;
+);
+
+public setField1UsingField2AsParamTest : () ==> bool
+setField1UsingField2AsParamTest() ==
+(
+	setField1(field2);
+	return field1 = field2;
+);
+
+
+
+public assignField2ToField1 : () ==> ()
+assignField2ToField1() ==
+(
+	field2 := field1;
+);
+
+public assignField2ToField1Test : () ==> bool
+assignField2ToField1Test() ==
+(
+	assignField2ToField1();
+	return field2 = field1
+);
 
 end ClassInstanceVariable

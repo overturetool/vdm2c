@@ -136,7 +136,6 @@ public class CTransSeries
 		// ILanguageIterator langIte = new JavaLanguageIterator(transAssist, iteVarPrefixes);
 		AbstractLanguageIterator langIte = new CForIterator(transAssistant, iteVarPrefixes);
 		transformations.add(new LetBeStTrans(transAssistant, langIte, iteVarPrefixes));
-
 		transformations.add(new WhileStmTrans(transAssistant, varMan.whileCond()));
 		transformations.add(new SetCompToBlockTrans(iteVarPrefixes, transAssistant, consExists1CounterData(), langIte, exp2stmPrefixes));
 		transformations.add(new PatternTrans(iteVarPrefixes, transAssistant, patternPrefixes, varMan.casesExp()));
