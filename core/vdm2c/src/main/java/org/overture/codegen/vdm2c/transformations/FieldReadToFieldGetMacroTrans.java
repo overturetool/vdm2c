@@ -202,6 +202,11 @@ DepthFirstAnalysisCAdaptor
 				return;
 			}
 			
+			if(node.parent() instanceof AExplicitVarExpIR)
+			{
+				return;
+			}
+			
 			thisClassName = node.getSourceNode().getVdmNode().getAncestor(SClassDefinitionBase.class).getName().getName();
 			fieldClassName = thisClassName; // default to same class
 
