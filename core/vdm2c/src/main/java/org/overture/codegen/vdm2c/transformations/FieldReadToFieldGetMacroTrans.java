@@ -4,32 +4,15 @@ import static org.overture.codegen.vdm2c.utils.CTransUtil.GET_FIELD_PTR;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.createIdentifier;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newMacroApply;
 
-import java.util.List;
-import java.util.Vector;
-
-import org.overture.ast.definitions.AClassClassDefinition;
-import org.overture.ast.definitions.AInheritedDefinition;
-import org.overture.ast.definitions.AInstanceVariableDefinition;
-import org.overture.ast.definitions.ALocalDefinition;
-import org.overture.ast.definitions.ASystemClassDefinition;
-import org.overture.ast.definitions.PDefinition;
 import org.overture.ast.definitions.SClassDefinitionBase;
-import org.overture.ast.expressions.AVariableExp;
-import org.overture.ast.node.INode;
-import org.overture.ast.statements.AIdentifierStateDesignator;
-import org.overture.ast.types.AFunctionType;
-import org.overture.ast.types.AOperationType;
 import org.overture.cgc.extast.analysis.DepthFirstAnalysisCAdaptor;
 import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.expressions.AFieldExpIR;
 import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
 import org.overture.codegen.ir.statements.AAssignToExpStmIR;
-import org.overture.codegen.ir.statements.AFieldStateDesignatorIR;
-import org.overture.codegen.ir.statements.AIdentifierStateDesignatorIR;
 import org.overture.codegen.ir.types.AClassTypeIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.extast.expressions.AMacroApplyExpIR;
-import org.overture.codegen.vdm2c.utils.CTransUtil;
 import org.overture.codegen.vdm2c.utils.GlobalFieldUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -193,72 +176,56 @@ DepthFirstAnalysisCAdaptor
 		public void caseAIdentifierVarExpIR(AIdentifierVarExpIR node)
 				throws AnalysisException
 		{
+			super.caseAIdentifierVarExpIR(node);
+			
 			String thisClassName = null;
 			String fieldClassName = null;
-	
-			//The only way to differentiate a variable expression from, say, a function call at this level is to check the VDM node.
-						
-			INode vdmNode = null;
-			
-			//Some transformed nodes have null sources because they are new in the tree.
-			if(node.getSourceNode() != null)
+		
+			if(node.getIsLocal())
 			{
-				vdmNode = node.getSourceNode().getVdmNode();	
+				//This identifier is not a field.
+				
+				return;
+			}
+			if(node.parent() instanceof AAssignToExpStmIR)
+			{
+				return;
 			}
 			
-			if (vdmNode instanceof AVariableExp)
-			{
-				if(node.parent() instanceof AAssignToExpStmIR)
-				{
-					if(node == ((AAssignToExpStmIR)node.parent()).getTarget())
-					{
-						//Assignment handled differently in its own transformation.
-						return;
-					}
-				}
 				
-				//This kind of node appears all over the place.  Need to make sure it is a field of the current class.
-				
-				AVariableExp varExp = (AVariableExp) vdmNode;
 	
-				if (varExp.getType() instanceof AFunctionType
-						|| varExp.getType() instanceof AOperationType)
-				{
-					return;
-				}
+			
+			thisClassName = node.getSourceNode().getVdmNode().getAncestor(SClassDefinitionBase.class).getName().getName();
+			fieldClassName = thisClassName; // default to same class
 	
-				thisClassName = varExp.getAncestor(AClassClassDefinition.class).getName().getName();// the containing
-				// class
-				fieldClassName = thisClassName; // default to same class
-	
-				if (varExp.getVardef() instanceof AInheritedDefinition)
-				{
-					AInheritedDefinition idef = (AInheritedDefinition) varExp.getVardef();
-					fieldClassName = idef.getClassDefinition().getName().getName();
-				}
-	
-				PDefinition vardef = CTransUtil.unwrapInheritedDef(varExp.getVardef());
-	
-				if (vardef instanceof AInstanceVariableDefinition)
-				{
-					if (vardef.getAccess().getStatic() != null)
-					{
-						fieldUtil.replaceWithStaticReference(vardef.getClassDefinition(), node);
-						return;
-					}
-	
-				} else if (vardef instanceof ALocalDefinition
-						&& ((ALocalDefinition) vardef).getValueDefinition())
-				{
-					if (vardef.getAccess().getStatic() != null)
-					{
-						fieldUtil.replaceWithStaticReference(vardef.getClassDefinition(), node);
-						return;
-					}
-					return;
-				}
+//				if (varExp.getVardef() instanceof AInheritedDefinition)
+//				{
+//					AInheritedDefinition idef = (AInheritedDefinition) varExp.getVardef();
+//					fieldClassName = idef.getClassDefinition().getName().getName();
+//				}
 //	
-			} 
+//				PDefinition vardef = CTransUtil.unwrapInheritedDef(varExp.getVardef());
+//	
+//				if (vardef instanceof AInstanceVariableDefinition)
+//				{
+//					if (vardef.getAccess().getStatic() != null)
+//					{
+//						fieldUtil.replaceWithStaticReference(vardef.getClassDefinition(), node);
+//						return;
+//					}
+//	
+//				} else if (vardef instanceof ALocalDefinition
+//						&& ((ALocalDefinition) vardef).getValueDefinition())
+//				{
+//					if (vardef.getAccess().getStatic() != null)
+//					{
+//						fieldUtil.replaceWithStaticReference(vardef.getClassDefinition(), node);
+//						return;
+//					}
+//					return;
+//				}
+//	
+			
 //				else if (vdmNode instanceof AIdentifierStateDesignator)
 //			{
 //				AIdentifierStateDesignator designator = (AIdentifierStateDesignator) vdmNode;
