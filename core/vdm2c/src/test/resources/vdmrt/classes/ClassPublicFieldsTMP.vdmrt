@@ -9,9 +9,9 @@ instance variables
 	b1 : int := 0;
 	
 operations
-accessa1 : () ==> ()
+accessa1 : () ==> int
 accessa1() ==
-	let a = a_instance.a1 in skip;
+	return a_instance.a1;
 	
 setb1 : () ==> ()
 setb1() ==
