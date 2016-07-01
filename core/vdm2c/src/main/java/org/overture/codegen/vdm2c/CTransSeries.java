@@ -153,7 +153,6 @@ public class CTransSeries
 		transformations.add(new RenameFieldsTrans(transAssistant));
 //		transformations.add(new FieldExpRewriteTrans(transAssistant));
 		transformations.add(new ValueAccessRenameTrans(transAssistant));
-		transformations.add(new StaticFieldAccessRenameTrans(transAssistant));
 		transformations.add(new LetTrans(transAssistant));
 
 		
@@ -170,6 +169,7 @@ public class CTransSeries
 		transformations.add(new ExtractRetValTrans(transAssistant));
 		transformations.add(new FieldReadToFieldGetMacroTrans(transAssistant));
 		transformations.add(new FieldAssignToFieldSetMacroTrans(transAssistant));
+		transformations.add(new StaticFieldAccessRenameTrans(transAssistant));
 		transformations.add(new CtorTrans(transAssistant));
 		transformations.add(new NewRewriteTrans(transAssistant));
 		transformations.add(new IgnoreRenamingTrans(transAssistant));
@@ -178,6 +178,7 @@ public class CTransSeries
 		transformations.add(new MapSeqUpdateRewriteTrans(transAssistant));
 		transformations.add(new SubClassResponsibilityMethodsTrans(transAssistant));
 		transformations.add(new ScopeCleanerTrans(transAssistant));
+		
 		
 //		ExtractEmbeddedCreationsTrans requires that blocks doesn't have any local decelerations but that all is statements
 		transformations.add(new ExtractEmbeddedCreationsTrans(transAssistant));

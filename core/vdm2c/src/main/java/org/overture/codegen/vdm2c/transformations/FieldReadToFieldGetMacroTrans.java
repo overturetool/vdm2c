@@ -7,6 +7,8 @@ import static org.overture.codegen.vdm2c.utils.CTransUtil.newMacroApply;
 import org.overture.ast.definitions.SClassDefinitionBase;
 import org.overture.cgc.extast.analysis.DepthFirstAnalysisCAdaptor;
 import org.overture.codegen.ir.analysis.AnalysisException;
+import org.overture.codegen.ir.declarations.SClassDeclIR;
+import org.overture.codegen.ir.expressions.AExplicitVarExpIR;
 import org.overture.codegen.ir.expressions.AFieldExpIR;
 import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
 import org.overture.codegen.ir.statements.AAssignToExpStmIR;
@@ -180,13 +182,13 @@ DepthFirstAnalysisCAdaptor
 			
 			String thisClassName = null;
 			String fieldClassName = null;
-		
+			
 			if(node.getIsLocal())
 			{
 				//This identifier is not a field.
-				
 				return;
 			}
+			
 			if(node.parent() instanceof AAssignToExpStmIR &&
 					((AAssignToExpStmIR)node.parent()).getTarget() == node)
 			{
@@ -196,6 +198,26 @@ DepthFirstAnalysisCAdaptor
 			
 			thisClassName = node.getSourceNode().getVdmNode().getAncestor(SClassDefinitionBase.class).getName().getName();
 			fieldClassName = thisClassName; // default to same class
+
+			//Static fields are turned into global variables, so they are accessed differently.
+			for(SClassDeclIR c : assist.getInfo().getClasses())
+			{
+				if(c.getName().equals(thisClassName))
+				{
+					if(fieldUtil.lookupField(c,  node.getName()) != null)
+					{
+						if(fieldUtil.lookupField(c,  node.getName()).getStatic())
+						{
+							return;
+						}
+					}
+				}
+			}
+
+			
+			
+			
+			
 	
 //				if (varExp.getVardef() instanceof AInheritedDefinition)
 //				{
