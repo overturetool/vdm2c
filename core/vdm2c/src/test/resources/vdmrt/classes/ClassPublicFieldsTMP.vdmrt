@@ -3,19 +3,21 @@ instance variables
 	public a1 : int := 99;
 end A
 
+
+
 class B
 instance variables
 	a_instance : A := new A();
-	b1 : int := 0;
+--	b1 : int := 0;
 	
 operations
-accessa1 : () ==> int
-accessa1() ==
-	return a_instance.a1;
-	
-setb1 : () ==> ()
-setb1() ==
-	b1 := a_instance.a1;
+--accessa1 : () ==> int
+--accessa1() ==
+--	return a_instance.a1;
+--	
+--setb1 : () ==> ()
+--setb1() ==
+--	b1 := a_instance.a1;
 	
 seta1 : () ==> ()
 seta1() ==

@@ -47,10 +47,15 @@ DepthFirstAnalysisCAdaptor
 		// TODO Auto-generated method stub
 		super.caseAFieldExpIR(node);
 		
-		//Differentiate here between public field get and set.
+		if(node.parent() instanceof AAssignToExpStmIR &&
+				((AAssignToExpStmIR)node.parent()).getTarget() == node)
+		{
+			//Current field is being assigned to, handled elsewhere.
+			return;
+		}
 
 		//The remainder of the transformation does not yet deal with inherited field definitions.
-		String thisClassName = node.getAncestor(SClassDeclIR.class).getName();
+//		String thisClassName = node.getAncestor(SClassDeclIR.class).getName();
 		String fieldClassName = null;
 		AFieldExpIR tmpnode = node.clone();
 		
@@ -155,24 +160,6 @@ DepthFirstAnalysisCAdaptor
 //		}	
 	}
 
-	
-	//These two are for when the field is getting assigned to.
-	
-//	@Override
-//	public void caseAFieldStateDesignatorIR(AFieldStateDesignatorIR node)
-//			throws AnalysisException
-//	{
-//		// TODO Auto-generated method stub
-//		super.caseAFieldStateDesignatorIR(node);
-//	}
-//	
-	@Override
-	public void caseAIdentifierStateDesignatorIR(
-			AIdentifierStateDesignatorIR node) throws AnalysisException
-	{
-		// TODO Auto-generated method stub
-		super.caseAIdentifierStateDesignatorIR(node);
-	}
 	
 	//The case field where a field local to this class is read.
 	//Need to determine whether the identifier expression refers to a field or to some other variable.  Can be done by searchgin through
