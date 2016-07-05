@@ -33,7 +33,7 @@ public class NativeClassesTests extends NativeTestBase
 			InterruptedException, CMakeGenerateException
 	{
 		generate(getPath("classes/ClassInstanceVariableInheritance.vdmrt"));
-//		compileAndTest(getTestCppFile("classes/ClassInstanceVariableInheritance_Tests.cpp"));
+		compileAndTest(getTestCppFile("classes/ClassInstanceVariableInheritance_Tests.cpp"));
 	}
 	
 	

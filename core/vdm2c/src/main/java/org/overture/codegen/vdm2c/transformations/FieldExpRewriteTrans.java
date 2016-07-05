@@ -1,6 +1,7 @@
 package org.overture.codegen.vdm2c.transformations;
 
 import static org.overture.codegen.vdm2c.utils.CTransUtil.GET_FIELD;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.SET_FIELD;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.createIdentifier;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newDeclarationAssignment;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newMacroApply;
@@ -40,94 +41,20 @@ public class FieldExpRewriteTrans extends DepthFirstAnalysisCAdaptor
 	}
 
 
-//	@Override
-//	public void caseAAssignToExpStmIR(AAssignToExpStmIR node)
-//			throws AnalysisException
-//	{
-//		// TODO Auto-generated method stub
-//		super.caseAAssignToExpStmIR(node);
-//
-//		if(node.getTarget() instanceof AFieldExpIR)
-//		{
-//			String thisClassName = null;
-//			String fieldClassName = null;
-//			if (((AFieldExpIR)node.getTarget()).getObject().getType() instanceof AClassTypeIR)
-//			{
-//				AClassTypeIR classType = (AClassTypeIR) ((AFieldExpIR)node.getTarget()).getObject().getType();
-//
-//				thisClassName = classType.getName();
-//
-//				for (SClassDeclIR c : assist.getInfo().getClasses())
-//				{
-//					if (c.getName().equals(classType.getName()))
-//					{
-//						if (fieldUtil.isStatic(c, ((AFieldExpIR)node.getTarget()).getMemberName()))
-//						{
-//							fieldUtil.replaceWithStaticReference(c, ((AFieldExpIR)node.getTarget()).getMemberName(), ((AFieldExpIR)node.getTarget()));
-//							return;
-//						}
-//
-//						fieldClassName = fieldUtil.lookupFieldClass(c, ((AFieldExpIR)node.getTarget()).getMemberName());
-//
-//						if (thisClassName != null && fieldClassName != null)
-//						{
-//							// ok macro is protected so move object out in scope
-//
-//							ABlockStmIR block = node.getAncestor(ABlockStmIR.class);
-//
-//							if (block != null)
-//							{
-//								String fieldNameTmp = assist.getInfo().getTempVarNameGen().nextVarName(retPrefix);
-//								String expNameTmp = assist.getInfo().getTempVarNameGen().nextVarName(retPrefix);
-//								SourceNode objSource = ((AFieldExpIR)node.getTarget()).getObject().getSourceNode();
-//								block.getLocalDefs().add(newDeclarationAssignment(fieldNameTmp, ((AFieldExpIR)node.getTarget()).getObject().getType().clone(), ((AFieldExpIR)node.getTarget()).getObject(), objSource));
-//								block.getLocalDefs().add(newDeclarationAssignment(expNameTmp, node.getExp().getType().clone(), node.getExp(), node.getExp().getSourceNode()));
-//
-//								AMacroApplyExpIR apply = newMacroApply(SET_FIELD);
-//								assist.replaceNodeWith(node, apply);
-//
-//								// add this type
-//								apply.getArgs().add(createIdentifier(thisClassName, node.getSourceNode()));
-//								// add field owner type
-//								apply.getArgs().add(createIdentifier(fieldClassName, node.getSourceNode()));
-//								// add this
-//								apply.getArgs().add(createIdentifier(fieldNameTmp, objSource));
-//								// add field name
-//								apply.getArgs().add(createIdentifier(((AFieldExpIR)node.getTarget()).getMemberName(), node.getSourceNode()));
-//								// add assigned expression
-//								apply.getArgs().add(node.getExp());
-//
-//								return;
-//							}
-//						}
-//					}
-//				}
-//			}
-//		}
-//	}
-
-
 	@Override
-	public void caseAFieldExpIR(AFieldExpIR node) throws AnalysisException
+	public void caseAAssignToExpStmIR(AAssignToExpStmIR node)
+			throws AnalysisException
 	{
-		super.caseAFieldExpIR(node);
-		if (node.getType() instanceof AMethodTypeIR)
+		// TODO Auto-generated method stub
+		super.caseAAssignToExpStmIR(node);
+
+		if(node.getTarget() instanceof AFieldExpIR)
 		{
-			// handled in CallRewriteTrans
-			return;
-		} else if(node.parent() instanceof AAssignToExpStmIR)
-		{
-			//Assignment handled elsewhere.
-			return;
-		}
-		else
-		{
-			// its a field
 			String thisClassName = null;
 			String fieldClassName = null;
-			if (node.getObject().getType() instanceof AClassTypeIR)
+			if (((AFieldExpIR)node.getTarget()).getObject().getType() instanceof AClassTypeIR)
 			{
-				AClassTypeIR classType = (AClassTypeIR) node.getObject().getType();
+				AClassTypeIR classType = (AClassTypeIR) ((AFieldExpIR)node.getTarget()).getObject().getType();
 
 				thisClassName = classType.getName();
 
@@ -135,17 +62,16 @@ public class FieldExpRewriteTrans extends DepthFirstAnalysisCAdaptor
 				{
 					if (c.getName().equals(classType.getName()))
 					{
-						if (fieldUtil.isStatic(c, node.getMemberName()))
+						if (fieldUtil.isStatic(c, ((AFieldExpIR)node.getTarget()).getMemberName()))
 						{
-							fieldUtil.replaceWithStaticReference(c, node.getMemberName(), node);
+							fieldUtil.replaceWithStaticReference(c, ((AFieldExpIR)node.getTarget()).getMemberName(), ((AFieldExpIR)node.getTarget()));
 							return;
 						}
 
-						fieldClassName = fieldUtil.lookupFieldClass(c, node.getMemberName());
+						fieldClassName = fieldUtil.lookupFieldClass(c, ((AFieldExpIR)node.getTarget()).getMemberName());
 
 						if (thisClassName != null && fieldClassName != null)
 						{
-
 							// ok macro is protected so move object out in scope
 
 							ABlockStmIR block = node.getAncestor(ABlockStmIR.class);
@@ -153,11 +79,12 @@ public class FieldExpRewriteTrans extends DepthFirstAnalysisCAdaptor
 							if (block != null)
 							{
 								String fieldNameTmp = assist.getInfo().getTempVarNameGen().nextVarName(retPrefix);
-								SourceNode objSource = node.getObject().getSourceNode();
-								block.getLocalDefs().add(newDeclarationAssignment(fieldNameTmp, node.getObject().getType().clone(), node.getObject(), objSource));
+								String expNameTmp = assist.getInfo().getTempVarNameGen().nextVarName(retPrefix);
+								SourceNode objSource = ((AFieldExpIR)node.getTarget()).getObject().getSourceNode();
+								block.getLocalDefs().add(newDeclarationAssignment(fieldNameTmp, ((AFieldExpIR)node.getTarget()).getObject().getType().clone(), ((AFieldExpIR)node.getTarget()).getObject(), objSource));
+								block.getLocalDefs().add(newDeclarationAssignment(expNameTmp, node.getExp().getType().clone(), node.getExp(), node.getExp().getSourceNode()));
 
-								AMacroApplyExpIR apply = newMacroApply(GET_FIELD);
-								
+								AMacroApplyExpIR apply = newMacroApply(SET_FIELD);
 								assist.replaceNodeWith(node, apply);
 
 								// add this type
@@ -167,7 +94,9 @@ public class FieldExpRewriteTrans extends DepthFirstAnalysisCAdaptor
 								// add this
 								apply.getArgs().add(createIdentifier(fieldNameTmp, objSource));
 								// add field name
-								apply.getArgs().add(createIdentifier(node.getMemberName(), node.getSourceNode()));
+								apply.getArgs().add(createIdentifier(((AFieldExpIR)node.getTarget()).getMemberName(), node.getSourceNode()));
+								// add assigned expression
+								apply.getArgs().add(node.getExp());
 
 								return;
 							}
@@ -176,6 +105,78 @@ public class FieldExpRewriteTrans extends DepthFirstAnalysisCAdaptor
 				}
 			}
 		}
-		logger.error("AFieldExpIR not replaced: {}", node);
 	}
+
+
+//	@Override
+//	public void caseAFieldExpIR(AFieldExpIR node) throws AnalysisException
+//	{
+//		super.caseAFieldExpIR(node);
+//		if (node.getType() instanceof AMethodTypeIR)
+//		{
+//			// handled in CallRewriteTrans
+//			return;
+//		} else if(node.parent() instanceof AAssignToExpStmIR)
+//		{
+//			//Assignment handled elsewhere.
+//			return;
+//		}
+//		else
+//		{
+//			// its a field
+//			String thisClassName = null;
+//			String fieldClassName = null;
+//			if (node.getObject().getType() instanceof AClassTypeIR)
+//			{
+//				AClassTypeIR classType = (AClassTypeIR) node.getObject().getType();
+//
+//				thisClassName = classType.getName();
+//
+//				for (SClassDeclIR c : assist.getInfo().getClasses())
+//				{
+//					if (c.getName().equals(classType.getName()))
+//					{
+//						if (fieldUtil.isStatic(c, node.getMemberName()))
+//						{
+//							fieldUtil.replaceWithStaticReference(c, node.getMemberName(), node);
+//							return;
+//						}
+//
+//						fieldClassName = fieldUtil.lookupFieldClass(c, node.getMemberName());
+//
+//						if (thisClassName != null && fieldClassName != null)
+//						{
+//
+//							// ok macro is protected so move object out in scope
+//
+//							ABlockStmIR block = node.getAncestor(ABlockStmIR.class);
+//
+//							if (block != null)
+//							{
+//								String fieldNameTmp = assist.getInfo().getTempVarNameGen().nextVarName(retPrefix);
+//								SourceNode objSource = node.getObject().getSourceNode();
+//								block.getLocalDefs().add(newDeclarationAssignment(fieldNameTmp, node.getObject().getType().clone(), node.getObject(), objSource));
+//
+//								AMacroApplyExpIR apply = newMacroApply(GET_FIELD);
+//								
+//								assist.replaceNodeWith(node, apply);
+//
+//								// add this type
+//								apply.getArgs().add(createIdentifier(thisClassName, node.getSourceNode()));
+//								// add field owner type
+//								apply.getArgs().add(createIdentifier(fieldClassName, node.getSourceNode()));
+//								// add this
+//								apply.getArgs().add(createIdentifier(fieldNameTmp, objSource));
+//								// add field name
+//								apply.getArgs().add(createIdentifier(node.getMemberName(), node.getSourceNode()));
+//
+//								return;
+//							}
+//						}
+//					}
+//				}
+//			}
+//		}
+//		logger.error("AFieldExpIR not replaced: {}", node);
+//	}
 }
