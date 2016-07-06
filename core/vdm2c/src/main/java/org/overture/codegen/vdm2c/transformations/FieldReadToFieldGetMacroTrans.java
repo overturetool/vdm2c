@@ -4,7 +4,13 @@ import static org.overture.codegen.vdm2c.utils.CTransUtil.GET_FIELD_PTR;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.createIdentifier;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newMacroApply;
 
+import org.overture.ast.definitions.AInheritedDefinition;
+import org.overture.ast.definitions.AInstanceVariableDefinition;
+import org.overture.ast.definitions.ALocalDefinition;
+import org.overture.ast.definitions.PDefinition;
 import org.overture.ast.definitions.SClassDefinitionBase;
+import org.overture.ast.expressions.AVariableExp;
+import org.overture.ast.node.INode;
 import org.overture.cgc.extast.analysis.DepthFirstAnalysisCAdaptor;
 import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.declarations.AFieldDeclIR;
@@ -14,6 +20,7 @@ import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
 import org.overture.codegen.ir.statements.AAssignToExpStmIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.extast.expressions.AMacroApplyExpIR;
+import org.overture.codegen.vdm2c.utils.CTransUtil;
 import org.overture.codegen.vdm2c.utils.GlobalFieldUtil;
 import org.overture.codegen.vdm2c.utils.NameConverter;
 import org.slf4j.Logger;
@@ -200,34 +207,34 @@ DepthFirstAnalysisCAdaptor
 		thisClassName = node.getSourceNode().getVdmNode().getAncestor(SClassDefinitionBase.class).getName().getName();
 		fieldClassName = thisClassName; // default to same class
 
+		AVariableExp varExp = (AVariableExp) node.getSourceNode().getVdmNode();
+		if (varExp.getVardef() instanceof AInheritedDefinition)
+		{
+			AInheritedDefinition idef = (AInheritedDefinition) varExp.getVardef();
+			fieldClassName = idef.getClassDefinition().getName().getName();
+		}
+			
+//		PDefinition vardef = CTransUtil.unwrapInheritedDef(varExp.getVardef());
+//
+//		if (vardef instanceof AInstanceVariableDefinition)
+//		{
+//			if (vardef.getAccess().getStatic() != null)
+//			{
+//				fieldUtil.replaceWithStaticReference(vardef.getClassDefinition(), node);
+//				return;
+//			}
+//
+//		} else if (vardef instanceof ALocalDefinition
+//				&& ((ALocalDefinition) vardef).getValueDefinition())
+//		{
+//			if (vardef.getAccess().getStatic() != null)
+//			{
+//				fieldUtil.replaceWithStaticReference(vardef.getClassDefinition(), node);
+//				return;
+//			}
+//			return;
+//		}
 
-		//				if (varExp.getVardef() instanceof AInheritedDefinition)
-		//				{
-		//					AInheritedDefinition idef = (AInheritedDefinition) varExp.getVardef();
-		//					fieldClassName = idef.getClassDefinition().getName().getName();
-		//				}
-		//	
-		//				PDefinition vardef = CTransUtil.unwrapInheritedDef(varExp.getVardef());
-		//	
-		//				if (vardef instanceof AInstanceVariableDefinition)
-		//				{
-		//					if (vardef.getAccess().getStatic() != null)
-		//					{
-		//						fieldUtil.replaceWithStaticReference(vardef.getClassDefinition(), node);
-		//						return;
-		//					}
-		//	
-		//				} else if (vardef instanceof ALocalDefinition
-		//						&& ((ALocalDefinition) vardef).getValueDefinition())
-		//				{
-		//					if (vardef.getAccess().getStatic() != null)
-		//					{
-		//						fieldUtil.replaceWithStaticReference(vardef.getClassDefinition(), node);
-		//						return;
-		//					}
-		//					return;
-		//				}
-		//	
 
 		//				else if (vdmNode instanceof AIdentifierStateDesignator)
 		//			{
