@@ -1,14 +1,14 @@
 class ExpressionRecord
 types
-	public rectype = int * int;
+	public rectype :: field1 : int field2 : int;
 instance variables
-	rec1 : rectype := mk_(0, 0);
+	rec1 : rectype := mk_rectype(0, 0);
 	
 operations
 public rec1explicitassign : () ==> rectype
 rec1explicitassign() ==
 	(
-	rec1 := mk_(1, 2);
+	rec1 := mk_rectype(1, 2);
 	return rec1;
 	)
 end ExpressionRecord
