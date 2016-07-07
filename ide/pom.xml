@@ -5,11 +5,10 @@
 	<parent>
 		<groupId>org.overturetool.vdm2c</groupId>
 		<artifactId>root</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>0.0.3-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
-
-	<packaging>pom</packaging>
+<packaging>pom</packaging>
 	
 	<artifactId>ide</artifactId>
 	<name>Overture FMI IDE Top-level</name>
