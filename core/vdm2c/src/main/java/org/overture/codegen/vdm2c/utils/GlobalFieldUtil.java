@@ -67,9 +67,6 @@ public class GlobalFieldUtil
 		AIdentifierVarExpIR newIdentifier = newIdentifier(NameConverter.getCName(field), node.getSourceNode());
 		newIdentifier.setType(node.getType().clone());
 		newIdentifier.setIsLocal(false);
-//		AApplyExpIR vdmCloneApply = newApply("vdmClone", newIdentifier);
-//		vdmCloneApply.setType(node.getType().clone());
-//		assist.replaceNodeWith(node, vdmCloneApply);
 		assist.replaceNodeWith(node, newIdentifier);
 	}
 
