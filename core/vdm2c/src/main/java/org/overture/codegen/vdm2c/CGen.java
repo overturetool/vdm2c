@@ -28,6 +28,7 @@ import org.overture.codegen.utils.GeneratedData;
 import org.overture.codegen.utils.GeneratedModule;
 import org.overture.codegen.vdm2c.extast.declarations.AClassHeaderDeclIR;
 import org.overture.codegen.vdm2c.sourceformat.ISourceFileFormatter;
+import org.overture.codegen.vdm2c.transformations.RecordsToClassesTrans;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,14 +48,41 @@ public class CGen extends CodeGenBase
 	protected GeneratedData genVdmToTargetLang(List<IRStatus<PIR>> statuses)
 			throws AnalysisException
 	{
+		List<SClassDeclIR> originalClasses = new LinkedList<SClassDeclIR>(this.getTransAssistant().getInfo().getClasses());
+		List<SClassDeclIR> classesAfterRecordExtract;
+		List<SClassDeclIR> recordClasses;
+		
 		statuses = replaceSystemClassWithClass(statuses);
 		statuses = ignoreVDMUnitTests(statuses);
+		
+//		generator.generateFrom(node);
+		
+		
+//		try
+//		{
+//			generator.applyPartialTransformation(status, new RecordsToClassesTrans(transAssistant));
+//		} catch (org.overture.codegen.ir.analysis.AnalysisException e)
+//		{
+//			console.printErrorln("Error when generating code for class "
+//					+ status.getIrNodeName() + ": " + e.getMessage());
+//			console.printErrorln("Skipping class..");
+//			e.printStackTrace();
+//		}
+		
 
 		generateClassHeaders(statuses);
 		applyTransformations(statuses);
 		
-
-
+		classesAfterRecordExtract = new LinkedList<SClassDeclIR>(this.getTransAssistant().getInfo().getClasses());
+		classesAfterRecordExtract.removeAll(originalClasses);
+		recordClasses = classesAfterRecordExtract;
+		
+		
+//		IRStatus<PIR> s = new IRStatus<PIR>() 
+//				generator.generateFrom(recordClasses.get(0));
+		
+		
+		
 		VTableGenerator.generate(IRStatus.extract(statuses, AClassHeaderDeclIR.class));
 
 		CFormat my_formatter = consFormatter(statuses);

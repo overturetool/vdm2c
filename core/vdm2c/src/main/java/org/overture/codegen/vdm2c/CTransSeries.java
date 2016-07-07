@@ -58,6 +58,7 @@ import org.overture.codegen.vdm2c.transformations.MethodReturnInsertTrans;
 import org.overture.codegen.vdm2c.transformations.MethodVisibilityTrans;
 import org.overture.codegen.vdm2c.transformations.NewRewriteTrans;
 import org.overture.codegen.vdm2c.transformations.NumericTrans;
+import org.overture.codegen.vdm2c.transformations.RecordsToClassesTrans;
 import org.overture.codegen.vdm2c.transformations.RemoveCWrappersTrans;
 import org.overture.codegen.vdm2c.transformations.RemoveRTConstructs;
 import org.overture.codegen.vdm2c.transformations.RenameFieldDeclsTrans;
@@ -153,6 +154,7 @@ public class CTransSeries
 		 * Phase #1 - Rewrite all standard C nodes to match C 1-to-1<br/>
 		 * - Rewrite e.g. 1 + 2 to vdmSum(1,2) instead.
 		 */
+		transformations.add(new RecordsToClassesTrans(transAssistant));
 		transformations.add(new NumericTrans(transAssistant));
 		transformations.add(new LogicTrans(transAssistant));
 		transformations.add(new LiteralInstantiationRewriteTrans(transAssistant));
