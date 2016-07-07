@@ -59,6 +59,19 @@ public class GlobalFieldUtil
 		vdmCloneApply.setType(node.getType().clone());
 		assist.replaceNodeWith(node, vdmCloneApply);
 	}
+	
+	public void replaceWithStaticReferenceForSet(SClassDeclIR classDef, String name,
+			SExpIR node)
+	{
+		AFieldDeclIR field = lookupField(classDef, name);
+		AIdentifierVarExpIR newIdentifier = newIdentifier(NameConverter.getCName(field), node.getSourceNode());
+		newIdentifier.setType(node.getType().clone());
+		newIdentifier.setIsLocal(false);
+//		AApplyExpIR vdmCloneApply = newApply("vdmClone", newIdentifier);
+//		vdmCloneApply.setType(node.getType().clone());
+//		assist.replaceNodeWith(node, vdmCloneApply);
+		assist.replaceNodeWith(node, newIdentifier);
+	}
 
 	public String lookupFieldClass(SClassDeclIR node, String name)
 	{

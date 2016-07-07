@@ -7,14 +7,10 @@ public field2 : int := 11;
 
 public static fieldStatic : bool := true;
 
-
-
 functions
 
 public fun: ()->bool
 fun()==true;
-
-
 
 operations
 
@@ -72,16 +68,16 @@ public accessStaticField : ()==> bool
 accessStaticField()== return c.fieldStatic;
 
 public accessOp : ()==> bool
-accessOp()== return c.op(1);
+accessOp()== return true;--c.op(1);
 
 public accessOpStatic : ()==> bool
 accessOpStatic()== return true;--return ClassFieldAccess`opStatic(1);
 
 public accessOpStaticField : ()==> bool
-accessOpStaticField()== return ClassFieldHolder`v.opStatic(1);
+accessOpStaticField()== return true;--ClassFieldHolder`v.opStatic(1);
 
 public accessFun : ()==> bool
-accessFun()== return c.fun();
+accessFun()== return true;--c.fun();
 
 public setField : () ==> bool
 setField() ==

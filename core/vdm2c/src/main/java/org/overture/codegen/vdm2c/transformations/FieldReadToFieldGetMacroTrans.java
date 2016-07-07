@@ -197,11 +197,26 @@ DepthFirstAnalysisCAdaptor
 			return;
 		}
 
-		if(node.parent() instanceof AAssignToExpStmIR &&
-				((AAssignToExpStmIR)node.parent()).getTarget() == node)
+		if((node.parent() instanceof AAssignToExpStmIR))
 		{
-			//Current field is being assigned to, handled elsewhere.
-			return;
+			if(((AAssignToExpStmIR)node.parent()).getTarget() == node)
+			{
+
+				//Current field is being assigned to, handled elsewhere.
+				return;
+			}
+		}
+
+		if(node.parent() instanceof AFieldExpIR)
+		{
+			if(((AFieldExpIR)node.parent()).parent() instanceof AAssignToExpStmIR)
+			{
+				if(((AAssignToExpStmIR)((AFieldExpIR)node.parent()).parent()).getTarget() == node.parent())
+				{
+					//Current field is being assigned to, handled elsewhere.
+					return;
+				}
+			}
 		}
 
 		thisClassName = node.getSourceNode().getVdmNode().getAncestor(SClassDefinitionBase.class).getName().getName();
@@ -213,27 +228,27 @@ DepthFirstAnalysisCAdaptor
 			AInheritedDefinition idef = (AInheritedDefinition) varExp.getVardef();
 			fieldClassName = idef.getClassDefinition().getName().getName();
 		}
-			
-//		PDefinition vardef = CTransUtil.unwrapInheritedDef(varExp.getVardef());
-//
-//		if (vardef instanceof AInstanceVariableDefinition)
-//		{
-//			if (vardef.getAccess().getStatic() != null)
-//			{
-//				fieldUtil.replaceWithStaticReference(vardef.getClassDefinition(), node);
-//				return;
-//			}
-//
-//		} else if (vardef instanceof ALocalDefinition
-//				&& ((ALocalDefinition) vardef).getValueDefinition())
-//		{
-//			if (vardef.getAccess().getStatic() != null)
-//			{
-//				fieldUtil.replaceWithStaticReference(vardef.getClassDefinition(), node);
-//				return;
-//			}
-//			return;
-//		}
+
+		//		PDefinition vardef = CTransUtil.unwrapInheritedDef(varExp.getVardef());
+		//
+		//		if (vardef instanceof AInstanceVariableDefinition)
+		//		{
+		//			if (vardef.getAccess().getStatic() != null)
+		//			{
+		//				fieldUtil.replaceWithStaticReference(vardef.getClassDefinition(), node);
+		//				return;
+		//			}
+		//
+		//		} else if (vardef instanceof ALocalDefinition
+		//				&& ((ALocalDefinition) vardef).getValueDefinition())
+		//		{
+		//			if (vardef.getAccess().getStatic() != null)
+		//			{
+		//				fieldUtil.replaceWithStaticReference(vardef.getClassDefinition(), node);
+		//				return;
+		//			}
+		//			return;
+		//		}
 
 
 		//				else if (vdmNode instanceof AIdentifierStateDesignator)

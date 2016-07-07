@@ -197,6 +197,11 @@ DepthFirstAnalysisCAdaptor
 			{
 				if(fieldUtil.lookupField(c,  target.getMemberName()) != null)
 				{
+					if(fieldUtil.lookupField(c,  target.getMemberName()).getStatic())
+					{
+						fieldUtil.replaceWithStaticReferenceForSet(c, target.getMemberName(),  node.getTarget());							
+						return;
+					}
 					fieldDefClassName = fieldUtil.lookupFieldClass(c, target.getMemberName());
 				}
 			}
