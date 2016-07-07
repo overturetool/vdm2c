@@ -199,7 +199,7 @@ DepthFirstAnalysisCAdaptor
 				{
 					if(fieldUtil.lookupField(c,  target.getMemberName()).getStatic())
 					{
-						fieldUtil.replaceWithStaticReferenceForSet(c, target.getMemberName(),  node.getTarget());							
+						fieldUtil.replaceWithStaticReferenceForAssignment(c, target.getMemberName(),  node.getTarget());							
 						return;
 					}
 					fieldDefClassName = fieldUtil.lookupFieldClass(c, target.getMemberName());

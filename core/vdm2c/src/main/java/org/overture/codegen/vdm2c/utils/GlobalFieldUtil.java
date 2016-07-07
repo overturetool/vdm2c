@@ -60,7 +60,7 @@ public class GlobalFieldUtil
 		assist.replaceNodeWith(node, vdmCloneApply);
 	}
 	
-	public void replaceWithStaticReferenceForSet(SClassDeclIR classDef, String name,
+	public void replaceWithStaticReferenceForAssignment(SClassDeclIR classDef, String name,
 			SExpIR node)
 	{
 		AFieldDeclIR field = lookupField(classDef, name);
