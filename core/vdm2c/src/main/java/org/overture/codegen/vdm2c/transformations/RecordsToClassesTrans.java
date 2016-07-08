@@ -28,7 +28,7 @@ public class RecordsToClassesTrans extends DepthFirstAnalysisCAdaptor
 	final static Logger logger = LoggerFactory.getLogger(RecordsToClassesTrans.class);
 	public TransAssistantIR assist;
 
-	final static String classNamePrefix = "record_type_";
+	final static String classNamePrefix = "";
 
 	public RecordsToClassesTrans(TransAssistantIR assist)
 	{

@@ -123,6 +123,6 @@ public class NativeTests extends NativeTestBase
 			CMakeGenerateException
 	{
 		generate(getPath("expressions/ExpressionRecord.vdmrt"));
-//		compileAndTest();
+		compileAndTest();
 	}
 }

@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
@@ -16,6 +17,7 @@ import org.overture.codegen.ir.INode;
 import org.overture.codegen.ir.IRStatus;
 import org.overture.codegen.ir.IrNodeInfo;
 import org.overture.codegen.ir.PIR;
+import org.overture.codegen.ir.VdmNodeInfo;
 import org.overture.codegen.ir.analysis.DepthFirstAnalysisAdaptor;
 import org.overture.codegen.ir.declarations.ADefaultClassDeclIR;
 import org.overture.codegen.ir.declarations.AFieldDeclIR;
@@ -28,7 +30,6 @@ import org.overture.codegen.utils.GeneratedData;
 import org.overture.codegen.utils.GeneratedModule;
 import org.overture.codegen.vdm2c.extast.declarations.AClassHeaderDeclIR;
 import org.overture.codegen.vdm2c.sourceformat.ISourceFileFormatter;
-import org.overture.codegen.vdm2c.transformations.RecordsToClassesTrans;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,38 +52,29 @@ public class CGen extends CodeGenBase
 		List<SClassDeclIR> originalClasses = new LinkedList<SClassDeclIR>(this.getTransAssistant().getInfo().getClasses());
 		List<SClassDeclIR> classesAfterRecordExtract;
 		List<SClassDeclIR> recordClasses;
-		
+		IRStatus<PIR> recClassStatus;
+
+		//Get the required information about the records which need to be generated as classes and add to the list.
+		//TODO:  this should be made into its own function.
 		statuses = replaceSystemClassWithClass(statuses);
 		statuses = ignoreVDMUnitTests(statuses);
-		
-//		generator.generateFrom(node);
-		
-		
-//		try
-//		{
-//			generator.applyPartialTransformation(status, new RecordsToClassesTrans(transAssistant));
-//		} catch (org.overture.codegen.ir.analysis.AnalysisException e)
-//		{
-//			console.printErrorln("Error when generating code for class "
-//					+ status.getIrNodeName() + ": " + e.getMessage());
-//			console.printErrorln("Skipping class..");
-//			e.printStackTrace();
-//		}
-		
 
-		generateClassHeaders(statuses);
 		applyTransformations(statuses);
-		
+
 		classesAfterRecordExtract = new LinkedList<SClassDeclIR>(this.getTransAssistant().getInfo().getClasses());
 		classesAfterRecordExtract.removeAll(originalClasses);
 		recordClasses = classesAfterRecordExtract;
-		
-		
-//		IRStatus<PIR> s = new IRStatus<PIR>() 
-//				generator.generateFrom(recordClasses.get(0));
-		
-		
-		
+
+		for(SClassDeclIR cls : recordClasses)
+		{
+			recClassStatus = new IRStatus<PIR>(cls.getSourceNode().getVdmNode(), new HashSet<VdmNodeInfo>());
+			recClassStatus.setIrNode(cls);
+			recClassStatus.setIrNodeName(cls.getName());
+			statuses.add(recClassStatus);
+		}
+
+		generateClassHeaders(statuses);
+
 		VTableGenerator.generate(IRStatus.extract(statuses, AClassHeaderDeclIR.class));
 
 		CFormat my_formatter = consFormatter(statuses);
@@ -99,7 +91,7 @@ public class CGen extends CodeGenBase
 
 		return data;
 	}
-
+	
 	private List<IRStatus<PIR>> ignoreVDMUnitTests(
 			List<IRStatus<PIR>> statuses)
 	{
