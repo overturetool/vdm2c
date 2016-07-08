@@ -4,6 +4,8 @@ import static org.overture.codegen.vdm2c.utils.CTransUtil.newApply;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newAssignment;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newIdentifier;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newInternalMethod;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.newReturnStm;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.newTvpType;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.toStm;
 
 import org.overture.cgc.extast.analysis.DepthFirstAnalysisCAdaptor;
@@ -13,14 +15,16 @@ import org.overture.codegen.ir.declarations.AFieldDeclIR;
 import org.overture.codegen.ir.declarations.AMethodDeclIR;
 import org.overture.codegen.ir.statements.ABlockStmIR;
 import org.overture.codegen.ir.statements.AReturnStmIR;
+import org.overture.codegen.ir.types.AExternalTypeIR;
 import org.overture.codegen.ir.types.AVoidTypeIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 
 public class CreateGlobalStaticInitFunctionTrans extends
-		DepthFirstAnalysisCAdaptor
+DepthFirstAnalysisCAdaptor
 {
 	private static final String GLOBAL_STATIC_INIT_FUNCTION_PATTERN = "%s_static_init";
 	private static final String GLOBAL_STATIC_SHUTDOWN_FUNCTION_PATTERN = "%s_static_shutdown";
+	private static final String GLOBAL_REFERENCE_RETURN_FUNCTION_PATTERN = "get_%s";
 	public TransAssistantIR assist;
 
 	public CreateGlobalStaticInitFunctionTrans(TransAssistantIR assist)
@@ -43,7 +47,7 @@ public class CreateGlobalStaticInitFunctionTrans extends
 
 		//In case there is nothing to initialize, we still want the functions to have a body.  See comment below.
 		body.getStatements().add(new AReturnStmIR());
-				
+
 		//Emit init function even if no static fields are present.  Simplifies FMU export.
 		AMethodDeclIR method = newInternalMethod(String.format(GLOBAL_STATIC_INIT_FUNCTION_PATTERN, node.getName()), body, new AVoidTypeIR(), false);
 		method.setAccess("public");
@@ -65,11 +69,35 @@ public class CreateGlobalStaticInitFunctionTrans extends
 
 		//In case there is nothing to initialize, we still want the functions to have a body.  See comment below.
 		body.getStatements().add(new AReturnStmIR());
-				
+
 		//Emit shutdown function even if no static fields are present.  Simplifies FMU export.
 		AMethodDeclIR method = newInternalMethod(String.format(GLOBAL_STATIC_SHUTDOWN_FUNCTION_PATTERN, node.getName()), body, new AVoidTypeIR(), false);
 		method.setAccess("public");
 		node.getMethods().add(method);
+	}
+
+	void createGetReferenceMethods(ADefaultClassDeclIR node) throws AnalysisException
+	{
+		AMethodDeclIR method;
+		ABlockStmIR body;
+
+		for (AFieldDeclIR field : node.getFields())
+		{
+			if (!field.getFinal() && field.getStatic())
+			{
+				body = new ABlockStmIR();
+				body.getStatements().add(newReturnStm(newIdentifier(field.getName(), null)));
+
+				//Emit init function even if no value fields are present.  Simplifies FMU export.
+				method = newInternalMethod(String.format(GLOBAL_REFERENCE_RETURN_FUNCTION_PATTERN, field.getName()), body, newTvpType(), false);
+
+				//In case there is nothing to initialize, we still want the functions to have a body.  See comment below.
+				body.getStatements().add(new AReturnStmIR());
+
+				method.setAccess("public");
+				node.getMethods().add(method);
+			}
+		}
 	}
 
 	@Override
@@ -78,6 +106,7 @@ public class CreateGlobalStaticInitFunctionTrans extends
 	{
 		createInitMethod(node);
 		createShutdownMethod(node);
+		createGetReferenceMethods(node);
 	}
 
 }

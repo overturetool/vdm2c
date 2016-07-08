@@ -17,7 +17,7 @@ import org.overture.codegen.ir.types.AVoidTypeIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 
 public class CreateGlobalConstInitFunctionTrans extends
-		DepthFirstAnalysisCAdaptor
+DepthFirstAnalysisCAdaptor
 {
 	private static final String GLOBAL_CONST_INIT_FUNCTION_PATTERN = "%s_const_init";
 	private static final String GLOBAL_CONST_SHUTDOWN_FUNCTION_PATTERN = "%s_const_shutdown";
@@ -31,7 +31,7 @@ public class CreateGlobalConstInitFunctionTrans extends
 	void createInitMethod(ADefaultClassDeclIR node) throws AnalysisException
 	{
 		ABlockStmIR body = new ABlockStmIR();
-		
+
 		for (AFieldDeclIR field : node.getFields())
 		{
 			if (field.getFinal() && field.getInitial() != null)
@@ -39,7 +39,7 @@ public class CreateGlobalConstInitFunctionTrans extends
 				body.getStatements().add(newAssignment(newIdentifier(field.getName(), null), field.getInitial()));
 			}
 		}
-		
+
 		//In case there is nothing to initialize, we still want the functions to have a body.  See comment below.
 		body.getStatements().add(new AReturnStmIR());
 
@@ -61,7 +61,7 @@ public class CreateGlobalConstInitFunctionTrans extends
 				body.getStatements().add(toStm(newApply("vdmFree", newIdentifier(field.getName(), null))));
 			}
 		}
-		
+
 		//In case there is nothing to initialize, we still want the functions to have a body.  See comment below.
 		body.getStatements().add(new AReturnStmIR());
 
