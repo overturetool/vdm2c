@@ -15,8 +15,10 @@ import org.overture.codegen.ir.declarations.ADefaultClassDeclIR;
 import org.overture.codegen.ir.declarations.AFieldDeclIR;
 import org.overture.codegen.ir.declarations.ARecordDeclIR;
 import org.overture.codegen.ir.declarations.AVarDeclIR;
+import org.overture.codegen.ir.declarations.SClassDeclIR;
 import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
 import org.overture.codegen.ir.statements.ABlockStmIR;
+import org.overture.codegen.ir.types.ARecordTypeIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.extast.expressions.AMacroApplyExpIR;
 import org.overture.codegen.vdm2c.utils.CTransUtil;
@@ -35,6 +37,9 @@ public class RecordsToClassesTrans extends DepthFirstAnalysisCAdaptor
 		this.assist = assist;
 	}
 	
+	//For each record type definition, this creates a new class declaration and
+	//adds it to the list of classes in this model.  The new classes will be
+	//generated in the usual way.
 	@Override
 	public void caseARecordDeclIR(ARecordDeclIR node) throws AnalysisException
 	{
