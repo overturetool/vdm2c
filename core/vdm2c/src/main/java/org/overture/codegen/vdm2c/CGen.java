@@ -58,7 +58,7 @@ public class CGen extends CodeGenBase
 		//TODO:  this should be made into its own function.
 		statuses = replaceSystemClassWithClass(statuses);
 		statuses = ignoreVDMUnitTests(statuses);
-
+		generateClassHeaders(statuses);
 		applyTransformations(statuses);
 
 		classesAfterRecordExtract = new LinkedList<SClassDeclIR>(this.getTransAssistant().getInfo().getClasses());
@@ -71,9 +71,8 @@ public class CGen extends CodeGenBase
 			recClassStatus.setIrNode(cls);
 			recClassStatus.setIrNodeName(cls.getName());
 			statuses.add(recClassStatus);
+			generateClassHeaders(statuses.subList(statuses.size() - 1, statuses.size()));
 		}
-
-		generateClassHeaders(statuses);
 
 		VTableGenerator.generate(IRStatus.extract(statuses, AClassHeaderDeclIR.class));
 

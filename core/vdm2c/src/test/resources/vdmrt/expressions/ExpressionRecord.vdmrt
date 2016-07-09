@@ -2,7 +2,7 @@ class ExpressionRecord
 types
 	public rectype :: field1 : int field2 : int;
 instance variables
---	rec1 : rectype := mk_rectype(0, 0);
+	rec1 : rectype;-- := mk_rectype(0, 0);
 	
 operations
 --public rec1explicitassign : () ==> rectype
