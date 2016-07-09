@@ -109,7 +109,7 @@ public class CTransSeries
 		 */
 		// Construct the transformations
 		transformations.add(new RecordsToClassesTrans(transAssistant));
-//		transformations.add(new RecordDefsToClassDefsTrans(transAssistant));
+		transformations.add(new RecordDefsToClassDefsTrans(transAssistant));
 		transformations.add(new FuncTrans(transAssistant));
 		transformations.add(new FieldInitializerExtractorTrans(transAssistant));
 		transformations.add(new RemoveRTConstructs(transAssistant));
