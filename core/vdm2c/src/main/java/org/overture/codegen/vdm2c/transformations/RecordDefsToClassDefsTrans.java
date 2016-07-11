@@ -71,6 +71,9 @@ public class RecordDefsToClassDefsTrans extends DepthFirstAnalysisCAdaptor
 				}
 			}
 		}
+		
+		
+		
 	}
 	
 //	@Override

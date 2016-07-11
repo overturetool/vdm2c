@@ -1,14 +1,15 @@
 class ClassScratchWork
-types
-	Mytype = int | bool;
 
 instance variables
-	var1 : Mytype := false;
-	var2 : Mytype := 3;
+	var1 : int;
+	var2 : int;
 
 operations
-	fun : () ==> Mytype
-	fun()==
-		return var1 and var2;
+	public ClassScratchWork: int * int ==> ClassScratchWork
+	ClassScratchWork(a, b) ==
+	(
+		var1 := a;
+		var2 := b;
+	)
 			
 end ClassScratchWork

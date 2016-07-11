@@ -72,6 +72,7 @@ public class CGen extends CodeGenBase
 			recClassStatus.setIrNodeName(cls.getName());
 			statuses.add(recClassStatus);
 			generateClassHeaders(statuses.subList(statuses.size() - 1, statuses.size()));
+			applyTransformations(statuses.subList(statuses.size() - 2, statuses.size()));
 		}
 
 		VTableGenerator.generate(IRStatus.extract(statuses, AClassHeaderDeclIR.class));
