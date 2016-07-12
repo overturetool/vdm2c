@@ -68,7 +68,7 @@ DepthFirstAnalysisCAdaptor
 				{
 					if(fieldUtil.lookupField(c,  node.getMemberName()).getStatic())
 					{
-						fieldUtil.replaceWithStaticReference(c, node.getMemberName(),  node);							
+						fieldUtil.replaceWithStaticReference(c, node.getMemberName(), node);							
 						return;
 					}
 				}

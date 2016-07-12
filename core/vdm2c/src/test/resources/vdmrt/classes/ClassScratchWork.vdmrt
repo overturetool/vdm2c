@@ -1,15 +1,19 @@
-class ClassScratchWork
+class AA
+	instance variables
+	public a : int := 0;
+end AA
 
+class BB
 instance variables
-	var1 : int;
-	var2 : int;
+	public static aa : AA := new AA();
 
+end BB
+
+class CC
+	
 operations
-	public ClassScratchWork: int * int ==> ClassScratchWork
-	ClassScratchWork(a, b) ==
-	(
-		var1 := a;
-		var2 := b;
-	)
-			
-end ClassScratchWork
+public op : () ==> int
+op() ==
+	return BB`aa.a;
+
+end CC
