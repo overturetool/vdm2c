@@ -119,7 +119,9 @@ TVP vdm_MATH_ln(TVP a)
 
 
 TVP vdm_MATH_exp(TVP a)
-{}
+{
+	return newReal(exp(a->value.doubleVal));
+}
 
 
 
@@ -165,8 +167,10 @@ TVP vdm_MATH_sqrt(TVP a)
 
 
 
-TVP vdm_MATH_acot(TVP a)
-{}
+TVP vdm_MATH_acot(TVP v)
+{
+	return vdmDifference(vdmDivision(vdm_MATH_pi_f(), newReal(2.0)), vdm_MATH_atan(v));
+}
 
 
 
@@ -188,27 +192,77 @@ TVP vdm_MATH_atan(TVP v)
 
 
 
-TVP vdm_MATH_acos(TVP a)
-{}
+TVP vdm_MATH_acos(TVP v)
+{
+	if(v->type == VDM_NAT || v->type == VDM_NAT1 || v->type == VDM_INT)
+	{
+		return newReal(acos((double)(v->value.intVal)));
+	}
+
+	if(v->type == VDM_REAL)
+	{
+		return newReal(acos(v->value.doubleVal));
+	}
+
+	return NULL;
+}
 
 
 
-TVP vdm_MATH_asin(TVP a)
-{}
+TVP vdm_MATH_asin(TVP v)
+{
+	if(v->type == VDM_NAT || v->type == VDM_NAT1 || v->type == VDM_INT)
+	{
+		return newReal(asin((double)(v->value.intVal)));
+	}
+
+	if(v->type == VDM_REAL)
+	{
+		return newReal(asin(v->value.doubleVal));
+	}
+
+	return NULL;
+}
 
 
 
 TVP vdm_MATH_cot(TVP a)
-{}
+{
+	return vdmDivision(newReal(1.0), vdm_MATH_tan(a));
+}
 
 
 
-TVP vdm_MATH_tan(TVP a)
-{}
+TVP vdm_MATH_tan(TVP v)
+{
+	if(v->type == VDM_NAT || v->type == VDM_NAT1 || v->type == VDM_INT)
+	{
+		return newReal(tan((double)(v->value.intVal)));
+	}
+
+	if(v->type == VDM_REAL)
+	{
+		return newReal(tan(v->value.doubleVal));
+	}
+
+	return NULL;
+}
 
 
 TVP vdm_MATH_cos(TVP v)
-{}
+{
+	if(v->type == VDM_NAT || v->type == VDM_NAT1 || v->type == VDM_INT)
+	{
+		return newReal(cos((double)(v->value.intVal)));
+	}
+
+	if(v->type == VDM_REAL)
+	{
+		return newReal(cos(v->value.doubleVal));
+	}
+
+	return NULL;
+}
 
 
 
@@ -218,7 +272,6 @@ TVP vdm_MATH_sin(TVP v)
 	{
 		return newReal(sin((double)(v->value.intVal)));
 	}
-
 
 	if(v->type == VDM_REAL)
 	{
