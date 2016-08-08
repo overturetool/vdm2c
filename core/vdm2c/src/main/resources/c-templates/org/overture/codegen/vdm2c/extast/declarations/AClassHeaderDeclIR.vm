@@ -16,7 +16,6 @@
 #foreach( $typeName in $node.getIncludes() )
 \#include "$String.format("%s.h",$typeName)"
 #end
-
 #[[
 /* -------------------------------
  *
@@ -39,6 +38,10 @@
  *
  --------------------------------- */ 
  ]]#
+ #ifndef CLASS_NAME_VAR
+ \#define CLASS_NAME_VAR
+const char *class_name = "$cname";
+#endif
 #foreach( $val in $node.getValues() )
 extern TVP $val.getName();
 #end
