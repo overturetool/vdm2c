@@ -123,7 +123,8 @@ ${cname}CLASS ${cname}_Constructor(${cname}CLASS this_ptr)
 static TVP new()
 {
 	${cname}CLASS ptr=${cname}_Constructor(NULL);
-
+	
+	ptr->class_name = "$cname";
 	return newTypeValue(VDM_CLASS, (TypedValueType)
 			{	.ptr=newClassValue(ptr->_${cname}_id, &ptr->_${cname}_refs, (freeVdmClassFunction)&${cname}_free, ptr)});
 }

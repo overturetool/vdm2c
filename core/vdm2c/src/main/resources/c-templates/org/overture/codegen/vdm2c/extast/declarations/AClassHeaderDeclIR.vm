@@ -16,6 +16,10 @@
 #foreach( $typeName in $node.getIncludes() )
 \#include "$String.format("%s.h",$typeName)"
 #end
+
+//const char *class_name = "$cname";
+extern const char *class_name;
+
 #[[
 /* -------------------------------
  *
@@ -38,10 +42,6 @@
  *
  --------------------------------- */ 
  ]]#
- #ifndef CLASS_NAME_VAR
- \#define CLASS_NAME_VAR
-const char *class_name = "$cname";
-#endif
 #foreach( $val in $node.getValues() )
 extern TVP $val.getName();
 #end
@@ -66,6 +66,7 @@ extern TVP $val.getName();
 
 struct $cname
 {
+char *class_name;
 #foreach( $super in $node.getFlattenedSupers() )
 	$CFormat.format($super.getState())
 #end
