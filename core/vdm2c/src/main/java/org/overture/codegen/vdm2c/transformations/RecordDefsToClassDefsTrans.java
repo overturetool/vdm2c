@@ -17,6 +17,7 @@ import org.overture.codegen.ir.declarations.AFieldDeclIR;
 import org.overture.codegen.ir.declarations.ARecordDeclIR;
 import org.overture.codegen.ir.declarations.AVarDeclIR;
 import org.overture.codegen.ir.declarations.SClassDeclIR;
+import org.overture.codegen.ir.expressions.AApplyExpIR;
 import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
 import org.overture.codegen.ir.expressions.AMkBasicExpIR;
 import org.overture.codegen.ir.expressions.ANewExpIR;
@@ -65,6 +66,11 @@ public class RecordDefsToClassDefsTrans extends DepthFirstAnalysisCAdaptor
 						((AClassTypeIR)node.getType()).setName(((ADefaultClassDeclIR)c).getName());
 						((AClassTypeIR)node.getType()).setOptional(((AClassTypeIR)node.getType()).getOptional());
 						((AClassTypeIR)node.getType()).setSourceNode(typeSource);
+						
+						//something is not getting set here because the return type of the resulting
+						//constructor and of the return value is not recognized by the template.
+						//It is still matching the ARecordTypeIR template.
+						//Also the number of parameters condition in NewRewriteTrans.java.
 						
 						return;
 					}				
