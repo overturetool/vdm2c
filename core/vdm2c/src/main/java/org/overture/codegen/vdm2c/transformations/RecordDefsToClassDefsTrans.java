@@ -71,20 +71,5 @@ public class RecordDefsToClassDefsTrans extends DepthFirstAnalysisCAdaptor
 				}
 			}
 		}
-		
-		
-		
 	}
-	
-//	@Override
-//	public void caseANewExpIR(ANewExpIR node) throws AnalysisException
-//	{
-//		// TODO Auto-generated method stub
-//		super.caseANewExpIR(node);
-//		
-//		if(node.getType() instanceof ARecordTypeIR)
-//		{
-//			
-//		}
-//	}
 }
