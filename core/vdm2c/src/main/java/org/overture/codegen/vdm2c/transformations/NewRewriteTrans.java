@@ -38,7 +38,9 @@ public class NewRewriteTrans extends DepthFirstAnalysisCAdaptor
 			for (AMethodDeclIR method : cDef.getMethods())
 			{
 				if (!method.getIsConstructor()
-						|| method.getFormalParams().size() != node.getArgs().size())
+						//This was probably in place to deal with multiple constructors for
+						//in the same class.
+						/*|| method.getFormalParams().size() != node.getArgs().size()*/)
 				{
 					continue;
 				}

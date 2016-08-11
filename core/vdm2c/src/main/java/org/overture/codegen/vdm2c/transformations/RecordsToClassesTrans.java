@@ -53,6 +53,9 @@ public class RecordsToClassesTrans extends DepthFirstAnalysisCAdaptor
 		
 		ctor.setMethodType(ctorMethodType);
 		
+		
+		//Before adding these need to add a this parameter as the first.
+		//Is this not something that is done by the ctor trans?
 		for(AFieldDeclIR f : recClass.getFields())
 		{
 			ctor.getFormalParams().add(new AFormalParamLocalParamIR());
