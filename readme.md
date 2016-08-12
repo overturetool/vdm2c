@@ -21,8 +21,7 @@ The translation is developed in two parts:
 
 ### Running tests
 
-Please set this property to point to the tests in the repo: `git@gitlab.au.dk:into-cps/vdm2c-exploration.git`
-`-Dcexamples.path=/path/to/vdm2c-exploration/vdm` and `-DVDM_LIB_PATH="/path/to/vdm2c-exploration/c-examples/lib"`
+* To run the tests one must pass the location of the VDM library as a property `-DVDM_LIB_PATH="/path/to/vdm2c-exploration/c-examples/lib"`
 
 # Notes
 
