@@ -22,6 +22,20 @@ After successful checkout run:
 ```bash
 cmake -DCMAKE_BUILD_TYPE=Debug .
 ```
+
+### Test the runtime library
+
+All the test code is stored in `<root>/c/vdmclib/src/tests` and written using the googletest framework. The tests can be executed as follows:
+
+```bash
+# Go into runtime library folder
+cd <root>/c
+# Build the google test binary
+make -j<no-of-cpu-cores-plus-one
+# Run the generated google tests
+<root/c/vdmclib/src/vdmclib
+```
+
 ### Enabling generator tests
 
 To enable test for the vdm2c generator use the following property:
