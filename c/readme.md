@@ -4,6 +4,10 @@ This project aims at clarifying how a mapping from VDM-PP (and eventually VDM-RT
 
 The project is inspired by the vdm2java code generator but since C does not have classes nor RTTI (Runtime Type information) we need to do something to add this.
 
+# Prerequisites
+
+* `cmake` is needed in order to run the tests
+
 # Compiling
 
 To check out the sources see the gitlab guide for the project.
