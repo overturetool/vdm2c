@@ -1,8 +1,6 @@
-# VDM 2 C - Exploration 
+# VDM2C vdmclib - Runtime library for C code generator for VDM-RT
 
-This project aims at clarifying how a mapping from VDM-PP (and eventually VDM-RT) can be made to C. 
-
-The project is inspired by the vdm2java code generator but since C does not have classes nor RTTI (Runtime Type information) we need to do something to add this.
+This project develops a translator from VDM-RT to C.
 
 # Prerequisites
 
@@ -36,17 +34,9 @@ make -j<no-of-cpu-cores-plus-one
 <root/c/vdmclib/src/vdmclib
 ```
 
-### Enabling generator tests
-
-To enable test for the vdm2c generator use the following property:
-
-```bash
--DEXT_C_FILES=/path/to/vdm2c/target/test-cgen/CExamplesTest
-```
-
 ## Compiler tool dependencies
 * glib
- * gettext - this is not present on OSX so install it with:
+* gettext - this is not present on OSX so install it with:
  
 ```bash
 brew install gettext
@@ -79,16 +69,17 @@ sudo apt-get install cmake make gcc g++
 
 Please install: CDT + *C/C++ Unit Testing Support*
 
+# Using googletest
 
 https://bjornarnelid.wordpress.com/2014/03/10/how-to-get-started-with-google-test-in-eclipse-cdt-on-linux/
 
-## Import
+## Import the entire runtime in Eclipse
 
 1. execute cmake in the root, before that the complete repo is there (if not run `git submodule update --init`)
 2. Create a new c++-project in Eclipse based on a standard makefile project using your avaliable tool chain.
  * Name the project with the name of the cmake project you want to import
  * Select source location to be the location of the cmake project
-3. Build the project to see if Eclipse picksup the imports
+3. Build the project to see if Eclipse picks up the imports
  * If it do not pickup the includes then enable the fix below
 
 ## Update *CDT GCC Build Output Parser* to work with *CMake* on OSX
@@ -115,7 +106,7 @@ extern "C"
 Therefore:
 * never use any C++ keywords in C. It leads to trouble later...
 
-## Class mapping
+## Implementing classes
 
 * http://www.pvv.ntnu.no/~hakonhal/main.cgi/c/classes/
 * http://www.eventhelix.com/RealtimeMantra/basics/ComparingCPPAndCPerformance2.htm#.VmbPCuODFBc
