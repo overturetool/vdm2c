@@ -29,6 +29,8 @@ public class FieldInitializerExtractorTrans extends DepthFirstAnalysisCAdaptor
 	public void caseAFieldDeclIR(AFieldDeclIR node) throws AnalysisException
 	{
 		SExpIR initial = node.getInitial();
+		
+		//If this field is actually being given an initial value.
 		if (initial != null)
 		{
 			if (initial.getType() == null)

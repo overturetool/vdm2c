@@ -53,6 +53,7 @@ public class RecordDefsToClassDefsTrans extends DepthFirstAnalysisCAdaptor
 		super.caseAFieldDeclIR(node);
 
 		//Change this field declaration's type from a record type to a class type.
+		//Better to prepare a replacement node and carry the transformations through.
 		if(node.getType() instanceof ARecordTypeIR)
 		{
 			for(SClassDeclIR c : this.assist.getInfo().getClasses())
@@ -67,7 +68,7 @@ public class RecordDefsToClassDefsTrans extends DepthFirstAnalysisCAdaptor
 						((AClassTypeIR)node.getType()).setOptional(((AClassTypeIR)node.getType()).getOptional());
 						((AClassTypeIR)node.getType()).setSourceNode(typeSource);
 						
-						node.getInitial().setType(node.getType());
+						node.getInitial().setType(node.getType().clone());
 						
 						//Return to the number of parameters condition in NewRewriteTrans.java.
 						

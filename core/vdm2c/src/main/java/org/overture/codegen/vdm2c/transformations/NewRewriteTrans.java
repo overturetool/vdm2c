@@ -39,7 +39,8 @@ public class NewRewriteTrans extends DepthFirstAnalysisCAdaptor
 			{
 				if (!method.getIsConstructor()
 						//This was probably in place to deal with multiple constructors for
-						//in the same class.
+						//in the same class, but does not work with the current way of calling 
+						//the constructor on coversion from records to classes.
 						/*|| method.getFormalParams().size() != node.getArgs().size()*/)
 				{
 					continue;
