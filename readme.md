@@ -1,6 +1,6 @@
-# VDM 2 C
+# VDM2C
 
-The VDM 2 C project aims to develop a VDM to C translation that allows generated VDM specifications to be executed on smaller devices which has a C or C++ compiler avaliable.
+The VDM2C project aims to develop a VDM-to-C translation that allows generated VDM specifications to be executed on smaller devices which has a C or C++ compiler available.
 
 The translation aims to support most of the common constructs in VDM and therefore will have an overhead compared to dedicated C code. 
 
@@ -14,8 +14,6 @@ The following contributes to this overhead:
 * `cmake` is needed in order to run the tests
 
 ## Compiler tool dependencies
-* glib
-* gettext
 
 ### Install glib
 
@@ -55,7 +53,7 @@ sudo apt-get install cmake make gcc g++
 
 # Compiling
 
-After successful checkout run:
+The generated code is tested using googletest, which is available via a git submodule. This submodule must be initialised after a successful checkout:
 
 1. `git submodule update --init`
 2. Either:
@@ -70,19 +68,19 @@ cmake -DCMAKE_BUILD_TYPE=Debug .
 
 The translation is developed in two parts:
 
-1. A C library containing:
+1. A C library, stored in `<root>/c/vdmclib`, containing:
  * Library support for all operations that can be carried our on numbers, sets, seqs, maps etc.
  * Library support providing a number of macros to ease class encoding
 2. A translation of VDM into C using this library
 
 ## Import the entire runtime in Eclipse
 
-1. execute cmake in the root, before that the complete repo is there (if not run `git submodule update --init`)
+1. execute cmake in the root  (and make sure you have initialised the googletest submodule)
 2. Create a new C++-project in Eclipse based on a standard makefile project using your avaliable tool chain.
  * Name the project with the name of the cmake project you want to import
  * Select source location to be the location of the cmake project
 3. Build the project to see if Eclipse picks up the imports
- * If it do not pickup the includes then enable the fix below
+ * If it do not pickup the includes then use the fix below
 
 ## Update *CDT GCC Build Output Parser* to work with *CMake* on OSX
 
@@ -98,7 +96,7 @@ Source: https://developer.mozilla.org/en-US/docs/Eclipse_CDT
 
 ### Test the runtime library
 
-All the test code is stored in `<root>/c/vdmclib/src/tests` and written using the googletest framework. The tests can be executed as follows:
+All the code used to test the runtime library is stored in `<root>/c/vdmclib/src/tests` and written using the googletest framework. The tests can be executed as follows:
 
 ```bash
 # Go into runtime library folder
@@ -129,7 +127,7 @@ https://marketplace.eclipse.org/content/veloeclipse
 
 ## Translation Notes
 
-If we want the C code to be usable from C++ we must make sure that it can be included like:
+If one wants to use the C code from C++  it can be included as shown below:
 
 ```c++
 extern "C"
@@ -158,14 +156,11 @@ All nodes that is shared between VDM and C must have a C plain C template. This 
 
 * http://stackoverflow.com/questions/3523145/pointer-arithmetic-for-void-pointer-in-c
 * https://www.cs.uaf.edu/2010/fall/cs301/lecture/10_15_struct_and_class.html
-
-* (main) http://www.eventhelix.com/RealtimeMantra/basics/ComparingCPPAndCPerformance2.htm#.VpmaslMrLUr
+* http://www.eventhelix.com/RealtimeMantra/basics/ComparingCPPAndCPerformance2.htm#.VpmaslMrLUr
 * https://en.wikipedia.org/wiki/Virtual_method_table
 * http://www.go4expert.com/articles/virtual-table-vptr-multiple-inheritance-t16616/
 * http://www.go4expert.com/articles/virtual-table-vptr-t16544/
 * http://www.learncpp.com/cpp-tutorial/125-the-virtual-table/
-* (main-end) :-)
-
 * http://www.drdobbs.com/cpp/single-inheritance-classes-in-c/184406396?pgno=1
 * http://www.pvv.ntnu.no/~hakonhal/main.cgi/c/classes
 
@@ -178,10 +173,10 @@ All nodes that is shared between VDM and C must have a C plain C template. This 
 
 Remember that:
 
-* `malloc` allocated space in memory with random stuff - it may be 0 but we dont know. We know that linx and OSX e.g. OSX may choose 0 memory where linux may choose random memory, but it is random :-)
-* `calloc` allocated space in memory that is 0 
+* `malloc` leaves the memory uninitialised
+* `calloc` zero-initializes the buffer (which takes more time)
 
-Why is this importsnt: Well `free` only frees if `ptr != NULL`  
+This is important since `free` only frees the memory if `ptr != NULL`  
 
 ## Other debugging related stuff
 
@@ -193,4 +188,4 @@ Enable the core to be dumped by:
 ulimit -c unlimited
 ```
 
-on linux it will be in the folder of the application and on OSX in `/cores/`
+On Linux the core is dumped in the application folder, while OSX uses `/cores/`
