@@ -22,6 +22,7 @@ import org.overture.ast.types.AOperationType;
 import org.overture.cgc.extast.analysis.DepthFirstAnalysisCAdaptor;
 import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.declarations.SClassDeclIR;
+import org.overture.codegen.ir.expressions.AExplicitVarExpIR;
 import org.overture.codegen.ir.expressions.AFieldExpIR;
 import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
 import org.overture.codegen.ir.statements.AAssignToExpStmIR;
@@ -90,14 +91,28 @@ DepthFirstAnalysisCAdaptor
 	public void caseAIdentifierVarExpIR(AIdentifierVarExpIR node)
 			throws AnalysisException
 	{
-		if (node.getIsLocal())
+		super.caseAIdentifierVarExpIR(node);
+		
+		if(node.getIsLocal())
+		{
+			//This identifier is not a field.
+			return;
+		}
+		
+		if(node.parent() instanceof AAssignToExpStmIR &&
+				((AAssignToExpStmIR)node.parent()).getTarget() == node)
+		{
+			//Current field is being assigned to, handled elsewhere.
+			return;
+		}
+		
+		if(node.parent() instanceof AFieldExpIR)
 		{
 			return;
 		}
 		
-		if(node.parent() instanceof AAssignToExpStmIR)
+		if(node.parent() instanceof AExplicitVarExpIR)
 		{
-			//Assignment handled differently in its own transformation.
 			return;
 		}
 

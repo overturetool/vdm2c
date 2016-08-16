@@ -153,7 +153,6 @@ public class CTransSeries
 		transformations.add(new LiteralInstantiationRewriteTrans(transAssistant));
 		transformations.add(new RenameFieldsTrans(transAssistant));
 		transformations.add(new FieldExpRewriteTrans(transAssistant));
-		transformations.add(new ValueAccessRenameTrans(transAssistant));
 		transformations.add(new StaticFieldAccessRenameTrans(transAssistant));
 		transformations.add(new LetTrans(transAssistant));
 
@@ -171,6 +170,7 @@ public class CTransSeries
 		transformations.add(new ExtractRetValTrans(transAssistant));
 		transformations.add(new FieldAssignToFieldSetMacroTrans(transAssistant));
 		transformations.add(new FieldReadToFieldGetMacroTrans(transAssistant));
+		transformations.add(new ValueAccessRenameTrans(transAssistant));
 		transformations.add(new CtorTrans(transAssistant));
 		transformations.add(new NewRewriteTrans(transAssistant));
 		transformations.add(new IgnoreRenamingTrans(transAssistant));
