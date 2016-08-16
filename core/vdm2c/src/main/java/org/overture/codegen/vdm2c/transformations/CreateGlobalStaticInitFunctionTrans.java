@@ -12,6 +12,7 @@ import org.overture.codegen.ir.declarations.ADefaultClassDeclIR;
 import org.overture.codegen.ir.declarations.AFieldDeclIR;
 import org.overture.codegen.ir.declarations.AMethodDeclIR;
 import org.overture.codegen.ir.statements.ABlockStmIR;
+import org.overture.codegen.ir.statements.AReturnStmIR;
 import org.overture.codegen.ir.types.AVoidTypeIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 
@@ -40,6 +41,9 @@ public class CreateGlobalStaticInitFunctionTrans extends
 			}
 		}
 
+		//In case there is nothing to initialize, we still want the functions to have a body.  See comment below.
+		body.getStatements().add(new AReturnStmIR());
+				
 		//Emit init function even if no static fields are present.  Simplifies FMU export.
 		AMethodDeclIR method = newInternalMethod(String.format(GLOBAL_STATIC_INIT_FUNCTION_PATTERN, node.getName()), body, new AVoidTypeIR(), false);
 		method.setAccess("public");
@@ -59,6 +63,9 @@ public class CreateGlobalStaticInitFunctionTrans extends
 			}
 		}
 
+		//In case there is nothing to initialize, we still want the functions to have a body.  See comment below.
+		body.getStatements().add(new AReturnStmIR());
+				
 		//Emit shutdown function even if no static fields are present.  Simplifies FMU export.
 		AMethodDeclIR method = newInternalMethod(String.format(GLOBAL_STATIC_SHUTDOWN_FUNCTION_PATTERN, node.getName()), body, new AVoidTypeIR(), false);
 		method.setAccess("public");
