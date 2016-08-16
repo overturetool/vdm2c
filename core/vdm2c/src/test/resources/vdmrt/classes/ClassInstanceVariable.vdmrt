@@ -3,11 +3,19 @@ class ClassInstanceVariable
 instance variables
 
 field1 : int := 9;
+field2 : int := 10;
 
 operations
 
 public getField1: () ==> int
 getField1()==return field1;
+
+public getField1Test : () ==> bool
+getField1Test() ==
+	return getField1() = 9;
+	
+public getFieldSum : () ==> int
+getFieldSum() == return field1 + field2;
 
 public setField1: int ==> ()
 setField1(v)== field1:=v;

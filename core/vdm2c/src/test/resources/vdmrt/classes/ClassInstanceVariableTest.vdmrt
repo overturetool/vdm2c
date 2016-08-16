@@ -1,0 +1,29 @@
+class ClassFieldAccessTest is subclass of TestCase, ClassFieldAccess, ClassFieldAccessAccessor
+
+operations
+
+public testSetLocalField : () ==> ()
+testSetLocalField() == assertTrue(op2());
+
+public testSetLocalFieldFromOtherField : () ==> ()
+testSetLocalFieldFromOtherField() == assertTrue(op3());
+
+public testAccessField : () ==>()
+testAccessField()==assertTrue( accessField());
+
+public testAccessStaticField : () ==>()
+testAccessStaticField()==assertTrue( accessStaticField());
+
+public testAccessOp : () ==>()
+testAccessOp()==assertTrue( accessOp());
+
+public testAccessOpStatic : () ==>()
+testAccessOpStatic()==assertTrue( accessOpStatic());
+
+public testAccessFun : () ==>()
+testAccessFun()==assertTrue( accessFun());
+
+public testSetField : () ==> ()
+testSetField() == assertTrue(setField());
+
+end ClassFieldAccessTest
