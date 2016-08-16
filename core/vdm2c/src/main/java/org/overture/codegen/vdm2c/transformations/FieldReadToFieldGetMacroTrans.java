@@ -21,6 +21,7 @@ import org.overture.ast.types.AFunctionType;
 import org.overture.ast.types.AOperationType;
 import org.overture.cgc.extast.analysis.DepthFirstAnalysisCAdaptor;
 import org.overture.codegen.ir.analysis.AnalysisException;
+import org.overture.codegen.ir.declarations.SClassDeclIR;
 import org.overture.codegen.ir.expressions.AFieldExpIR;
 import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
 import org.overture.codegen.ir.statements.AAssignToExpStmIR;
@@ -56,9 +57,32 @@ DepthFirstAnalysisCAdaptor
 		// TODO Auto-generated method stub
 		super.caseAFieldExpIR(node);
 		
-		
 		//Differentiate here between public field get and set.
-		
+
+		//The remainder of the transformation does not yet deal with inherited field definitions.
+		String fieldClassName = null;
+		AFieldExpIR tmpnode = node.clone();
+
+		for(SClassDeclIR c : assist.getInfo().getClasses())
+		{
+			if(fieldUtil.lookupField(c,  node.getMemberName()) != null)
+			{
+				fieldClassName = fieldUtil.lookupFieldClass(c, node.getMemberName());
+			}
+		}
+
+		AMacroApplyExpIR apply = newMacroApply(GET_FIELD_PTR);
+		assist.replaceNodeWith(node, apply);
+
+		// add this type
+		apply.getArgs().add(createIdentifier(fieldClassName, tmpnode.getSourceNode()));
+		// add field owner type
+		apply.getArgs().add(createIdentifier(fieldClassName, tmpnode.getSourceNode()));
+		// add this
+		apply.getArgs().add(createIdentifier("this", tmpnode.getSourceNode()));
+		// add field name
+		apply.getArgs().add(createIdentifier(tmpnode.getMemberName(), tmpnode.getSourceNode()));
+		apply.setType(node.getType());
 	}
 	
 
