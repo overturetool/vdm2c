@@ -1,5 +1,5 @@
 /*
- * ClassInstanceVariableSeqAssign_Tests.cpp
+ * ClassInstanceVariable_Tests.cpp
  *
  *  Created on: June, 2016
  *      Author: Victor Bandur
@@ -22,9 +22,28 @@ vdmFree(res);\
 vdmFree(c)
 
 
-TEST(ClassInstanceVariableSeqAssign, call)
+TEST(ClassInstanceVariable, getField1)
 {
 	CHECK(CLASS_ClassInstanceVariable__Z13getField1TestEV);
 }
 
 
+TEST(ClassInstanceVariable, getFieldSum)
+{
+	CHECK(CLASS_ClassInstanceVariable__Z15getFieldSumTestEV);
+}
+
+TEST(ClassInstanceVariable, setField1)
+{
+	CHECK(CLASS_ClassInstanceVariable__Z13setField1TestEV);
+}
+
+TEST(ClassInstanceVariable, setField1UsingField2AsParam)
+{
+	CHECK(CLASS_ClassInstanceVariable__Z31setField1UsingField2AsParamTestEV);
+}
+
+TEST(ClassInstanceVariable, assignField2ToField1)
+{
+	CHECK(CLASS_ClassInstanceVariable__Z24assignField2ToField1TestEV);
+}
