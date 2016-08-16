@@ -13,7 +13,9 @@ import org.overture.ast.definitions.AClassClassDefinition;
 import org.overture.ast.definitions.ASystemClassDefinition;
 import org.overture.ast.definitions.SClassDefinitionBase;
 import org.overture.ast.statements.AIdentifierStateDesignator;
+import org.overture.cgc.extast.analysis.AnswerCAdaptor;
 import org.overture.cgc.extast.analysis.DepthFirstAnalysisCAdaptor;
+import org.overture.codegen.ir.INode;
 import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.declarations.ADefaultClassDeclIR;
 import org.overture.codegen.ir.declarations.AFieldDeclIR;
@@ -186,11 +188,10 @@ DepthFirstAnalysisCAdaptor
 		}
 		else if(node.getTarget() instanceof AFieldExpIR)
 		{
+			AFieldExpIR field = (AFieldExpIR) node.getTarget();
+			
 			//Name of class containing the field being referenced.
-			String fieldClassName = "ClassFieldAccessAccessor";
-					//((AFieldStateDesignator)((AFieldExpIR)node.getTarget()).getSourceNode().getVdmNode()).toString();//.getName().getModule();
-			
-			
+			String fieldClassName = field.getAncestor(SClassDeclIR.class).getName();
 
 			//This should be the target class, not the current node's class 
 			SClassDeclIR cDef = CTransUtil.getClass(assist,  fieldClassName);			
@@ -214,9 +215,12 @@ DepthFirstAnalysisCAdaptor
 
 
 			//The actual assignment to the static field.  The generator emits simple golbal variables for static fields.
+			
+			String fieldName = getFieldName(field);
+			
 			AAssignToExpStmIR staticFieldAssign = 
 					newAssignment(newIdentifier(
-							NameConverter.getCName(fieldUtil.lookupField(cDef, node.getTarget().toString())), null),
+							NameConverter.getCName(fieldUtil.lookupField(cDef, fieldName)), null),
 							newIdentifier(name, null));
 
 			AVarDeclIR retVar = newDeclarationAssignment(name, node.getExp().getType().clone(), newApply("vdmClone", node.getExp().clone()), node.getExp().getSourceNode());
@@ -236,4 +240,49 @@ DepthFirstAnalysisCAdaptor
 			replBlock.getStatements().add(exp2Stm(vdmFree));
 		}
 	}
+
+
+
+	private String getFieldName(AFieldExpIR field)
+	{
+		try
+		{
+			return field.apply(new FieldNameFinder());
+		} catch (AnalysisException e)
+		{
+			logger.error("Could not find name of field");
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	class FieldNameFinder extends AnswerCAdaptor<String>
+	{
+		@Override
+		public String caseAFieldExpIR(AFieldExpIR node) throws AnalysisException
+		{
+			return node.getObject().apply(this);
+		}
+		
+		@Override
+		public String caseAIdentifierVarExpIR(AIdentifierVarExpIR node)
+				throws AnalysisException
+		{
+			return node.getName();
+		}
+
+		@Override
+		public String createNewReturnValue(INode arg0) throws AnalysisException
+		{
+			return null;
+		}
+
+		@Override
+		public String createNewReturnValue(Object arg0) throws AnalysisException
+		{
+			return null;
+		}
+	}
+	
+	
 }
