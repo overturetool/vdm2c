@@ -9,6 +9,10 @@ instance variables
 	b1 : int := 0;
 	
 operations
+accessa1 : () ==> int
+accessa1() ==
+	return a_instance.a1;
+	
 setb1 : () ==> ()
 setb1() ==
 	b1 := a_instance.a1;
