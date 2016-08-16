@@ -126,6 +126,7 @@ public class CTransSeries
 		transformations.add(new AtomicStmTrans(transAssistant, varMan.atomicTmpVar()));
 		transformations.add(new DivideTrans(info));
 		transformations.add(new CallObjStmTrans(info));
+		//This only transforms assignments to fields.  Is it needed?
 		transformations.add(new AssignStmTrans(transAssistant));
 		// PrePostTrans prePostTr = new PrePostTrans(info);
 		transformations.add(new IfExpTrans(transAssistant));

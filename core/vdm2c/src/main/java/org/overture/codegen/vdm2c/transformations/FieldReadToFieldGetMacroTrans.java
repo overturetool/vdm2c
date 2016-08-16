@@ -58,6 +58,13 @@ DepthFirstAnalysisCAdaptor
 		// TODO Auto-generated method stub
 		super.caseAFieldExpIR(node);
 		
+		if(node.parent() instanceof AAssignToExpStmIR &&
+				((AAssignToExpStmIR)node.parent()).getTarget() == node)
+		{
+			//Current field is being assigned to, handled elsewhere.
+			return;
+		}
+		
 		//Differentiate here between public field get and set.
 
 		//The remainder of the transformation does not yet deal with inherited field definitions.
