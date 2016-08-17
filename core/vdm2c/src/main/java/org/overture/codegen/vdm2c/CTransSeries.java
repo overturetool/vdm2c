@@ -60,7 +60,7 @@ import org.overture.codegen.vdm2c.transformations.NewRewriteTrans;
 import org.overture.codegen.vdm2c.transformations.NumericTrans;
 import org.overture.codegen.vdm2c.transformations.RemoveCWrappersTrans;
 import org.overture.codegen.vdm2c.transformations.RemoveRTConstructs;
-import org.overture.codegen.vdm2c.transformations.RenameFieldsTrans;
+import org.overture.codegen.vdm2c.transformations.RenameFieldsDeclsTrans;
 import org.overture.codegen.vdm2c.transformations.ScopeCleanerTrans;
 import org.overture.codegen.vdm2c.transformations.SetCompToBlockTrans;
 import org.overture.codegen.vdm2c.transformations.StaticFieldAccessRenameTrans;
@@ -152,7 +152,7 @@ public class CTransSeries
 		transformations.add(new NumericTrans(transAssistant));
 		transformations.add(new LogicTrans(transAssistant));
 		transformations.add(new LiteralInstantiationRewriteTrans(transAssistant));
-		transformations.add(new RenameFieldsTrans(transAssistant));
+		transformations.add(new RenameFieldsDeclsTrans(transAssistant));
 		transformations.add(new FieldExpRewriteTrans(transAssistant));
 		transformations.add(new StaticFieldAccessRenameTrans(transAssistant));
 		transformations.add(new LetTrans(transAssistant));

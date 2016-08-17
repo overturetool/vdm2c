@@ -21,8 +21,8 @@ import org.overture.ast.types.AFunctionType;
 import org.overture.ast.types.AOperationType;
 import org.overture.cgc.extast.analysis.DepthFirstAnalysisCAdaptor;
 import org.overture.codegen.ir.analysis.AnalysisException;
+import org.overture.codegen.ir.declarations.AFieldDeclIR;
 import org.overture.codegen.ir.declarations.SClassDeclIR;
-import org.overture.codegen.ir.expressions.AExplicitVarExpIR;
 import org.overture.codegen.ir.expressions.AFieldExpIR;
 import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
 import org.overture.codegen.ir.statements.AAssignToExpStmIR;
@@ -30,6 +30,7 @@ import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.extast.expressions.AMacroApplyExpIR;
 import org.overture.codegen.vdm2c.utils.CTransUtil;
 import org.overture.codegen.vdm2c.utils.GlobalFieldUtil;
+import org.overture.codegen.vdm2c.utils.NameConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,12 +71,29 @@ DepthFirstAnalysisCAdaptor
 		//The remainder of the transformation does not yet deal with inherited field definitions.
 		String fieldClassName = null;
 		AFieldExpIR tmpnode = node.clone();
+		
+		//The case "inst.field", where "field" is a static field of the class of "inst".
+		for(SClassDeclIR c : assist.getInfo().getClasses())
+		{
+			for(AFieldDeclIR f : c.getFields())
+			{
+				if(NameConverter.matches(f,  node.getMemberName()))
+				{
+					if(fieldUtil.lookupField(c,  node.getMemberName()).getStatic())
+					{
+						fieldUtil.replaceWithStaticReference(c, node.getMemberName(),  node);							
+						return;
+					}
+				}
+			}
+		}
 
 		for(SClassDeclIR c : assist.getInfo().getClasses())
 		{
-			if(fieldUtil.lookupField(c,  node.getMemberName()) != null)
+			String fieldClass = fieldUtil.lookupFieldClass(c,  node.getMemberName());
+			if(fieldClass != null)
 			{
-				fieldClassName = fieldUtil.lookupFieldClass(c, node.getMemberName());
+				fieldClassName = fieldClass;
 			}
 		}
 
@@ -113,16 +131,6 @@ DepthFirstAnalysisCAdaptor
 			return;
 		}
 		
-		if(node.parent() instanceof AFieldExpIR)
-		{
-			return;
-		}
-		
-		if(node.parent() instanceof AExplicitVarExpIR)
-		{
-			return;
-		}
-
 		String thisClassName = null;
 		String fieldClassName = null;
 

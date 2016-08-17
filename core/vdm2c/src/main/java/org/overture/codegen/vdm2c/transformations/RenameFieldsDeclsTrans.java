@@ -7,10 +7,10 @@ import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.utils.CTransUtil;
 import org.overture.codegen.vdm2c.utils.NameConverter;
 
-public class RenameFieldsTrans extends DepthFirstAnalysisCAdaptor
+public class RenameFieldsDeclsTrans extends DepthFirstAnalysisCAdaptor
 {
 
-	public RenameFieldsTrans(TransAssistantIR transformationAssistant)
+	public RenameFieldsDeclsTrans(TransAssistantIR transformationAssistant)
 	{
 	}
 
