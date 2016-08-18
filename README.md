@@ -28,7 +28,7 @@ Please set this property to point to the tests in the repo: `git@gitlab.au.dk:in
 
 # Name mangling
 
-https://en.wikipedia.org/wiki/Name_mangling
+https://en.wikipedia.org/wiki/Name_mangling  
 http://www.avabodh.com/cxxin/namemangling.html
 
 # Eclipse editor for velocity
