@@ -102,6 +102,7 @@ generated/
 .cproject
 .project
 .settings/
+*.launch
 
 # CMake
 
