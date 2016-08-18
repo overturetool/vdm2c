@@ -14,9 +14,13 @@ import org.junit.Rule;
 import org.junit.rules.TestName;
 import org.overture.ast.lex.Dialect;
 import org.overture.codegen.vdm2c.CMakeUtil.CMakeGenerateException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class NativeTestBase extends BaseGeneratorTest
 {
+	final static Logger logger = LoggerFactory.getLogger(NativeTestBase.class);
+	
 	private static final String FORMATTER = "formatter";
 
 	final static String VDM_LIB_PATH = System.getProperty("VDM_LIB_PATH");
@@ -114,7 +118,21 @@ public class NativeTestBase extends BaseGeneratorTest
 
 		for (File file : tests)
 		{
-			FileUtils.copyFile(file, new File(root, file.getName()));
+			try
+			{
+				FileUtils.copyFile(file, new File(root, file.getName()));
+			}
+			catch(IOException e)
+			{
+				if(e.getMessage().contains("are the same"))
+				{
+					logger.warn(e.getMessage());
+				}
+				else
+				{
+					throw e;
+				}
+			}
 		}
 
 		cmakeUtil.createTestProject(name.getMethodName(), root);
