@@ -5,6 +5,7 @@ import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.analysis.DepthFirstAnalysisAdaptorAnswer;
 import org.overture.codegen.ir.declarations.AFormalParamLocalParamIR;
 import org.overture.codegen.ir.declarations.AMethodDeclIR;
+import org.overture.codegen.ir.declarations.ANamedTypeDeclIR;
 import org.overture.codegen.ir.types.ABoolBasicTypeIR;
 import org.overture.codegen.ir.types.ACharBasicTypeIR;
 import org.overture.codegen.ir.types.AClassTypeIR;
@@ -46,6 +47,7 @@ public class NameMangler
 	static final String mapId = "%dM";
 	static final String classId = "%dC%s";
 	static final String templateId = "%dT%s";
+	static final String namedTypeId = "%dW%s";
 	
 	static final String quoteId = "%dY%s";
 
@@ -125,6 +127,15 @@ public class NameMangler
 		{
 			String value = node.getValue();
 			return String.format(quoteId, value.length(), value);
+		}
+		
+		@Override
+		public String caseANamedTypeDeclIR(ANamedTypeDeclIR node)
+				throws AnalysisException
+		{
+			String name = node.getName().getDefiningClass() + "_" + node.getName().getName();
+			
+			return String.format(namedTypeId, name.length(), name);
 		}
 
 		@Override
