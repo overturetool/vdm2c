@@ -12,6 +12,7 @@ import org.overture.codegen.ir.types.AExternalTypeIR;
 import org.overture.codegen.ir.types.AIntNumericBasicTypeIR;
 import org.overture.codegen.ir.types.ANat1BasicTypeWrappersTypeIR;
 import org.overture.codegen.ir.types.ANatNumericBasicTypeIR;
+import org.overture.codegen.ir.types.AQuoteTypeIR;
 import org.overture.codegen.ir.types.ARealNumericBasicTypeIR;
 import org.overture.codegen.ir.types.ASeqSeqTypeIR;
 import org.slf4j.Logger;
@@ -40,6 +41,8 @@ public class NameMangler
 	static final String seqId = "%dQ";
 	static final String mapId = "%dM";
 	static final String classId = "%dC%s";
+	
+	static final String quoteId = "%dY%s";
 
 	static final NameGenerator generator = new NameGenerator();
 
@@ -101,6 +104,14 @@ public class NameMangler
 		{
 			String name = node.getName();
 			return String.format(classId, name.length(), name);
+		}
+		
+		@Override
+		public String caseAQuoteTypeIR(AQuoteTypeIR node)
+				throws AnalysisException
+		{
+			String value = node.getValue();
+			return String.format(quoteId, value.length(), value);
 		}
 
 		@Override
