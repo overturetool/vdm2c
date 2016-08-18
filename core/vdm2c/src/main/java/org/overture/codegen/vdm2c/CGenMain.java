@@ -11,9 +11,12 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
 import org.overture.ast.analysis.AnalysisException;
 import org.overture.ast.definitions.SClassDefinition;
 import org.overture.ast.lex.Dialect;
+import org.overture.ast.node.INode;
 import org.overture.codegen.utils.GeneralUtils;
 import org.overture.codegen.utils.GeneratedData;
 import org.overture.codegen.utils.GeneratedModule;
@@ -22,19 +25,21 @@ import org.overture.config.Settings;
 import org.overture.typechecker.util.TypeCheckerUtil;
 import org.overture.typechecker.util.TypeCheckerUtil.TypeCheckResult;
 
-//import org.overture.codegen.ir.
-
 public class CGenMain
 {
-
+	public static boolean print = false;
+	
 	public static void main(String[] args)
 	{
-
+		Settings.dialect = Dialect.VDM_RT;
+		
+		LogManager.getRootLogger().setLevel(Level.ERROR);
+		
 		// create Options object
 		Options options = new Options();
 
 		// add t option
-		Option verboseOpt = Option.builder("v").longOpt("verbose").desc("Print processing information").build();
+		Option verboseOpt = Option.builder("q").longOpt("quiet").desc("Do not print processing information").build();
 		Option sourceOpt = Option.builder("sf").longOpt("folder").desc("Path to a source folder containing VDM files").hasArg().build();
 		Option formatOpt = Option.builder("fm").longOpt("formatter").desc("Name of the formatter which should be loaded from the class path").hasArg().build();
 		Option destOpt = Option.builder("dest").longOpt("destination").desc("Output directory").hasArg().required().build();
@@ -53,17 +58,16 @@ public class CGenMain
 			cmd = parser.parse(options, args);
 		} catch (ParseException e1)
 		{
-			System.err.println("Parsing failed.  Reason: " + e1.getMessage());
+			error("Parsing failed.  Reason: " + e1.getMessage());
 			showHelp(options);
 			return;
 		}
 
 		List<File> files = new LinkedList<File>();
 		File outputDir = null;
-		boolean print = false;
 		ISourceFileFormatter formatter = null;
 
-		print = cmd.hasOption(verboseOpt.getOpt());
+		print = !cmd.hasOption(verboseOpt.getOpt());
 
 		if (cmd.hasOption(helpOpt.getOpt()))
 		{
@@ -82,16 +86,16 @@ public class CGenMain
 					formatter = (ISourceFileFormatter) formatterClass.newInstance();
 				} catch (InstantiationException e)
 				{
-					System.err.println(String.format("Unable to invoke default constructor for formatter '%s'", formatterClassName));
+					error(String.format("Unable to invoke default constructor for formatter '%s'", formatterClassName));
 					return;
 				} catch (IllegalAccessException e)
 				{
-					System.err.println(String.format("Unable to access class for formatter '%s'", formatterClassName));
+					error(String.format("Unable to access class for formatter '%s'", formatterClassName));
 					return;
 				}
 			} catch (ClassNotFoundException e)
 			{
-				System.err.println(String.format("Formatter '%s' not found in class path", formatterClassName));
+				error(String.format("Formatter '%s' not found in class path", formatterClassName));
 				return;
 			}
 		}
@@ -103,10 +107,16 @@ public class CGenMain
 			if (!path.isDirectory())
 			{
 				usage(options, sourceOpt, outputDir + " is not a directory");
-				return;
 			}
 
-			files.addAll(filterFiles(GeneralUtils.getFilesRecursively(path)));
+			List<File> filterFiles = filterFiles(GeneralUtils.getFilesRecursively(path));
+			
+			if(filterFiles == null || filterFiles.isEmpty())
+			{
+				usage(options, sourceOpt, "No VDM-RT source files found in " + outputDir);
+			}
+			
+			files.addAll(filterFiles);
 
 		}
 
@@ -117,7 +127,6 @@ public class CGenMain
 			if (!outputPath.isDirectory())
 			{
 				usage(options, destOpt, outputDir + " is not a directory");
-				return;
 			}
 			outputDir = outputPath;
 
@@ -136,31 +145,24 @@ public class CGenMain
 				files.add(f);
 			} else
 			{
-				System.err.println("Not a file: " + s);
+				error("Not a file: " + s);
 				return;
 			}
 		}
 
 		try
 		{
-			// List<SClassDefinition> ast = GeneralCodeGenUtils.consClassList(files, Dialect.VDM_RT);
-
-			Settings.dialect = Dialect.VDM_RT;
-
-			// TypeCheckResult<List<SClassDefinition>> vdm_ast = TypeCheckerUtil.typeCheckPp(file);
-			//
-			// List<SClassDefinition> res = vdm_ast.result;
-
 			TypeCheckResult<List<SClassDefinition>> res = TypeCheckerUtil.typeCheckRt(files);
 
 			if (!res.parserResult.errors.isEmpty())
 			{
-				System.err.println(res.parserResult.getErrorString());
+				error(res.parserResult.getErrorString());
+				return;
 			}
 
 			if (!res.errors.isEmpty())
 			{
-				System.err.println(res.getErrorString());
+				error(res.getErrorString());
 				return;
 			}
 
@@ -172,10 +174,11 @@ public class CGenMain
 				cGen.setSourceCodeFormatter(formatter);
 			}
 
-			GeneratedData data = cGen.generate(CGen.filter(ast, org.overture.ast.node.INode.class));// .generateCFromVdm(ast,
-																									// outputDir);
+			List<INode> filter = CGen.filter(ast, org.overture.ast.node.INode.class);
 			
-			System.out.println("C code generated to folder: "
+			GeneratedData data = cGen.generate(filter);
+			
+			println("C code generated to folder: "
 					+ outputDir.getAbsolutePath());
 
 			if (print)
@@ -185,10 +188,10 @@ public class CGenMain
 
 					if (module.canBeGenerated())
 					{
-						System.out.println(module.getContent());
-						System.out.println(module.getUnsupportedInIr());
-						System.out.println(module.getMergeErrors());
-						System.out.println(module.getUnsupportedInTargLang());
+						println(module.getContent());
+						println(module.getUnsupportedInIr());
+						println(module.getMergeErrors());
+						println(module.getUnsupportedInTargLang());
 					}
 				}
 			}
@@ -229,9 +232,26 @@ public class CGenMain
 
 	private static void usage(Options options, Option opt, String string)
 	{
-		System.err.println("Error in argument: " + opt.getOpt() + " - "
+		error("Error in argument: " + opt.getOpt() + " - "
 				+ string);
 		showHelp(options);
-
+		System.exit(1);
+	}
+	
+	public static void error(String msg)
+	{
+		if(print)
+		{
+			System.err.println(msg);
+		}
+	}
+	
+	//TODO: Update to accept strings
+	public static void println(Object msg)
+	{
+		if(print)
+		{
+			System.out.println(msg);
+		}
 	}
 }
