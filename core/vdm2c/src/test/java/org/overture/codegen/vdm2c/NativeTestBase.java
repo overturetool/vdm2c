@@ -101,7 +101,7 @@ public class NativeTestBase extends BaseGeneratorTest
 			
 		}
 		List<String> args = new Vector<String>(Arrays.asList(new String[] {
-				"-dest", root.getAbsolutePath() }));
+				"--quiet", "-dest", root.getAbsolutePath() }));
 		args.addAll(Arrays.asList(paths));
 		
 		if(System.getProperty(FORMATTER)!=null)

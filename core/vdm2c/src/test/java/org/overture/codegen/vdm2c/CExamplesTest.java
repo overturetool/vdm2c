@@ -1,6 +1,5 @@
 package org.overture.codegen.vdm2c;
 
-import java.io.File;
 import java.io.IOException;
 
 import org.junit.Test;
@@ -20,7 +19,7 @@ public class CExamplesTest extends BaseGeneratorTest
 		
 		String outputFolder = "";
 		
-		CGenMain.main(new String[] { "-dest", outputFolder,
+		CGenMain.main(new String[] { "--quiet", "-dest", outputFolder,
 				getPath("expressions/ExpressionForLoop.vdmrt") });
 
 	}
