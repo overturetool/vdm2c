@@ -1,6 +1,7 @@
 package org.overture.codegen.vdm2c.utils;
 
 import org.overture.codegen.ir.INode;
+import org.overture.codegen.ir.STypeIR;
 import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.analysis.DepthFirstAnalysisAdaptorAnswer;
 import org.overture.codegen.ir.declarations.AFormalParamLocalParamIR;
@@ -17,6 +18,7 @@ import org.overture.codegen.ir.types.AQuoteTypeIR;
 import org.overture.codegen.ir.types.ARealNumericBasicTypeIR;
 import org.overture.codegen.ir.types.ASeqSeqTypeIR;
 import org.overture.codegen.ir.types.ATemplateTypeIR;
+import org.overture.codegen.ir.types.AUnionTypeIR;
 import org.overture.codegen.ir.types.AUnknownTypeIR;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,6 +52,8 @@ public class NameMangler
 	static final String namedTypeId = "%dW%s";
 	
 	static final String quoteId = "%dY%s";
+	
+	static final String unionId = "%dX";
 
 	static final NameGenerator generator = new NameGenerator();
 
@@ -202,6 +206,22 @@ public class NameMangler
 			return String.format(seqId, name.length(), name);
 		}
 
+		@Override
+		public String caseAUnionTypeIR(AUnionTypeIR node)
+				throws AnalysisException
+		{
+			StringBuilder sb = new StringBuilder();
+			
+			for(STypeIR t : node.getTypes())
+			{
+				sb.append(t.apply(THIS));
+			}
+			
+			String name = sb.toString();
+			
+			return String.format(unionId, name.length(), name);
+		}
+		
 		@Override
 		public String defaultInINode(INode node) throws AnalysisException
 		{
