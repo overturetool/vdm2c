@@ -87,7 +87,7 @@ public class NativeTests extends NativeTestBase
 			CMakeGenerateException
 	{
 		generate(getPath("expressions/ExpressionQuote.vdmrt"));
-		compileAndTest();
+		compileAndTest(getTestCppFile("quote/ExpressionQuote_Tests.cpp"));
 	}
 
 	@ConditionalIgnore(condition = HasVdmLib.class)
