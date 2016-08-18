@@ -93,6 +93,7 @@ Source: https://developer.mozilla.org/en-US/docs/Eclipse_CDT
 ### Running tests
 
 * To run the tests one must pass the location of the VDM library as a property `-DVDM_LIB_PATH="/path/to/vdm2c-exploration/c-examples/lib"`
+* Pass the `-DTEST_OUTPUT` property to get the googletest output
 
 ### Test the runtime library
 

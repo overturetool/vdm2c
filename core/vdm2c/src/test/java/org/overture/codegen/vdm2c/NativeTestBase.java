@@ -24,6 +24,8 @@ public class NativeTestBase extends BaseGeneratorTest
 	private static final String FORMATTER = "formatter";
 
 	final static String VDM_LIB_PATH = System.getProperty("VDM_LIB_PATH");
+	
+	final static String TEST_OUTPUT = System.getProperty("TEST_OUTPUT");
 
 	final static String testResourcedVdmRtPath = "src/test/resources/vdmrt/".replace('/', File.separatorChar);
 
@@ -138,7 +140,7 @@ public class NativeTestBase extends BaseGeneratorTest
 		cmakeUtil.createTestProject(name.getMethodName(), root);
 		Assert.assertTrue("Failed to run cmake", cmakeUtil.generate(root));
 		Assert.assertTrue("Failed to run make and compile", cmakeUtil.make(root));
-		Assert.assertTrue("Failed to run tests", cmakeUtil.run(root, name.getMethodName(), true));
+		Assert.assertTrue("Failed to run tests", cmakeUtil.run(root, name.getMethodName(), TEST_OUTPUT != null));
 		Assert.assertTrue("Failed to run make test", cmakeUtil.make(root, "test"));
 
 	}
