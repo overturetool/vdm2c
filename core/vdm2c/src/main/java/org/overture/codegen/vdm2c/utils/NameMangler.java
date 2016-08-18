@@ -15,6 +15,8 @@ import org.overture.codegen.ir.types.ANatNumericBasicTypeIR;
 import org.overture.codegen.ir.types.AQuoteTypeIR;
 import org.overture.codegen.ir.types.ARealNumericBasicTypeIR;
 import org.overture.codegen.ir.types.ASeqSeqTypeIR;
+import org.overture.codegen.ir.types.ATemplateTypeIR;
+import org.overture.codegen.ir.types.AUnknownTypeIR;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,6 +34,8 @@ public class NameMangler
 	static final String charId = "C";
 	static final String boolId = "B";
 	static final String voidId = "V";
+	
+	static final String unknownId = "U";
 
 	static final String nameId = "%d%s";
 
@@ -41,6 +45,7 @@ public class NameMangler
 	static final String seqId = "%dQ";
 	static final String mapId = "%dM";
 	static final String classId = "%dC%s";
+	static final String templateId = "%dT%s";
 	
 	static final String quoteId = "%dY%s";
 
@@ -107,6 +112,14 @@ public class NameMangler
 		}
 		
 		@Override
+		public String caseATemplateTypeIR(ATemplateTypeIR node)
+				throws AnalysisException
+		{
+			String name = node.getName();
+			return String.format(templateId, name.length(), name);
+		}
+		
+		@Override
 		public String caseAQuoteTypeIR(AQuoteTypeIR node)
 				throws AnalysisException
 		{
@@ -155,7 +168,14 @@ public class NameMangler
 		{
 			return charId;
 		}
-
+		
+		@Override
+		public String caseAUnknownTypeIR(AUnknownTypeIR node)
+				throws AnalysisException
+		{
+			return unknownId;
+		}
+		
 		@Override
 		public String caseAExternalTypeIR(AExternalTypeIR node)
 				throws AnalysisException
