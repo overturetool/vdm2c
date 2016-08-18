@@ -15,13 +15,18 @@ extern "C"
 #include "ExpressionQuote.h"
 }
 
-#define CHECK(methodId,args...) TVP c= _Z15ExpressionQuoteEV(NULL);\
+#define CHECK(methodId,b,args...) TVP c= _Z15ExpressionQuoteEV(NULL);\
 TVP res=CALL_FUNC(ExpressionQuote,ExpressionQuote,c,methodId,args);\
-EXPECT_EQ (true,equals(newQuote(QUOTE_Q2),res));\
+EXPECT_EQ (b,equals(newQuote(QUOTE_Q2),res));\
 vdmFree(res);\
 vdmFree(c)
 
-TEST(ExpressionQuote, op)
+TEST(ExpressionQuote, quoteEq)
 {
-	CHECK(CLASS_ExpressionQuote__Z2opE2YQ1,newQuote(QUOTE_Q2));
+	CHECK(CLASS_ExpressionQuote__Z2idE2YQ1,true,newQuote(QUOTE_Q2));
+}
+
+TEST(ExpressionQuote, quoteNotEq)
+{
+	CHECK(CLASS_ExpressionQuote__Z2idE2YQ1,false,newQuote(QUOTE_Q1));
 }

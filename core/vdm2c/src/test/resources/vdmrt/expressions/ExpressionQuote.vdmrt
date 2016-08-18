@@ -17,15 +17,10 @@ field3 : <Q2> := <Q2>;
 
 operations
 
---public quoteComparison : () ==> bool
---quoteComparison() == <Q1> = <Q1>;
---  So <Q1> is both the name of the type and the single value in that type, but as a value it can not be compared.  Yes, these are the axioms of the type.
-
-
-public op : <Q1> ==> <Q2>
-op(a)== 
+public id : <Q1> ==> ?
+id(a)== 
 	if a =<Q1> then 
-		return <Q2> 
+		return <Q1> 
 	else 
 		return <Q2>;
 
