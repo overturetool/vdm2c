@@ -45,6 +45,31 @@ $CFormat.format($method)
 #end
 #end
 
+TVP DIST_CALL_${cname}(int num, ...){
+
+   va_list valist;
+
+   /* initialize valist for num number of arguments */
+   va_start(valist, num);
+
+   TVP obj = va_arg(valist, TVP);
+
+	int func_ID = va_arg(valist, int);
+
+	if(DM[obj->id]){
+		printf("Local call inside main \n");
+		return CALL_FUNC(World, World, obj, func_ID);
+	}
+	else {
+		SEND_BUS(...);
+	}
+	va_end(valist);
+	return CALL_FUNC(${cname}, ${cname}, obj, func_ID);
+
+
+
+}
+
 #[[
 /* -------------------------------
  *

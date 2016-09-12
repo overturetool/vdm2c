@@ -52,6 +52,7 @@ import org.overture.codegen.vdm2c.transformations.IsNotYetSpecifiedTrans;
 import org.overture.codegen.vdm2c.transformations.LetTrans;
 import org.overture.codegen.vdm2c.transformations.LiteralInstantiationRewriteTrans;
 import org.overture.codegen.vdm2c.transformations.LogicTrans;
+import org.overture.codegen.vdm2c.transformations.MacroExpTrans;
 import org.overture.codegen.vdm2c.transformations.MangleMethodNamesTrans;
 import org.overture.codegen.vdm2c.transformations.MapSeqUpdateRewriteTrans;
 import org.overture.codegen.vdm2c.transformations.MethodReturnInsertTrans;
@@ -201,6 +202,8 @@ public class CTransSeries
 		transformations.add(new RemoveCWrappersTrans(transAssistant));
 		transformations.add(new MethodVisibilityTrans(transAssistant));
 
+		transformations.add(new MacroExpTrans(transAssistant));
+		
 		return transformations;
 	}
 
