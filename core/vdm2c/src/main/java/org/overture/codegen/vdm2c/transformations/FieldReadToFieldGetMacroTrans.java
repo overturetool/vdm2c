@@ -1,6 +1,7 @@
 package org.overture.codegen.vdm2c.transformations;
 
 import static org.overture.codegen.vdm2c.utils.CTransUtil.GET_FIELD_PTR;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.GET_FIELD;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.createIdentifier;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newMacroApply;
 
@@ -35,11 +36,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-//Transforms read references to fields to GET macros.
-//TODO:  Should match on something more specific than just caseAIdentifierVarExpIR?
-public class FieldReadToFieldGetMacroTrans extends
-DepthFirstAnalysisCAdaptor
+/**
+ * Transforms read references to fields to GET macros.
+ *
+ */
+public class FieldReadToFieldGetMacroTrans extends DepthFirstAnalysisCAdaptor
 {
+	private static final String THIS_ARG = "this";
+	
 	final static Logger logger = LoggerFactory.getLogger(FieldReadToFieldGetMacroTrans.class);
 	public TransAssistantIR assist;
 	final GlobalFieldUtil fieldUtil;
@@ -56,8 +60,11 @@ DepthFirstAnalysisCAdaptor
 	@Override
 	public void caseAFieldExpIR(AFieldExpIR node) throws AnalysisException
 	{
-		// TODO Auto-generated method stub
-		super.caseAFieldExpIR(node);
+		boolean isThis = node.getObject() instanceof AIdentifierVarExpIR
+				&& ((AIdentifierVarExpIR) node.getObject()).getName().equals(THIS_ARG);
+		
+		// Progress visitor recursively
+		node.getObject().apply(THIS);
 		
 		if(node.parent() instanceof AAssignToExpStmIR &&
 				((AAssignToExpStmIR)node.parent()).getTarget() == node)
@@ -96,8 +103,9 @@ DepthFirstAnalysisCAdaptor
 				fieldClassName = fieldClass;
 			}
 		}
-
-		AMacroApplyExpIR apply = newMacroApply(GET_FIELD_PTR);
+		
+		AMacroApplyExpIR apply = newMacroApply(isThis ? GET_FIELD_PTR : GET_FIELD);
+		
 		assist.replaceNodeWith(node, apply);
 
 		// add this type
@@ -105,7 +113,7 @@ DepthFirstAnalysisCAdaptor
 		// add field owner type
 		apply.getArgs().add(createIdentifier(fieldClassName, tmpnode.getSourceNode()));
 		// add this
-		apply.getArgs().add(createIdentifier("this", tmpnode.getSourceNode()));
+		apply.getArgs().add(node.getObject());
 		// add field name
 		apply.getArgs().add(createIdentifier(tmpnode.getMemberName(), tmpnode.getSourceNode()));
 		apply.setType(node.getType());
@@ -181,7 +189,6 @@ DepthFirstAnalysisCAdaptor
 			AIdentifierStateDesignator designator = (AIdentifierStateDesignator) vdmNode;
 
 			// why is the definition not kept here? we dont know what this points to
-
 			
 			SClassDefinitionBase thisClass = designator.getAncestor(AClassClassDefinition.class);
 			
@@ -190,7 +197,6 @@ DepthFirstAnalysisCAdaptor
 				//Must be a system class.
 				thisClass = designator.getAncestor(ASystemClassDefinition.class);
 			}
-							
 			 
 			 // the containing class
 			thisClassName = thisClass.getName().getName();
@@ -226,7 +232,6 @@ DepthFirstAnalysisCAdaptor
 
 		if (thisClassName != null && fieldClassName != null)
 		{
-
 			AMacroApplyExpIR apply = newMacroApply(GET_FIELD_PTR);
 			assist.replaceNodeWith(node, apply);
 
@@ -235,7 +240,7 @@ DepthFirstAnalysisCAdaptor
 			// add field owner type
 			apply.getArgs().add(createIdentifier(fieldClassName, node.getSourceNode()));
 			// add this
-			apply.getArgs().add(createIdentifier("this", node.getSourceNode()));
+			apply.getArgs().add(createIdentifier(THIS_ARG, node.getSourceNode()));
 			// add field name
 			apply.getArgs().add(node);
 			apply.setType(node.getType());
