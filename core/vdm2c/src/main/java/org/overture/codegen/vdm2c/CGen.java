@@ -34,7 +34,6 @@ import org.slf4j.LoggerFactory;
 public class CGen extends CodeGenBase
 {
 	final static Logger logger = LoggerFactory.getLogger(CGen.class);
-	final static org.overture.codegen.logging.ILogger console = org.overture.codegen.logging.Logger.getLog();
 	final File outputFolder;
 	private ISourceFileFormatter formatter;
 
@@ -75,7 +74,7 @@ public class CGen extends CodeGenBase
 	private List<IRStatus<PIR>> ignoreVDMUnitTests(
 			List<IRStatus<PIR>> statuses)
 	{
-		IRStatus<PIR> status = null;
+		//IRStatus<PIR> status = null;
 		List<IRStatus<PIR>> newstatuses = new LinkedList<IRStatus<PIR>>();
 
 		for (IRStatus<PIR> irStatus : statuses)
@@ -180,9 +179,8 @@ public class CGen extends CodeGenBase
 					generator.applyPartialTransformation(status, trans);
 				} catch (org.overture.codegen.ir.analysis.AnalysisException e)
 				{
-					console.printErrorln("Error when generating code for class "
-							+ status.getIrNodeName() + ": " + e.getMessage());
-					console.printErrorln("Skipping class..");
+					logger.error("Error when generating code for class "
+							+ status.getIrNodeName() + ": " + e.getMessage() + ". Skipping class..");
 					e.printStackTrace();
 				}
 			}

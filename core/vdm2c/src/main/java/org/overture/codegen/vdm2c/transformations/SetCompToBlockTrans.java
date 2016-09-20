@@ -4,12 +4,12 @@ import java.util.List;
 
 import org.overture.codegen.ir.ITempVarGen;
 import org.overture.codegen.ir.SExpIR;
+import org.overture.codegen.ir.SMultipleBindIR;
 import org.overture.codegen.ir.SStmIR;
 import org.overture.codegen.ir.STypeIR;
 import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.expressions.ACompSetExpIR;
 import org.overture.codegen.ir.expressions.AEnumSetExpIR;
-import org.overture.codegen.ir.patterns.ASetMultipleBindIR;
 import org.overture.codegen.ir.statements.ABlockStmIR;
 import org.overture.codegen.trans.Exp2StmTrans;
 import org.overture.codegen.trans.Exp2StmVarPrefixes;
@@ -48,7 +48,7 @@ public class SetCompToBlockTrans extends Exp2StmTrans
 
 		ComplexCompStrategy strategy = new CSetCompStrategy(transAssistant, first, predicate, var, type, langIterator, tempVarNameGen, iteVarPrefixes);
 
-		List<ASetMultipleBindIR> bindings = filterBindList(node, node.getBindings());
+		List<SMultipleBindIR> bindings = filterBindList(node, node.getBindings());
 		ABlockStmIR block = transAssistant.consComplexCompIterationBlock(bindings, tempVarNameGen, strategy, iteVarPrefixes);
 
 		if (block.getStatements().isEmpty())

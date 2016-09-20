@@ -31,9 +31,8 @@ import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleManager;
 import org.eclipse.ui.console.MessageConsole;
 import org.eclipse.ui.console.MessageConsoleStream;
-import org.overture.codegen.logging.ILogger;
 
-public class CodeGenConsole implements ILogger
+public class CodeGenConsole
 {
 	private final PrintWriter out;
 	private final PrintWriter err;
@@ -91,25 +90,21 @@ public class CodeGenConsole implements ILogger
 		return null;
 	}
 
-	@Override
 	public void print(String msg)
 	{
 		out.print(msg);
 	}
 
-	@Override
 	public void println(String msg)
 	{
 		out.println(msg);
 	}
 
-	@Override
 	public void printErrorln(String msg)
 	{
 		err.println(msg);
 	}
 
-	@Override
 	public void printError(String msg)
 	{
 		err.print(msg);
@@ -131,7 +126,6 @@ public class CodeGenConsole implements ILogger
 		}
 	}
 
-	@Override
 	public void setSilent(boolean arg0)
 	{
 		// Do nothing..
