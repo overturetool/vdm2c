@@ -86,7 +86,7 @@ public class CGenerator
 			{
 				outputFile = new File(outfolder.toString()
 						+ File.separator
-						+ filejarentry.getName().replace("src" + File.separator, ""));
+						+ filejarentry.getName().replace("src/main" + File.separator, ""));
 
 				if (filejarentry.getName().contains("META"))
 				{

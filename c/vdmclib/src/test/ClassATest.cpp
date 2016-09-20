@@ -20,6 +20,7 @@
  * #~%
  */
 
+
 /*
  * ClassATest.cpp
  *
@@ -32,9 +33,9 @@
 extern "C"
 {
 #include "Vdm.h"
-#include "A.h"
-#include "B.h"
-#include "C.h"
+#include "classes/A.h"
+
+
 #include <stdio.h>
 
 #ifdef VDM_CG
@@ -65,21 +66,21 @@ void checkFreeDouble(const char* name, double expected, TVP value)
  * Tests
  */
 
-TEST(ClassBTest, _new)
+TEST(ClassATest, _new)
 {
-	TVP c=B._new();
+	TVP c=A._new();
 
 	vdmFree(c);
 }
 
-TEST(ClassBTest, calc)
+TEST(ClassATest, calc)
 {
-	TVP c=B._new();
+	TVP c=A._new();
 
 	TVP a = newInt(1);
 	TVP b = newInt(4);
 
-	checkFreeDouble("calculation calc",5,CALL_FUNC(B, A, c, CLASS_A_calc, a, b)
+	checkFreeDouble("calculation calc",5,CALL_FUNC(A, A, c, CLASS_A_calc, a, b)
 	);
 
 	vdmFree(a);
@@ -87,59 +88,30 @@ TEST(ClassBTest, calc)
 	vdmFree(c);
 }
 
-TEST(ClassBTest, sum)
+TEST(ClassATest, sum)
 {
-	TVP c=B._new();
+	TVP c=A._new();
 
 	TVP a = newInt(1);
 	TVP b = newInt(4);
 
-	checkFreeDouble("calculation sum",9,CALL_FUNC(B, A, c, CLASS_A_sum)	);//TODO overload test. This test is working but not supported by generator yet
+	checkFreeInt("calculation sum",4,CALL_FUNC(A, A, c, CLASS_A_sum)
+	);
 
 	vdmFree(a);
 	vdmFree(b);
 	vdmFree(c);
 }
 
-TEST(ClassBTest, field1)
+TEST(ClassATest, field1)
 {
-	TVP c=B._new();
+	TVP c=A._new();
 
 	TVP a = newInt(9);
-	SET_FIELD(B,A,c,field1,a);
+	SET_FIELD(A,A,c,field1,a);
 	vdmFree(a);
 
-	checkFreeInt("check field1 of A",9, GET_FIELD(B,A,c,field1));
-
-	vdmFree(c);
-}
-
-
-
-
-TEST(ClassBTest, field1c)
-{
-	TVP c=B._new();
-
-	TVP a = newReal(99.99);
-	SET_FIELD(B,C,c,field1c,a);
-	vdmFree(a);
-
-	checkFreeDouble("check field1c of C",99.99, GET_FIELD(B,C,c,field1c));
-
-	vdmFree(c);
-}
-
-
-TEST(ClassBTest, ctor)
-{
-	TVP c=B._new();
-
-	TVP a = newReal(99.99);
-	SET_FIELD(B,C,c,field1c,a);
-	vdmFree(a);
-
-	checkFreeDouble("check field1c of C",99.99, GET_FIELD(B,C,c,field1c));
+	checkFreeInt("check field1 of A",9, GET_FIELD(A,A,c,field1));
 
 	vdmFree(c);
 }

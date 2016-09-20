@@ -33,7 +33,7 @@ extern "C"
 {
 #include "Vdm.h"
 
-#include "C.h"
+#include "classes/C.h"
 #include <stdio.h>
 
 #ifdef VDM_CG
