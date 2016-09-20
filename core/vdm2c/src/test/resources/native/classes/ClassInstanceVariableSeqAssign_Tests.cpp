@@ -15,16 +15,18 @@ extern "C"
 #include "ClassInstanceVariableSeqAssign.h"
 }
 
-#define CHECK(methodId) TVP c=_Z30ClassInstanceVariableSeqAssignEV(NULL);\
+#define CHECK(methodId,expected) TVP c=_Z30ClassInstanceVariableSeqAssignEV(NULL);\
 TVP res=CALL_FUNC(ClassInstanceVariableSeqAssign,ClassInstanceVariableSeqAssign,c,methodId);\
-EXPECT_EQ (true,res->value.boolVal);\
+EXPECT_EQ (true,vdmEquals(res, expected)->value.boolVal);\
 vdmFree(res);\
+vdmFree(expected);\
 vdmFree(c)
 
 
 TEST(ClassInstanceVariableSeqAssign, call)
 {
-	CHECK(CLASS_ClassInstanceVariableSeqAssign__Z9getField0EV);
+	TVP expected = newSeqVar(1, newInt(9));
+	CHECK(CLASS_ClassInstanceVariableSeqAssign__Z9getField0EV,expected);
 }
 
 
