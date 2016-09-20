@@ -19,12 +19,12 @@ import org.slf4j.LoggerFactory;
 
 public class NativeTestBase extends BaseGeneratorTest
 {
+	private static final String VDMCLIB = "../../c/vdmclib/src/";
+
 	final static Logger logger = LoggerFactory.getLogger(NativeTestBase.class);
 	
 	private static final String FORMATTER = "formatter";
 
-	final static String VDM_LIB_PATH = System.getProperty("VDM_LIB_PATH");
-	
 	final static String TEST_OUTPUT = System.getProperty("TEST_OUTPUT");
 
 	final static String testResourcedVdmRtPath = "src/test/resources/vdmrt/".replace('/', File.separatorChar);
@@ -68,18 +68,6 @@ public class NativeTestBase extends BaseGeneratorTest
 	@Rule
 	public TestName name = new TestName();
 
-	public static class HasVdmLib
-			implements
-			org.overture.test.framework.ConditionalIgnoreMethodRule.IgnoreCondition
-	{
-
-		@Override
-		public boolean isIgnored()
-		{
-			return VDM_LIB_PATH == null;
-		}
-	}
-
 	@Before
 	public void initRoot()
 	{
@@ -116,7 +104,7 @@ public class NativeTestBase extends BaseGeneratorTest
 	protected void compileAndTest(File... tests) throws IOException,
 			InterruptedException, CMakeGenerateException
 	{
-		CMakeUtil cmakeUtil = new CMakeUtil(new File(VDM_LIB_PATH), new File("src/test/resources/CMakeLists.txt"), false);
+		CMakeUtil cmakeUtil = new CMakeUtil(new File(VDMCLIB), new File("src/test/resources/CMakeLists.txt"), false);
 
 		for (File file : tests)
 		{

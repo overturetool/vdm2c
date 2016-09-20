@@ -4,13 +4,11 @@ import java.io.IOException;
 
 import org.junit.Test;
 import org.overture.codegen.vdm2c.CMakeUtil.CMakeGenerateException;
-import org.overture.test.framework.ConditionalIgnoreMethodRule.ConditionalIgnore;
 
 
 public class Visualization extends NativeTestBase
 {
-	@ConditionalIgnore(condition = HasVdmLib.class)
-	@Test
+ 	@Test
 	public void VisualizeIRAST() throws IOException, InterruptedException,
 			CMakeGenerateException
 	{
