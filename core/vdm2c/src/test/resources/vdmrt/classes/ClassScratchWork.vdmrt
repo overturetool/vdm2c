@@ -2,9 +2,18 @@ class ScratchA
 end ScratchA
 
 class ClassScratchWork
-instance variables
-
-	a : ScratchA := new ScratchA();
-	b : ScratchA := a;
-				
+operations
+op : () ==> ()
+op() ==
+(
+	dcl a : ScratchA := new ScratchA();
+	dcl b : ScratchA;
+	dcl c : int := 0;
+	dcl d: int;
+	b := a;
+	d := c;
+	c := 3;
+	)
 end ClassScratchWork
+--  This test illustrates that assignment needs to be more sophisticated to achieve value semantics.
+--  Check generated code to observe aliasing.

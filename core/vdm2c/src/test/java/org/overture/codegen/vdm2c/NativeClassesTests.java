@@ -185,6 +185,7 @@ public class NativeClassesTests extends NativeTestBase
 		compileAndTest();
 	}
 	
+	@Test
 	public void ClassScratchWork() throws IOException,
     InterruptedException, CMakeGenerateException
 	{
