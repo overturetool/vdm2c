@@ -29,7 +29,7 @@ public class CMakeUtil
 	{
 		String cmakeTemplate = FileUtils.readFileToString(template, "UTF-8");
 		cmakeTemplate = cmakeTemplate.replace("##PROJECT_NAME##", name);
-		cmakeTemplate = cmakeTemplate.replace("## INSERT_GOOGLE_TEST_SUB_DIRECTORY ##", String.format("add_subdirectory(%s %s)",new File("../../c/third_party/googletest".replace('/', File.separatorChar)).getCanonicalPath(),new File("target/google-test-build".replace('/',File.separatorChar)).getCanonicalPath()));
+		cmakeTemplate = cmakeTemplate.replace("## INSERT_GOOGLE_TEST_SUB_DIRECTORY ##", String.format("add_subdirectory(\"%s\" \"%s\")",new File("../../c/third_party/googletest".replace('/', File.separatorChar)).getCanonicalPath(),new File("target/google-test-build".replace('/',File.separatorChar)).getCanonicalPath()));
 		FileUtils.writeStringToFile(new File(root, "CMakeLists.txt"), cmakeTemplate);
 
 		FileUtils.copyFile(new File("src/test/resources/DownloadProject.cmake"), new File(root, "DownloadProject.cmake"));

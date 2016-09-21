@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
 
 public class NativeTestBase extends BaseGeneratorTest
 {
-	private static final String VDMCLIB = "../../c/vdmclib/src/";
+	private static final String VDMCLIB = "../../c/vdmclib/src/main/";
 
 	final static Logger logger = LoggerFactory.getLogger(NativeTestBase.class);
 	
