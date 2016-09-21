@@ -1,8 +1,10 @@
-class ClassScratchWork
-types
-	Mytype = int | bool;
+class ScratchA
+end ScratchA
 
+class ClassScratchWork
 instance variables
-	instvar : Mytype := false;
+
+	a : ScratchA := new ScratchA();
+	b : ScratchA := a;
 				
 end ClassScratchWork
