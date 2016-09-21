@@ -183,5 +183,12 @@ public class NativeClassesTests extends NativeTestBase
 	{
 		generate(getPath("classes/ClassValueInheritance.vdmrt"));
 		compileAndTest();
-	}	
+	}
+	
+	public void ClassScratchWork() throws IOException,
+    InterruptedException, CMakeGenerateException
+	{
+		generate(getPath("classes/ClassScratchWork.vdmrt"));
+		compileAndTest();
+	}
 }
