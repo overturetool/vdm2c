@@ -10,15 +10,18 @@ import static org.overture.codegen.vdm2c.utils.CTransUtil.newIdentifier;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newMacroApply;
 
 import org.overture.ast.definitions.AClassClassDefinition;
+import org.overture.ast.definitions.AInheritedDefinition;
+import org.overture.ast.definitions.AInstanceVariableDefinition;
 import org.overture.ast.definitions.ASystemClassDefinition;
+import org.overture.ast.definitions.PDefinition;
 import org.overture.ast.definitions.SClassDefinitionBase;
+import org.overture.ast.expressions.AVariableExp;
 import org.overture.ast.statements.AIdentifierStateDesignator;
 import org.overture.cgc.extast.analysis.AnswerCAdaptor;
 import org.overture.cgc.extast.analysis.DepthFirstAnalysisCAdaptor;
 import org.overture.codegen.ir.INode;
 import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.declarations.ADefaultClassDeclIR;
-import org.overture.codegen.ir.declarations.AFieldDeclIR;
 import org.overture.codegen.ir.declarations.AVarDeclIR;
 import org.overture.codegen.ir.declarations.SClassDeclIR;
 import org.overture.codegen.ir.expressions.AApplyExpIR;
@@ -69,14 +72,31 @@ DepthFirstAnalysisCAdaptor
 		if(node.getTarget() instanceof AIdentifierVarExpIR)
 		{
 			AIdentifierVarExpIR target = (AIdentifierVarExpIR) node.getTarget();
-
-			// class
-
-			SClassDeclIR cDef = node.getAncestor(SClassDeclIR.class);
-			if (fieldUtil.isStatic(cDef, target.getName()))
+			org.overture.ast.node.INode vdm = target.getSourceNode().getVdmNode();
+			
+			boolean staticSubject = false;
+			PDefinition def = null;
+			
+			if(vdm instanceof AVariableExp)
 			{
-				AFieldDeclIR field = fieldUtil.lookupField(cDef, target.getName());
-				AIdentifierVarExpIR id = createIdentifier(field.getName(), target.getSourceNode());
+				def = ((AVariableExp) vdm).getVardef();
+			}
+			else if(vdm instanceof AIdentifierStateDesignator)
+			{
+				def = assist.getInfo().getIdStateDesignatorDefs().get(vdm);
+			}
+			
+			if(def instanceof AInheritedDefinition)
+			{
+				def = ((AInheritedDefinition) def).getSuperdef();
+			}
+			
+			staticSubject = (def instanceof AInstanceVariableDefinition)
+					&& (((AInstanceVariableDefinition) def).getAccess().getStatic() != null);
+
+			if (staticSubject)
+			{
+				AIdentifierVarExpIR id = createIdentifier(target.getName(), target.getSourceNode());
 				id.setType(target.getType().clone());
 				assist.replaceNodeWith(node.getTarget(), id);
 				return;
