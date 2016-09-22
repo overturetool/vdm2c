@@ -11,6 +11,8 @@ import org.overture.ast.definitions.AValueDefinition;
 import org.overture.ast.definitions.PDefinition;
 import org.overture.ast.expressions.AVariableExp;
 import org.overture.ast.node.INode;
+import org.overture.ast.statements.AIdentifierStateDesignator;
+import org.overture.codegen.ir.IRInfo;
 import org.overture.codegen.ir.SExpIR;
 import org.overture.codegen.ir.SPatternIR;
 import org.overture.codegen.ir.SStmIR;
@@ -371,14 +373,25 @@ public class CTransUtil
 		return false;
 	}
 
-	public static boolean isStaticFieldDefinition(AExplicitVarExpIR node)
+	public static boolean isStaticFieldDefinition(AExplicitVarExpIR node,
+			IRInfo info)
 	{
 		INode vdmNode = node.getSourceNode().getVdmNode();
+
+		PDefinition def = null;
+
 		if (vdmNode instanceof AVariableExp)
 		{
 			AVariableExp varExp = (AVariableExp) vdmNode;
-			PDefinition def = varExp.getVardef();
+			def = varExp.getVardef();
+		} else if (vdmNode instanceof AIdentifierStateDesignator)
+		{
+			AIdentifierStateDesignator id = (AIdentifierStateDesignator) vdmNode;
+			def = info.getIdStateDesignatorDefs().get(id);
+		}
 
+		if (def != null)
+		{
 			if (def instanceof AInheritedDefinition)
 			{
 				def = ((AInheritedDefinition) def).getSuperdef();
@@ -393,6 +406,7 @@ public class CTransUtil
 				}
 			}
 		}
+
 		return false;
 	}
 
