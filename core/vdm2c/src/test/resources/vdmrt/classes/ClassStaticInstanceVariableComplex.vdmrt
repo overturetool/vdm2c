@@ -1,0 +1,28 @@
+class A
+
+instance variables
+public static b : B := new B();
+
+end A
+
+
+class B
+
+instance variables
+
+public n : int := 9;
+
+operations
+
+public testInitialisedField : () ==> bool
+testInitialisedField () ==
+  return A`b.n = 9;
+  
+public testUpdatedField : () ==> bool
+testUpdatedField () ==
+(
+  A`b.n := 10;
+  return A`b.n = 10;
+);
+
+end B
