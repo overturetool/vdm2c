@@ -109,7 +109,7 @@ struct TypedValue* newCollection(size_t size, vdmtype type)
 			{ .ptr = ptr });
 }
 
-struct TypedValue* newCollectionWithValues(vdmtype type, size_t size, TVP* elements)
+struct TypedValue* newCollectionWithValues(size_t size, vdmtype type, TVP* elements)
 {
 	TVP product = newCollection(size,type);
 	UNWRAP_COLLECTION(col,product);

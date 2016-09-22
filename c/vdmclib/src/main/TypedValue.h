@@ -134,7 +134,7 @@ struct TypedValue* newQuote(unsigned int x);
 
 
 //utils
-struct TypedValue* newCollectionWithValues(vdmtype type,size_t size,TVP* elements);
+struct TypedValue* newCollectionWithValues(size_t size, vdmtype type, TVP* elements);
 struct TypedValue* newCollection(size_t size, vdmtype type);
 
 struct TypedValue* vdmClone(struct TypedValue* x);

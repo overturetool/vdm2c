@@ -39,7 +39,7 @@ struct TypedValue* newProduct(size_t size)
 
 struct TypedValue* newProductWithValues(size_t size,TVP* elements)
 {
-	return newCollectionWithValues(VDM_PRODUCT,size,elements);
+	return newCollectionWithValues(size, VDM_PRODUCT, elements);
 }
 
 TVP productGet(TVP product, int index)
