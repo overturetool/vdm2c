@@ -94,7 +94,7 @@ struct TypedValue* newQuote(unsigned int x)
 {
 	return newTypeValue(VDM_QUOTE, (TypedValueType
 	)
-			{ .uintVal = x });
+			{ .quoteVal = x });
 }
 
 ///
@@ -250,7 +250,7 @@ bool equals(struct TypedValue* a, struct TypedValue* b)
 	}
 	case VDM_QUOTE:
 	{
-		return a->value.uintVal == b->value.uintVal;
+		return a->value.quoteVal == b->value.quoteVal;
 	}
 	case VDM_MAP:
 	{

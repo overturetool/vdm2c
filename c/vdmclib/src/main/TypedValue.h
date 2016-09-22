@@ -82,7 +82,7 @@ typedef union TypedValueType
 	char charVal;
 
 	//VDM_QUOTE
-	unsigned int uintVal;
+	unsigned int quoteVal;
 } TypedValueType;
 
 

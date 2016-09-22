@@ -56,7 +56,7 @@ guint vdm_typedvalue_hash(gconstpointer v)
 	case VDM_RAT:
 		return g_double_hash(&tv->value.doubleVal);
 	case VDM_QUOTE:
-		return g_int_hash(&tv->value.uintVal);
+		return g_int_hash(&tv->value.quoteVal);
 	case VDM_MAP:
 		//todo
 		break;
