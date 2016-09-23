@@ -105,7 +105,7 @@ cd <root>/c
 # Build the google test binary
 make -j<no-of-cpu-cores-plus-one
 # Run the generated google tests
-./vdmclib/src/vdmclib
+./vdmclib/src/main/vdmclib
 ```
 
 The runtime tests should now run, and produce an output similar to that shown below.
