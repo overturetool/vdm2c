@@ -14,6 +14,7 @@ import org.overture.ast.definitions.AInstanceVariableDefinition;
 import org.overture.ast.definitions.ALocalDefinition;
 import org.overture.ast.definitions.ASystemClassDefinition;
 import org.overture.ast.definitions.PDefinition;
+import org.overture.ast.definitions.SClassDefinition;
 import org.overture.ast.definitions.SClassDefinitionBase;
 import org.overture.ast.expressions.AVariableExp;
 import org.overture.ast.node.INode;
@@ -153,9 +154,10 @@ public class FieldReadToFieldGetMacroTrans extends DepthFirstAnalysisCAdaptor
 				return;
 			}
 
-			thisClassName = varExp.getAncestor(AClassClassDefinition.class).getName().getName();// the containing
-			// class
-			fieldClassName = thisClassName; // default to same class
+			// the enclosing class
+			thisClassName = varExp.getAncestor(SClassDefinition.class).getName().getName();
+			// default to same class
+			fieldClassName = thisClassName; 
 
 			if (varExp.getVardef() instanceof AInheritedDefinition)
 			{
