@@ -35,4 +35,16 @@ TEST(ClassStaticInstanceVariableComplex, testUpdatedField)
 	CHECK(CLASS_B__Z16testUpdatedFieldEV);
 }
 
+TEST(ClassStaticInstanceVariableComplex, testUpdateStaticField)
+{
+	A_static_init();
+	CHECK(CLASS_B__Z21testUpdateStaticFieldEV);
+}
+
+TEST(ClassStaticInstanceVariableComplex, testUpdateStaticEnclosingField)
+{
+	B_static_init();
+	CHECK(CLASS_B__Z30testUpdateStaticEnclosingFieldEV);
+}
+
 
