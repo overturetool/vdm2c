@@ -94,7 +94,7 @@ struct TypedValue* newQuote(unsigned int x)
 {
 	return newTypeValue(VDM_QUOTE, (TypedValueType
 	)
-			{ .uintVal = x });
+			{ .quoteVal = x });
 }
 
 ///
@@ -109,7 +109,7 @@ struct TypedValue* newCollection(size_t size, vdmtype type)
 			{ .ptr = ptr });
 }
 
-struct TypedValue* newCollectionWithValues(vdmtype type, size_t size, TVP* elements)
+struct TypedValue* newCollectionWithValues(size_t size, vdmtype type, TVP* elements)
 {
 	TVP product = newCollection(size,type);
 	UNWRAP_COLLECTION(col,product);
@@ -250,7 +250,7 @@ bool equals(struct TypedValue* a, struct TypedValue* b)
 	}
 	case VDM_QUOTE:
 	{
-		return a->value.uintVal == b->value.uintVal;
+		return a->value.quoteVal == b->value.quoteVal;
 	}
 	case VDM_MAP:
 	{

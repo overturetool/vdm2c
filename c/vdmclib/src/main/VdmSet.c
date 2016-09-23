@@ -79,7 +79,7 @@ struct TypedValue* newSetWithValues(size_t size, TVP* elements)
 		vdmSetAdd(value, &count,v);
 	}
 
-	TVP res = newCollectionWithValues(VDM_SET, count, value);
+	TVP res = newCollectionWithValues(count, VDM_SET, value);
 
 	for(int i = 0; i < count; i++)
 	{
@@ -121,7 +121,7 @@ struct TypedValue* newSetVar(size_t size, ...)
 
 	va_end(ap);
 
-	TVP res = newCollectionWithValues(VDM_SET,count,value);
+	TVP res = newCollectionWithValues(count, VDM_SET, value);
 	free(value);
 	return res;
 }
@@ -157,7 +157,7 @@ struct TypedValue* newSetVarToGrow(size_t size, size_t expected_size, ...)
 
 	va_end(ap);
 
-	TVP res = newCollectionWithValues(VDM_SET,count,value);
+	TVP res = newCollectionWithValues(count, VDM_SET, value);
 	free(value);
 	return res;
 }
@@ -227,7 +227,7 @@ TVP vdmSetEnumerateSetOfInts(int lower, int upper)
 		vdmSetAdd(theset, &count, newInt(i));
 	}
 
-	TVP res = newCollectionWithValues(VDM_SET, count, theset);
+	TVP res = newCollectionWithValues(count, VDM_SET, theset);
 
 	for(int i = 0; i < count; i++)
 	{

@@ -119,7 +119,10 @@ TVP vdm_MATH_ln(TVP a)
 
 
 TVP vdm_MATH_exp(TVP a)
-{}
+{
+	//not yet implemented.
+	return NULL;
+}
 
 
 
@@ -166,7 +169,10 @@ TVP vdm_MATH_sqrt(TVP a)
 
 
 TVP vdm_MATH_acot(TVP a)
-{}
+{
+	//not yet implemented.
+	return NULL;
+}
 
 
 
@@ -189,26 +195,41 @@ TVP vdm_MATH_atan(TVP v)
 
 
 TVP vdm_MATH_acos(TVP a)
-{}
+{
+	//not yet implemented.
+	return NULL;
+}
 
 
 
 TVP vdm_MATH_asin(TVP a)
-{}
+{
+	//not yet implemented.
+	return NULL;
+}
 
 
 
 TVP vdm_MATH_cot(TVP a)
-{}
+{
+	//not yet implemented.
+	return NULL;
+}
 
 
 
 TVP vdm_MATH_tan(TVP a)
-{}
+{
+	//not yet implemented.
+	return NULL;
+}
 
 
 TVP vdm_MATH_cos(TVP v)
-{}
+{
+	//not yet implemented.
+	return NULL;
+}
 
 
 
@@ -231,17 +252,25 @@ TVP vdm_MATH_sin(TVP v)
 
 
 TVP vdm_MATH_srand2(TVP a)
-{}
+{
+	//not yet implemented.
+	return NULL;
+}
 
 
 
 TVP vdm_MATH_rand(TVP a)
-{}
+{
+	//not yet implemented.
+	return NULL;
+}
 
 
 
 void vdm_MATH_srand(TVP a)
-{}
+{
+	//not yet implemented.
+}
 
 
 

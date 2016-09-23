@@ -39,7 +39,7 @@ struct TypedValue* newSeq(size_t size)
 
 struct TypedValue* newSeqWithValues(size_t size, TVP* elements)
 {
-	return newCollectionWithValues(VDM_SEQ,size,elements);
+	return newCollectionWithValues(size, VDM_SEQ,elements);
 }
 
 struct TypedValue* newSeqVar(size_t size, ...)
@@ -56,7 +56,7 @@ struct TypedValue* newSeqVar(size_t size, ...)
 	}
 	va_end(ap);
 
-	return newCollectionWithValues(VDM_SEQ,size,elements);
+	return newCollectionWithValues(size, VDM_SEQ, elements);
 }
 
 TVP vdmSeqHd(TVP seq)
