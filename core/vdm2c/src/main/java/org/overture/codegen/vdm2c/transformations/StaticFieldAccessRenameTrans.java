@@ -5,6 +5,7 @@ import static org.overture.codegen.vdm2c.utils.CTransUtil.isStaticFieldDefinitio
 import org.overture.cgc.extast.analysis.DepthFirstAnalysisCAdaptor;
 import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.expressions.AExplicitVarExpIR;
+import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.utils.GlobalFieldUtil;
 
@@ -17,6 +18,17 @@ public class StaticFieldAccessRenameTrans extends DepthFirstAnalysisCAdaptor
 	{
 		this.assist = assist;
 		this.fieldUtil = new GlobalFieldUtil(assist);
+	}
+	
+	@Override
+	public void caseAIdentifierVarExpIR(AIdentifierVarExpIR node)
+			throws AnalysisException
+	{
+		super.caseAIdentifierVarExpIR(node);
+		if(isStaticFieldDefinition(node, assist.getInfo()))
+		{
+			fieldUtil.replaceWithIdentifier(node);
+		}
 	}
 
 	@Override
