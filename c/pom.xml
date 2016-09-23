@@ -2,9 +2,9 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-		<groupId>org.overturetool.vdm2c</groupId>
-		<artifactId>root</artifactId>
-     <version>0.0.3-SNAPSHOT</version>
+    <groupId>org.overturetool.vdm2c</groupId>
+    <artifactId>root</artifactId>
+    <version>0.0.3-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -15,5 +15,28 @@
   <modules>
     <module>vdmclib</module>
   </modules>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>exec-maven-plugin</artifactId>
+        <groupId>org.codehaus.mojo</groupId>
+        <version>1.5.0</version>
+        <inherited>false</inherited>
+        <executions>
+          <execution>
+            <id>run-lib-tests</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>${basedir}/run-lib-tests.sh</executable>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>
