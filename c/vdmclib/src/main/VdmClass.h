@@ -129,7 +129,12 @@ struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction
 /*
  * Macro to set the (sub-)class specific field from a class struct
  */
-#define SET_STRUCT_FIELD(tname,ptr,fieldtype,fieldname,newValue) (*( (fieldtype*) (  ((unsigned char*)ptr) + offsetof(struct tname, fieldname) )  )=vdmClone(newValue))
+#define SET_STRUCT_FIELD(tname,ptr,fieldtype,fieldname,newValue)\
+	if(*((fieldtype*)(((unsigned char*)ptr) + offsetof(struct tname, fieldname))) != NULL)\
+	{\
+		vdmFree(*((fieldtype*)(((unsigned char*)ptr) + offsetof(struct tname, fieldname))));\
+	}\
+	(*((fieldtype*)(((unsigned char*)ptr) + offsetof(struct tname, fieldname))) = vdmClone(newValue))
 
 /*
  * Macro to obtain the (sub-)class specific VTable from a class struct
