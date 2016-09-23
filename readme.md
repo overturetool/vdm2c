@@ -97,7 +97,7 @@ Source: https://developer.mozilla.org/en-US/docs/Eclipse_CDT
 
 ### Test the runtime library
 
-All the code used to test the runtime library is stored in `<root>/c/vdmclib/src/tests` and written using the googletest framework. The tests can be executed as follows:
+All the code used to test the runtime library is stored in `<root>/c/vdmclib/src/tests` and written using the googletest framework. The tests are run automatically as part of the Maven build, but may also be executed manually using the steps below:
 
 ```bash
 # Go into runtime library folder
