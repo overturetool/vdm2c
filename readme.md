@@ -102,6 +102,8 @@ All the code used to test the runtime library is stored in `<root>/c/vdmclib/src
 ```bash
 # Go into runtime library folder
 cd <root>/c
+# Generate the make file
+cmake .
 # Build the google test binary
 make -j<no-of-cpu-cores-plus-one
 # Run the generated google tests
