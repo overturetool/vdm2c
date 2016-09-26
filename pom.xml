@@ -189,6 +189,7 @@ http://mojo.codehaus.org/versions-maven-plugin/
 					<artifactId>maven-surefire-plugin</artifactId>
 					<version>2.19</version>
 					<configuration>
+            <skipTests>true</skipTests>
 					</configuration>
 				</plugin>
 
