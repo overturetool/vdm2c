@@ -11,6 +11,8 @@ import org.overture.ast.definitions.AValueDefinition;
 import org.overture.ast.definitions.PDefinition;
 import org.overture.ast.expressions.AVariableExp;
 import org.overture.ast.node.INode;
+import org.overture.ast.statements.AIdentifierStateDesignator;
+import org.overture.codegen.ir.IRInfo;
 import org.overture.codegen.ir.SExpIR;
 import org.overture.codegen.ir.SPatternIR;
 import org.overture.codegen.ir.SStmIR;
@@ -27,6 +29,7 @@ import org.overture.codegen.ir.expressions.ACastUnaryExpIR;
 import org.overture.codegen.ir.expressions.AExplicitVarExpIR;
 import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
 import org.overture.codegen.ir.expressions.AIntLiteralExpIR;
+import org.overture.codegen.ir.expressions.SVarExpIR;
 import org.overture.codegen.ir.patterns.AIdentifierPatternIR;
 import org.overture.codegen.ir.statements.AAssignToExpStmIR;
 import org.overture.codegen.ir.statements.AExpStmIR;
@@ -371,14 +374,32 @@ public class CTransUtil
 		return false;
 	}
 
-	public static boolean isStaticFieldDefinition(AExplicitVarExpIR node)
+	public static boolean isStaticFieldDefinition(SVarExpIR node,
+			IRInfo info)
 	{
+		if(node.getSourceNode() == null)
+		{
+			// It's likely that this node was constructed by one of the transformations. Assume that it does not
+			// originate from a static field declaration
+			return false;
+		}
+		
 		INode vdmNode = node.getSourceNode().getVdmNode();
+
+		PDefinition def = null;
+
 		if (vdmNode instanceof AVariableExp)
 		{
 			AVariableExp varExp = (AVariableExp) vdmNode;
-			PDefinition def = varExp.getVardef();
+			def = varExp.getVardef();
+		} else if (vdmNode instanceof AIdentifierStateDesignator)
+		{
+			AIdentifierStateDesignator id = (AIdentifierStateDesignator) vdmNode;
+			def = info.getIdStateDesignatorDefs().get(id);
+		}
 
+		if (def != null)
+		{
 			if (def instanceof AInheritedDefinition)
 			{
 				def = ((AInheritedDefinition) def).getSuperdef();
@@ -393,6 +414,7 @@ public class CTransUtil
 				}
 			}
 		}
+
 		return false;
 	}
 

@@ -5,11 +5,13 @@ import static org.overture.codegen.vdm2c.utils.CTransUtil.newIdentifier;
 
 import org.overture.ast.definitions.SClassDefinition;
 import org.overture.codegen.ir.SExpIR;
+import org.overture.codegen.ir.STypeIR;
 import org.overture.codegen.ir.declarations.AFieldDeclIR;
 import org.overture.codegen.ir.declarations.SClassDeclIR;
 import org.overture.codegen.ir.expressions.AApplyExpIR;
 import org.overture.codegen.ir.expressions.AExplicitVarExpIR;
 import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
+import org.overture.codegen.ir.expressions.SVarExpIR;
 import org.overture.codegen.ir.name.ATokenNameIR;
 import org.overture.codegen.ir.types.AClassTypeIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
@@ -26,9 +28,38 @@ public class GlobalFieldUtil
 		this.assist = assist;
 	}
 
-	public void replaceWithIdentifier(AExplicitVarExpIR node)
+	public void replaceWithIdentifier(SVarExpIR node)
 	{
-		AFieldDeclIR field = lookupField(CTransUtil.getClass(assist, ((AClassTypeIR) node.getClassType()).getName()), node.getName());
+		String className = null;
+		
+		if(node instanceof AExplicitVarExpIR)
+		{
+			STypeIR classType = ((AExplicitVarExpIR) node).getClassType();
+			
+			if(classType instanceof AClassTypeIR)
+			{
+				className = ((AClassTypeIR) classType).getName();
+			}
+		}
+		else if(node instanceof AIdentifierVarExpIR)
+		{
+			className = node.getAncestor(SClassDeclIR.class).getName();
+		}
+		
+		if(className == null)
+		{
+			logger.warn("Expected explicit or identifier variable expression at this  point. Got: %", node);
+			// Give up
+			return;
+		}
+		
+		AFieldDeclIR field = lookupField(CTransUtil.getClass(assist, className), node.getName());
+		
+		if(field == null)
+		{
+			return;
+		}
+		
 		AIdentifierVarExpIR identifier = newIdentifier(NameConverter.getCName(field), node.getSourceNode());
 		identifier.setIsLocal(false);
 		identifier.setType(field.getType().clone());

@@ -1,0 +1,50 @@
+class A
+
+instance variables
+public static b : B := new B();
+
+end A
+
+class C
+
+instance variables
+
+public n : int := 4;
+
+end C
+
+class B
+
+instance variables
+
+public n : int := 9;
+public static c : C := new C();
+
+operations
+
+public testInitialisedField : () ==> bool
+testInitialisedField () ==
+  return A`b.n = 9;
+  
+public testUpdatedField : () ==> bool
+testUpdatedField () ==
+(
+  A`b.n := 10;
+  return A`b.n = 10;
+);
+
+public testUpdateStaticField : () ==> bool
+testUpdateStaticField () ==
+(
+  A`b := new B();
+  return A`b.n = 9;
+);
+
+public testUpdateStaticEnclosingField : () ==> bool
+testUpdateStaticEnclosingField () ==
+(
+  c := new C();
+  return c.n = 4;
+);
+
+end B

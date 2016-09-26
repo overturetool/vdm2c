@@ -12,23 +12,32 @@ extern "C"
 {
 #include "Vdm.h"
 #include <stdio.h>
-#include "UseClassStaticInstanceVariable.h"
+#include "C.h"
+#include "B.h"
 }
 
-#define CHECK(methodId) TVP c=_Z30UseClassStaticInstanceVariableEV(NULL);\
-TVP res=CALL_FUNC(UseClassStaticInstanceVariable,UseClassStaticInstanceVariable,c,methodId);\
+#define CHECK(methodId, obj,clazz)\
+TVP res=CALL_FUNC(clazz,clazz,obj,methodId);\
 EXPECT_EQ (true,res->value.boolVal);\
 vdmFree(res);\
-vdmFree(c)
-
-//#define CHECK_FALSE(methodId) TVP c=_Z15ClassStaticUserEV(NULL);\
-//TVP res=CALL_FUNC(ClassStaticUser,ClassStaticUser,c,methodId);\
-//EXPECT_EQ (false,res->value.boolVal);\
-//vdmFree(res);\
-//vdmFree(c)
+vdmFree(obj)
 
 
-TEST(Class_StaticInstanceVariable, getStaticInstanceVariable)
+TEST(ClassStaticInstanceVariable, testInitialisedField)
 {
-	CHECK(CLASS_UseClassStaticInstanceVariable__Z3op2EV);
+	A_static_init();
+	CHECK(CLASS_C__Z20testInitialisedFieldEV, _Z1CEV(NULL), C);
 }
+
+TEST(ClassStaticInstanceVariable, testUpdatedField)
+{
+	A_static_init();
+	CHECK(CLASS_C__Z16testUpdatedFieldEV, _Z1CEV(NULL), C);
+}
+
+TEST(ClassStaticInstanceVariable, testInitialisedFieldSubClass)
+{
+	A_static_init();
+	CHECK(CLASS_B__Z28testInitialisedFieldSubClassEV, _Z1BEV(NULL), B);
+}
+

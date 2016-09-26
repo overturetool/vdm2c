@@ -98,6 +98,14 @@ public class NativeClassesTests extends NativeTestBase
 	}
 	
 	@Test
+	public void ClassStaticInstanceVariableComplex() throws IOException,
+			InterruptedException, CMakeGenerateException
+	{
+		generate(getPath("classes/ClassStaticInstanceVariableComplex.vdmrt"));
+		compileAndTest(getTestCppFile("classes/ClassStaticInstanceVariableComplex_Tests.cpp"));
+	}
+	
+	@Test
 	public void ClassStaticMethodAccess() throws IOException,
 			InterruptedException, CMakeGenerateException
 	{

@@ -1,44 +1,37 @@
-class ClassStaticInstanceVariable
+class A
 
 instance variables
 
-public static field1 : int := 9;
+public static f : int := 9;
 
 operations
 
-public getField1: () ==> int
-getField1()==return field1;
+public getF: () ==> int
+getF()==return f;
 
-public setField1: int ==> ()
-setField1(v)== field1:=v;
+end A
 
-end ClassStaticInstanceVariable
-
-
-
-class ClassStaticInstanceVariable0 is subclass of ClassStaticInstanceVariable
+class B is subclass of A
 
 operations
 
-public getField1FromBase: () ==> int
-getField1FromBase()==return field1;
+public testInitialisedFieldSubClass: () ==> bool
+testInitialisedFieldSubClass()==return A`f = 9;
 
-end ClassStaticInstanceVariable0
+end B
 
-
-
-class UseClassStaticInstanceVariable
+class C
 
 operations
 
-public op : () ==> bool
-op()==return ClassStaticInstanceVariable`field1=9;
+public testInitialisedField : () ==> bool
+testInitialisedField()==return A`f = 9;
 
-public op2 : () ==> bool
-op2() ==
+public testUpdatedField : () ==> bool
+testUpdatedField() ==
 (
-	ClassStaticInstanceVariable`field1 := 10;
-	return ClassStaticInstanceVariable`field1 = 10;
+	A`f := 10;
+	return A`f = 10;
 )
 
-end UseClassStaticInstanceVariable
+end C

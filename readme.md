@@ -97,15 +97,31 @@ Source: https://developer.mozilla.org/en-US/docs/Eclipse_CDT
 
 ### Test the runtime library
 
-All the code used to test the runtime library is stored in `<root>/c/vdmclib/src/tests` and written using the googletest framework. The tests can be executed as follows:
+All the code used to test the runtime library is stored in `<root>/c/vdmclib/src/tests` and written using the googletest framework. The tests are run automatically as part of the Maven build, but may also be executed manually using the steps below:
 
 ```bash
 # Go into runtime library folder
 cd <root>/c
+# Generate the make file
+cmake .
 # Build the google test binary
 make -j<no-of-cpu-cores-plus-one
 # Run the generated google tests
-<root/c/vdmclib/src/vdmclib
+./vdmclib/src/main/vdmclib
+```
+
+The runtime tests should now run, and produce an output similar to that shown below.
+
+```bash
+...
+[----------] 1 test from KK
+[ RUN      ] KK.offsetTest
+[       OK ] KK.offsetTest (0 ms)
+[----------] 1 test from KK (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 121 tests from 22 test cases ran. (84 ms total)
+[  PASSED  ] 121 tests.
 ```
 
 # Notes

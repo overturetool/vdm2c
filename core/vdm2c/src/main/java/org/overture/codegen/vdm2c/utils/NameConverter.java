@@ -25,11 +25,6 @@ public class NameConverter
 		return name;
 	}
 
-	public static boolean hasName(String name)
-	{
-		return fieldNames.containsKey(name);
-	}
-
 	public static boolean matches(AFieldDeclIR f, String name)
 	{
 		// make sure the name is in cache
