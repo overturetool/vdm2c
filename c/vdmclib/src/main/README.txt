@@ -6,4 +6,4 @@ This should generate the required makefiles in order to be able to build the gen
 
 	make
 
-The main.c file is empty, it must be populated as required.  It is only provided to aid the initial compilation process.
+The main.c file is empty, it must be populated as required.  It is only provided to aid the initial compilation process.  PLEASE NOTE:  each time the VDM project is generated, this directory is completely erased.  Please consider carrying out development on the main.c file elsewhere and linking to it from this directory.
