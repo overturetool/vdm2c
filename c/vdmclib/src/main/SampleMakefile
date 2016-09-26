@@ -1,7 +1,0 @@
-BINARY=TestBinary
-
-all:
-	cd nativelib && gcc -c -std=c11 -Inativelib *.c
-	gcc -c -std=c11 -Inativelib *.c
-	gcc -lm -std=c11 -o $(BINARY) *.o nativelib/*.o
-
