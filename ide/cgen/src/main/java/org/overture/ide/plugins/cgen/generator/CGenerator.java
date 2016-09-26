@@ -101,7 +101,8 @@ public class CGenerator
 					filejarentry = jarstream.getNextJarEntry();
 					continue;
 				}
-				if (filejarentry.getName().contains("ProjectCMakeLists"))
+				if (filejarentry.getName().contains("ProjectCMakeLists") ||
+						filejarentry.getName().contains("main.c"))
 				{
 					outputFile = new File(outputFile.getAbsolutePath().replace("nativelib"
 							+ File.separator, ""));
