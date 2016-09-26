@@ -24,7 +24,8 @@
 					<include>**/*.cpp</include>
 					<include>**/*.h</include>
 					<include>**/*.hpp</include>
-					<include>**/SampleMakefile</include>
+					<include>**/ProjectCMakeLists.txt</include>
+					<include>**/README.txt</include>
 				</includes>
 			</resource>
 		</resources>
