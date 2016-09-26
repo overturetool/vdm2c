@@ -5,7 +5,7 @@ operations
 op : () ==>()
 op()==skip;
 
-public affect : int*bool ==> ()
+public affect : int*bool ==> bool
 affect(x,z) == (
 	if z then (
 		if x>=4 and x<=10
@@ -18,7 +18,9 @@ affect(x,z) == (
 		then op()
 		elseif x = 13 then op()
 		elseif x = 15 then op()
- 	)
+ 	);
+
+ 	return true;
 )
 
 end ClassOp2
