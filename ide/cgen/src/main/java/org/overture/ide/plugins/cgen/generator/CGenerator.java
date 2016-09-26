@@ -102,7 +102,8 @@ public class CGenerator
 					continue;
 				}
 				if (filejarentry.getName().contains("ProjectCMakeLists") ||
-						filejarentry.getName().contains("main.c"))
+						filejarentry.getName().contains("main.c") ||
+						filejarentry.getName().contains("README"))
 				{
 					outputFile = new File(outputFile.getAbsolutePath().replace("nativelib"
 							+ File.separator, ""));
