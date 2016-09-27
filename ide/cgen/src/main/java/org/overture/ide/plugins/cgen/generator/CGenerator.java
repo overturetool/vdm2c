@@ -1,7 +1,9 @@
 package org.overture.ide.plugins.cgen.generator;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.jar.JarEntry;
@@ -28,7 +30,7 @@ public class CGenerator
 	}
 
 	public void generate(File cCodeOutputFolder) throws CoreException,
-			AnalysisException
+	AnalysisException
 	{
 		File eclipseProjectFolder = PluginVdm2CUtil.getEclipseProjectFolder(vdmProject);
 
@@ -53,12 +55,25 @@ public class CGenerator
 
 		CodeGenConsole.GetInstance().println("Code generation completed successfully.");
 		CodeGenConsole.GetInstance().println("Copying native library files."); // mvn install in vdm2c and
-																				// mvn package here makes
-																				// this work
+		// mvn package here makes
+		// this work
 		// Copy files from vdmclib.jar.
 		copyNativeLibFiles(new File(cCodeOutputFolder + File.separator
 				+ "nativelib"));
+		emitMainFile(new File(cCodeOutputFolder + File.separator + "main.c"));
 
+	}
+
+	private void emitMainFile(File outfile)
+	{
+		try {
+			BufferedWriter fileWriter = new BufferedWriter(new FileWriter(outfile));
+			fileWriter.write("void main(){}");
+			fileWriter.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	private void copyNativeLibFiles(File outfolder)
@@ -90,7 +105,7 @@ public class CGenerator
 					filejarentry = jarstream.getNextJarEntry();
 					continue;
 				}
-				
+
 				outputFile = new File(outfolder.toString()
 						+ File.separator
 						+ filejarentry.getName().replace("src/main" + File.separator, ""));
