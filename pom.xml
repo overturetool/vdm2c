@@ -366,12 +366,12 @@ http://mojo.codehaus.org/versions-maven-plugin/
     <repository>
       <id>overture.au.dk</id>
       <name>overture.au.dk-releases</name>
-      <url>http://overture.au.dk/artifactory/overture-vdm2c</url>
+      <url>http://overture.au.dk/artifactory/vdm2c</url>
     </repository>
     <snapshotRepository>
       <id>overture.au.dk</id>
       <name>overture.au.dk-snapshots</name>
-      <url>http://overture.au.dk/artifactory/overture-vdm2c</url>
+      <url>http://overture.au.dk/artifactory/vdm2c</url>
     </snapshotRepository>
 	</distributionManagement>
 
