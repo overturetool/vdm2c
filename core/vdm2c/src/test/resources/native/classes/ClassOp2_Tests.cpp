@@ -15,14 +15,14 @@ extern "C"
 #include "ClassOp2.h"
 }
 
-#define CHECK(methodId) TVP c=_Z8ClassOp2EV(NULL);\
-TVP res=CALL_FUNC(ClassOp2,ClassOp2,c,methodId);\
-EXPECT_EQ (true,res->value.boolVal);\
+#define CHECK(methodId, args...) TVP c=_Z8ClassOp2EV(NULL);\
+TVP res = CALL_FUNC(ClassOp2,ClassOp2,c,methodId, args);\
+EXPECT_EQ(true, res->value.boolVal);\
 vdmFree(res);\
 vdmFree(c)
 
 
-TEST(ClassOp2, op)
+TEST(ClassOp2, affect)
 {
-	CHECK(CLASS_ClassOp2__Z2opEV);
+	CHECK(CLASS_ClassOp2__Z6affectEIB, newInt(1), newBool(true));
 }

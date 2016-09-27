@@ -17,10 +17,15 @@ extern "C"
 
 #define CHECK(methodId) TVP c= _Z13ClassOpOpCallEV(NULL);\
 TVP res = CALL_FUNC(ClassOpOpCall, ClassOpOpCall, c ,methodId);\
-EXPECT_EQ (false, res->value.boolVal);\
+EXPECT_EQ (true, res->value.boolVal);\
 vdmFree(res);\
 vdmFree(c)
 
+
+TEST(ClassOpOpCall, op)
+{
+	CHECK(CLASS_ClassOpOpCall__Z2opEV);
+}
 
 TEST(ClassOpOpCall, callcall)
 {

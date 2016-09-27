@@ -2,4 +2,4 @@
 
 cmake .
 make -j5 &> /dev/null
-./vdmclib/src/main/vdmclib
+./vdmclib/vdmclib
