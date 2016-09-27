@@ -158,6 +158,7 @@ public class NativeClassesTests extends NativeTestBase
 			InterruptedException, CMakeGenerateException
 	{
 		generate(getPath("classes/ClassVarOpOpCall2.vdmrt"));
+//		compileAndTest(getTestCppFile("classes/ClassVarOpOpCall2_Tests.cpp"));
 		compileAndTest();
 	}
 	
