@@ -16,27 +16,30 @@
     <module>vdmclib</module>
   </modules>
 
-  <build>
-    <plugins>
-      <plugin>
-        <artifactId>exec-maven-plugin</artifactId>
-        <groupId>org.codehaus.mojo</groupId>
-        <version>1.5.0</version>
-        <inherited>false</inherited>
+	<build>
+		<plugins>
+			<plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+				<inherited>false</inherited>
         <executions>
           <execution>
-            <id>run-lib-tests</id>
-            <phase>generate-sources</phase>
+            <id>copy-dependencies</id>
+            <phase>test</phase>
             <goals>
-              <goal>exec</goal>
+              <goal>run</goal>
             </goals>
             <configuration>
-              <executable>${basedir}/run-lib-tests.sh</executable>
+              <target>
+								<exec executable="cmake"><arg value="."/>
+								</exec>
+								
+              </target>
             </configuration>
           </execution>
         </executions>
       </plugin>
-    </plugins>
-  </build>
+		</plugins>
+	</build>
 
 </project>
