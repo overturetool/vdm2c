@@ -13,7 +13,7 @@
 	<artifactId>root</artifactId>
 	<packaging>pom</packaging>
 	<name>Overture VDM 2 C Translator Root</name>
-	<version>0.0.6</version>
+	<version>0.0.7-SNAPSHOT</version>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -355,7 +355,7 @@ http://mojo.codehaus.org/versions-maven-plugin/
 		<url>git@github.com:overturetool/vdm2c.git</url>
 		<connection>scm:git:git://github.com/overturetool/vdm2c.git</connection>
 		<developerConnection>scm:git:git@github.com:overturetool/vdm2c.git</developerConnection>
-		<tag>Release/0.0.6</tag>
+		<tag>HEAD</tag>
 	</scm>
 
 	<developers>
