@@ -60,7 +60,9 @@ public class CGenerator
 		// Copy files from vdmclib.jar.
 		copyNativeLibFiles(new File(cCodeOutputFolder + File.separator
 				+ "nativelib"));
-//		emitMainFile(new File(cCodeOutputFolder + File.separator + "main.c"));
+		
+		//Emit empty main.c file so that the generated project compiles.
+		emitMainFile(new File(cCodeOutputFolder + File.separator + "main.c"));
 
 	}
 
@@ -68,7 +70,7 @@ public class CGenerator
 	{
 		try {
 			BufferedWriter fileWriter = new BufferedWriter(new FileWriter(outfile));
-			fileWriter.write("void main(){sldkfj}\n");
+			fileWriter.write("int main()\n{\n\treturn 0;\n}\n");
 			fileWriter.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
