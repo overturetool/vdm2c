@@ -43,7 +43,7 @@ public class NameMangler
 	static final String charId = "C";
 	static final String boolId = "B";
 	static final String voidId = "V";
-	
+
 	static final String unknownId = "U";
 
 	static final String nameId = "%d%s";
@@ -56,9 +56,9 @@ public class NameMangler
 	static final String classId = "%dC%s";
 	static final String templateId = "%dT%s";
 	static final String namedTypeId = "%dW%s";
-	
+
 	static final String quoteId = "%dY%s";
-	
+
 	static final String unionId = "%dX";
 
 	static final NameGenerator generator = new NameGenerator();
@@ -88,14 +88,17 @@ public class NameMangler
 
 		String name = String.format(mangledPattern, mkName(method.getName()), sb.toString());
 		logger.trace(method.getName() + " mangled to " + name);
-		
+
 		//Output map of model names to mangled names.
-		try {
-			mangledNames = new BufferedWriter(new FileWriter("MangledNames.h", true));
-			mangledNames.append("#define " + method.getAncestor(SClassDeclIR.class) + "_"  + method.getName() + " " + name + "\n");
-			mangledNames.close();
-		} catch (IOException e) {
-			e.printStackTrace();
+		if(method.getAncestor(SClassDeclIR.class) != null)
+		{
+			try {
+				mangledNames = new BufferedWriter(new FileWriter("MangledNames.h", true));
+				mangledNames.append("#define " + method.getAncestor(SClassDeclIR.class) + "_"  + method.getName() + " " + name + "\n");
+				mangledNames.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 		return name;
 	}
@@ -121,7 +124,7 @@ public class NameMangler
 	}
 
 	private static class NameGenerator extends
-			DepthFirstAnalysisAdaptorAnswer<String>
+	DepthFirstAnalysisAdaptorAnswer<String>
 	{
 
 		@Override
@@ -131,7 +134,7 @@ public class NameMangler
 			String name = node.getName();
 			return String.format(classId, name.length(), name);
 		}
-		
+
 		@Override
 		public String caseATemplateTypeIR(ATemplateTypeIR node)
 				throws AnalysisException
@@ -139,7 +142,7 @@ public class NameMangler
 			String name = node.getName();
 			return String.format(templateId, name.length(), name);
 		}
-		
+
 		@Override
 		public String caseAQuoteTypeIR(AQuoteTypeIR node)
 				throws AnalysisException
@@ -147,13 +150,13 @@ public class NameMangler
 			String value = node.getValue();
 			return String.format(quoteId, value.length(), value);
 		}
-		
+
 		@Override
 		public String caseANamedTypeDeclIR(ANamedTypeDeclIR node)
 				throws AnalysisException
 		{
 			String name = node.getName().getDefiningClass() + "_" + node.getName().getName();
-			
+
 			return String.format(namedTypeId, name.length(), name);
 		}
 
@@ -198,14 +201,14 @@ public class NameMangler
 		{
 			return charId;
 		}
-		
+
 		@Override
 		public String caseAUnknownTypeIR(AUnknownTypeIR node)
 				throws AnalysisException
 		{
 			return unknownId;
 		}
-		
+
 		@Override
 		public String caseAExternalTypeIR(AExternalTypeIR node)
 				throws AnalysisException
@@ -226,17 +229,17 @@ public class NameMangler
 				throws AnalysisException
 		{
 			StringBuilder sb = new StringBuilder();
-			
+
 			for(STypeIR t : node.getTypes())
 			{
 				sb.append(t.apply(THIS));
 			}
-			
+
 			String name = sb.toString();
-			
+
 			return String.format(unionId, name.length(), name);
 		}
-		
+
 		@Override
 		public String defaultInINode(INode node) throws AnalysisException
 		{
