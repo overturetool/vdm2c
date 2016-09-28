@@ -92,7 +92,7 @@ public class NameMangler
 		//Output map of model names to mangled names.
 		try {
 			mangledNames = new BufferedWriter(new FileWriter("MangledNames.h", true));
-			mangledNames.append("#define " + method.getAncestor(SClassDeclIR.class) + "."  + method.getName() + " " + name + "\n");
+			mangledNames.append("#define " + method.getAncestor(SClassDeclIR.class) + "_"  + method.getName() + " " + name + "\n");
 			mangledNames.close();
 		} catch (IOException e) {
 			e.printStackTrace();
