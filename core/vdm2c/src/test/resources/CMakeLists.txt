@@ -82,4 +82,4 @@ TARGET_LINK_LIBRARIES(${PROJECT_NAME}
 )
 
 
-add_test(AllTestsIn-##PROJECT_NAME## ${PROJECT_NAME})
+add_test(NAME AllTestsIn-##PROJECT_NAME## COMMAND ${PROJECT_NAME} "--gtest_output=xml:report.xml")
