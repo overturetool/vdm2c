@@ -1,5 +1,9 @@
 package org.overture.codegen.vdm2c.utils;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import org.overture.codegen.ir.INode;
 import org.overture.codegen.ir.STypeIR;
 import org.overture.codegen.ir.analysis.AnalysisException;
@@ -7,6 +11,7 @@ import org.overture.codegen.ir.analysis.DepthFirstAnalysisAdaptorAnswer;
 import org.overture.codegen.ir.declarations.AFormalParamLocalParamIR;
 import org.overture.codegen.ir.declarations.AMethodDeclIR;
 import org.overture.codegen.ir.declarations.ANamedTypeDeclIR;
+import org.overture.codegen.ir.declarations.SClassDeclIR;
 import org.overture.codegen.ir.types.ABoolBasicTypeIR;
 import org.overture.codegen.ir.types.ACharBasicTypeIR;
 import org.overture.codegen.ir.types.AClassTypeIR;
@@ -26,6 +31,7 @@ import org.slf4j.LoggerFactory;
 public class NameMangler
 {
 	final static Logger logger = LoggerFactory.getLogger(NameMangler.class);
+	static BufferedWriter mangledNames = null;
 
 	static final String preFix = "_Z";
 	static final String intId = "I";
@@ -80,8 +86,18 @@ public class NameMangler
 			sb.append(voidId);
 		}
 
+		String a = PluginVdm2CUtil.WARNING;
 		String name = String.format(mangledPattern, mkName(method.getName()), sb.toString());
 		logger.trace(method.getName() + " mangled to " + name);
+		
+		//Output map of model names to mangled names.
+		try {
+			mangledNames = new BufferedWriter(new FileWriter("MangledNames.txt", true));
+			mangledNames.append(method.getName() + " in " + method.getAncestor(SClassDeclIR.class) + " mangled to " + name + "\n");
+			mangledNames.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		return name;
 	}
 
