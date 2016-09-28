@@ -86,7 +86,6 @@ public class NameMangler
 			sb.append(voidId);
 		}
 
-		String a = PluginVdm2CUtil.WARNING;
 		String name = String.format(mangledPattern, mkName(method.getName()), sb.toString());
 		logger.trace(method.getName() + " mangled to " + name);
 		
