@@ -15,7 +15,6 @@ import org.overture.codegen.ir.declarations.AVarDeclIR;
 import org.overture.codegen.ir.expressions.AApplyExpIR;
 import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
 import org.overture.codegen.ir.patterns.AIdentifierPatternIR;
-import org.overture.codegen.ir.statements.AAssignToExpStmIR;
 import org.overture.codegen.ir.statements.ABlockStmIR;
 import org.overture.codegen.ir.statements.AReturnStmIR;
 import org.overture.codegen.ir.types.AExternalTypeIR;
@@ -45,17 +44,9 @@ public class FreeLocalBlockDeclsTrans extends DepthFirstAnalysisAdaptor implemen
 	}
 
 	@Override
-	public void caseAAssignToExpStmIR(AAssignToExpStmIR node)
-			throws AnalysisException
-	{
-		// TODO Auto-generated method stub
-		super.caseAAssignToExpStmIR(node);
-	}
-
-	@Override
 	public void caseABlockStmIR(ABlockStmIR node) throws AnalysisException
 	{
-		LinkedList<SStmIR> stms;
+		LinkedList<SStmIR> stms = new LinkedList<>();
 		AApplyExpIR applyexpr;
 		AIdentifierVarExpIR toomit;
 		int addoffset;
@@ -64,7 +55,10 @@ public class FreeLocalBlockDeclsTrans extends DepthFirstAnalysisAdaptor implemen
 
 		//Cloned in order to take a snapshot, since the node's list will change
 		//as vdmFree function application nodes are inserted.
-		stms = (LinkedList<SStmIR>) ((ABlockStmIR) node).getStatements().clone();
+		for(SStmIR s : node.getStatements())
+		{
+			stms.add(s.clone());
+		}
 
 		//Where to insert the vdmFree statements if this block does
 		//not end in a return statement.
