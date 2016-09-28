@@ -1,16 +1,27 @@
-class SubclassResponsibility
-operations
-public a : () ==> ()
-a() == is subclass responsibility;
+class A
 
-public b : () ==> int
-b() == is subclass responsibility;
+operations
+
+public op : () ==> bool
+op() == is subclass responsibility;
 
 functions
-public f : () -> int
-f() == is subclass responsibility;
 
-public g : int -> int
-g(p) == is subclass responsibility;
+public f :  () -> bool
+f () == is subclass responsibility;
 
-end SubclassResponsibility
+end A
+
+class B is subclass of A
+
+operations
+
+public op : () ==> bool
+op() == return true;
+
+functions
+
+public f :  () -> bool
+f () == true;
+
+end B
