@@ -2,6 +2,9 @@ package org.overture.codegen.vdm2c;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.overture.ast.types.ASet1SetType;
+import org.overture.ast.types.ASetSetType;
+import org.overture.codegen.ir.SourceNode;
 import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.declarations.AMethodDeclIR;
 import org.overture.codegen.ir.declarations.ANamedTypeDeclIR;
@@ -10,11 +13,14 @@ import org.overture.codegen.ir.types.ABoolBasicTypeIR;
 import org.overture.codegen.ir.types.ACharBasicTypeIR;
 import org.overture.codegen.ir.types.AClassTypeIR;
 import org.overture.codegen.ir.types.AIntNumericBasicTypeIR;
+import org.overture.codegen.ir.types.AMapMapTypeIR;
 import org.overture.codegen.ir.types.ANat1NumericBasicTypeIR;
 import org.overture.codegen.ir.types.ANatNumericBasicTypeIR;
 import org.overture.codegen.ir.types.AQuoteTypeIR;
 import org.overture.codegen.ir.types.ARatNumericBasicTypeIR;
 import org.overture.codegen.ir.types.ARealNumericBasicTypeIR;
+import org.overture.codegen.ir.types.ASeqSeqTypeIR;
+import org.overture.codegen.ir.types.ASetSetTypeIR;
 import org.overture.codegen.ir.types.ATemplateTypeIR;
 import org.overture.codegen.ir.types.AUnionTypeIR;
 import org.overture.codegen.ir.types.AUnknownTypeIR;
@@ -25,6 +31,61 @@ import org.overture.codegen.vdm2c.utils.NameMangler.NameGenerator;
 public class NameManglerTests
 {
 	private NameGenerator n = new NameGenerator();
+	
+	@Test
+	public void map() throws AnalysisException 
+	{
+		// map bool to rat
+		AMapMapTypeIR mapType = new AMapMapTypeIR();
+		mapType.setFrom(new ABoolBasicTypeIR());
+		mapType.setTo(new ARatNumericBasicTypeIR());
+		
+		Assert.assertEquals("2MBJ", mapType.apply(n));
+	}
+	
+	@Test
+	public void set1() throws AnalysisException
+	{
+		// set1 of char
+		ASetSetTypeIR set1Type = new ASetSetTypeIR();
+		set1Type.setSourceNode(new SourceNode(new ASet1SetType()));
+		set1Type.setSetOf(new ACharBasicTypeIR());
+		
+		Assert.assertEquals("1GC", set1Type.apply(n));
+	}
+	
+	@Test
+	public void set() throws AnalysisException
+	{
+		// set of char
+		ASetSetTypeIR setType = new ASetSetTypeIR();
+		setType.setSourceNode(new SourceNode(new ASetSetType()));
+		setType.setSetOf(new ACharBasicTypeIR());
+		
+		Assert.assertEquals("1SC", setType.apply(n));
+	}
+	
+	@Test
+	public void seq1() throws AnalysisException
+	{
+		// seq1 of nat
+		ASeqSeqTypeIR seq1Type = new ASeqSeqTypeIR();
+		seq1Type.setSeq1(true);
+		seq1Type.setSeqOf(new ANatNumericBasicTypeIR());
+		
+		Assert.assertEquals("1HN", seq1Type.apply(n));
+	}
+	
+	@Test
+	public void seq() throws AnalysisException
+	{
+		// seq of nat
+		ASeqSeqTypeIR seqType = new ASeqSeqTypeIR();
+		seqType.setSeq1(false);
+		seqType.setSeqOf(new ANatNumericBasicTypeIR());
+		
+		Assert.assertEquals("1QN", seqType.apply(n));
+	}
 	
 	@Test
 	public void methodName() throws AnalysisException
