@@ -1,0 +1,26 @@
+class A
+
+types
+
+R ::
+  x : int
+  y : int
+
+operations
+
+public readField : () ==> bool
+readField () ==
+let r = mk_R(9,10)
+in
+  return r.x = 9 and r.y = 10;
+  
+public updateField : () ==> bool
+updateField () ==
+(
+ dcl r : R := mk_R(4,5);
+ r.x := 10;
+ r.y := 11;
+ return r.x = 10 and r.y = 11;
+)
+
+end A
