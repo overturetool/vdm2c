@@ -40,7 +40,7 @@ public op3: () ==> bool
 op3()==return true;
 --
 --public extCall : () ==> bool
---extCall()==let tmp =  new ClassOpOverride3()in
+--extCall()==let tmp =  new ClassOpOverride2()in
 --(
 --	let - = tmp.op2Only() in skip;
 --	let - = tmp.op() in skip;
@@ -56,7 +56,7 @@ end ClassOpOverride2
 --operations
 --
 --public extCall : () ==> bool
---extCall()==let tmp =  new ClassOpOverride3()in
+--extCall()==let tmp =  new ClassOpOverride2()in
 --(let - = tmp.op() in skip;
 --let - =tmp.op2() in skip;
 --let - =tmp.op3() in skip;
