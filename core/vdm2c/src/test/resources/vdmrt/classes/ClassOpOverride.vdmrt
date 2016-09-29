@@ -26,18 +26,18 @@ op2Only()==return true;
 end ClassOpOverride1
 
 
---class ClassOpOverride3 is subclass of ClassOpOverride1
---
---operations
---
---public op: () ==> bool
---op()==return true;
---
---public op2: () ==> bool
---op2()==return true;
---
---public op3: () ==> bool
---op3()==return true;
+class ClassOpOverride2 is subclass of ClassOpOverride1
+
+operations
+
+public op: () ==> bool
+op()==return false;
+
+public op2: () ==> bool
+op2()==return true;
+
+public op3: () ==> bool
+op3()==return true;
 --
 --public extCall : () ==> bool
 --extCall()==let tmp =  new ClassOpOverride3()in
@@ -49,7 +49,7 @@ end ClassOpOverride1
 --	return true;
 --); 
 --
---end ClassOpOverride3
+end ClassOpOverride2
 
 --class ClassOpOverrideCaller
 --
