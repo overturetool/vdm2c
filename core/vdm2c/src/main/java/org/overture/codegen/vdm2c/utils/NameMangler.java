@@ -17,14 +17,16 @@ import org.overture.codegen.ir.types.ACharBasicTypeIR;
 import org.overture.codegen.ir.types.AClassTypeIR;
 import org.overture.codegen.ir.types.AExternalTypeIR;
 import org.overture.codegen.ir.types.AIntNumericBasicTypeIR;
-import org.overture.codegen.ir.types.ANat1BasicTypeWrappersTypeIR;
+import org.overture.codegen.ir.types.ANat1NumericBasicTypeIR;
 import org.overture.codegen.ir.types.ANatNumericBasicTypeIR;
 import org.overture.codegen.ir.types.AQuoteTypeIR;
+import org.overture.codegen.ir.types.ARatNumericBasicTypeIR;
 import org.overture.codegen.ir.types.ARealNumericBasicTypeIR;
 import org.overture.codegen.ir.types.ASeqSeqTypeIR;
 import org.overture.codegen.ir.types.ATemplateTypeIR;
 import org.overture.codegen.ir.types.AUnionTypeIR;
 import org.overture.codegen.ir.types.AUnknownTypeIR;
+import org.overture.codegen.ir.types.AVoidTypeIR;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,6 +45,7 @@ public class NameMangler
 	static final String charId = "C";
 	static final String boolId = "B";
 	static final String voidId = "V";
+	static final String ratId = "J";
 
 	static final String unknownId = "U";
 
@@ -59,7 +62,7 @@ public class NameMangler
 
 	static final String quoteId = "%dY%s";
 
-	static final String unionId = "%dX";
+	static final String unionId = "%dX%s";
 
 	static final NameGenerator generator = new NameGenerator();
 
@@ -123,7 +126,7 @@ public class NameMangler
 		return mangledName;
 	}
 
-	private static class NameGenerator extends
+	public static class NameGenerator extends
 	DepthFirstAnalysisAdaptorAnswer<String>
 	{
 
@@ -168,8 +171,8 @@ public class NameMangler
 		}
 
 		@Override
-		public String caseANat1BasicTypeWrappersTypeIR(
-				ANat1BasicTypeWrappersTypeIR node) throws AnalysisException
+		public String caseANat1NumericBasicTypeIR(ANat1NumericBasicTypeIR node)
+				throws AnalysisException
 		{
 			return nat1Id;
 		}
@@ -207,6 +210,19 @@ public class NameMangler
 				throws AnalysisException
 		{
 			return unknownId;
+		}
+		
+		@Override
+		public String caseAVoidTypeIR(AVoidTypeIR node) throws AnalysisException
+		{
+			return voidId;
+		}
+		
+		@Override
+		public String caseARatNumericBasicTypeIR(ARatNumericBasicTypeIR node)
+				throws AnalysisException
+		{
+			return ratId;
 		}
 
 		@Override
