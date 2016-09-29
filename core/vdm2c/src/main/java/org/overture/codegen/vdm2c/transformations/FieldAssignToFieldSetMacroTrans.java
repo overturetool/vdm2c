@@ -9,12 +9,9 @@ import static org.overture.codegen.vdm2c.utils.CTransUtil.newDeclarationAssignme
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newIdentifier;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newMacroApply;
 
-import org.overture.ast.definitions.AClassClassDefinition;
 import org.overture.ast.definitions.AInheritedDefinition;
 import org.overture.ast.definitions.AInstanceVariableDefinition;
-import org.overture.ast.definitions.ASystemClassDefinition;
 import org.overture.ast.definitions.PDefinition;
-import org.overture.ast.definitions.SClassDefinitionBase;
 import org.overture.ast.expressions.AVariableExp;
 import org.overture.ast.statements.AIdentifierStateDesignator;
 import org.overture.cgc.extast.analysis.AnswerCAdaptor;
@@ -101,21 +98,14 @@ DepthFirstAnalysisCAdaptor
 				assist.replaceNodeWith(node.getTarget(), id);
 				return;
 			}
-			SClassDefinitionBase classDef;
-			String thisClassName;
+			
+			SClassDeclIR classDef = node.getAncestor(SClassDeclIR.class);
+			String thisClassName = null;
 
-			if(target.getSourceNode().getVdmNode().getAncestor(AClassClassDefinition.class) != null)
+			if(classDef != null)
 			{
-				classDef = target.getSourceNode().getVdmNode().getAncestor(AClassClassDefinition.class);
-				thisClassName = classDef.getName().getName();// the containing field owner
+				thisClassName = classDef.getName();// the containing field owner
 			}
-			else
-			{
-				classDef = target.getSourceNode().getVdmNode().getAncestor(ASystemClassDefinition.class);
-				thisClassName = classDef.getName().getName();// the containing field owner
-			}
-
-
 
 			String fieldClassName = fieldUtil.lookupFieldClass(target.getAncestor(ADefaultClassDeclIR.class), target.getName());
 
