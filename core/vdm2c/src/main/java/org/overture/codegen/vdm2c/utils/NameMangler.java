@@ -4,6 +4,8 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import org.overture.ast.types.ASetSetType;
+import org.overture.codegen.assistant.AssistantBase;
 import org.overture.codegen.ir.INode;
 import org.overture.codegen.ir.STypeIR;
 import org.overture.codegen.ir.analysis.AnalysisException;
@@ -17,12 +19,14 @@ import org.overture.codegen.ir.types.ACharBasicTypeIR;
 import org.overture.codegen.ir.types.AClassTypeIR;
 import org.overture.codegen.ir.types.AExternalTypeIR;
 import org.overture.codegen.ir.types.AIntNumericBasicTypeIR;
+import org.overture.codegen.ir.types.AMapMapTypeIR;
 import org.overture.codegen.ir.types.ANat1NumericBasicTypeIR;
 import org.overture.codegen.ir.types.ANatNumericBasicTypeIR;
 import org.overture.codegen.ir.types.AQuoteTypeIR;
 import org.overture.codegen.ir.types.ARatNumericBasicTypeIR;
 import org.overture.codegen.ir.types.ARealNumericBasicTypeIR;
 import org.overture.codegen.ir.types.ASeqSeqTypeIR;
+import org.overture.codegen.ir.types.ASetSetTypeIR;
 import org.overture.codegen.ir.types.ATemplateTypeIR;
 import org.overture.codegen.ir.types.AUnionTypeIR;
 import org.overture.codegen.ir.types.AUnknownTypeIR;
@@ -53,9 +57,15 @@ public class NameMangler
 
 	static final String mangledPattern = preFix + "%sE%s";
 
-	static final String setId = "%dS";
-	static final String seqId = "%dQ";
-	static final String mapId = "%dM";
+	static final String setId = "%dS%s";
+	static final String set1Id = "%dG%s";
+	
+	
+	static final String seqId = "%dQ%s";
+	static final String seq1Id = "%dH%s";
+	
+	
+	static final String mapId = "%dM%s%s";
 	static final String classId = "%dC%s";
 	static final String templateId = "%dT%s";
 	static final String namedTypeId = "%dW%s";
@@ -231,13 +241,36 @@ public class NameMangler
 		{
 			return "";
 		}
-
+		
+		@Override
+		public String caseASetSetTypeIR(ASetSetTypeIR node)
+				throws AnalysisException
+		{
+			//TODO: Update IR to support set1
+			org.overture.ast.node.INode source = AssistantBase.getVdmNode(node);
+			
+			String id = source instanceof ASetSetType ? setId : set1Id;
+			
+			String name = node.getSetOf().apply(THIS);
+			return String.format(id, name.length(), name);
+		}
+		
 		@Override
 		public String caseASeqSeqTypeIR(ASeqSeqTypeIR node)
 				throws AnalysisException
 		{
 			String name = node.getSeqOf().apply(THIS);
-			return String.format(seqId, name.length(), name);
+			return String.format(node.getSeq1() ? seq1Id : seqId, name.length(), name);
+		}
+		
+		@Override
+		public String caseAMapMapTypeIR(AMapMapTypeIR node)
+				throws AnalysisException
+		{
+			String from = node.getFrom().apply(THIS);
+			String to = node.getTo().apply(THIS);
+			
+			return String.format(mapId, from.length() + to.length(), from, to);
 		}
 
 		@Override
