@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
@@ -14,6 +15,7 @@ import org.overture.ast.analysis.AnalysisException;
 import org.overture.ast.lex.Dialect;
 import org.overture.codegen.utils.GeneralUtils;
 import org.overture.codegen.vdm2c.CGen;
+import org.overture.codegen.vdm2c.utils.NameMangler;
 import org.overture.ide.core.IVdmModel;
 import org.overture.ide.core.resources.IVdmProject;
 import org.overture.ide.plugins.cgen.CodeGenConsole;
@@ -60,10 +62,32 @@ public class CGenerator
 		// Copy files from vdmclib.jar.
 		copyNativeLibFiles(new File(cCodeOutputFolder + File.separator
 				+ "nativelib"));
-		
+
 		//Emit empty main.c file so that the generated project compiles.
 		emitMainFile(new File(cCodeOutputFolder + File.separator + "main.c"));
+		emitMangledNamesHeaderFile(new File(cCodeOutputFolder + File.separator + "MangledNames.h"));
 
+
+	}
+
+
+	private void emitMangledNamesHeaderFile(File outfile)
+	{
+		BufferedWriter fileWriter;
+
+		try {
+			fileWriter = new BufferedWriter(new FileWriter(outfile, true));
+
+			for(Map.Entry<String, String> entry : NameMangler.mangledNames.entrySet())
+			{
+				fileWriter.append("#define " + entry.getKey() + " " + entry.getValue() + "\n");
+			}
+			
+			fileWriter.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	private void emitMainFile(File outfile)
