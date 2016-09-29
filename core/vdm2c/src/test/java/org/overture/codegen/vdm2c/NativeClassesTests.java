@@ -122,14 +122,6 @@ public class NativeClassesTests extends NativeTestBase
 	}
 	
 	@Test
-	public void ClassPublicFieldsTMP() throws IOException,
-			InterruptedException, CMakeGenerateException
-	{
-		generate(getPath("classes/ClassPublicFieldsTMP.vdmrt"));
-		compileAndTest();
-	}
-	
-	@Test
 	public void ClassFunCall() throws IOException,
 			InterruptedException, CMakeGenerateException
 	{
@@ -191,14 +183,24 @@ public class NativeClassesTests extends NativeTestBase
 			InterruptedException, CMakeGenerateException
 	{
 		generate(getPath("classes/ClassValueInheritance.vdmrt"));
+//		compileAndTest(getTestCppFile("classes/ClassValueInheritance_Tests.cpp"));
 		compileAndTest();
 	}
 	
+	//Some "scratch work" tests.
 	@Test
 	public void ClassScratchWork() throws IOException,
     InterruptedException, CMakeGenerateException
 	{
 		generate(getPath("classes/ClassScratchWork.vdmrt"));
+		compileAndTest();
+	}
+	
+	@Test
+	public void ClassPublicFieldsTMP() throws IOException,
+			InterruptedException, CMakeGenerateException
+	{
+		generate(getPath("classes/ClassPublicFieldsTMP.vdmrt"));
 		compileAndTest();
 	}
 }
