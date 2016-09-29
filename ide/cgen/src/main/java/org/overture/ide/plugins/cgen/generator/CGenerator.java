@@ -65,6 +65,7 @@ public class CGenerator
 
 		//Emit empty main.c file so that the generated project compiles.
 		emitMainFile(new File(cCodeOutputFolder + File.separator + "main.c"));
+		//Emit file containing the mapping between model names and mangled names as #defines.
 		emitMangledNamesHeaderFile(new File(cCodeOutputFolder + File.separator + "MangledNames.h"));
 
 
