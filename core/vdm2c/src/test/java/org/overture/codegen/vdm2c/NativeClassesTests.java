@@ -175,7 +175,7 @@ public class NativeClassesTests extends NativeTestBase
 			InterruptedException, CMakeGenerateException
 	{
 		generate(getPath("classes/ClassOpOverride.vdmrt"));
-		compileAndTest();
+		compileAndTest(getTestCppFile("classes/ClassOpOverride_Tests.cpp"));
 	}
 	
 	@Test
