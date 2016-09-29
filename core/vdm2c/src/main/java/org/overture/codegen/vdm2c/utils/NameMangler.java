@@ -3,6 +3,8 @@ package org.overture.codegen.vdm2c.utils;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.overture.ast.types.ASetSetType;
 import org.overture.codegen.assistant.AssistantBase;
@@ -37,7 +39,8 @@ import org.slf4j.LoggerFactory;
 public class NameMangler
 {
 	final static Logger logger = LoggerFactory.getLogger(NameMangler.class);
-	static BufferedWriter mangledNames = null;
+	
+	public static Map<String, String> mangledNames = null;
 
 	static final String preFix = "_Z";
 	static final String intId = "I";
@@ -83,6 +86,9 @@ public class NameMangler
 
 	public static String mangle(AMethodDeclIR method) throws AnalysisException
 	{
+		if(mangledNames == null)
+			mangledNames = new HashMap<String, String>();
+		
 		if (method.getName().startsWith(preFix))
 		{
 			return method.getName();
@@ -103,16 +109,9 @@ public class NameMangler
 		logger.trace(method.getName() + " mangled to " + name);
 
 		//Output map of model names to mangled names.
-		if(method.getAncestor(SClassDeclIR.class) != null)
-		{
-			try {
-				mangledNames = new BufferedWriter(new FileWriter("MangledNames.h", true));
-				mangledNames.append("#define " + method.getAncestor(SClassDeclIR.class) + "_"  + method.getName() + " " + name + "\n");
-				mangledNames.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
+		if(method.getAncestor(SClassDeclIR.class) != null)			
+			mangledNames.put(method.getAncestor(SClassDeclIR.class) + "_" + method.getName(), name);
+		
 		return name;
 	}
 
