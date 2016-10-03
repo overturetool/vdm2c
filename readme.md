@@ -106,23 +106,12 @@ cd <root>/c
 cmake .
 # Build the google test binary
 make -j<no-of-cpu-cores-plus-one
-# Run the generated google tests
-./vdmclib/src/main/vdmclib
+# Go to the folder that contains the tests
+cd vdmclib/
+# Run the generated google tests 
+make test
 ```
-
-The runtime tests should now run, and produce an output similar to that shown below.
-
-```bash
-...
-[----------] 1 test from KK
-[ RUN      ] KK.offsetTest
-[       OK ] KK.offsetTest (0 ms)
-[----------] 1 test from KK (0 ms total)
-
-[----------] Global test environment tear-down
-[==========] 121 tests from 22 test cases ran. (84 ms total)
-[  PASSED  ] 121 tests.
-```
+The test report is available in `report.xml`
 
 # Notes
 

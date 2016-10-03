@@ -1,9 +1,10 @@
 package org.overture.codegen.vdm2c.utils;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.overture.ast.types.ASetSetType;
+import org.overture.codegen.assistant.AssistantBase;
 import org.overture.codegen.ir.INode;
 import org.overture.codegen.ir.STypeIR;
 import org.overture.codegen.ir.analysis.AnalysisException;
@@ -17,21 +18,26 @@ import org.overture.codegen.ir.types.ACharBasicTypeIR;
 import org.overture.codegen.ir.types.AClassTypeIR;
 import org.overture.codegen.ir.types.AExternalTypeIR;
 import org.overture.codegen.ir.types.AIntNumericBasicTypeIR;
-import org.overture.codegen.ir.types.ANat1BasicTypeWrappersTypeIR;
+import org.overture.codegen.ir.types.AMapMapTypeIR;
+import org.overture.codegen.ir.types.ANat1NumericBasicTypeIR;
 import org.overture.codegen.ir.types.ANatNumericBasicTypeIR;
 import org.overture.codegen.ir.types.AQuoteTypeIR;
+import org.overture.codegen.ir.types.ARatNumericBasicTypeIR;
 import org.overture.codegen.ir.types.ARealNumericBasicTypeIR;
 import org.overture.codegen.ir.types.ASeqSeqTypeIR;
+import org.overture.codegen.ir.types.ASetSetTypeIR;
 import org.overture.codegen.ir.types.ATemplateTypeIR;
 import org.overture.codegen.ir.types.AUnionTypeIR;
 import org.overture.codegen.ir.types.AUnknownTypeIR;
+import org.overture.codegen.ir.types.AVoidTypeIR;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class NameMangler
 {
 	final static Logger logger = LoggerFactory.getLogger(NameMangler.class);
-	static BufferedWriter mangledNames = null;
+	
+	public static Map<String, String> mangledNames = null;
 
 	static final String preFix = "_Z";
 	static final String intId = "I";
@@ -43,6 +49,7 @@ public class NameMangler
 	static final String charId = "C";
 	static final String boolId = "B";
 	static final String voidId = "V";
+	static final String ratId = "J";
 
 	static final String unknownId = "U";
 
@@ -50,16 +57,22 @@ public class NameMangler
 
 	static final String mangledPattern = preFix + "%sE%s";
 
-	static final String setId = "%dS";
-	static final String seqId = "%dQ";
-	static final String mapId = "%dM";
+	static final String setId = "%dS%s";
+	static final String set1Id = "%dG%s";
+	
+	
+	static final String seqId = "%dQ%s";
+	static final String seq1Id = "%dH%s";
+	
+	
+	static final String mapId = "%dM%s%s";
 	static final String classId = "%dC%s";
 	static final String templateId = "%dT%s";
 	static final String namedTypeId = "%dW%s";
 
 	static final String quoteId = "%dY%s";
 
-	static final String unionId = "%dX";
+	static final String unionId = "%dX%s";
 
 	static final NameGenerator generator = new NameGenerator();
 
@@ -70,6 +83,9 @@ public class NameMangler
 
 	public static String mangle(AMethodDeclIR method) throws AnalysisException
 	{
+		if(mangledNames == null)
+			mangledNames = new HashMap<String, String>();
+		
 		if (method.getName().startsWith(preFix))
 		{
 			return method.getName();
@@ -90,16 +106,9 @@ public class NameMangler
 		logger.trace(method.getName() + " mangled to " + name);
 
 		//Output map of model names to mangled names.
-		if(method.getAncestor(SClassDeclIR.class) != null)
-		{
-			try {
-				mangledNames = new BufferedWriter(new FileWriter("MangledNames.h", true));
-				mangledNames.append("#define " + method.getAncestor(SClassDeclIR.class) + "_"  + method.getName() + " " + name + "\n");
-				mangledNames.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
+		if(method.getAncestor(SClassDeclIR.class) != null)			
+			mangledNames.put(method.getAncestor(SClassDeclIR.class) + "_" + method.getName(), name);
+		
 		return name;
 	}
 
@@ -123,7 +132,7 @@ public class NameMangler
 		return mangledName;
 	}
 
-	private static class NameGenerator extends
+	public static class NameGenerator extends
 	DepthFirstAnalysisAdaptorAnswer<String>
 	{
 
@@ -168,8 +177,8 @@ public class NameMangler
 		}
 
 		@Override
-		public String caseANat1BasicTypeWrappersTypeIR(
-				ANat1BasicTypeWrappersTypeIR node) throws AnalysisException
+		public String caseANat1NumericBasicTypeIR(ANat1NumericBasicTypeIR node)
+				throws AnalysisException
 		{
 			return nat1Id;
 		}
@@ -208,6 +217,19 @@ public class NameMangler
 		{
 			return unknownId;
 		}
+		
+		@Override
+		public String caseAVoidTypeIR(AVoidTypeIR node) throws AnalysisException
+		{
+			return voidId;
+		}
+		
+		@Override
+		public String caseARatNumericBasicTypeIR(ARatNumericBasicTypeIR node)
+				throws AnalysisException
+		{
+			return ratId;
+		}
 
 		@Override
 		public String caseAExternalTypeIR(AExternalTypeIR node)
@@ -215,13 +237,36 @@ public class NameMangler
 		{
 			return "";
 		}
-
+		
+		@Override
+		public String caseASetSetTypeIR(ASetSetTypeIR node)
+				throws AnalysisException
+		{
+			//TODO: Update IR to support set1
+			org.overture.ast.node.INode source = AssistantBase.getVdmNode(node);
+			
+			String id = source instanceof ASetSetType ? setId : set1Id;
+			
+			String name = node.getSetOf().apply(THIS);
+			return String.format(id, name.length(), name);
+		}
+		
 		@Override
 		public String caseASeqSeqTypeIR(ASeqSeqTypeIR node)
 				throws AnalysisException
 		{
 			String name = node.getSeqOf().apply(THIS);
-			return String.format(seqId, name.length(), name);
+			return String.format(node.getSeq1() ? seq1Id : seqId, name.length(), name);
+		}
+		
+		@Override
+		public String caseAMapMapTypeIR(AMapMapTypeIR node)
+				throws AnalysisException
+		{
+			String from = node.getFrom().apply(THIS);
+			String to = node.getTo().apply(THIS);
+			
+			return String.format(mapId, from.length() + to.length(), from, to);
 		}
 
 		@Override

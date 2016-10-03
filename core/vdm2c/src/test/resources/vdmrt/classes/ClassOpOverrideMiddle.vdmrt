@@ -2,7 +2,7 @@ class ClassOpOverrideMiddle
 
 operations
 public op: () ==> bool
-op()==return true;
+op()==return false;
 
 end ClassOpOverrideMiddle
 
@@ -13,7 +13,7 @@ class ClassOpOverrideMiddle1 is subclass of ClassOpOverrideMiddle
 
 operations
 public op2: () ==> bool
-op2()==return true;
+op2()==return false;
 
 end ClassOpOverrideMiddle1
 
