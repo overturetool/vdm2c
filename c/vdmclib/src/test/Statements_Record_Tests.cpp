@@ -107,6 +107,7 @@ TVP recordR1()
 	return res;
 }
 
+/*
 TEST(Statements, recordR1)
 {
 	TVP TEST_TRUE = newBool(true);
@@ -119,3 +120,4 @@ TEST(Statements, recordR1)
 
 	recursiveFree (TEST_TRUE);
 }
+*/

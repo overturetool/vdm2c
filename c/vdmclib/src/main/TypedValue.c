@@ -354,18 +354,19 @@ void recursiveFree(struct TypedValue* ptr)
 	//		//TODO
 	//		break;
 	case VDM_RECORD:
-	{
-		//handle smart pointer
-		struct RecordType* recordTptr = (struct RecordType*) ptr->value.ptr;
-		recordTptr->freeRecord(recordTptr->value);
-		recordTptr->value = NULL;
-		recordTptr->freeRecord = NULL;
-
-		//free record type
-		free(recordTptr);
-		ptr->value.ptr = NULL;
-		break;
-	}
+	//Records are treated exactly as classes, so fall through.
+//	{
+//		//handle smart pointer
+//		struct RecordType* recordTptr = (struct RecordType*) ptr->value.ptr;
+//		recordTptr->freeRecord(recordTptr->value);
+//		recordTptr->value = NULL;
+//		recordTptr->freeRecord = NULL;
+//
+//		//free record type
+//		free(recordTptr);
+//		ptr->value.ptr = NULL;
+//		break;
+//	}
 	case VDM_CLASS:
 	{
 		//handle smart pointer
