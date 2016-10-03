@@ -124,7 +124,7 @@ static TVP new()
 {
 	${cname}CLASS ptr=${cname}_Constructor(NULL);
 
-	return newTypeValue(VDM_CLASS, (TypedValueType)
+	return newTypeValue($CFormat.getVdmType($node), (TypedValueType)
 			{	.ptr=newClassValue(ptr->_${cname}_id, &ptr->_${cname}_refs, (freeVdmClassFunction)&${cname}_free, ptr)});
 }
 
