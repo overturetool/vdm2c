@@ -39,8 +39,6 @@
 #define FATAL_ERROR(message) exit(EXIT_FAILURE)
 #endif
 
-#include <time.h>
-
 #include "TypedValue.h"
 
 
