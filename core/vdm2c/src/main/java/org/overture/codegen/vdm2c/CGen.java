@@ -38,7 +38,7 @@ public class CGen extends CodeGenBase
 	final File outputFolder;
 	private ISourceFileFormatter formatter;
 	
-	private Map<String, Boolean> hasTimeMap = null;
+	public static Map<String, Boolean> hasTimeMap = null;
 
 	public CGen(File outputFolder)
 	{
