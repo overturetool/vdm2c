@@ -101,6 +101,7 @@ MyRecCLASS MyRec_Constructor(MyRecCLASS this_ptr)
 
 		this_ptr->m_MyRec_field1= NULL ;
 		this_ptr->m_MyRec_field2= NULL ;
+		this_ptr->m_MyRec_numFields= NULL ;
 	}
 
 	return this_ptr;

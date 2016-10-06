@@ -199,10 +199,20 @@ TVP vdmClone(TVP x)
 	case VDM_RECORD:
 	{
 		ASSERT_CHECK_RECORD(x);
+		int i;
+		int numFields = (*((struct TypedValue**)((char*)(((struct ClassType*)x->value.ptr)->value) + \
+				sizeof(struct VTable*) + \
+				sizeof(int) + \
+				sizeof(unsigned int))))->value.intVal;
 
-		tmp->value.ptr = malloc(sizeof(x->value.ptr));
+		for(i = 0; i < numFields; i++)
+		{}
 
-		memcpy(tmp->value.ptr, x->value.ptr, sizeof(x->value.ptr));
+
+
+
+//		tmp->value.ptr = malloc(sizeof(x->value.ptr));
+//		memcpy(tmp->value.ptr, x->value.ptr, sizeof(x->value.ptr));
 
 		break;
 	}
