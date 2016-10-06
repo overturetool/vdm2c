@@ -15,7 +15,7 @@
  * Quotes
  *
  --------------------------------- */ 
- 
+
 
 
 /* -------------------------------
@@ -23,7 +23,7 @@
  * values / global const
  *
  --------------------------------- */ 
- 
+
 
 
 /* -------------------------------
@@ -31,7 +31,7 @@
  * The class
  *
  --------------------------------- */ 
- 
+
 
 //class id
 #define CLASS_ID_MyRec_ID 1
@@ -42,13 +42,14 @@
 
 struct MyRec
 {
-	
-/* Definition of Class: 'MyRec' */
+
+	/* Definition of Class: 'MyRec' */
 	VDM_CLASS_BASE_DEFINITIONS(MyRec);
-	 
+
 	VDM_CLASS_FIELD_DEFINITION(MyRec,field1);
 	VDM_CLASS_FIELD_DEFINITION(MyRec,field2);
-	
+
+	VDM_CLASS_FIELD_DEFINITION(MyRec,numFields);
 };
 
 
@@ -57,10 +58,10 @@ struct MyRec
  * Constructors
  *
  --------------------------------- */ 
- 
 
-	
-	TVP _Z5MyRecEIC(MyRecCLASS this_, TVP param_field1, TVP param_field2);
+
+
+TVP _Z5MyRecEIC(MyRecCLASS this_, TVP param_field1, TVP param_field2);
 
 
 /* -------------------------------
@@ -68,11 +69,11 @@ struct MyRec
  * public access functions
  *
  --------------------------------- */ 
- 
-	void MyRec_const_init();
-	void MyRec_const_shutdown();
-	void MyRec_static_init();
-	void MyRec_static_shutdown();
+
+void MyRec_const_init();
+void MyRec_const_shutdown();
+void MyRec_static_init();
+void MyRec_static_shutdown();
 
 
 /* -------------------------------
@@ -80,7 +81,7 @@ struct MyRec
  * Internal
  *
  --------------------------------- */ 
- 
+
 
 void MyRec_free_fields(MyRecCLASS);
 MyRecCLASS MyRec_Constructor(MyRecCLASS);
