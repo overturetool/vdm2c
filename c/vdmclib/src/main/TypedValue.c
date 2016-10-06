@@ -200,13 +200,20 @@ TVP vdmClone(TVP x)
 	{
 		ASSERT_CHECK_RECORD(x);
 		int i;
-		int numFields = (*((struct TypedValue**)((char*)(((struct ClassType*)x->value.ptr)->value) + \
+		TVP tmpField;
+		int numFields;
+		int j;
+
+		numFields = (*((struct TypedValue**)((char*)(((struct ClassType*)x->value.ptr)->value) + \
 				sizeof(struct VTable*) + \
 				sizeof(int) + \
 				sizeof(unsigned int))))->value.intVal;
 
 		for(i = 0; i < numFields; i++)
-		{}
+		{
+			tmpField = vdmClone(*((struct TypedValue**)((char*)(((struct ClassType*)x->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(struct TypedValue*) + sizeof(struct TypedValue*) * i)));
+			vdmFree(tmpField);
+		}
 
 
 
