@@ -144,8 +144,6 @@ TVP vdmCollectionIndex(TVP collection,int index)
 
 TVP vdmClone(TVP x)
 {
-
-	//vdmClone struct
 	TVP tmp;
 
 	if(x == NULL)
@@ -199,10 +197,10 @@ TVP vdmClone(TVP x)
 	case VDM_RECORD:
 	{
 		ASSERT_CHECK_RECORD(x);
+
 		int i;
 		TVP tmpField;
 		int numFields;
-		int j;
 
 		numFields = (*((struct TypedValue**)((char*)(((struct ClassType*)x->value.ptr)->value) + \
 				sizeof(struct VTable*) + \
@@ -212,14 +210,8 @@ TVP vdmClone(TVP x)
 		for(i = 0; i < numFields; i++)
 		{
 			tmpField = vdmClone(*((struct TypedValue**)((char*)(((struct ClassType*)x->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(struct TypedValue*) + sizeof(struct TypedValue*) * i)));
-			vdmFree(tmpField);
+			memcpy(((struct TypedValue**)((char*)(((struct ClassType*)tmp->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(struct TypedValue*) + sizeof(struct TypedValue*) * i)), &tmpField, sizeof(struct TypedValue*));
 		}
-
-
-
-
-//		tmp->value.ptr = malloc(sizeof(x->value.ptr));
-//		memcpy(tmp->value.ptr, x->value.ptr, sizeof(x->value.ptr));
 
 		break;
 	}
