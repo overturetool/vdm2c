@@ -21,6 +21,12 @@ import org.overture.codegen.vdm2c.utils.IApplyAssistant;
 public class LiteralInstantiationRewriteTrans extends
 		DepthFirstAnalysisCAdaptor implements IApplyAssistant
 {
+	public static final String NEW_STRING = "newString";
+	public static final String NEW_REAL = "newReal";
+	public static final String NEW_QUOTE = "newQuote";
+	public static final String NEW_INT = "newInt";
+	public static final String NEW_CHAR = "newChar";
+	public static final String NEW_BOOL = "newBool";
 	public TransAssistantIR assist;
 
 	public LiteralInstantiationRewriteTrans(TransAssistantIR assist)
@@ -44,35 +50,35 @@ public class LiteralInstantiationRewriteTrans extends
 	public void caseABoolLiteralExpIR(ABoolLiteralExpIR node)
 			throws AnalysisException
 	{
-		rewriteToApply(this, node, "newBool", node);
+		rewriteToApply(this, node, NEW_BOOL, node);
 	}
 
 	@Override
 	public void caseACharLiteralExpIR(ACharLiteralExpIR node)
 			throws AnalysisException
 	{
-		rewriteToApply(this, node, "newChar", node);
+		rewriteToApply(this, node, NEW_CHAR, node);
 	}
 
 	@Override
 	public void caseAIntLiteralExpIR(AIntLiteralExpIR node)
 			throws AnalysisException
 	{
-		rewriteToApply(this, node, "newInt", node);
+		rewriteToApply(this, node, NEW_INT, node);
 	}
 
 	@Override
 	public void caseAQuoteLiteralExpIR(AQuoteLiteralExpIR node)
 			throws AnalysisException
 	{
-		rewriteToApply(this, node, "newQuote", node);
+		rewriteToApply(this, node, NEW_QUOTE, node);
 	}
 
 	public void caseARealLiteralExpIR(
 			org.overture.codegen.ir.expressions.ARealLiteralExpIR node)
 			throws AnalysisException
 	{
-		rewriteToApply(this, node, "newReal", node);
+		rewriteToApply(this, node, NEW_REAL, node);
 	};
 
 	@Override
@@ -80,7 +86,7 @@ public class LiteralInstantiationRewriteTrans extends
 			throws AnalysisException
 	{
 		// TODO this may need additional rewrites actually this must be a seq comprehension
-		rewriteToApply(this, node, "newString");
+		rewriteToApply(this, node, NEW_STRING);
 	}
 
 }
