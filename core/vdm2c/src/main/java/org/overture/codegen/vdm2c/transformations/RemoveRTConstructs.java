@@ -3,7 +3,6 @@ package org.overture.codegen.vdm2c.transformations;
 import org.overture.cgc.extast.analysis.DepthFirstAnalysisCAdaptor;
 import org.overture.codegen.ir.STypeIR;
 import org.overture.codegen.ir.analysis.AnalysisException;
-import org.overture.codegen.ir.declarations.AFieldDeclIR;
 import org.overture.codegen.ir.statements.ACallObjectStmIR;
 import org.overture.codegen.ir.statements.ACyclesStmIR;
 import org.overture.codegen.ir.statements.ADurationStmIR;
@@ -37,10 +36,8 @@ public class RemoveRTConstructs extends DepthFirstAnalysisCAdaptor
 	public void caseACallObjectStmIR(ACallObjectStmIR node)
 			throws AnalysisException
 	{
-		// TODO Auto-generated method stub
 		super.caseACallObjectStmIR(node);
 
-		String a = node.getFieldName().toString();
 		if(node.getDesignator() instanceof AIdentifierObjectDesignatorIR)
 		{
 			STypeIR type = ((AIdentifierObjectDesignatorIR)node.getDesignator()).getExp().getType();
@@ -50,22 +47,4 @@ public class RemoveRTConstructs extends DepthFirstAnalysisCAdaptor
 			}
 		}
 	}
-
-	@Override
-	public void caseAFieldDeclIR(AFieldDeclIR node) throws AnalysisException
-	{
-		// TODO Auto-generated method stub
-		super.caseAFieldDeclIR(node);
-
-		//		if (f.getType() instanceof AClassTypeIR)
-		//		{
-		//			AClassTypeIR type = (AClassTypeIR) f.getType();
-		//			if (type.getName().equals("CPU")
-		//					|| type.getName().equals("BUS"))
-		//			{
-		//				continue;
-		//			}
-		//		}
-	}
-
 }

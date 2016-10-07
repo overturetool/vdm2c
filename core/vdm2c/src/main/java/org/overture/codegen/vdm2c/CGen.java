@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import org.apache.commons.lang.time.StopWatch;
@@ -36,10 +37,20 @@ public class CGen extends CodeGenBase
 	final static Logger logger = LoggerFactory.getLogger(CGen.class);
 	final File outputFolder;
 	private ISourceFileFormatter formatter;
+	
+	public static Map<String, Boolean> hasTimeMap = null;
 
 	public CGen(File outputFolder)
 	{
 		this.outputFolder = outputFolder;
+	}
+	
+	@Override
+	protected void preProcessAst(List<org.overture.ast.node.INode> ast)
+			throws AnalysisException
+	{
+		super.preProcessAst(ast);
+		hasTimeMap = TimeFinder.computeTimeMap(getClasses(ast));
 	}
 
 	@Override

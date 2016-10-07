@@ -7,6 +7,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathFactory;
+
 import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
 import org.junit.Before;
@@ -16,9 +23,14 @@ import org.overture.ast.lex.Dialect;
 import org.overture.codegen.vdm2c.CMakeUtil.CMakeGenerateException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 public class NativeTestBase extends BaseGeneratorTest
 {
+	private static final String TEST_REPORT = "report.xml";
+
 	private static final String VDMCLIB = "../../c/vdmclib/src/main/";
 
 	final static Logger logger = LoggerFactory.getLogger(NativeTestBase.class);
@@ -130,7 +142,38 @@ public class NativeTestBase extends BaseGeneratorTest
 		Assert.assertTrue("Failed to run make and compile", cmakeUtil.make(root));
 		Assert.assertTrue("Failed to run tests", cmakeUtil.run(root, name.getMethodName(), TEST_OUTPUT != null));
 		Assert.assertTrue("Failed to run make test", cmakeUtil.make(root, "test"));
+		
+		if(tests.length > 0)
+		{
+			File testReport = new File(root, TEST_REPORT);
+			
+			Assert.assertTrue("Could not find test report", testReport.exists());
+			try
+			{
+				DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+				DocumentBuilder builder = factory.newDocumentBuilder();
+				Document doc = builder.parse(testReport);
+				XPathFactory xPathfactory = XPathFactory.newInstance();
+				XPath xpath = xPathfactory.newXPath();
+				XPathExpression expr = xpath.compile("//testsuites[@tests]");
+				NodeList nl = (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
+				
+				Assert.assertTrue("Test report does not mention any tests", nl != null && nl.getLength() > 0);
 
+				for (int i = 0; i < nl.getLength(); i++)
+				{
+					Node currentItem = nl.item(i);
+					String nodeValue = currentItem.getAttributes().getNamedItem("tests").getNodeValue();
+					Integer testCount = Integer.parseInt(nodeValue);
+					Assert.assertTrue("No tests were executed!", testCount != null & testCount > 0);
+				}
+
+			} catch (Exception e)
+			{
+				Assert.fail("Unexpected problem encountered while trying to analyse the test report: " + e.getMessage());
+				e.printStackTrace();
+			}
+		}
 	}
 
 	protected String getPath(String rpath)

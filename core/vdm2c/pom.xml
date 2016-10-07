@@ -88,7 +88,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.10.3</version>
 				<configuration>
 					<excludePackageNames>
 						org.overture.cgc.extast.*:org.overture.cgc.extast.analysis.intf.*:org.overture.cgc.extast.node.*:org.overture.codegen.vdm2c.extast.declarations.*:org.overture.codegen.vdm2c.extast.expressions.*

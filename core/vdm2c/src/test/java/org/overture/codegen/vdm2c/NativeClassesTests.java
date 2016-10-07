@@ -62,7 +62,7 @@ public class NativeClassesTests extends NativeTestBase
 			InterruptedException, CMakeGenerateException
 	{
 		generate(getPath("classes/ClassOp.vdmrt"));
-		compileAndTest();
+		compileAndTest(getTestCppFile("classes/ClassOp_Tests.cpp"));
 	}
 	
 	@Test
@@ -70,7 +70,7 @@ public class NativeClassesTests extends NativeTestBase
 			InterruptedException, CMakeGenerateException
 	{
 		generate(getPath("classes/ClassOp2.vdmrt"));
-		compileAndTest();
+		compileAndTest(getTestCppFile("classes/ClassOp2_Tests.cpp"));
 	}
 	
 	@Test
@@ -122,14 +122,6 @@ public class NativeClassesTests extends NativeTestBase
 	}
 	
 	@Test
-	public void ClassPublicFieldsTMP() throws IOException,
-			InterruptedException, CMakeGenerateException
-	{
-		generate(getPath("classes/ClassPublicFieldsTMP.vdmrt"));
-		compileAndTest();
-	}
-	
-	@Test
 	public void ClassFunCall() throws IOException,
 			InterruptedException, CMakeGenerateException
 	{
@@ -142,7 +134,7 @@ public class NativeClassesTests extends NativeTestBase
 			InterruptedException, CMakeGenerateException
 	{
 		generate(getPath("classes/ClassOpOpCall.vdmrt"));
-		compileAndTest();
+		compileAndTest(getTestCppFile("classes/ClassOpOpCall_Tests.cpp"));
 	}
 	
 	@Test
@@ -150,7 +142,7 @@ public class NativeClassesTests extends NativeTestBase
 			InterruptedException, CMakeGenerateException
 	{
 		generate(getPath("classes/ClassVarOpOpCall.vdmrt"));
-		compileAndTest();
+		compileAndTest(getTestCppFile("classes/ClassVarOpOpCall_Tests.cpp"));
 	}
 
 	@Test
@@ -158,6 +150,7 @@ public class NativeClassesTests extends NativeTestBase
 			InterruptedException, CMakeGenerateException
 	{
 		generate(getPath("classes/ClassVarOpOpCall2.vdmrt"));
+//		compileAndTest(getTestCppFile("classes/ClassVarOpOpCall2_Tests.cpp"));
 		compileAndTest();
 	}
 	
@@ -174,7 +167,7 @@ public class NativeClassesTests extends NativeTestBase
 			InterruptedException, CMakeGenerateException
 	{
 		generate(getPath("classes/ClassOpOverride.vdmrt"));
-		compileAndTest();
+		compileAndTest(getTestCppFile("classes/ClassOpOverride_Tests.cpp"));
 	}
 	
 	@Test
@@ -182,7 +175,7 @@ public class NativeClassesTests extends NativeTestBase
 			InterruptedException, CMakeGenerateException
 	{
 		generate(getPath("classes/ClassOpOverrideMiddle.vdmrt"));
-		compileAndTest();
+		compileAndTest(getTestCppFile("classes/ClassOpOverrideMiddle_Tests.cpp"));
 	}
 	
 	@Test
@@ -190,14 +183,24 @@ public class NativeClassesTests extends NativeTestBase
 			InterruptedException, CMakeGenerateException
 	{
 		generate(getPath("classes/ClassValueInheritance.vdmrt"));
+//		compileAndTest(getTestCppFile("classes/ClassValueInheritance_Tests.cpp"));
 		compileAndTest();
 	}
 	
+	//Some "scratch work" tests.
 	@Test
 	public void ClassScratchWork() throws IOException,
     InterruptedException, CMakeGenerateException
 	{
 		generate(getPath("classes/ClassScratchWork.vdmrt"));
+		compileAndTest();
+	}
+	
+	@Test
+	public void ClassPublicFieldsTMP() throws IOException,
+			InterruptedException, CMakeGenerateException
+	{
+		generate(getPath("classes/ClassPublicFieldsTMP.vdmrt"));
 		compileAndTest();
 	}
 }

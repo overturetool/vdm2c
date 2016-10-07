@@ -2,6 +2,7 @@ class ClassVarOpOpCall2
 
 instance variables
 
+--This creates an infinitely large object.
 v1 : ClassVarOpOpCall2 := new ClassVarOpOpCall2();
 v2 : ClassVarOpOpCall2 := new ClassVarOpOpCall2();
 v3 : ClassVarOpOpCall2 := new ClassVarOpOpCall2();

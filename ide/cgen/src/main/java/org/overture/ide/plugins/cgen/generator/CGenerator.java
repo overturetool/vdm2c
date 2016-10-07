@@ -1,9 +1,12 @@
 package org.overture.ide.plugins.cgen.generator;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
@@ -12,6 +15,7 @@ import org.overture.ast.analysis.AnalysisException;
 import org.overture.ast.lex.Dialect;
 import org.overture.codegen.utils.GeneralUtils;
 import org.overture.codegen.vdm2c.CGen;
+import org.overture.codegen.vdm2c.utils.NameMangler;
 import org.overture.ide.core.IVdmModel;
 import org.overture.ide.core.resources.IVdmProject;
 import org.overture.ide.plugins.cgen.CodeGenConsole;
@@ -28,7 +32,7 @@ public class CGenerator
 	}
 
 	public void generate(File cCodeOutputFolder) throws CoreException,
-			AnalysisException
+	AnalysisException
 	{
 		File eclipseProjectFolder = PluginVdm2CUtil.getEclipseProjectFolder(vdmProject);
 
@@ -53,12 +57,50 @@ public class CGenerator
 
 		CodeGenConsole.GetInstance().println("Code generation completed successfully.");
 		CodeGenConsole.GetInstance().println("Copying native library files."); // mvn install in vdm2c and
-																				// mvn package here makes
-																				// this work
+		// mvn package here makes
+		// this work
 		// Copy files from vdmclib.jar.
 		copyNativeLibFiles(new File(cCodeOutputFolder + File.separator
 				+ "nativelib"));
 
+		//Emit empty main.c file so that the generated project compiles.
+		emitMainFile(new File(cCodeOutputFolder + File.separator + "main.c"));
+		//Emit file containing the mapping between model names and mangled names as #defines.
+		emitMangledNamesHeaderFile(new File(cCodeOutputFolder + File.separator + "MangledNames.h"));
+
+
+	}
+
+
+	private void emitMangledNamesHeaderFile(File outfile)
+	{
+		BufferedWriter fileWriter;
+
+		try {
+			fileWriter = new BufferedWriter(new FileWriter(outfile, true));
+
+			for(Map.Entry<String, String> entry : NameMangler.mangledNames.entrySet())
+			{
+				fileWriter.append("#define " + entry.getKey() + " " + entry.getValue() + "\n");
+			}
+			
+			fileWriter.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	private void emitMainFile(File outfile)
+	{
+		try {
+			BufferedWriter fileWriter = new BufferedWriter(new FileWriter(outfile));
+			fileWriter.write("int main()\n{\n\treturn 0;\n}\n");
+			fileWriter.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	private void copyNativeLibFiles(File outfolder)
@@ -90,7 +132,7 @@ public class CGenerator
 					filejarentry = jarstream.getNextJarEntry();
 					continue;
 				}
-				
+
 				outputFile = new File(outfolder.toString()
 						+ File.separator
 						+ filejarentry.getName().replace("src/main" + File.separator, ""));

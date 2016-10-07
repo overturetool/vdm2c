@@ -9,7 +9,6 @@ import org.overture.codegen.ir.analysis.DepthFirstAnalysisAdaptor;
 import org.overture.codegen.ir.declarations.ADefaultClassDeclIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.ast.preview.Dot;
-import org.overture.interpreter.messages.Console;
 
 public class VisualizeIRAST extends DepthFirstAnalysisAdaptor
 {

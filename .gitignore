@@ -122,6 +122,7 @@ c/vdm/generated
 c/generator-test/generator-test
 c/**/report.xml
 c/vdmclib/vdmclib
+c/vdmclib/src/main/vdmclib
 
 # release
 repository
