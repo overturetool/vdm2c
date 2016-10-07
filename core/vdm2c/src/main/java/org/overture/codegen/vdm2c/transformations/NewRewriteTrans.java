@@ -27,7 +27,7 @@ public class NewRewriteTrans extends DepthFirstAnalysisCAdaptor
 	@Override
 	public void caseANewExpIR(ANewExpIR node) throws AnalysisException
 	{
-		node.getArgs().add(0, CTransUtil.createIdentifier("NULL", node.getSourceNode()));
+		node.getArgs().addFirst(assist.getInfo().getExpAssistant().consNullExp());
 
 		// FIXME this also need the call filtering on arguments
 		for (SClassDeclIR cDef : assist.getInfo().getClasses())
