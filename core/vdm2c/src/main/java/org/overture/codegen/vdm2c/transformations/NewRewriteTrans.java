@@ -12,6 +12,7 @@ import org.overture.codegen.ir.expressions.ANewExpIR;
 import org.overture.codegen.ir.expressions.ANullExpIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.tags.CTags;
+import org.overture.codegen.vdm2c.utils.CTransUtil;
 import org.overture.codegen.vdm2c.utils.NameMangler;
 
 public class NewRewriteTrans extends DepthFirstAnalysisCAdaptor
@@ -26,7 +27,7 @@ public class NewRewriteTrans extends DepthFirstAnalysisCAdaptor
 	@Override
 	public void caseANewExpIR(ANewExpIR node) throws AnalysisException
 	{
-		node.getArgs().add(new ANullExpIR());
+		node.getArgs().add(0, CTransUtil.createIdentifier("NULL", node.getSourceNode()));
 
 		// FIXME this also need the call filtering on arguments
 		for (SClassDeclIR cDef : assist.getInfo().getClasses())
