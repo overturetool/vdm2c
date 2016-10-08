@@ -29,6 +29,11 @@ public class SystemArchitectureAnalysis
 		distributionMap.put(cpuName, set);
 	}
 
+	public void initConnectionMap(String busName){
+		//HashSet<String> set = new HashSet<String>();
+		//connectionMap.put(busName, set);
+	}
+	
 	public void analyseSystem(List<IRStatus<PIR>> statuses)
 	{
 
