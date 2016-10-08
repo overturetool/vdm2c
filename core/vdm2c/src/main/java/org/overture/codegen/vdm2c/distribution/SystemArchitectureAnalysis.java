@@ -25,6 +25,8 @@ public class SystemArchitectureAnalysis
 	public HashMap<String, Set<SExpIR>> distributionMap = new HashMap<String, Set<SExpIR>>();
 	public Map<String, AEnumSetExpIR> connectionMap = new HashMap<String, AEnumSetExpIR>();
 
+	public HashSet<AFieldDeclIR> systemDeployedObjects = new HashSet<AFieldDeclIR>();
+	
 	public void initDistributionMap(String cpuName)
 	{
 		HashSet<SExpIR> set = new HashSet<SExpIR>();
@@ -56,17 +58,15 @@ public class SystemArchitectureAnalysis
 				if (f.getType() instanceof AClassTypeIR)
 				{
 					AClassTypeIR type = (AClassTypeIR) f.getType();
-
+					
 					if (type.getName().equals("CPU"))
 					{
 						// Initialise the distribution Map
 						initDistributionMap(f.getName());
 					}
-
-					if (type.getName().equals("BUS"))
+					else if (type.getName().equals("BUS"))
 					{
 						// Initialise the connection Map
-						initConnectionMap(f.getName());
 						if (f.getInitial() instanceof ANewExpIR)
 						{
 							ANewExpIR init = (ANewExpIR) f.getInitial();
@@ -79,6 +79,9 @@ public class SystemArchitectureAnalysis
 								connectionMap.put(f.getName(), cpu_args);
 							}
 						}
+					}
+					else{
+						systemDeployedObjects.add(f);
 					}
 				}
 			}
