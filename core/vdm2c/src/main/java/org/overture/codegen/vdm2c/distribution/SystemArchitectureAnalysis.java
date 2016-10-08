@@ -13,6 +13,8 @@ import org.overture.codegen.ir.SStmIR;
 import org.overture.codegen.ir.declarations.AFieldDeclIR;
 import org.overture.codegen.ir.declarations.AMethodDeclIR;
 import org.overture.codegen.ir.declarations.ASystemClassDeclIR;
+import org.overture.codegen.ir.expressions.AEnumSetExpIR;
+import org.overture.codegen.ir.expressions.ANewExpIR;
 import org.overture.codegen.ir.statements.ABlockStmIR;
 import org.overture.codegen.ir.statements.ACallObjectStmIR;
 import org.overture.codegen.ir.types.AClassTypeIR;
@@ -21,7 +23,7 @@ public class SystemArchitectureAnalysis
 {
 
 	public HashMap<String, Set<SExpIR>> distributionMap = new HashMap<String, Set<SExpIR>>();
-	public Map connectionMap = new HashMap<>();
+	public Map<String, AEnumSetExpIR> connectionMap = new HashMap<String, AEnumSetExpIR>();
 
 	public void initDistributionMap(String cpuName)
 	{
@@ -29,11 +31,6 @@ public class SystemArchitectureAnalysis
 		distributionMap.put(cpuName, set);
 	}
 
-	public void initConnectionMap(String busName){
-		//HashSet<String> set = new HashSet<String>();
-		//connectionMap.put(busName, set);
-	}
-	
 	public void analyseSystem(List<IRStatus<PIR>> statuses)
 	{
 
@@ -65,6 +62,24 @@ public class SystemArchitectureAnalysis
 						// Initialise the distribution Map
 						initDistributionMap(f.getName());
 					}
+
+					if (type.getName().equals("BUS"))
+					{
+						// Initialise the connection Map
+						initConnectionMap(f.getName());
+						if (f.getInitial() instanceof ANewExpIR)
+						{
+							ANewExpIR init = (ANewExpIR) f.getInitial();
+
+							SExpIR args = init.getArgs().get(2);
+
+							if (args instanceof AEnumSetExpIR)
+							{
+								AEnumSetExpIR cpu_args = (AEnumSetExpIR) args;
+								connectionMap.put(f.getName(), cpu_args);
+							}
+						}
+					}
 				}
 			}
 
@@ -73,11 +88,10 @@ public class SystemArchitectureAnalysis
 				// Check if constrcutor
 				if (m.getIsConstructor())
 				{
-
 					if (m.getBody() instanceof ABlockStmIR)
 					{
 						ABlockStmIR body = (ABlockStmIR) m.getBody();
-						
+
 						for (SStmIR s : body.getStatements())
 						{
 							if (s instanceof ACallObjectStmIR)
@@ -89,7 +103,6 @@ public class SystemArchitectureAnalysis
 								{
 									depSet.add(arg);
 									distributionMap.put(cpuName, depSet);
-									// System.out.println("Value is " + arg);
 								}
 							}
 						}
