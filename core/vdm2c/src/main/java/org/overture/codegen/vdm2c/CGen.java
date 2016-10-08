@@ -70,14 +70,20 @@ public class CGen extends CodeGenBase
 		generateClassHeaders(statuses);
 		applyTransformations(statuses);
 		
-
-
 		VTableGenerator.generate(IRStatus.extract(statuses, AClassHeaderDeclIR.class));
 
 		CFormat my_formatter = consFormatter(statuses);
 		writeHeaders(outputFolder, statuses, my_formatter);
 		writeClasses(outputFolder, statuses, my_formatter);
 
+		/** Create a new folder for each CPU **/
+		
+		for(String cpuName : sysAnalysis.distributionMap.keySet()){
+			File outputDir = new File(outputFolder.getName()+ "/" + cpuName);	
+			writeHeaders(outputDir , statuses, my_formatter);
+			writeClasses(outputDir , statuses, my_formatter);
+		}
+		
 		/**
 		 * FIXME: PVJ: This method does not return the generated data as it should. Instead the method writes the
 		 * generated code to the file system and returns an empty data structure. The date structure below is empty!
