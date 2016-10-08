@@ -27,6 +27,7 @@ import org.overture.codegen.ir.name.ATokenNameIR;
 import org.overture.codegen.ir.types.AClassTypeIR;
 import org.overture.codegen.utils.GeneratedData;
 import org.overture.codegen.utils.GeneratedModule;
+import org.overture.codegen.vdm2c.distribution.SystemArchitectureAnalysis;
 import org.overture.codegen.vdm2c.extast.declarations.AClassHeaderDeclIR;
 import org.overture.codegen.vdm2c.sourceformat.ISourceFileFormatter;
 import org.slf4j.Logger;
@@ -57,6 +58,12 @@ public class CGen extends CodeGenBase
 	protected GeneratedData genVdmToTargetLang(List<IRStatus<PIR>> statuses)
 			throws AnalysisException
 	{
+		
+		/** Distribution Analysis **/
+		SystemArchitectureAnalysis sysAnalysis = new SystemArchitectureAnalysis();
+		
+		sysAnalysis.analyseSystem(statuses);
+		
 		statuses = replaceSystemClassWithClass(statuses);
 		statuses = ignoreVDMUnitTests(statuses);
 
