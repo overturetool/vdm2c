@@ -24,8 +24,8 @@ public class SystemArchitectureAnalysis
 
 	public HashMap<String, Set<SExpIR>> distributionMap = new HashMap<String, Set<SExpIR>>();
 	public Map<String, AEnumSetExpIR> connectionMap = new HashMap<String, AEnumSetExpIR>();
-
 	public HashSet<AFieldDeclIR> systemDeployedObjects = new HashSet<AFieldDeclIR>();
+	public String systemName;
 	
 	public void initDistributionMap(String cpuName)
 	{
@@ -52,6 +52,8 @@ public class SystemArchitectureAnalysis
 
 			ASystemClassDeclIR systemDef = (ASystemClassDeclIR) status.getIrNode().clone();
 
+			systemName = systemDef.getName();
+			
 			for (AFieldDeclIR f : systemDef.getFields())
 			{
 
