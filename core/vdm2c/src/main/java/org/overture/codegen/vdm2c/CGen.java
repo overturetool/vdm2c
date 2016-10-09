@@ -27,6 +27,7 @@ import org.overture.codegen.ir.name.ATokenNameIR;
 import org.overture.codegen.ir.types.AClassTypeIR;
 import org.overture.codegen.utils.GeneratedData;
 import org.overture.codegen.utils.GeneratedModule;
+import org.overture.codegen.vdm2c.distribution.CDistTransSeries;
 import org.overture.codegen.vdm2c.distribution.SystemArchitectureAnalysis;
 import org.overture.codegen.vdm2c.extast.declarations.AClassHeaderDeclIR;
 import org.overture.codegen.vdm2c.sourceformat.ISourceFileFormatter;
@@ -76,8 +77,11 @@ public class CGen extends CodeGenBase
 		writeHeaders(outputFolder, statuses, my_formatter);
 		writeClasses(outputFolder, statuses, my_formatter);
 
-		/** Create a new folder for each CPU **/
+		/** Distribution Transformations **/
+		applyDistTransformations(statuses);
 		
+		
+		/** Create a new folder for each CPU **/
 		for(String cpuName : sysAnalysis.distributionMap.keySet()){
 			File outputDir = new File(outputFolder.getName()+ "/" + cpuName);	
 			writeHeaders(outputDir , statuses, my_formatter);
@@ -213,6 +217,33 @@ public class CGen extends CodeGenBase
 		}
 	}
 
+	private void applyDistTransformations(final List<IRStatus<PIR>> statuses)
+	{
+		List<DepthFirstAnalysisAdaptor> transformations = new CDistTransSeries(this).consAnalyses();
+
+		final StopWatch stopwatch = new StopWatch();
+		for (DepthFirstAnalysisAdaptor trans : transformations)
+		{
+			logger.debug("Applying transformation: {}", trans.getClass().getSimpleName());
+			stopwatch.reset();
+			stopwatch.start();
+			for (IRStatus<ADefaultClassDeclIR> status : IRStatus.extract(statuses, ADefaultClassDeclIR.class))
+			{
+				try
+				{
+					generator.applyPartialTransformation(status, trans);
+				} catch (org.overture.codegen.ir.analysis.AnalysisException e)
+				{
+					logger.error("Error when generating code for class "
+							+ status.getIrNodeName() + ": " + e.getMessage() + ". Skipping class..");
+					e.printStackTrace();
+				}
+			}
+			stopwatch.stop();
+			logger.debug("Completed transformation: {}. Time elapsed: {}", trans.getClass().getSimpleName(), stopwatch);
+		}
+	}
+	
 	private CFormat consFormatter(final List<IRStatus<PIR>> statuses)
 	{
 		CFormat my_formatter = new CFormat(generator.getIRInfo(), new IHeaderFinder()
