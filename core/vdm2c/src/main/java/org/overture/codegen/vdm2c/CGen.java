@@ -8,6 +8,7 @@ import java.io.StringWriter;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import org.apache.commons.lang.time.StopWatch;
@@ -37,6 +38,7 @@ import org.overture.codegen.utils.GeneratedData;
 import org.overture.codegen.utils.GeneratedModule;
 import org.overture.codegen.vdm2c.extast.declarations.AClassHeaderDeclIR;
 import org.overture.codegen.vdm2c.sourceformat.ISourceFileFormatter;
+import org.overture.codegen.vdm2c.transformations.AddFieldTrans;
 import org.overture.codegen.vdm2c.utils.CTransUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,10 +48,20 @@ public class CGen extends CodeGenBase
 	final static Logger logger = LoggerFactory.getLogger(CGen.class);
 	final File outputFolder;
 	private ISourceFileFormatter formatter;
+	
+	public static Map<String, Boolean> hasTimeMap = null;
 
 	public CGen(File outputFolder)
 	{
 		this.outputFolder = outputFolder;
+	}
+
+	@Override
+	protected void preProcessAst(List<org.overture.ast.node.INode> ast)
+			throws AnalysisException
+	{
+		super.preProcessAst(ast);
+		hasTimeMap = TimeFinder.computeTimeMap(getClasses(ast));
 	}
 	
 	public List<IRStatus<PIR>> makeRecsOuterClasses(List<IRStatus<PIR>> ast)
@@ -161,6 +173,17 @@ public class CGen extends CodeGenBase
 			getInfo().getClasses().add(r.getIrNode());
 		}
 
+		for(IRStatus<ADefaultClassDeclIR> r : IRStatus.extract(statuses, ADefaultClassDeclIR.class))
+		{
+			try
+			{
+				generator.applyPartialTransformation(r, new AddFieldTrans(transAssistant));
+			} catch (org.overture.codegen.ir.analysis.AnalysisException e)
+			{
+				e.printStackTrace();
+			}
+		}
+		
 		generateClassHeaders(statuses);
 		applyTransformations(statuses);
 

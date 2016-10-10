@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import org.apache.commons.lang.BooleanUtils;
 import org.overture.codegen.ir.IRStatus;
 import org.overture.codegen.ir.PIR;
 import org.overture.codegen.ir.STypeIR;
@@ -67,8 +68,17 @@ public class ClassHeaderGenerator
 					includes.add(new CGenClonableString(typeName));
 				}
 			}
+//			header.setIncludes(includes);
+				
+			
+			//Insert include of time.h here.
+			if(BooleanUtils.isTrue(CGen.hasTimeMap.get(classDef.getName().toString())))
+			{
+				includes.add(new CGenClonableString("time"));
+			}
+			
 			header.setIncludes(includes);
-
+			
 			header.setName(classDef.getName().toString());
 			
 			QuoteNamesCollector quoteCollector = new QuoteNamesCollector();
