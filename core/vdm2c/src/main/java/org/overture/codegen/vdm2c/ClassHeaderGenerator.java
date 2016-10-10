@@ -67,8 +67,17 @@ public class ClassHeaderGenerator
 					includes.add(new CGenClonableString(typeName));
 				}
 			}
+//			header.setIncludes(includes);
+				
+			
+			//Insert include of time.h here.
+			if(CGen.hasTimeMap.get(classDef.getName().toString()))
+			{
+				includes.add(new CGenClonableString("time"));
+			}
+			
 			header.setIncludes(includes);
-
+			
 			header.setName(classDef.getName().toString());
 			
 			QuoteNamesCollector quoteCollector = new QuoteNamesCollector();
