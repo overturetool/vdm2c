@@ -144,8 +144,6 @@ TVP vdmCollectionIndex(TVP collection,int index)
 
 TVP vdmClone(TVP x)
 {
-
-	//vdmClone struct
 	TVP tmp;
 
 	if(x == NULL)
@@ -199,10 +197,10 @@ TVP vdmClone(TVP x)
 	case VDM_RECORD:
 	{
 		ASSERT_CHECK_RECORD(x);
+
 		int i;
 		TVP tmpField;
 		int numFields;
-		int j;
 
 		numFields = (*((struct TypedValue**)((char*)(((struct ClassType*)x->value.ptr)->value) + \
 				sizeof(struct VTable*) + \
@@ -212,14 +210,8 @@ TVP vdmClone(TVP x)
 		for(i = 0; i < numFields; i++)
 		{
 			tmpField = vdmClone(*((struct TypedValue**)((char*)(((struct ClassType*)x->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(struct TypedValue*) + sizeof(struct TypedValue*) * i)));
-			vdmFree(tmpField);
+			memcpy(((struct TypedValue**)((char*)(((struct ClassType*)tmp->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(struct TypedValue*) + sizeof(struct TypedValue*) * i)), &tmpField, sizeof(struct TypedValue*));
 		}
-
-
-
-
-//		tmp->value.ptr = malloc(sizeof(x->value.ptr));
-//		memcpy(tmp->value.ptr, x->value.ptr, sizeof(x->value.ptr));
 
 		break;
 	}
@@ -294,11 +286,44 @@ bool equals(struct TypedValue* a, struct TypedValue* b)
 	//	}
 	case VDM_RECORD:
 	{
-		//		ASSERT_CHECK_RECORD(a);
-		//		UNWRAP_RECORD(record, a);
-		//		return record->equalFun(a, b);
+		ASSERT_CHECK_RECORD(a);
+		ASSERT_CHECK_RECORD(b);
 
-		//Need to do deep compare on classes.
+		int i;
+		TVP tmpField;
+		TVP res;
+		int numFields_a, numFields_b;
+
+		numFields_a = (*((struct TypedValue**)((char*)(((struct ClassType*)a->value.ptr)->value) + \
+				sizeof(struct VTable*) + \
+				sizeof(int) + \
+				sizeof(unsigned int))))->value.intVal;
+
+		numFields_b = (*((struct TypedValue**)((char*)(((struct ClassType*)b->value.ptr)->value) + \
+						sizeof(struct VTable*) + \
+						sizeof(int) + \
+						sizeof(unsigned int))))->value.intVal;
+
+		if(numFields_a != numFields_b)
+		{
+			return false;
+		}
+
+		for(i = 0; i < numFields_a; i++)
+		{
+			res = vdmEquals(*((struct TypedValue**)((char*)(((struct ClassType*)a->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(struct TypedValue*) + sizeof(struct TypedValue*) * i)), \
+							*((struct TypedValue**)((char*)(((struct ClassType*)b->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(struct TypedValue*) + sizeof(struct TypedValue*) * i)));
+			if(!res->value.boolVal)
+			{
+				vdmFree(res);
+				return false;
+			}
+//			tmpField = vdmClone(*((struct TypedValue**)((char*)(((struct ClassType*)x->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(struct TypedValue*) + sizeof(struct TypedValue*) * i)));
+//			memcpy(((struct TypedValue**)((char*)(((struct ClassType*)tmp->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(struct TypedValue*) + sizeof(struct TypedValue*) * i)), &tmpField, sizeof(struct TypedValue*));
+		}
+
+		vdmFree(res);
+		return true;
 
 	}
 	case VDM_CLASS:

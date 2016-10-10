@@ -31,9 +31,9 @@ static void RecordTest_free(struct RecordTest *this)
  *
  --------------------------------- */
  
-/* ExpressionRecord.vdmrt 20:12 */
+/* ExpressionRecord.vdmrt 21:12 */
  static  TVP _Z5test1EV(RecordTestCLASS this)	{
-/* ExpressionRecord.vdmrt 23:13 */
+/* ExpressionRecord.vdmrt 24:13 */
  TVP r1 = _Z5MyRecEIC(NULL, newInt(1), newChar('a'));
 /* ExpressionRecord.vdmrt 24:13 */
  TVP r2 = vdmClone(r1);
@@ -44,9 +44,9 @@ return ret_1;
 }
 
 
-/* ExpressionRecord.vdmrt 29:12 */
+/* ExpressionRecord.vdmrt 30:12 */
  static  TVP _Z5test2EV(RecordTestCLASS this)	{
-/* ExpressionRecord.vdmrt 32:13 */
+/* ExpressionRecord.vdmrt 33:13 */
  TVP r1 = _Z5MyRecEIC(NULL, newInt(1), newChar('a'));
 /* ExpressionRecord.vdmrt 33:13 */
  TVP r2 = vdmClone(r1);
@@ -56,6 +56,40 @@ r1 = _Z5MyRecEIC(NULL, newInt(2), newChar('b'));
  TVP ret_2 = vdmClone(vdmNot(vdmEquals(r2, r1)));
 /* ExpressionRecord.vdmrt 37:9 */
 return ret_2;
+}
+
+
+/* ExpressionRecord.vdmrt 41:12 */
+ static  TVP _Z5test3EV(RecordTestCLASS this)	{
+/* ExpressionRecord.vdmrt 44:13 */
+ TVP r1 = _Z5MyRecEIC(NULL, newInt(1), newChar('a'));
+/* ExpressionRecord.vdmrt 44:13 */
+ TVP r2 = vdmClone(r1);
+/* ExpressionRecord.vdmrt 45:13 */
+ TVP r3 = vdmClone(r1);
+/* ExpressionRecord.vdmrt 47:9 */
+r1 = _Z5MyRecEIC(NULL, newInt(2), newChar('b'));
+/* ExpressionRecord.vdmrt 49:19 */
+ TVP ret_3 = vdmClone(vdmEquals(r3, r2));
+/* ExpressionRecord.vdmrt 49:9 */
+return ret_3;
+}
+
+
+/* ExpressionRecord.vdmrt 53:12 */
+ static  TVP _Z5test4EV(RecordTestCLASS this)	{
+/* ExpressionRecord.vdmrt 56:13 */
+ TVP r1 = _Z6MyRec2EI1SI(NULL, newInt(1), newSetVar(2, newInt(2), newInt(3)));
+/* ExpressionRecord.vdmrt 57:13 */
+ TVP r2 = vdmClone(r1);
+/* ExpressionRecord.vdmrt 58:13 */
+ TVP r3 = vdmClone(r1);
+/* ExpressionRecord.vdmrt 60:9 */
+r1 = _Z6MyRec2EI1SI(NULL, newInt(2), newSetVar(2, newInt(4), newInt(5)));
+/* ExpressionRecord.vdmrt 62:19 */
+ TVP ret_4 = vdmClone(vdmEquals(r3, r2));
+/* ExpressionRecord.vdmrt 62:9 */
+return ret_4;
 }
 
 
@@ -100,6 +134,8 @@ return ;
 
 {0,0,((VirtualFunctionPointer) _Z5test1EV),},
 {0,0,((VirtualFunctionPointer) _Z5test2EV),},
+{0,0,((VirtualFunctionPointer) _Z5test3EV),},
+{0,0,((VirtualFunctionPointer) _Z5test4EV),},
 				
 }  ;
 
@@ -140,7 +176,7 @@ static TVP new()
 {
 	RecordTestCLASS ptr=RecordTest_Constructor(NULL);
 
-	return newTypeValue(VDM_RECORD, (TypedValueType)
+	return newTypeValue(VDM_CLASS, (TypedValueType)
 			{	.ptr=newClassValue(ptr->_RecordTest_id, &ptr->_RecordTest_refs, (freeVdmClassFunction)&RecordTest_free, ptr)});
 }
 

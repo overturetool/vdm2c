@@ -1,14 +1,64 @@
-class ExpressionRecord
+--class ExpressionRecord
+--types
+--	public rectype :: field1 : int field2 : int;
+--instance variables
+--	rec1 : rectype := mk_rectype(0, 0);
+--	
+--operations
+--public rec1explicitassign : () ==> rectype
+--rec1explicitassign() ==
+--	(
+--	rec1 := mk_rectype(1, 2);
+--	return rec1;
+--	)
+--end ExpressionRecord
+
+class RecordTest
 types
-	public rectype :: field1 : int field2 : int;
-instance variables
-	rec1 : rectype := mk_rectype(0, 0);
-	
+	public MyRec :: field1 : int field2 : char;
+	public MyRec2 :: field1 : int field2 : set of int;
 operations
-public rec1explicitassign : () ==> rectype
-rec1explicitassign() ==
+	public test1 : () ==> bool
+	test1() ==
 	(
-	rec1 := mk_rectype(1, 2);
-	return rec1;
-	)
-end ExpressionRecord
+		dcl r1 : MyRec := mk_MyRec(1, 'a');
+		dcl r2 : MyRec := r1;
+		
+		return r2 = r1;
+	);
+	
+	public test2 : () ==> bool
+	test2() ==
+	(
+		dcl r1 : MyRec := mk_MyRec(1, 'a');
+		dcl r2 : MyRec := r1;
+		
+		r1 := mk_MyRec(2, 'b');
+		
+		return r2 <> r1;
+	);
+	
+	public test3 : () ==> bool
+	test3() ==
+	(
+		dcl r1 : MyRec := mk_MyRec(1, 'a');
+		dcl r2 : MyRec := r1;
+		dcl r3 : MyRec := r1;
+		
+		r1 := mk_MyRec(2, 'b');
+		
+		return r3 = r2;
+	);
+	
+	public test4 : () ==> bool
+	test4() ==
+	(
+		dcl r1 : MyRec2 := mk_MyRec2(1, {2, 3});
+		dcl r2 : MyRec2 := r1;
+		dcl r3 : MyRec2 := r1;
+		
+		r1 := mk_MyRec2(2, {4, 5});
+		
+		return r3 = r2;
+	);
+end RecordTest
