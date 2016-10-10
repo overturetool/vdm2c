@@ -38,6 +38,7 @@ EXPECT_EQ (true, res->value.boolVal);\
 vdmFree(res);\
 vdmFree(a)
 
+
 TEST(Statements_Records, test1)
 {
 	CHECK(CLASS_RecordTest__Z5test1EV);
@@ -62,4 +63,3 @@ TEST(Statements_Records, test5)
 {
 	CHECK(CLASS_RecordTest__Z5test5EV);
 }
-

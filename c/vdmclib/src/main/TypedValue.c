@@ -210,6 +210,8 @@ TVP vdmClone(TVP x)
 		for(i = 0; i < numFields; i++)
 		{
 			tmpField = vdmClone(*((struct TypedValue**)((char*)(((struct ClassType*)x->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(struct TypedValue*) + sizeof(struct TypedValue*) * i)));
+
+			//Only copy the address stored in tmpField so that that memory is now addressed by the right field in the struct.
 			memcpy(((struct TypedValue**)((char*)(((struct ClassType*)tmp->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(struct TypedValue*) + sizeof(struct TypedValue*) * i)), &tmpField, sizeof(struct TypedValue*));
 		}
 
@@ -412,13 +414,14 @@ void recursiveFree(struct TypedValue* ptr)
 				sizeof(int) + \
 				sizeof(unsigned int))))->value.intVal;
 
+		//We include the numFields field here, since it is just a TVP.
 		for(i = 0; i <= numFields; i++)
 		{
 			vdmFree(*((struct TypedValue**)((char*)(((struct ClassType*)ptr->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(struct TypedValue*) * i)));
 		}
 
 		//Free the virtual function table.
-		free(((struct ClassType*)ptr->value.ptr)->value);
+//		free(((struct ClassType*)ptr->value.ptr)->value);
 
 		break;
 	case VDM_CLASS:
