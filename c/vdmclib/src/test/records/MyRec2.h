@@ -46,10 +46,9 @@ struct MyRec2
 /* Definition of Class: 'MyRec2' */
 	VDM_CLASS_BASE_DEFINITIONS(MyRec2);
 	 
+	VDM_CLASS_FIELD_DEFINITION(MyRec2,numFields);
 	VDM_CLASS_FIELD_DEFINITION(MyRec2,field1);
 	VDM_CLASS_FIELD_DEFINITION(MyRec2,field2);
-	VDM_CLASS_FIELD_DEFINITION(MyRec2,numFields);
-
 };
 
 

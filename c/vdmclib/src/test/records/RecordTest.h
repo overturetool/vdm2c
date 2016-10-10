@@ -45,6 +45,7 @@
 #define CLASS_RecordTest__Z5test2EV 1
 #define CLASS_RecordTest__Z5test3EV 2
 #define CLASS_RecordTest__Z5test4EV 3
+#define CLASS_RecordTest__Z5test5EV 4
 
 struct RecordTest
 {

@@ -101,6 +101,7 @@ MyRec2CLASS MyRec2_Constructor(MyRec2CLASS this_ptr)
 
 				this_ptr->m_MyRec2_field1= NULL ;
 						this_ptr->m_MyRec2_field2= NULL ;
+						this_ptr->m_MyRec2_numFields= NULL ;
 			}
 
 	return this_ptr;
@@ -150,6 +151,8 @@ vdmFree(field_tmp_3);
 SET_FIELD_PTR(MyRec2, MyRec2, this, field2, field_tmp_4);
 
 vdmFree(field_tmp_4);
+
+SET_FIELD_PTR(MyRec2, MyRec2, this, numFields, newInt(2));
 
 return __buf;
 }

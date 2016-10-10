@@ -93,6 +93,17 @@ return ret_4;
 }
 
 
+/* ExpressionRecord.vdmrt 65:12 */
+ static  TVP _Z5test5EV(RecordTestCLASS this)	{
+/* ExpressionRecord.vdmrt 68:13 */
+ TVP r1 = _Z6MyRec2EI1SI(NULL, newInt(1), newSetVar(2, newInt(2), newInt(3)));
+/* ExpressionRecord.vdmrt 69:13 */
+ TVP r2 = _Z6MyRec2EI1SI(NULL, newInt(2), newSetVar(2, newInt(4), newInt(5)));
+/* ExpressionRecord.vdmrt 71:19 */
+ TVP ret_5 = vdmClone(vdmNot(vdmEquals(r1, r2)));
+/* ExpressionRecord.vdmrt 71:9 */
+return ret_5;
+}
 
  void RecordTest_const_init()	{
 
@@ -136,7 +147,7 @@ return ;
 {0,0,((VirtualFunctionPointer) _Z5test2EV),},
 {0,0,((VirtualFunctionPointer) _Z5test3EV),},
 {0,0,((VirtualFunctionPointer) _Z5test4EV),},
-				
+{0,0,((VirtualFunctionPointer) _Z5test5EV),},
 }  ;
 
 // Overload VTables

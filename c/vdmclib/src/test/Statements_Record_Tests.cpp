@@ -58,3 +58,8 @@ TEST(Statements_Records, test4)
 	CHECK(CLASS_RecordTest__Z5test4EV);
 }
 
+TEST(Statements_Records, test5)
+{
+	CHECK(CLASS_RecordTest__Z5test5EV);
+}
+
