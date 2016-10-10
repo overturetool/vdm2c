@@ -10,8 +10,8 @@ public class NameConverter
 {
 	final static String valueNameTemplate = "g_%s_%s";
 
-	final static Map<AFieldDeclIR, String> fieldNames = new HashMap<AFieldDeclIR, String>();
-	final static Map<AFieldDeclIR, String> originalNames = new HashMap<AFieldDeclIR, String>();
+	private final static Map<AFieldDeclIR, String> fieldNames = new HashMap<AFieldDeclIR, String>();
+	private  final static Map<AFieldDeclIR, String> originalNames = new HashMap<AFieldDeclIR, String>();
 
 	public static String getCName(AFieldDeclIR field)
 	{
