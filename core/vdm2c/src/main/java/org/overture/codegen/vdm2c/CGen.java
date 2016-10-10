@@ -37,6 +37,7 @@ import org.overture.codegen.utils.GeneratedData;
 import org.overture.codegen.utils.GeneratedModule;
 import org.overture.codegen.vdm2c.extast.declarations.AClassHeaderDeclIR;
 import org.overture.codegen.vdm2c.sourceformat.ISourceFileFormatter;
+import org.overture.codegen.vdm2c.transformations.AddFieldTrans;
 import org.overture.codegen.vdm2c.utils.CTransUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -161,6 +162,17 @@ public class CGen extends CodeGenBase
 			getInfo().getClasses().add(r.getIrNode());
 		}
 
+		for(IRStatus<ADefaultClassDeclIR> r : IRStatus.extract(statuses, ADefaultClassDeclIR.class))
+		{
+			try
+			{
+				generator.applyPartialTransformation(r, new AddFieldTrans(transAssistant));
+			} catch (org.overture.codegen.ir.analysis.AnalysisException e)
+			{
+				e.printStackTrace();
+			}
+		}
+		
 		generateClassHeaders(statuses);
 		applyTransformations(statuses);
 
