@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import org.apache.commons.lang.BooleanUtils;
 import org.overture.codegen.ir.IRStatus;
 import org.overture.codegen.ir.PIR;
 import org.overture.codegen.ir.STypeIR;
@@ -71,7 +72,7 @@ public class ClassHeaderGenerator
 				
 			
 			//Insert include of time.h here.
-			if(CGen.hasTimeMap.get(classDef.getName().toString()))
+			if(BooleanUtils.isTrue(CGen.hasTimeMap.get(classDef.getName().toString())))
 			{
 				includes.add(new CGenClonableString("time"));
 			}
