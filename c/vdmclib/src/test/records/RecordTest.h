@@ -8,6 +8,7 @@
 
 //include types used in the class
 #include "MyRec.h"
+#include "MyRec2.h"
 #include "RecordTest.h"
 
 
@@ -42,6 +43,8 @@
 // The vtable ids
 #define CLASS_RecordTest__Z5test1EV 0
 #define CLASS_RecordTest__Z5test2EV 1
+#define CLASS_RecordTest__Z5test3EV 2
+#define CLASS_RecordTest__Z5test4EV 3
 
 struct RecordTest
 {
@@ -49,7 +52,8 @@ struct RecordTest
 /* Definition of Class: 'RecordTest' */
 	VDM_CLASS_BASE_DEFINITIONS(RecordTest);
 	 
-	
+	VDM_CLASS_FIELD_DEFINITION(RecordTest,numFields);
+
 };
 
 
