@@ -40,11 +40,8 @@ static  TVP _Z5test1EV(RecordTestCLASS this)	{
 	/* ExpressionRecord.vdmrt 26:19 */
 	TVP ret_1 = vdmClone(vdmEquals(r2, r1));
 	/* ExpressionRecord.vdmrt 26:9 */
-//	vdmFree(r1);
-	//SOMETHING IS WRONG WITH THE CLONE.
-	//THERE IS SOME PARALLELLIZATION INTERFERENCE WITH OUTPUT FROM GOGOLE TEST.
-	//THE PROBLEM SEEMS TO BE DOUBLE FREE:  FREEING R1 FIRST LEADS TO THIS.
-//	vdmFree(r2);
+	vdmFree(r1);
+	vdmFree(r2);
 	return ret_1;
 }
 
