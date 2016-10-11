@@ -202,24 +202,31 @@ TVP vdmClone(TVP x)
 		TVP tmpField = NULL;
 		int numFields;
 
+		//Create a shell for a new class and populate it with the information
+		//that can be used from the one being cloned, but all of it should be
+		//irrelevant for records.
 		(tmp->value).ptr = newClassValue(((struct ClassType*)(x->value.ptr))->classId,
 				((struct ClassType*)(x->value.ptr))->refs,
 				NULL,
 				NULL);
 
+		//Generic way of accessing the number-of-fields field.  The name of the record type is
+		//hard-coded into the corresponding struct name.
 		numFields = (*((struct TypedValue**)((char*)(((struct ClassType*)x->value.ptr)->value) + \
 				sizeof(struct VTable*) + \
 				sizeof(int) + \
 				sizeof(unsigned int))))->value.intVal;
 
+		//Allocate memory to be populated with the pointers pointing to the cloned fields.
 		((struct ClassType*)((tmp->value).ptr))->value = malloc(sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(struct TypedValue*) + sizeof(struct TypedValue*) * numFields);
 
 		for(i = 0; i <= numFields; i++)
 		{
-			//Start cloning the fields one by one, including the number-of-fields field.
+			//Start cloning the fields one by one, including the number-of-fields field,
+			//since it is just a TVP.
 			tmpField = vdmClone(*((struct TypedValue**)((char*)(((struct ClassType*)x->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(struct TypedValue*) * i)));
 
-			//Only copy the address stored in tmpField so that that memory is now addressed by the right field in the struct.
+			//Only copy the address stored in tmpField so that that memory is now addressed by the current field in the struct.
 			memcpy(((struct TypedValue**)((char*)(((struct ClassType*)tmp->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(struct TypedValue*) * i)), &tmpField, sizeof(struct TypedValue*));
 		}
 
