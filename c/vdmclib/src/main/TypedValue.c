@@ -429,7 +429,7 @@ void recursiveFree(struct TypedValue* ptr)
 		}
 
 		//Free the virtual function table.
-//		free(((struct ClassType*)ptr->value.ptr)->value);
+		free(((struct ClassType*)ptr->value.ptr)->value);
 
 		break;
 	case VDM_CLASS:
