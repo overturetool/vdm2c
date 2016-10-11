@@ -19,6 +19,7 @@ import org.overture.codegen.ir.statements.AReturnStmIR;
 import org.overture.codegen.ir.types.AExternalTypeIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.extast.statements.ALocalVariableDeclarationStmIR;
+import org.overture.codegen.vdm2c.utils.CTransUtil;
 import org.overture.codegen.vdm2c.utils.IApplyAssistant;
 
 public class FreeLocalBlockDeclsTrans extends DepthFirstAnalysisAdaptor implements IApplyAssistant
@@ -105,6 +106,22 @@ public class FreeLocalBlockDeclsTrans extends DepthFirstAnalysisAdaptor implemen
 					applyexpr = newApply("vdmFree", newIdentifier(((AIdentifierPatternIR) decleration.getPattern()).getName(), null));
 					((ABlockStmIR) node).getStatements().add(node.getStatements().size() - addoffset, toStm(applyexpr));
 				}
+			}
+		}
+		
+		//Phase to change assignments to vdmClone.  This is the brutal
+		//way to deal with the problem of pointer aliasing.
+		for(SStmIR stm : ((ABlockStmIR) node).getStatements())
+		{
+			if (stm instanceof ALocalVariableDeclarationStmIR)
+			{
+				if(!(((ALocalVariableDeclarationStmIR) stm).getDecleration().getType() instanceof AExternalTypeIR))
+				{
+					CTransUtil.rewriteToApply(this,
+							((ALocalVariableDeclarationStmIR) stm).getDecleration().getExp(),
+							"vdmClone",
+							((ALocalVariableDeclarationStmIR) stm).getDecleration().getExp());
+				}	
 			}
 		}
 	}
