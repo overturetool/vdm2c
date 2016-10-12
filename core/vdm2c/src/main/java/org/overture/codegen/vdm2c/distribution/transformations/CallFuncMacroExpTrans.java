@@ -40,9 +40,9 @@ public class CallFuncMacroExpTrans extends DepthFirstAnalysisCAdaptor
 				
 				// Add number of function arguments to second last position
 				node.getArgs().add(node.getArgs().size() - 1, a);
-				
-				AIdentifierVarExpIR id_class = (AIdentifierVarExpIR) node.getArgs().get(0);
-				id_exp.setName("DIST_CALL" + id_class.getName());
+
+				// Transform name to distribution macro
+				id_exp.setName("DIST_CALL");
 			}
 		}		
 	}
