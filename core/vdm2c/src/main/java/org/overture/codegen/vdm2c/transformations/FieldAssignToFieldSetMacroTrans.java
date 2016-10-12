@@ -3,18 +3,14 @@ package org.overture.codegen.vdm2c.transformations;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.SET_FIELD_PTR;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.createIdentifier;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.exp2Stm;
-import static org.overture.codegen.vdm2c.utils.CTransUtil.newApply;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newAssignment;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newDeclarationAssignment;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newIdentifier;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newMacroApply;
 
-import org.overture.ast.definitions.AClassClassDefinition;
 import org.overture.ast.definitions.AInheritedDefinition;
 import org.overture.ast.definitions.AInstanceVariableDefinition;
-import org.overture.ast.definitions.ASystemClassDefinition;
 import org.overture.ast.definitions.PDefinition;
-import org.overture.ast.definitions.SClassDefinitionBase;
 import org.overture.ast.expressions.AVariableExp;
 import org.overture.ast.statements.AIdentifierStateDesignator;
 import org.overture.cgc.extast.analysis.AnswerCAdaptor;
@@ -101,21 +97,14 @@ DepthFirstAnalysisCAdaptor
 				assist.replaceNodeWith(node.getTarget(), id);
 				return;
 			}
-			SClassDefinitionBase classDef;
-			String thisClassName;
+			
+			SClassDeclIR classDef = node.getAncestor(SClassDeclIR.class);
+			String thisClassName = null;
 
-			if(target.getSourceNode().getVdmNode().getAncestor(AClassClassDefinition.class) != null)
+			if(classDef != null)
 			{
-				classDef = target.getSourceNode().getVdmNode().getAncestor(AClassClassDefinition.class);
-				thisClassName = classDef.getName().getName();// the containing field owner
+				thisClassName = classDef.getName();// the containing field owner
 			}
-			else
-			{
-				classDef = target.getSourceNode().getVdmNode().getAncestor(ASystemClassDefinition.class);
-				thisClassName = classDef.getName().getName();// the containing field owner
-			}
-
-
 
 			String fieldClassName = fieldUtil.lookupFieldClass(target.getAncestor(ADefaultClassDeclIR.class), target.getName());
 
@@ -123,7 +112,7 @@ DepthFirstAnalysisCAdaptor
 
 			// process right side of assignment
 			node.getExp().apply(THIS);
-			AVarDeclIR retVar = newDeclarationAssignment(name, node.getExp().getType().clone(), newApply("vdmClone", node.getExp().clone()), node.getExp().getSourceNode());
+			AVarDeclIR retVar = newDeclarationAssignment(name, node.getExp().getType().clone(), node.getExp().clone(), node.getExp().getSourceNode());
 
 			ABlockStmIR replBlock = new ABlockStmIR();
 			replBlock.setScoped(true);
@@ -190,7 +179,7 @@ DepthFirstAnalysisCAdaptor
 							NameConverter.getCName(fieldUtil.lookupField(cDef, node.getTarget().toString())), null),
 							newIdentifier(name, null));
 
-			AVarDeclIR retVar = newDeclarationAssignment(name, node.getExp().getType().clone(), newApply("vdmClone", node.getExp().clone()), node.getExp().getSourceNode());
+			AVarDeclIR retVar = newDeclarationAssignment(name, node.getExp().getType().clone(), node.getExp().clone(), node.getExp().getSourceNode());
 
 			ABlockStmIR replBlock = new ABlockStmIR();
 			replBlock.setScoped(true);
@@ -243,7 +232,7 @@ DepthFirstAnalysisCAdaptor
 							NameConverter.getCName(fieldUtil.lookupField(cDef, fieldName)), null),
 							newIdentifier(name, null));
 
-			AVarDeclIR retVar = newDeclarationAssignment(name, node.getExp().getType().clone(), newApply("vdmClone", node.getExp().clone()), node.getExp().getSourceNode());
+			AVarDeclIR retVar = newDeclarationAssignment(name, node.getExp().getType().clone(), node.getExp().clone(), node.getExp().getSourceNode());
 
 			ABlockStmIR replBlock = new ABlockStmIR();
 			replBlock.setScoped(true);

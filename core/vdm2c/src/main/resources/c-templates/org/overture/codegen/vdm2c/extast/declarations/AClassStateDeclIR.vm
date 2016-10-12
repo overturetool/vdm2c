@@ -6,3 +6,4 @@
 	#foreach( $field in $node.getFields() )
 VDM_CLASS_FIELD_DEFINITION($cname,$field.getName());
 	#end
+VDM_CLASS_FIELD_DEFINITION($cname,numFields);

@@ -40,6 +40,8 @@
 #endif
 
 #include <time.h>
+#include <string.h>
+#include <limits.h>
 
 #include "TypedValue.h"
 

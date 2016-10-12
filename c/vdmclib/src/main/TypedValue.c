@@ -142,11 +142,9 @@ TVP vdmCollectionIndex(TVP collection,int index)
 
 }
 
-struct TypedValue* vdmClone(struct TypedValue* x)
+TVP vdmClone(TVP x)
 {
-
-	//vdmClone struct
-	struct TypedValue* tmp;
+	TVP tmp;
 
 	if(x == NULL)
 	{
@@ -198,10 +196,24 @@ struct TypedValue* vdmClone(struct TypedValue* x)
 	//		break;
 	case VDM_RECORD:
 	{
-		ASSERT_CHECK_RECORD(tmp);
+		ASSERT_CHECK_RECORD(x);
 
-		UNWRAP_RECORD(record, tmp);
-		return record->vdmCloneFun(tmp);
+		int i;
+		TVP tmpField;
+		int numFields;
+
+		numFields = (*((struct TypedValue**)((char*)(((struct ClassType*)x->value.ptr)->value) + \
+				sizeof(struct VTable*) + \
+				sizeof(int) + \
+				sizeof(unsigned int))))->value.intVal;
+
+		for(i = 0; i < numFields; i++)
+		{
+			tmpField = vdmClone(*((struct TypedValue**)((char*)(((struct ClassType*)x->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(struct TypedValue*) + sizeof(struct TypedValue*) * i)));
+			memcpy(((struct TypedValue**)((char*)(((struct ClassType*)tmp->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(struct TypedValue*) + sizeof(struct TypedValue*) * i)), &tmpField, sizeof(struct TypedValue*));
+		}
+
+		break;
 	}
 	case VDM_CLASS:
 	{
@@ -210,6 +222,7 @@ struct TypedValue* vdmClone(struct TypedValue* x)
 
 		//improve using memcpy
 		tmp->value.ptr = newClassValue(classTptr->classId, classTptr->refs, classTptr->freeClass, classTptr->value);
+		break;
 	}
 	}
 
@@ -274,9 +287,44 @@ bool equals(struct TypedValue* a, struct TypedValue* b)
 	case VDM_RECORD:
 	{
 		ASSERT_CHECK_RECORD(a);
+		ASSERT_CHECK_RECORD(b);
 
-		UNWRAP_RECORD(record, a);
-		return record->equalFun(a, b);
+		int i;
+		TVP tmpField;
+		TVP res;
+		int numFields_a, numFields_b;
+
+		numFields_a = (*((struct TypedValue**)((char*)(((struct ClassType*)a->value.ptr)->value) + \
+				sizeof(struct VTable*) + \
+				sizeof(int) + \
+				sizeof(unsigned int))))->value.intVal;
+
+		numFields_b = (*((struct TypedValue**)((char*)(((struct ClassType*)b->value.ptr)->value) + \
+						sizeof(struct VTable*) + \
+						sizeof(int) + \
+						sizeof(unsigned int))))->value.intVal;
+
+		if(numFields_a != numFields_b)
+		{
+			return false;
+		}
+
+		for(i = 0; i < numFields_a; i++)
+		{
+			res = vdmEquals(*((struct TypedValue**)((char*)(((struct ClassType*)a->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(struct TypedValue*) + sizeof(struct TypedValue*) * i)), \
+							*((struct TypedValue**)((char*)(((struct ClassType*)b->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(struct TypedValue*) + sizeof(struct TypedValue*) * i)));
+			if(!res->value.boolVal)
+			{
+				vdmFree(res);
+				return false;
+			}
+//			tmpField = vdmClone(*((struct TypedValue**)((char*)(((struct ClassType*)x->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(struct TypedValue*) + sizeof(struct TypedValue*) * i)));
+//			memcpy(((struct TypedValue**)((char*)(((struct ClassType*)tmp->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(struct TypedValue*) + sizeof(struct TypedValue*) * i)), &tmpField, sizeof(struct TypedValue*));
+		}
+
+		vdmFree(res);
+		return true;
+
 	}
 	case VDM_CLASS:
 	{
@@ -354,18 +402,19 @@ void recursiveFree(struct TypedValue* ptr)
 	//		//TODO
 	//		break;
 	case VDM_RECORD:
-	{
-		//handle smart pointer
-		struct RecordType* recordTptr = (struct RecordType*) ptr->value.ptr;
-		recordTptr->freeRecord(recordTptr->value);
-		recordTptr->value = NULL;
-		recordTptr->freeRecord = NULL;
-
-		//free record type
-		free(recordTptr);
-		ptr->value.ptr = NULL;
-		break;
-	}
+		//Records are treated exactly as classes, so fall through.
+		//	{
+		//		//handle smart pointer
+		//		struct RecordType* recordTptr = (struct RecordType*) ptr->value.ptr;
+		//		recordTptr->freeRecord(recordTptr->value);
+		//		recordTptr->value = NULL;
+		//		recordTptr->freeRecord = NULL;
+		//
+		//		//free record type
+		//		free(recordTptr);
+		//		ptr->value.ptr = NULL;
+		//		break;
+		//	}
 	case VDM_CLASS:
 	{
 		//handle smart pointer

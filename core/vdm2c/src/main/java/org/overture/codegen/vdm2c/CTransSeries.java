@@ -58,6 +58,7 @@ import org.overture.codegen.vdm2c.transformations.MethodReturnInsertTrans;
 import org.overture.codegen.vdm2c.transformations.MethodVisibilityTrans;
 import org.overture.codegen.vdm2c.transformations.NewRewriteTrans;
 import org.overture.codegen.vdm2c.transformations.NumericTrans;
+import org.overture.codegen.vdm2c.transformations.RecTypeToClassTypeTrans;
 import org.overture.codegen.vdm2c.transformations.RemoveCWrappersTrans;
 import org.overture.codegen.vdm2c.transformations.RemoveRTConstructs;
 import org.overture.codegen.vdm2c.transformations.RenameFieldsDeclsTrans;
@@ -106,6 +107,7 @@ public class CTransSeries
 		 * - Do weeding here
 		 */
 		// Construct the transformations
+		transformations.add(new RecTypeToClassTypeTrans(transAssistant));
 		transformations.add(new FuncTrans(transAssistant));
 		transformations.add(new FieldInitializerExtractorTrans(transAssistant));
 		transformations.add(new RemoveRTConstructs(transAssistant));

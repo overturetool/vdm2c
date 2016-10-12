@@ -8,7 +8,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.overture.ast.definitions.SClassDefinition;
 import org.overture.ast.intf.lex.ILexLocation;
+import org.overture.codegen.assistant.AssistantBase;
 import org.overture.codegen.ir.INode;
 import org.overture.codegen.ir.IRInfo;
 import org.overture.codegen.ir.PIR;
@@ -220,5 +222,14 @@ public class CFormat
 	{
 		return node instanceof ABlockStmIR;
 	}
+	
+	public String getVdmType(PIR node)
+	{
+		if(AssistantBase.getVdmNode(node) instanceof SClassDefinition)
+		{
+			return "VDM_CLASS";
+		}
 
+		return "VDM_RECORD";
+	}
 }
