@@ -50,7 +50,7 @@ public class CGen extends CodeGenBase
 	final static Logger logger = LoggerFactory.getLogger(CGen.class);
 	final File outputFolder;
 	private ISourceFileFormatter formatter;
-	
+
 	public static Map<String, Boolean> hasTimeMap = null;
 
 	public CGen(File outputFolder)
@@ -65,7 +65,7 @@ public class CGen extends CodeGenBase
 		super.preProcessAst(ast);
 		hasTimeMap = TimeFinder.computeTimeMap(getClasses(ast));
 	}
-	
+
 	public List<IRStatus<PIR>> makeRecsOuterClasses(List<IRStatus<PIR>> ast)
 	{
 		List<IRStatus<PIR>> extraClasses = new LinkedList<IRStatus<PIR>>();
@@ -110,48 +110,46 @@ public class CGen extends CodeGenBase
 					AFieldDeclIR newField = f.clone();
 					fields.add(newField);
 				}
-				
+
 				recClass.setFields(fields);
-				
+
 				AClassTypeIR retType = new AClassTypeIR();
 				retType.setName(recClass.getName());
-				
+
 				AMethodTypeIR ctorMethodType = new AMethodTypeIR();
 				ctorMethodType.setResult(retType);
-				
+
 				ABlockStmIR ctorBody = new ABlockStmIR();
-				
+
 				AMethodDeclIR ctor = new AMethodDeclIR();
 				ctor.setIsConstructor(true);
 				ctor.setAbstract(false);
 				ctor.setAccess(IRConstants.PUBLIC);
 				ctor.setName(recClass.getName());
 				ctor.setBody(ctorBody);
-				
-				
+
 				ctor.setMethodType(ctorMethodType);
-				
-				for(AFieldDeclIR f : recClass.getFields())
+
+				for (AFieldDeclIR f : recClass.getFields())
 				{
 					AFormalParamLocalParamIR param = new AFormalParamLocalParamIR();
 					String name = "param_" + f.getName();
 					param.setPattern(CTransUtil.newIdentifierPattern(name));
 					param.setType(f.getType().clone());
-					
+
 					ctor.getFormalParams().add(param);
 					ctorMethodType.getParams().add(f.getType().clone());
-					
+
 					AIdentifierVarExpIR target = CTransUtil.newIdentifier(f.getName(), f.getSourceNode());
 					target.setType(f.getType().clone());
 					target.setIsLocal(false);
-					
+
 					AIdentifierVarExpIR assignVal = CTransUtil.newIdentifier(name, f.getSourceNode());
 					assignVal.setType(f.getType().clone());
-					
-					ctorBody.getStatements().add(CTransUtil.newAssignment(
-							target, assignVal));	
+
+					ctorBody.getStatements().add(CTransUtil.newAssignment(target, assignVal));
 				}
-				
+
 				recClass.getMethods().add(ctor);
 
 				extraClasses.add(new IRStatus<PIR>(recClass.getSourceNode().getVdmNode(), recClass.getName(), recClass, new HashSet<VdmNodeInfo>()));
@@ -160,28 +158,46 @@ public class CGen extends CodeGenBase
 
 		return extraClasses;
 	}
-	
+
 	@Override
 	protected GeneratedData genVdmToTargetLang(List<IRStatus<PIR>> statuses)
 			throws AnalysisException
 	{
-		
+
 		/** Distribution Analysis **/
 		SystemArchitectureAnalysis sysAnalysis = new SystemArchitectureAnalysis();
-		
+
 		sysAnalysis.analyseSystem(statuses);
-		
+
 		statuses = replaceSystemClassWithClass(statuses);
 		statuses = ignoreVDMUnitTests(statuses);
 		List<IRStatus<PIR>> recClasses = makeRecsOuterClasses(statuses);
 		statuses.addAll(recClasses);
-		
-		for(IRStatus<ADefaultClassDeclIR> r : IRStatus.extract(recClasses, ADefaultClassDeclIR.class))
+
+		// Create a new system with another name
+
+		for (IRStatus<ADefaultClassDeclIR> r : IRStatus.extract(statuses, ADefaultClassDeclIR.class))
+		{
+			if (r.getIrNode().getName().equals(SystemArchitectureAnalysis.systemName))
+			{
+				for (String sys : SystemArchitectureAnalysis.distributionMap.keySet())
+				{
+					ADefaultClassDeclIR dep = r.getIrNode().clone();
+					//dep.setName(sys);
+					dep.setTag(sys); // tag it with cpu name
+					IRStatus<PIR> stat = new IRStatus<PIR>(null, sys, dep, new HashSet<VdmNodeInfo>(), new HashSet<IrNodeInfo>());
+					statuses.add(stat);
+				}
+			}
+			;
+		}
+
+		for (IRStatus<ADefaultClassDeclIR> r : IRStatus.extract(recClasses, ADefaultClassDeclIR.class))
 		{
 			getInfo().getClasses().add(r.getIrNode());
 		}
 
-		for(IRStatus<ADefaultClassDeclIR> r : IRStatus.extract(statuses, ADefaultClassDeclIR.class))
+		for (IRStatus<ADefaultClassDeclIR> r : IRStatus.extract(statuses, ADefaultClassDeclIR.class))
 		{
 			try
 			{
@@ -191,7 +207,7 @@ public class CGen extends CodeGenBase
 				e.printStackTrace();
 			}
 		}
-		
+
 		generateClassHeaders(statuses);
 		applyTransformations(statuses);
 
@@ -203,15 +219,58 @@ public class CGen extends CodeGenBase
 
 		/** Distribution Transformations **/
 		applyDistTransformations(statuses);
-		
-		
+
 		/** Create a new folder for each CPU **/
-		for(String cpuName : sysAnalysis.distributionMap.keySet()){
-			File outputDir = new File(outputFolder.getName()+ "/" + cpuName);	
-			writeHeaders(outputDir , statuses, my_formatter);
-			writeClasses(outputDir , statuses, my_formatter);
+		for (String cpuName : sysAnalysis.distributionMap.keySet())
+		{
+			File outputDir = new File(outputFolder.getName() + "/" + cpuName);
+
+			// Print the unique system class representation
+
+			//List<IRStatus> printStatuses = new LinkedList<IRStatus>(); //= statuses;
+
+			List<IRStatus<PIR>> printStatuses = new LinkedList<IRStatus<PIR>>();
+
+			// Print headers
+			for(IRStatus<AClassHeaderDeclIR> hd: IRStatus.extract(statuses, AClassHeaderDeclIR.class)){
+				if (!hd.getIrNode().getName().equals(SystemArchitectureAnalysis.systemName))
+				{
+					AClassHeaderDeclIR dep = hd.getIrNode();
+					IRStatus<PIR> stat = new IRStatus<PIR>(null, dep.getName() + "_header", dep, new HashSet<VdmNodeInfo>(), new HashSet<IrNodeInfo>());
+					printStatuses.add(stat);
+				}
+				if(!( hd.getIrNode().getTag()==null)){
+					if(hd.getIrNode().getTag().toString().equals(cpuName)){
+						AClassHeaderDeclIR dep = hd.getIrNode();
+						IRStatus<PIR> stat = new IRStatus<PIR>(null, dep.getName() + "_header", dep, new HashSet<VdmNodeInfo>(), new HashSet<IrNodeInfo>());
+						printStatuses.add(stat);
+					}
+				}
+			}
+
+			// Print classes
+			for (IRStatus<ADefaultClassDeclIR> r : IRStatus.extract(statuses, ADefaultClassDeclIR.class))
+			{
+				if (!r.getIrNode().getName().equals(SystemArchitectureAnalysis.systemName))
+					//|| r.getIrNode().getTag().toString().equals(cpuName))
+				{
+					ADefaultClassDeclIR dep = r.getIrNode().clone();
+					IRStatus<PIR> stat = new IRStatus<PIR>(null, dep.getName(), dep, new HashSet<VdmNodeInfo>(), new HashSet<IrNodeInfo>());
+					printStatuses.add(stat);
+				}
+				if(!( r.getIrNode().getTag()==null)){
+					if(r.getIrNode().getTag().toString().equals(cpuName)){
+						ADefaultClassDeclIR dep = r.getIrNode().clone();
+						IRStatus<PIR> stat = new IRStatus<PIR>(null, dep.getName(), dep, new HashSet<VdmNodeInfo>(), new HashSet<IrNodeInfo>());
+						printStatuses.add(stat);
+					}
+				}
+			}
+
+			writeHeaders(outputDir, printStatuses, my_formatter);
+			writeClasses(outputDir, printStatuses, my_formatter);
 		}
-		
+
 		/**
 		 * FIXME: PVJ: This method does not return the generated data as it should. Instead the method writes the
 		 * generated code to the file system and returns an empty data structure. The date structure below is empty!
@@ -223,42 +282,41 @@ public class CGen extends CodeGenBase
 		return data;
 	}
 
-	private List<IRStatus<PIR>> ignoreVDMUnitTests(
-			List<IRStatus<PIR>> statuses)
+	private List<IRStatus<PIR>> ignoreVDMUnitTests(List<IRStatus<PIR>> statuses)
 	{
-		//IRStatus<PIR> status = null;
+		// IRStatus<PIR> status = null;
 		List<IRStatus<PIR>> newstatuses = new LinkedList<IRStatus<PIR>>();
 
 		for (IRStatus<PIR> irStatus : statuses)
 		{
 			newstatuses.add(irStatus);
 
-			//First remove all VDMUnited.vdmrt-related classes.
+			// First remove all VDMUnited.vdmrt-related classes.
 			if (irStatus.getIrNode() instanceof ADefaultClassDeclIR)
 			{
-				if(irStatus.getIrNodeName().equals("Test") ||
-						irStatus.getIrNodeName().equals("TestCase") ||
-						irStatus.getIrNodeName().equals("TestSuite") ||
-						irStatus.getIrNodeName().equals("TestListener") ||
-						irStatus.getIrNodeName().equals("TestResult") ||
-						irStatus.getIrNodeName().equals("TestRunner") ||
-						irStatus.getIrNodeName().equals("Throwable") ||
-						irStatus.getIrNodeName().equals("Error") ||
-						irStatus.getIrNodeName().equals("AssertionFailedError") ||
-						irStatus.getIrNodeName().equals("Assert"))
+				if (irStatus.getIrNodeName().equals("Test")
+						|| irStatus.getIrNodeName().equals("TestCase")
+						|| irStatus.getIrNodeName().equals("TestSuite")
+						|| irStatus.getIrNodeName().equals("TestListener")
+						|| irStatus.getIrNodeName().equals("TestResult")
+						|| irStatus.getIrNodeName().equals("TestRunner")
+						|| irStatus.getIrNodeName().equals("Throwable")
+						|| irStatus.getIrNodeName().equals("Error")
+						|| irStatus.getIrNodeName().equals("AssertionFailedError")
+						|| irStatus.getIrNodeName().equals("Assert"))
 				{
 					newstatuses.remove(irStatus);
 					continue;
 				}
 
-				//Next remove all test cases.
-				if(!((ADefaultClassDeclIR)irStatus.getIrNode()).getSuperNames().isEmpty())
+				// Next remove all test cases.
+				if (!((ADefaultClassDeclIR) irStatus.getIrNode()).getSuperNames().isEmpty())
 				{
-					for(ATokenNameIR i : ((ADefaultClassDeclIR)irStatus.getIrNode()).getSuperNames())
+					for (ATokenNameIR i : ((ADefaultClassDeclIR) irStatus.getIrNode()).getSuperNames())
 					{
-						if(i.getName().equals("TestCase"))
+						if (i.getName().equals("TestCase"))
 						{
-							newstatuses.remove(irStatus);		
+							newstatuses.remove(irStatus);
 						}
 					}
 					continue;
@@ -303,7 +361,7 @@ public class CGen extends CodeGenBase
 				cDef.getFields().add(f.clone());
 			}
 
-			for(AMethodDeclIR i : systemDef.getMethods())
+			for (AMethodDeclIR i : systemDef.getMethods())
 			{
 				cDef.getMethods().add(i.clone());
 			}
@@ -332,7 +390,8 @@ public class CGen extends CodeGenBase
 				} catch (org.overture.codegen.ir.analysis.AnalysisException e)
 				{
 					logger.error("Error when generating code for class "
-							+ status.getIrNodeName() + ": " + e.getMessage() + ". Skipping class..");
+							+ status.getIrNodeName() + ": " + e.getMessage()
+							+ ". Skipping class..");
 					e.printStackTrace();
 				}
 			}
@@ -359,7 +418,8 @@ public class CGen extends CodeGenBase
 				} catch (org.overture.codegen.ir.analysis.AnalysisException e)
 				{
 					logger.error("Error when generating code for class "
-							+ status.getIrNodeName() + ": " + e.getMessage() + ". Skipping class..");
+							+ status.getIrNodeName() + ": " + e.getMessage()
+							+ ". Skipping class..");
 					e.printStackTrace();
 				}
 			}
@@ -367,7 +427,7 @@ public class CGen extends CodeGenBase
 			logger.debug("Completed transformation: {}. Time elapsed: {}", trans.getClass().getSimpleName(), stopwatch);
 		}
 	}
-	
+
 	private CFormat consFormatter(final List<IRStatus<PIR>> statuses)
 	{
 		CFormat my_formatter = new CFormat(generator.getIRInfo(), new IHeaderFinder()
@@ -475,7 +535,7 @@ public class CGen extends CodeGenBase
 		output.write(writer.toString());
 		output.close();
 
-		if(formatter!=null)
+		if (formatter != null)
 		{
 			formatter.format(file);
 		}

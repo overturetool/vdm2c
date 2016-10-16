@@ -23,8 +23,8 @@ import org.overture.codegen.ir.types.AClassTypeIR;
 public class SystemArchitectureAnalysis
 {
 
-	public HashMap<String, Set<SExpIR>> distributionMap = new HashMap<String, Set<SExpIR>>();
-	public Map<String, AEnumSetExpIR> connectionMap = new HashMap<String, AEnumSetExpIR>();
+	public static HashMap<String, Set<SExpIR>> distributionMap = new HashMap<String, Set<SExpIR>>();
+	public static Map<String, AEnumSetExpIR> connectionMap = new HashMap<String, AEnumSetExpIR>();
 	public static LinkedList<AFieldDeclIR> systemDeployedObjects = new LinkedList<AFieldDeclIR>();
 	public static String systemName;
 	
