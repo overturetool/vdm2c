@@ -2,6 +2,7 @@ package org.overture.codegen.vdm2c.distribution;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -24,8 +25,8 @@ public class SystemArchitectureAnalysis
 
 	public HashMap<String, Set<SExpIR>> distributionMap = new HashMap<String, Set<SExpIR>>();
 	public Map<String, AEnumSetExpIR> connectionMap = new HashMap<String, AEnumSetExpIR>();
-	public HashSet<AFieldDeclIR> systemDeployedObjects = new HashSet<AFieldDeclIR>();
-	public String systemName;
+	public static LinkedList<AFieldDeclIR> systemDeployedObjects = new LinkedList<AFieldDeclIR>();
+	public static String systemName;
 	
 	public void initDistributionMap(String cpuName)
 	{
