@@ -81,39 +81,20 @@ public class GenerateDepObjId extends DepthFirstAnalysisCAdaptor
 						ABlockStmIR mBody = (ABlockStmIR) m.getBody();
 						
 						ALocalVariableDeclarationStmIR firstElem = (ALocalVariableDeclarationStmIR) mBody.getStatements().get(0);
-						
-						String decl = firstElem.getDecleration().getPattern().toString();
-						
+												
 						AAssignmentStmIR secondA = new AAssignmentStmIR();
 						
 						ALocalVariableDeclarationStmIR secondElem = (ALocalVariableDeclarationStmIR) mBody.getStatements().get(0).clone();
 						
+						// Build new assigment expression
 						AAssignToExpStmIR sec = new AAssignToExpStmIR();
-						
-						//if we need it as a apply exp, TODO: maybe remove
-						
-						//AApplyExpIR app = new AApplyExpIR();
-					
+											
 						// 1. Set exp
 						AIntLiteralExpIR id = new AIntLiteralExpIR();
 						ANat1NumericBasicTypeIR ty = new ANat1NumericBasicTypeIR();
 						id.setType(ty);
 						id.setValue((long) 3);
 						sec.setExp(id);
-						
-						//LinkedList<SExpIR> args = new LinkedList<SExpIR>();
-						//args.add(id);
-						//app.setArgs(args);
-						
-						//AIdentifierVarExpIR idpat = new AIdentifierVarExpIR();
-						
-						//idpat.setIsLocal(true);
-						//idpat.setName("newInt");
-						
-						//app.setRoot(idpat);
-						
-						//app.setType(ty.clone());
-						
 						
 						// 2. Set target
 						AIdentifierVarExpIR ta = new AIdentifierVarExpIR();
@@ -125,20 +106,9 @@ public class GenerateDepObjId extends DepthFirstAnalysisCAdaptor
 						
 						// Add it to function body
 						mBody.getStatements().add(1, sec);
-						
-						//sec.setExp(app);
-						
-						//ALocalPatternAssignmentStmIR s = new ALocalPatternAssignmentStmIR();
-						//s.set
-						
-						System.out.println("Element name is: " + decl);
-
 					}
-					
 				}
-
 			}
-
 		}
 	}
 
