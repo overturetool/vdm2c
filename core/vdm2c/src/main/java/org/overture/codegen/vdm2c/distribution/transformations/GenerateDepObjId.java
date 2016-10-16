@@ -25,6 +25,8 @@ import org.overture.codegen.vdm2c.extast.statements.ALocalVariableDeclarationStm
 public class GenerateDepObjId extends DepthFirstAnalysisCAdaptor
 {
 
+	int obj_id = 0;
+	
 	public GenerateDepObjId(TransAssistantIR transformationAssistant)
 	{
 	}
@@ -48,9 +50,10 @@ public class GenerateDepObjId extends DepthFirstAnalysisCAdaptor
 			//System.out.println("Dist transformation, method name: "
 				//	+ node.getName());
 
+			LinkedList<String> initFunName = new LinkedList<>();
+			
 			// Get body
 
-			String nm = null;
 			if (node.getBody() instanceof ABlockStmIR)
 			{
 				ABlockStmIR body = (ABlockStmIR) node.getBody();
@@ -64,41 +67,37 @@ public class GenerateDepObjId extends DepthFirstAnalysisCAdaptor
 						if (astm.getExp() instanceof AApplyExpIR)
 						{
 							AApplyExpIR apply = (AApplyExpIR) astm.getExp();
-							nm = apply.getRoot().toString();
-							LinkedList<SExpIR> a = apply.getArgs();
+							String nm = apply.getRoot().toString();
+							initFunName.add(nm);
 						}
 					}
 				}
 
 			}
-
+			
 			for (AMethodDeclIR m : cl.getMethods())
 			{
-				if (m.getName().equals(nm))
+				if (initFunName.contains(m.getName()))
 				{
+					obj_id = obj_id + 1;
 					if (node.getBody() instanceof ABlockStmIR)
 					{
 						ABlockStmIR mBody = (ABlockStmIR) m.getBody();
 						
 						ALocalVariableDeclarationStmIR firstElem = (ALocalVariableDeclarationStmIR) mBody.getStatements().get(0);
-												
-						AAssignmentStmIR secondA = new AAssignmentStmIR();
 						
-						ALocalVariableDeclarationStmIR secondElem = (ALocalVariableDeclarationStmIR) mBody.getStatements().get(0).clone();
-						
-						// Build new assigment expression
+						// Build new assignment expression
 						AAssignToExpStmIR sec = new AAssignToExpStmIR();
 											
 						// 1. Set exp
 						AIntLiteralExpIR id = new AIntLiteralExpIR();
 						ANat1NumericBasicTypeIR ty = new ANat1NumericBasicTypeIR();
 						id.setType(ty);
-						id.setValue((long) 3);
+						id.setValue((long) obj_id);
 						sec.setExp(id);
 						
 						// 2. Set target
 						AIdentifierVarExpIR ta = new AIdentifierVarExpIR();
-						
 						ta.setIsLocal(true);
 						ta.setName(firstElem.getDecleration().getPattern().toString() + "->id");
 						ta.setType(new AIntNumericBasicTypeIR());
