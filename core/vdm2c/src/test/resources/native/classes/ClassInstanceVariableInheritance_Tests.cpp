@@ -28,3 +28,7 @@ TEST(ClassDepth0, testSumFields)
 	CHECK(CLASS_ClassDepth0__Z8checkSumEV);
 }
 
+TEST(ClassDepth0, testSetInheritedField)
+{
+	CHECK(CLASS_ClassDepth0__Z17checkSetInheritedEV);
+}

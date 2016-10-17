@@ -106,7 +106,7 @@ DepthFirstAnalysisCAdaptor
 				thisClassName = classDef.getName();// the containing field owner
 			}
 
-			String fieldClassName = fieldUtil.lookupFieldClass(target.getAncestor(ADefaultClassDeclIR.class), target.getName());
+			String fieldClassName = fieldUtil.lookupFieldClass(target.getAncestor(SClassDeclIR.class), target.getName());
 
 			String name = assist.getInfo().getTempVarNameGen().nextVarName(fieldPrefix);
 
@@ -125,7 +125,7 @@ DepthFirstAnalysisCAdaptor
 
 			// add this type
 			apply.getArgs().add(createIdentifier(thisClassName, target.getSourceNode()));
-
+			
 			// add field owner type
 			apply.getArgs().add(createIdentifier(fieldClassName, target.getSourceNode()));
 			// add this
