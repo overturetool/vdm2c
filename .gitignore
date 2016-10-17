@@ -123,6 +123,8 @@ c/generator-test/generator-test
 c/**/report.xml
 c/vdmclib/vdmclib
 c/vdmclib/src/main/vdmclib
+c/vdmclib/src/test/memperf/vdmclib.a
+c/vdmclib/src/test/memperf/memperf
 
 # release
 repository
