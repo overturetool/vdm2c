@@ -9,6 +9,13 @@ operations
 public checkSum: () ==> bool
 checkSum()== return (field0 + field1 + field2) = 12;
 
+public checkSetInherited: () ==> bool
+checkSetInherited() ==
+(
+	field1 := 2;
+	return field1 = 2;
+);
+
 end ClassDepth0
 
 
