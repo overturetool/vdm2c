@@ -143,6 +143,7 @@ void testNewSetWithValues()
 	theSet = newSetWithValues(numElems, elems);
 	
 	vdmFree(theSet);
+	//vdmFree for sets seems to not free the top-level pointer, this might be the reason for the leak.  May also explain the 8-byte per item loss, size of struct Collection?
 
 	for(elem = 0;  elem < numElems;  elem++)
 	{
