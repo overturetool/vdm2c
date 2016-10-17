@@ -174,24 +174,6 @@ public class CGen extends CodeGenBase
 		List<IRStatus<PIR>> recClasses = makeRecsOuterClasses(statuses);
 		statuses.addAll(recClasses);
 
-		// Create a new system with another name
-
-		for (IRStatus<ADefaultClassDeclIR> r : IRStatus.extract(statuses, ADefaultClassDeclIR.class))
-		{
-			if (r.getIrNode().getName().equals(SystemArchitectureAnalysis.systemName))
-			{
-				for (String sys : SystemArchitectureAnalysis.distributionMap.keySet())
-				{
-					ADefaultClassDeclIR dep = r.getIrNode().clone();
-					//dep.setName(sys);
-					dep.setTag(sys); // tag it with cpu name
-					IRStatus<PIR> stat = new IRStatus<PIR>(null, sys, dep, new HashSet<VdmNodeInfo>(), new HashSet<IrNodeInfo>());
-					statuses.add(stat);
-				}
-			}
-			;
-		}
-
 		for (IRStatus<ADefaultClassDeclIR> r : IRStatus.extract(recClasses, ADefaultClassDeclIR.class))
 		{
 			getInfo().getClasses().add(r.getIrNode());
@@ -217,6 +199,28 @@ public class CGen extends CodeGenBase
 		writeHeaders(outputFolder, statuses, my_formatter);
 		writeClasses(outputFolder, statuses, my_formatter);
 
+		
+		// Create a new system with another name
+
+//		for (IRStatus<ADefaultClassDeclIR> r : IRStatus.extract(statuses, ADefaultClassDeclIR.class))
+//		{
+//			if (r.getIrNode().getName().equals(SystemArchitectureAnalysis.systemName))
+//			{
+//				AClassHeaderDeclIR hd = r.getIrNode().getAncestor(AClassHeaderDeclIR.class);
+//				
+//				for (String sys : SystemArchitectureAnalysis.distributionMap.keySet())
+//				{
+//					ADefaultClassDeclIR dep = r.getIrNode().clone();
+//					dep.parent(hd);
+//					//dep.setName(sys);
+//					dep.setTag(sys); // tag it with cpu name
+//					IRStatus<PIR> stat = new IRStatus<PIR>(null, sys, dep, new HashSet<VdmNodeInfo>(), new HashSet<IrNodeInfo>());
+//					statuses.add(stat);
+//				}
+//			}
+//			;
+//		}
+		
 		/** Distribution Transformations **/
 		applyDistTransformations(statuses);
 
@@ -229,46 +233,46 @@ public class CGen extends CodeGenBase
 
 			//List<IRStatus> printStatuses = new LinkedList<IRStatus>(); //= statuses;
 
-			List<IRStatus<PIR>> printStatuses = new LinkedList<IRStatus<PIR>>();
+//			List<IRStatus<PIR>> printStatuses = new LinkedList<IRStatus<PIR>>();
 
-			// Print headers
-			for(IRStatus<AClassHeaderDeclIR> hd: IRStatus.extract(statuses, AClassHeaderDeclIR.class)){
-				if (!hd.getIrNode().getName().equals(SystemArchitectureAnalysis.systemName))
-				{
-					AClassHeaderDeclIR dep = hd.getIrNode();
-					IRStatus<PIR> stat = new IRStatus<PIR>(null, dep.getName() + "_header", dep, new HashSet<VdmNodeInfo>(), new HashSet<IrNodeInfo>());
-					printStatuses.add(stat);
-				}
-				if(!( hd.getIrNode().getTag()==null)){
-					if(hd.getIrNode().getTag().toString().equals(cpuName)){
-						AClassHeaderDeclIR dep = hd.getIrNode();
-						IRStatus<PIR> stat = new IRStatus<PIR>(null, dep.getName() + "_header", dep, new HashSet<VdmNodeInfo>(), new HashSet<IrNodeInfo>());
-						printStatuses.add(stat);
-					}
-				}
-			}
+//			// Print headers
+//			for(IRStatus<AClassHeaderDeclIR> hd: IRStatus.extract(statuses, AClassHeaderDeclIR.class)){
+//				if (!hd.getIrNode().getName().equals(SystemArchitectureAnalysis.systemName))
+//				{
+//					AClassHeaderDeclIR dep = hd.getIrNode();
+//					IRStatus<PIR> stat = new IRStatus<PIR>(null, dep.getName(), dep, new HashSet<VdmNodeInfo>(), new HashSet<IrNodeInfo>());
+//					printStatuses.add(stat);
+//				}
+//				if(!( hd.getIrNode().getTag()==null)){
+//					if(hd.getIrNode().getTag().toString().equals(cpuName)){
+//						AClassHeaderDeclIR dep = hd.getIrNode();
+//						IRStatus<PIR> stat = new IRStatus<PIR>(null, dep.getName() + "_header", dep, new HashSet<VdmNodeInfo>(), new HashSet<IrNodeInfo>());
+//						printStatuses.add(stat);
+//					}
+//				}
+//			}
+//
+//			// Print classes
+//			for (IRStatus<ADefaultClassDeclIR> r : IRStatus.extract(statuses, ADefaultClassDeclIR.class))
+//			{
+//				if (!r.getIrNode().getName().equals(SystemArchitectureAnalysis.systemName))
+//					//|| r.getIrNode().getTag().toString().equals(cpuName))
+//				{
+//					ADefaultClassDeclIR dep = r.getIrNode().clone();
+//					IRStatus<PIR> stat = new IRStatus<PIR>(null, dep.getName(), dep, new HashSet<VdmNodeInfo>(), new HashSet<IrNodeInfo>());
+//					printStatuses.add(stat);
+//				}
+//				if(!( r.getIrNode().getTag()==null)){
+//					if(r.getIrNode().getTag().toString().equals(cpuName)){
+//						ADefaultClassDeclIR dep = r.getIrNode().clone();
+//						IRStatus<PIR> stat = new IRStatus<PIR>(null, dep.getName(), dep, new HashSet<VdmNodeInfo>(), new HashSet<IrNodeInfo>());
+//						printStatuses.add(stat);
+//					}
+//				}
+//			}
 
-			// Print classes
-			for (IRStatus<ADefaultClassDeclIR> r : IRStatus.extract(statuses, ADefaultClassDeclIR.class))
-			{
-				if (!r.getIrNode().getName().equals(SystemArchitectureAnalysis.systemName))
-					//|| r.getIrNode().getTag().toString().equals(cpuName))
-				{
-					ADefaultClassDeclIR dep = r.getIrNode().clone();
-					IRStatus<PIR> stat = new IRStatus<PIR>(null, dep.getName(), dep, new HashSet<VdmNodeInfo>(), new HashSet<IrNodeInfo>());
-					printStatuses.add(stat);
-				}
-				if(!( r.getIrNode().getTag()==null)){
-					if(r.getIrNode().getTag().toString().equals(cpuName)){
-						ADefaultClassDeclIR dep = r.getIrNode().clone();
-						IRStatus<PIR> stat = new IRStatus<PIR>(null, dep.getName(), dep, new HashSet<VdmNodeInfo>(), new HashSet<IrNodeInfo>());
-						printStatuses.add(stat);
-					}
-				}
-			}
-
-			writeHeaders(outputDir, printStatuses, my_formatter);
-			writeClasses(outputDir, printStatuses, my_formatter);
+			writeHeaders(outputDir, statuses, my_formatter);
+			writeClasses(outputDir, statuses, my_formatter);
 		}
 
 		/**
