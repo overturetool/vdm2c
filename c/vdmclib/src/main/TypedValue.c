@@ -199,18 +199,35 @@ TVP vdmClone(TVP x)
 		ASSERT_CHECK_RECORD(x);
 
 		int i;
-		TVP tmpField;
+		TVP tmpField = NULL;
 		int numFields;
 
+		//Create a shell for a new class and populate it with the information
+		//that can be used from the one being cloned, but all of it should be
+		//irrelevant for records.
+		(tmp->value).ptr = newClassValue(((struct ClassType*)(x->value.ptr))->classId,
+				((struct ClassType*)(x->value.ptr))->refs,
+				NULL,
+				NULL);
+
+		//Generic way of accessing the number-of-fields field.  The name of the record type is
+		//hard-coded into the corresponding struct name.
 		numFields = (*((struct TypedValue**)((char*)(((struct ClassType*)x->value.ptr)->value) + \
 				sizeof(struct VTable*) + \
 				sizeof(int) + \
 				sizeof(unsigned int))))->value.intVal;
 
-		for(i = 0; i < numFields; i++)
+		//Allocate memory to be populated with the pointers pointing to the cloned fields.
+		((struct ClassType*)((tmp->value).ptr))->value = malloc(sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(struct TypedValue*) + sizeof(struct TypedValue*) * numFields);
+
+		for(i = 0; i <= numFields; i++)
 		{
-			tmpField = vdmClone(*((struct TypedValue**)((char*)(((struct ClassType*)x->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(struct TypedValue*) + sizeof(struct TypedValue*) * i)));
-			memcpy(((struct TypedValue**)((char*)(((struct ClassType*)tmp->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(struct TypedValue*) + sizeof(struct TypedValue*) * i)), &tmpField, sizeof(struct TypedValue*));
+			//Start cloning the fields one by one, including the number-of-fields field,
+			//since it is just a TVP.
+			tmpField = vdmClone(*((struct TypedValue**)((char*)(((struct ClassType*)x->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(struct TypedValue*) * i)));
+
+			//Only copy the address stored in tmpField so that that memory is now addressed by the current field in the struct.
+			memcpy(((struct TypedValue**)((char*)(((struct ClassType*)tmp->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(struct TypedValue*) * i)), &tmpField, sizeof(struct TypedValue*));
 		}
 
 		break;
@@ -300,9 +317,9 @@ bool equals(struct TypedValue* a, struct TypedValue* b)
 				sizeof(unsigned int))))->value.intVal;
 
 		numFields_b = (*((struct TypedValue**)((char*)(((struct ClassType*)b->value.ptr)->value) + \
-						sizeof(struct VTable*) + \
-						sizeof(int) + \
-						sizeof(unsigned int))))->value.intVal;
+				sizeof(struct VTable*) + \
+				sizeof(int) + \
+				sizeof(unsigned int))))->value.intVal;
 
 		if(numFields_a != numFields_b)
 		{
@@ -312,14 +329,14 @@ bool equals(struct TypedValue* a, struct TypedValue* b)
 		for(i = 0; i < numFields_a; i++)
 		{
 			res = vdmEquals(*((struct TypedValue**)((char*)(((struct ClassType*)a->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(struct TypedValue*) + sizeof(struct TypedValue*) * i)), \
-							*((struct TypedValue**)((char*)(((struct ClassType*)b->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(struct TypedValue*) + sizeof(struct TypedValue*) * i)));
+					*((struct TypedValue**)((char*)(((struct ClassType*)b->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(struct TypedValue*) + sizeof(struct TypedValue*) * i)));
 			if(!res->value.boolVal)
 			{
 				vdmFree(res);
 				return false;
 			}
-//			tmpField = vdmClone(*((struct TypedValue**)((char*)(((struct ClassType*)x->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(struct TypedValue*) + sizeof(struct TypedValue*) * i)));
-//			memcpy(((struct TypedValue**)((char*)(((struct ClassType*)tmp->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(struct TypedValue*) + sizeof(struct TypedValue*) * i)), &tmpField, sizeof(struct TypedValue*));
+			//			tmpField = vdmClone(*((struct TypedValue**)((char*)(((struct ClassType*)x->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(struct TypedValue*) + sizeof(struct TypedValue*) * i)));
+			//			memcpy(((struct TypedValue**)((char*)(((struct ClassType*)tmp->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(struct TypedValue*) + sizeof(struct TypedValue*) * i)), &tmpField, sizeof(struct TypedValue*));
 		}
 
 		vdmFree(res);
@@ -402,19 +419,26 @@ void recursiveFree(struct TypedValue* ptr)
 	//		//TODO
 	//		break;
 	case VDM_RECORD:
-		//Records are treated exactly as classes, so fall through.
-		//	{
-		//		//handle smart pointer
-		//		struct RecordType* recordTptr = (struct RecordType*) ptr->value.ptr;
-		//		recordTptr->freeRecord(recordTptr->value);
-		//		recordTptr->value = NULL;
-		//		recordTptr->freeRecord = NULL;
-		//
-		//		//free record type
-		//		free(recordTptr);
-		//		ptr->value.ptr = NULL;
-		//		break;
-		//	}
+		ASSERT_CHECK_RECORD(ptr);
+
+		int i;
+		int numFields;
+
+		numFields = (*((struct TypedValue**)((char*)(((struct ClassType*)ptr->value.ptr)->value) + \
+				sizeof(struct VTable*) + \
+				sizeof(int) + \
+				sizeof(unsigned int))))->value.intVal;
+
+		//We include the numFields field here, since it is just a TVP.
+		for(i = 0; i <= numFields; i++)
+		{
+			vdmFree(*((struct TypedValue**)((char*)(((struct ClassType*)ptr->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(struct TypedValue*) * i)));
+		}
+
+		//Free the virtual function table.
+		free(((struct ClassType*)ptr->value.ptr)->value);
+
+		break;
 	case VDM_CLASS:
 	{
 		//handle smart pointer

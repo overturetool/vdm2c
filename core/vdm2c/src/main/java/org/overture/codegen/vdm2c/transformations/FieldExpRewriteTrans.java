@@ -48,11 +48,13 @@ public class FieldExpRewriteTrans extends DepthFirstAnalysisCAdaptor
 
 		if(node.getTarget() instanceof AFieldExpIR)
 		{
+			AFieldExpIR target = (AFieldExpIR) node.getTarget(); 
+			
 			String thisClassName = null;
 			String fieldClassName = null;
-			if (((AFieldExpIR)node.getTarget()).getObject().getType() instanceof AClassTypeIR)
+			if (target.getObject().getType() instanceof AClassTypeIR)
 			{
-				AClassTypeIR classType = (AClassTypeIR) ((AFieldExpIR)node.getTarget()).getObject().getType();
+				AClassTypeIR classType = (AClassTypeIR) target.getObject().getType();
 
 				thisClassName = classType.getName();
 
@@ -60,13 +62,13 @@ public class FieldExpRewriteTrans extends DepthFirstAnalysisCAdaptor
 				{
 					if (c.getName().equals(classType.getName()))
 					{
-						if (fieldUtil.isStatic(c, ((AFieldExpIR)node.getTarget()).getMemberName()))
+						if (fieldUtil.isStatic(c, target.getMemberName()))
 						{
-							fieldUtil.replaceWithStaticReference(c, ((AFieldExpIR)node.getTarget()).getMemberName(), ((AFieldExpIR)node.getTarget()));
+							fieldUtil.replaceWithStaticReference(c, target.getMemberName(), target);
 							return;
 						}
 
-						fieldClassName = fieldUtil.lookupFieldClass(c, ((AFieldExpIR)node.getTarget()).getMemberName());
+						fieldClassName = fieldUtil.lookupFieldClass(c, target.getMemberName());
 
 						if (thisClassName != null && fieldClassName != null)
 						{
@@ -78,8 +80,8 @@ public class FieldExpRewriteTrans extends DepthFirstAnalysisCAdaptor
 							{
 								String fieldNameTmp = assist.getInfo().getTempVarNameGen().nextVarName(retPrefix);
 								String expNameTmp = assist.getInfo().getTempVarNameGen().nextVarName(retPrefix);
-								SourceNode objSource = ((AFieldExpIR)node.getTarget()).getObject().getSourceNode();
-								block.getLocalDefs().add(newDeclarationAssignment(fieldNameTmp, ((AFieldExpIR)node.getTarget()).getObject().getType().clone(), ((AFieldExpIR)node.getTarget()).getObject(), objSource));
+								SourceNode objSource = target.getObject().getSourceNode();
+								block.getLocalDefs().add(newDeclarationAssignment(fieldNameTmp, target.getObject().getType().clone(), target.getObject(), objSource));
 								block.getLocalDefs().add(newDeclarationAssignment(expNameTmp, node.getExp().getType().clone(), node.getExp().clone(), node.getExp().getSourceNode()));
 
 								AMacroApplyExpIR apply = newMacroApply(SET_FIELD);
@@ -93,7 +95,7 @@ public class FieldExpRewriteTrans extends DepthFirstAnalysisCAdaptor
 								// add this
 								apply.getArgs().add(createIdentifier(fieldNameTmp, objSource));
 								// add field name
-								apply.getArgs().add(createIdentifier(((AFieldExpIR)node.getTarget()).getMemberName(), node.getSourceNode()));
+								apply.getArgs().add(createIdentifier(target.getMemberName(), node.getSourceNode()));
 								// add assigned expression
 								apply.getArgs().add(node.getExp().clone());
 								

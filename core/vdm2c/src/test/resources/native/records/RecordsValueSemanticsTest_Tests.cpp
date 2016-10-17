@@ -27,7 +27,7 @@
 extern "C"
 {
 #include "Vdm.h"
-#include "records/RecordTest.h"
+#include "RecordTest.h"
 #include <stdio.h>
 }
 
@@ -37,7 +37,6 @@ TVP res=CALL_FUNC(RecordTest, RecordTest, a, methodId);\
 EXPECT_EQ (true, res->value.boolVal);\
 vdmFree(res);\
 vdmFree(a)
-
 
 TEST(Statements_Records, test1)
 {
@@ -63,3 +62,4 @@ TEST(Statements_Records, test5)
 {
 	CHECK(CLASS_RecordTest__Z5test5EV);
 }
+
