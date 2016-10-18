@@ -1,10 +1,9 @@
 all:
-	gcc -I../../main -o memperf memperf.c vdmclib.a -lm
+	gcc -g -I../../main -o memperf memperf.c vdmclib.a -lm
 check:
-	valgrind --leak-check=full ./memperf
+	valgrind -v --leak-check=full --track-origins=yes ./memperf
 massif:
 	valgrind --tool=massif ./memperf
 ar:
-	rm memperf.o
-	gcc -c -std=c11 ~/Overture/vdm2c/c/vdmclib/src/main/*.c
+	gcc -g -c -std=c11 ~/Overture/vdm2c/c/vdmclib/src/main/*.c
 	ar rcs vdmclib.a *.o

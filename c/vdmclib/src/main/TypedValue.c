@@ -97,7 +97,7 @@ struct TypedValue* newQuote(unsigned int x)
 			{ .quoteVal = x });
 }
 
-///
+
 
 struct TypedValue* newCollection(size_t size, vdmtype type)
 {
@@ -411,6 +411,7 @@ void vdmFree(struct TypedValue* ptr)
 				vdmFree(cptr->value[i]);
 			}
 		}
+		free(cptr->value);
 		free(cptr);
 		ptr->value.ptr = NULL;
 		break;

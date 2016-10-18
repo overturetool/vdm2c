@@ -83,7 +83,7 @@ void testNewReal()
 
 	for(run = 0, numRuns = 1000; run < numRuns; run++)
 	{
-		theReal = newReal(rand());		
+		theReal = newReal(3.3);
 		vdmFree(theReal);
 	}
 }
@@ -101,7 +101,7 @@ void testNewChar()
 
 	for(run = 0, numRuns = 1000; run < numRuns; run++)
 	{
-		theChar = newChar(rand());		
+		theChar = newChar('a');
 		vdmFree(theChar);
 	}
 }
@@ -128,7 +128,7 @@ void testNewQuote()
 
 void testNewSetWithValues()
 {
-	int numElems = 1000;
+	int numElems = 100;
 	TVP elems[numElems];
 	TVP theSet;
 	int elem;
@@ -137,7 +137,7 @@ void testNewSetWithValues()
 
 	for(elem = 0;  elem < numElems;  elem++)
 	{
-		elems[elem] = newInt(rand());
+		elems[elem] = newBool(true);
 	}
 
 	theSet = newSetWithValues(numElems, elems);
