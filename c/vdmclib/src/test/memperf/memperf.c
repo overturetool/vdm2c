@@ -2,7 +2,10 @@
 #include <stdio.h>
 #include <time.h>
 
-void testNewInt()
+
+//-----------  Basic Values  ---------------------
+
+void test_newInt()
 {
 	int numRuns;
 	int run;
@@ -19,7 +22,7 @@ void testNewInt()
 }
 
 
-void testNewNat()
+void test_newNat()
 {
 	int numRuns;
 	int run;
@@ -36,7 +39,7 @@ void testNewNat()
 }
 
 
-void testNewNat1()
+void test_newNat1()
 {
 	int numRuns;
 	int run;
@@ -54,7 +57,7 @@ void testNewNat1()
 
 
 
-void testNewBool()
+void test_newBool()
 {
 	int numRuns;
 	int run;
@@ -72,7 +75,91 @@ void testNewBool()
 
 
 
-void testNewReal()
+void test_vdmNot()
+{
+	TVP a = newBool(true);
+	TVP res = vdmNot(a);
+
+	vdmFree(a);
+	vdmFree(res);
+}
+
+
+
+void test_vdmOr()
+{
+	TVP a = newBool(true);
+	TVP b = newBool(false);
+	TVP res = vdmOr(a, b);
+
+	vdmFree(a);
+	vdmFree(b);
+	vdmFree(res);
+}
+
+
+
+void test_vdmAnd()
+{
+	TVP a = newBool(true);
+	TVP b = newBool(false);
+	TVP res = vdmAnd(a, b);
+
+	vdmFree(a);
+	vdmFree(b);
+	vdmFree(res);
+}
+
+
+
+void test_vdmXor()
+{
+	TVP a = newBool(true);
+	TVP b = newBool(false);
+	TVP res = vdmXor(a, b);
+
+	vdmFree(a);
+	vdmFree(b);
+	vdmFree(res);
+}
+
+
+
+void test_vdmImplies()
+{
+	TVP a = newBool(true);
+	TVP b = newBool(false);
+	TVP res = vdmImplies(a, b);
+
+	vdmFree(a);
+	vdmFree(b);
+	vdmFree(res);
+}
+
+
+
+void test_vdmBiimplication()
+{
+	TVP a = newBool(true);
+	TVP b = newBool(false);
+	TVP res = vdmBiimplication(a, b);
+
+	vdmFree(a);
+	vdmFree(b);
+	vdmFree(res);
+}
+
+
+void test_toBool()
+{
+	TVP a = newBool(false);
+	bool b = toBool(a);
+
+	vdmFree(a);
+}
+
+
+void test_newReal()
 {
 	int numRuns;
 	int run;
@@ -90,7 +177,7 @@ void testNewReal()
 
 
 
-void testNewChar()
+void test_newChar()
 {
 	int numRuns;
 	int run;
@@ -108,7 +195,7 @@ void testNewChar()
 
 
 
-void testNewQuote()
+void test_newQuote()
 {
 	int numRuns;
 	int run;
@@ -126,7 +213,9 @@ void testNewQuote()
 
 
 
-void testNewSetWithValues()
+//------------  Sets  -------------------
+
+void test_newSetWithValues()
 {
 	int numElems = 100;
 	int numSubElems;
@@ -187,7 +276,10 @@ void testNewSetWithValues()
 }
 
 
-void testNewSeqWithValues()
+
+//------------  Sequences  --------------
+
+void test_newSeqWithValues()
 {
 	int numElems = 100;
 	int numSubElems;
@@ -250,15 +342,23 @@ void testNewSeqWithValues()
 
 int main()
 {
-	testNewInt();
-	testNewNat();
-	testNewNat1();
-	testNewBool();
-	testNewReal();
-	testNewChar();
-	testNewQuote();
-	testNewSetWithValues();
-	testNewSeqWithValues();
+	test_newInt();
+	test_newNat();
+	test_newNat1();
+
+	test_newBool();
+	test_vdmNot();
+	test_vdmOr();
+	test_vdmAnd();
+	test_vdmXor();
+	test_vdmImplies();
+	test_vdmBiimplication();
+
+	test_newReal();
+	test_newChar();
+	test_newQuote();
+	test_newSetWithValues();
+	test_newSeqWithValues();
 
 	return 0;
 }
