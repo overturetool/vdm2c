@@ -64,9 +64,9 @@ TEST(Expression_Seq, seqHd)
 
 	EXPECT_EQ(1, res->value.intVal);
 
-	recursiveFree(res);
+	vdmFree(res);
 //
-	recursiveFree(t);
+	vdmFree(t);
 }
 
 TEST(Expression_Seq, seqTl)
@@ -80,9 +80,9 @@ TEST(Expression_Seq, seqTl)
 	struct Collection* col = (struct Collection*) res->value.ptr;
 
 	EXPECT_EQ(2, col->value[0]->value.intVal);
-	recursiveFree(res);
+	vdmFree(res);
 //
-	recursiveFree(t);
+	vdmFree(t);
 }
 
 TEST(Expression_Seq, seqLen)
@@ -94,9 +94,9 @@ TEST(Expression_Seq, seqLen)
 	TVP res = vdmSeqLen(t);
 
 	EXPECT_EQ(2, res->value.intVal);
-	recursiveFree(res);
+	vdmFree(res);
 //
-	recursiveFree(t);
+	vdmFree(t);
 }
 
 TEST(Expression_Seq, seqElems)
@@ -113,13 +113,13 @@ TEST(Expression_Seq, seqElems)
 
 	TVP tmp = vdmEquals(res,elems);
 	EXPECT_EQ(true, tmp->value.boolVal);
-	recursiveFree(res);
+	vdmFree(res);
 	vdmFree(a);
 	vdmFree(b);
 	vdmFree(tmp);
 	vdmFree(elems);
 //
-	recursiveFree(t);
+	vdmFree(t);
 }
 
 TEST(Expression_Seq, seqInds)
@@ -138,9 +138,9 @@ TEST(Expression_Seq, seqInds)
 	EXPECT_TRUE(2 == col->value[0]->value.intVal || 2 == col->value[1]->value.intVal);
 	EXPECT_TRUE(1 == col->value[0]->value.intVal || 1 == col->value[1]->value.intVal);
 
-	recursiveFree(res);
+	vdmFree(res);
 //
-	recursiveFree(t);
+	vdmFree(t);
 }
 
 TEST(Expression_Seq, seqConc)
@@ -160,10 +160,10 @@ TEST(Expression_Seq, seqConc)
 	EXPECT_EQ(1, col->value[0]->value.intVal);
 	EXPECT_EQ(2, col->value[1]->value.intVal);
 
-	recursiveFree(res);
+	vdmFree(res);
 //
-	recursiveFree(t);
-	recursiveFree(t2);
+	vdmFree(t);
+	vdmFree(t2);
 }
 
 TEST(Expression_Seq, seqReverse)
@@ -177,9 +177,9 @@ TEST(Expression_Seq, seqReverse)
 	struct Collection* col = (struct Collection*) res->value.ptr;
 
 	EXPECT_EQ(2, col->value[0]->value.intVal);
-	recursiveFree(res);
+	vdmFree(res);
 //
-	recursiveFree(t);
+	vdmFree(t);
 }
 
 //TEST(Expression_Seq, seqMod)
@@ -193,9 +193,9 @@ TEST(Expression_Seq, seqReverse)
 //	struct Collection* col = (struct Collection*) res->value.ptr;
 //
 //	EXPECT_EQ(2, col->value[0]->value.intVal);
-//	recursiveFree(res);
+//	vdmFree(res);
 ////
-//	recursiveFree(t);
+//	vdmFree(t);
 //}
 
 TEST(Expression_Seq, seqIndex)
@@ -208,10 +208,10 @@ TEST(Expression_Seq, seqIndex)
 	TVP res = vdmSeqIndex(t,index);
 
 	EXPECT_EQ(2, res->value.intVal);
-	recursiveFree(res);
+	vdmFree(res);
 //
-	recursiveFree(t);
-	recursiveFree(index);
+	vdmFree(t);
+	vdmFree(index);
 }
 
 TEST(Expression_Seq, seqEqual)
@@ -227,10 +227,10 @@ TEST(Expression_Seq, seqEqual)
 	TVP res = vdmSeqEqual(t,t2);
 
 	EXPECT_EQ(true, res->value.boolVal);
-	recursiveFree(res);
+	vdmFree(res);
 //
-	recursiveFree(t);
-	recursiveFree(t2);
+	vdmFree(t);
+	vdmFree(t2);
 }
 
 TEST(Expression_Seq, seqInEqual)
@@ -246,8 +246,8 @@ TEST(Expression_Seq, seqInEqual)
 	TVP res = vdmSeqInEqual(t,t2);
 
 	EXPECT_EQ(true, res->value.boolVal);
-	recursiveFree(res);
+	vdmFree(res);
 	//
-	recursiveFree(t);
-	recursiveFree(t2);
+	vdmFree(t);
+	vdmFree(t2);
 }

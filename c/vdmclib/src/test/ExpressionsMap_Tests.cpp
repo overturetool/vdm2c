@@ -152,9 +152,9 @@ TEST(Expression_Map, mapApply)
 
 	EXPECT_EQ (true,equals(TEST_TRUE,result));
 
-	recursiveFree(result);
+	vdmFree(result);
 
-	recursiveFree (TEST_TRUE);
+	vdmFree (TEST_TRUE);
 }
 
 TEST(Expression_Map, mapDom)
@@ -168,8 +168,8 @@ TEST(Expression_Map, mapDom)
 	TVP res = vdmSetMemberOf(map_dom,newInt(3));
 	EXPECT_EQ(true, res->value.boolVal);
 
-	recursiveFree(map_dom);
-	recursiveFree(res);
+	vdmFree(map_dom);
+	vdmFree(res);
 }
 
 TEST(Expression_Map, mapRng)

@@ -63,7 +63,7 @@ void productSet(TVP product, int index, TVP val)
 	TVP old = col->value[index-1];
 	if(old !=NULL)
 	{
-		recursiveFree(old);
+		vdmFree(old);
 	}
 	col->value[index-1]=vdmClone(val);
 }

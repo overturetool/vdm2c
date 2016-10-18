@@ -109,7 +109,7 @@ gboolean vdm_typedvalue_equal(gconstpointer v1, gconstpointer v2)
 void vdm_g_free(gpointer mem)
 {
 	TVP a = (TVP)mem;
-	recursiveFree(a);
+	vdmFree(a);
 }
 
 

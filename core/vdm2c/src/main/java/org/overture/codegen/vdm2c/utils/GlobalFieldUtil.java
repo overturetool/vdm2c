@@ -104,7 +104,7 @@ public class GlobalFieldUtil
 		{
 			for (SClassDeclIR def : assist.getInfo().getClasses())
 			{
-				if (def.getName().equals(superName))
+				if (def.getName().equals(superName.getName()))
 				{
 					String n = lookupFieldClass(def, name);
 					if (n != null)

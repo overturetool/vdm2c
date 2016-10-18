@@ -39,7 +39,7 @@ TVP letIdentifierExp()
 		TVP ret = vdmClone(a);
 
 		//clean local malloc
-		recursiveFree(a);
+		vdmFree(a);
 		return ret;
 	}
 
@@ -56,8 +56,8 @@ TVP letIdentifierDontExp()
 		TVP ret = vdmClone(tmp1);
 
 		//clean local malloc
-		recursiveFree(dont_1);
-		recursiveFree(tmp1);
+		vdmFree(dont_1);
+		vdmFree(tmp1);
 		return ret;
 	}
 
@@ -75,9 +75,9 @@ TVP letPatternMatch1()
 		TVP tmp3 = newBool(true);
 
 		TVP ret = vdmClone(tmp3);
-		recursiveFree(tmp1);
-		recursiveFree(tmp2);
-		recursiveFree(tmp3);
+		vdmFree(tmp1);
+		vdmFree(tmp2);
+		vdmFree(tmp3);
 		return ret;
 	}
 }
@@ -90,16 +90,16 @@ TVP letPatternMatch3()
 		TVP var1 = newInt(2);
 		TVP var2 = newProduct(2);
 		productSet(var2,2,var1);
-		recursiveFree(var1);
+		vdmFree(var1);
 
 		//mk_(1,2)
 		TVP var3 = newInt(1);
 		TVP var4 = newInt(2);
 		TVP var5 = newProduct(2);
 		productSet(var5,1,var3);
-		recursiveFree(var3);
+		vdmFree(var3);
 		productSet(var5,2,var4);
-		recursiveFree(var4);
+		vdmFree(var4);
 
 		TVP res=NULL;
 		//match
@@ -107,16 +107,16 @@ TVP letPatternMatch3()
 		{
 			TVP local1 = productGet(var2,1);
 			res= newBool(true);
-			recursiveFree(local1);
+			vdmFree(local1);
 		} else
 		{
-			recursiveFree(var2);
-			recursiveFree(var5);
+			vdmFree(var2);
+			vdmFree(var5);
 			FATAL_ERROR("Pattern match error"); //Pattern match error
 		}
 
-		recursiveFree(var2);
-		recursiveFree(var5);
+		vdmFree(var2);
+		vdmFree(var5);
 
 		return res;
 	}
@@ -139,17 +139,17 @@ TVP letFilter1Exp()
 			{
 				TVP tmp3= newBool(true);
 				res = vdmClone(tmp3);
-				recursiveFree(tmp3);
+				vdmFree(tmp3);
 				return res;
 			} else
 			{
-				recursiveFree(tmp2);
-				recursiveFree(tmp1);
+				vdmFree(tmp2);
+				vdmFree(tmp1);
 				FATAL_ERROR("Pattern match error"); //Pattern match error
 			}
 
-			recursiveFree(tmp2);
-			recursiveFree(tmp1);
+			vdmFree(tmp2);
+			vdmFree(tmp1);
 			return res;
 		}
 	}
@@ -174,9 +174,9 @@ TVP ifExp()
 		res = vdmClone(tmp5);
 
 		//local scope cleanup
-		recursiveFree(tmp5);
-		recursiveFree(tmp4);
-		recursiveFree(tmp3);
+		vdmFree(tmp5);
+		vdmFree(tmp4);
+		vdmFree(tmp3);
 
 	} else
 	{
@@ -184,11 +184,11 @@ TVP ifExp()
 		res = vdmClone(tmp3);
 
 		//local scope cleanup
-		recursiveFree(tmp3);
+		vdmFree(tmp3);
 	}
 	//if condition scope cleanup
-	recursiveFree(tmp2);
-	recursiveFree(tmp1);
+	vdmFree(tmp2);
+	vdmFree(tmp1);
 
 	return res;
 }
@@ -201,9 +201,9 @@ TEST(Expression, letIdentifierExp)
 
 	EXPECT_EQ (true,equals(TEST_TRUE,result));
 
-	recursiveFree(result);
+	vdmFree(result);
 
-	recursiveFree (TEST_TRUE);
+	vdmFree (TEST_TRUE);
 }
 
 TEST(Expression, letIdentifierDontExp)
@@ -214,9 +214,9 @@ TEST(Expression, letIdentifierDontExp)
 
 	EXPECT_EQ (true,equals(TEST_TRUE,result));
 
-	recursiveFree(result);
+	vdmFree(result);
 
-	recursiveFree (TEST_TRUE);
+	vdmFree (TEST_TRUE);
 }
 
 TEST(Expression, letPatternMatch1)
@@ -227,9 +227,9 @@ TEST(Expression, letPatternMatch1)
 
 	EXPECT_EQ (true,equals(TEST_TRUE,result));
 
-	recursiveFree(result);
+	vdmFree(result);
 
-	recursiveFree (TEST_TRUE);
+	vdmFree (TEST_TRUE);
 }
 
 TEST(Expression, letPatternMatch3)
@@ -240,9 +240,9 @@ TEST(Expression, letPatternMatch3)
 
 	EXPECT_EQ (true,equals(TEST_TRUE,result));
 
-	recursiveFree(result);
+	vdmFree(result);
 
-	recursiveFree (TEST_TRUE);
+	vdmFree (TEST_TRUE);
 }
 
 TEST(Expression, letFilter1Exp)
@@ -256,7 +256,7 @@ TEST(Expression, letFilter1Exp)
 
 		EXPECT_EQ (true,equals(TEST_TRUE,result));
 
-		recursiveFree(result);
+		vdmFree(result);
 	} catch(...)
 	{
 		failed = true;
@@ -264,7 +264,7 @@ TEST(Expression, letFilter1Exp)
 
 	if(!failed)
 	FAIL();
-	recursiveFree (TEST_TRUE);
+	vdmFree (TEST_TRUE);
 }
 
 
@@ -276,7 +276,7 @@ TEST(Expression, ifExp)
 
 	EXPECT_EQ (true,equals(TEST_TRUE,result));
 
-	recursiveFree(result);
+	vdmFree(result);
 
-	recursiveFree (TEST_TRUE);
+	vdmFree (TEST_TRUE);
 }
