@@ -2,9 +2,12 @@ package org.overture.codegen.vdm2c.distribution.transformations;
 
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newExternalType;
 
+import java.util.LinkedList;
+
 import org.overture.cgc.extast.analysis.DepthFirstAnalysisCAdaptor;
 import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.declarations.ADefaultClassDeclIR;
+import org.overture.codegen.ir.declarations.AFieldDeclIR;
 import org.overture.codegen.ir.declarations.AMethodDeclIR;
 import org.overture.codegen.ir.expressions.ABoolLiteralExpIR;
 import org.overture.codegen.ir.types.ABoolBasicTypeIR;
@@ -36,57 +39,45 @@ public class GenerateDMTrans extends DepthFirstAnalysisCAdaptor
 
 		ADefaultClassDeclIR cl = node;
 
-		String tname = "";
-		
-		if(cl.getTag()!=null)
-			tname = cl.getTag().toString();
-			
-		
-		if(cl.getName().equals(SystemArchitectureAnalysis.systemName)){
+		if(cl.getTag()!=null){
+			String cpu = cl.getTag().toString();
 
-			AClassHeaderDeclIR header = cl.getAncestor(AClassHeaderDeclIR.class);
+			LinkedList<AFieldDeclIR> depObjs = SystemArchitectureAnalysis.systemDeployedObjects;
 
-			/** Init **/
-			String name = "DM" + tname;
-			AArrayDeclIR arrayDclInit = new AArrayDeclIR();
-			arrayDclInit.setStatic(null);
-			arrayDclInit.setName(name);
-			arrayDclInit.setType(newExternalType("extern bool"));
-			arrayDclInit.setSize(SystemArchitectureAnalysis.systemDeployedObjects.size());				
-			header.setArrDMinit(arrayDclInit);
+			if(cl.getName().equals(SystemArchitectureAnalysis.systemName)){
 
-			/** The map **/
-			AArrayDeclIR arrayDcl = new AArrayDeclIR();
-			arrayDcl.setStatic(null);
-			arrayDcl.setName(name);
-			arrayDcl.setType(newExternalType("bool"));
-			arrayDcl.setSize(SystemArchitectureAnalysis.systemDeployedObjects.size());
+				AClassHeaderDeclIR header = cl.getAncestor(AClassHeaderDeclIR.class);
 
-			// Add deployed objects information
-			ABoolLiteralExpIR b = new ABoolLiteralExpIR();
+				/** Init **/
+				String name = "DM";
+				AArrayDeclIR arrayDclInit = new AArrayDeclIR();
+				arrayDclInit.setStatic(null);
+				arrayDclInit.setName(name);
+				arrayDclInit.setType(newExternalType("extern bool"));
+				arrayDclInit.setSize(SystemArchitectureAnalysis.systemDeployedObjects.size());				
+				header.setArrDMinit(arrayDclInit);
 
-			b.setValue(true);
-			b.setType(new ABoolBasicTypeIR());
+				/** The map **/
+				AArrayDeclIR arrayDcl = new AArrayDeclIR();
+				arrayDcl.setStatic(null);
+				arrayDcl.setName(name);
+				arrayDcl.setType(newExternalType("bool"));
+				arrayDcl.setSize(SystemArchitectureAnalysis.systemDeployedObjects.size());
 
+				// Add deployed objects information
 
-			ABoolLiteralExpIR c = new ABoolLiteralExpIR();
+				LinkedList<Boolean> cpuDM = SystemArchitectureAnalysis.DM.get(cpu);
+				AAnonymousStruct structEntry = new AAnonymousStruct();
 
-			c.setValue(false);
-			c.setType(new ABoolBasicTypeIR());
-
-			AAnonymousStruct structEntry = new AAnonymousStruct();
-
-			structEntry.getExp().add(b);
-			structEntry.getExp().add(c);
-			//arrayDcl.setInitial(structEntry);
-
-			arrayDcl.getInitial().add(structEntry);
-
-			header.setArrDM(arrayDcl);
-
-			//header.get
-
-			//System.out.println();
+				for (Boolean val : cpuDM){
+					ABoolLiteralExpIR b = new ABoolLiteralExpIR();
+					b.setValue(val);
+					b.setType(new ABoolBasicTypeIR());
+					structEntry.getExp().add(b);
+				}
+				arrayDcl.getInitial().add(structEntry);
+				header.setArrDM(arrayDcl);
+			}
 		}
 	}
 

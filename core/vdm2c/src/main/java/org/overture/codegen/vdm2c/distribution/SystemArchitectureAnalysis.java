@@ -15,6 +15,7 @@ import org.overture.codegen.ir.declarations.AFieldDeclIR;
 import org.overture.codegen.ir.declarations.AMethodDeclIR;
 import org.overture.codegen.ir.declarations.ASystemClassDeclIR;
 import org.overture.codegen.ir.expressions.AEnumSetExpIR;
+import org.overture.codegen.ir.expressions.AExplicitVarExpIR;
 import org.overture.codegen.ir.expressions.ANewExpIR;
 import org.overture.codegen.ir.statements.ABlockStmIR;
 import org.overture.codegen.ir.statements.ACallObjectStmIR;
@@ -27,7 +28,8 @@ public class SystemArchitectureAnalysis
 	public static Map<String, AEnumSetExpIR> connectionMap = new HashMap<String, AEnumSetExpIR>();
 	public static LinkedList<AFieldDeclIR> systemDeployedObjects = new LinkedList<AFieldDeclIR>();
 	public static String systemName;
-	
+	public static Map<String,LinkedList<Boolean>> DM = new HashMap<String, LinkedList<Boolean>>();
+
 	public void initDistributionMap(String cpuName)
 	{
 		HashSet<SExpIR> set = new HashSet<SExpIR>();
@@ -54,14 +56,14 @@ public class SystemArchitectureAnalysis
 			ASystemClassDeclIR systemDef = (ASystemClassDeclIR) status.getIrNode().clone();
 
 			systemName = systemDef.getName();
-			
+
 			for (AFieldDeclIR f : systemDef.getFields())
 			{
 
 				if (f.getType() instanceof AClassTypeIR)
 				{
 					AClassTypeIR type = (AClassTypeIR) f.getType();
-					
+
 					if (type.getName().equals("CPU"))
 					{
 						// Initialise the distribution Map
@@ -117,6 +119,26 @@ public class SystemArchitectureAnalysis
 			}
 		}
 	}
+
+	public void generateDM(){
+
+		for(String cpu: distributionMap.keySet()){ // pr. cpu
+			LinkedList<Boolean> li = new LinkedList<Boolean>();
+			li.add(true); // first value is always true
+			for(AFieldDeclIR obj: systemDeployedObjects){ // pr. deployed object
+				Set<SExpIR> deployedObjs = distributionMap.get(cpu);
+				Boolean val = false;
+				for(SExpIR dep : deployedObjs)
+					if(dep.toString().equals(obj.getName().toString())) 
+						val = true;
+				li.add(val);
+			}
+			DM.put(cpu, li);
+		}
+
+	}
+
+
 	// if (status != null)
 	// {
 	// ASystemClassDeclIR systemDef = (ASystemClassDeclIR) status.getIrNode();

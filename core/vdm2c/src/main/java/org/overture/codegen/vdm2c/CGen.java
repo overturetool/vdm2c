@@ -169,6 +169,10 @@ public class CGen extends CodeGenBase
 
 		sysAnalysis.analyseSystem(statuses);
 
+		sysAnalysis.generateDM();
+		
+		Map<String, LinkedList<Boolean>> dm = SystemArchitectureAnalysis.DM;
+		
 		statuses = replaceSystemClassWithClass(statuses);
 
 		// Add individual system definition pr. CPU
@@ -217,10 +221,6 @@ public class CGen extends CodeGenBase
 
 		/** Distribution Transformations **/
 		applyDistTransformations(statuses);
-
-		for(IRStatus<PIR> st : statuses){
-			System.out.println(st.getIrNodeName());
-		}
 
 		/** Create a new folder for each CPU **/
 		for (String cpuName : SystemArchitectureAnalysis.distributionMap.keySet())
