@@ -22,6 +22,72 @@ void test_newInt()
 }
 
 
+
+void test_toInteger()
+{
+	TVP a;
+	int i, numRuns, res;
+
+	srand(time(NULL));
+
+	for(i = 0, numRuns = 1000;  i < numRuns;  i++)
+	{
+		a = newInt(rand());
+		res = toInteger(a);
+		vdmFree(a);
+
+		a = newNat(rand());
+		res = toInteger(a);
+		vdmFree(a);
+
+		a = newNat1(rand());
+		res = toInteger(a);
+		vdmFree(a);
+
+		/*  Not yet implemented.
+		a = newRat(rand());
+		vdmFree(a);
+		 */
+	}
+}
+
+
+
+void test_toDouble()
+{
+	TVP a;
+	int i, numRuns;
+	double res;
+
+	srand(time(NULL));
+
+	for(i = 0, numRuns = 1000;  i < numRuns;  i++)
+	{
+		a = newInt(rand());
+		res = toDouble(a);
+		vdmFree(a);
+
+		a = newNat(rand());
+		res = toDouble(a);
+		vdmFree(a);
+
+		a = newNat1(rand());
+		res = toDouble(a);
+		vdmFree(a);
+
+		a = newReal(rand());
+		res = toDouble(a);
+		vdmFree(a);
+
+		/*  Not yet implemented.
+		a = newRat(rand());
+		vdmFree(a);
+		 */
+	}
+}
+
+
+
 void test_newNat()
 {
 	int numRuns;
@@ -52,6 +118,709 @@ void test_newNat1()
 	{
 		theNat1 = newNat1(rand());		
 		vdmFree(theNat1);
+	}
+}
+
+
+
+void test_vdmMinus()
+{
+	TVP a;
+	TVP res;
+	int i, numRuns;
+
+	srand(time(NULL));
+
+	for(i = 0, numRuns = 1000;  i < numRuns;  i++)
+	{
+		a = newInt(rand());
+		res = vdmMinus(a);
+		vdmFree(a);
+		vdmFree(res);
+
+		a = newNat(rand());
+		res = vdmMinus(a);
+		vdmFree(a);
+		vdmFree(res);
+
+		a = newNat1(rand());
+		res = vdmMinus(a);
+		vdmFree(a);
+		vdmFree(res);
+
+		a = newReal(rand());
+		res = vdmMinus(a);
+		vdmFree(a);
+		vdmFree(res);
+
+		/*  Not yet implemented.
+		a = newRat(rand());
+		vdmFree(a);
+		 */
+	}
+}
+
+
+
+void test_vdmAbs()
+{
+	TVP a;
+	TVP res;
+	int i, numRuns;
+
+	srand(time(NULL));
+
+	for(i = 0, numRuns = 1000;  i < numRuns;  i++)
+	{
+		a = newInt(rand());
+		res = vdmAbs(a);
+		vdmFree(a);
+		vdmFree(res);
+
+		a = newNat(rand());
+		res = vdmAbs(a);
+		vdmFree(a);
+		vdmFree(res);
+
+		a = newNat1(rand());
+		res = vdmAbs(a);
+		vdmFree(a);
+		vdmFree(res);
+
+		a = newReal(rand());
+		res = vdmAbs(a);
+		vdmFree(a);
+		vdmFree(res);
+
+		/*  Not yet implemented.
+		a = newRat(rand());
+		 */
+	}
+}
+
+
+
+void test_vdmFloor()
+{
+	TVP a;
+	TVP res;
+	int i, numRuns;
+
+	srand(time(NULL));
+
+	for(i = 0, numRuns = 1000;  i < numRuns;  i++)
+	{
+		a = newReal(rand());
+		res = vdmFloor(a);
+		vdmFree(a);
+		vdmFree(res);
+
+		/*  Not yet implemented.
+		a = newRat(rand());
+		 */
+	}
+}
+
+
+
+void test_vdmSum()
+{
+	TVP a;
+	TVP b;
+	TVP res;
+	int i, numRuns;
+
+	srand(time(NULL));
+
+	for(i = 0, numRuns = 1000;  i < numRuns;  i++)
+	{
+		a = newInt(rand());
+		b = newInt(rand());
+		res = vdmSum(a, b);
+		vdmFree(a);
+		vdmFree(b);
+		vdmFree(res);
+
+		a = newNat(rand());
+		b = newNat(rand());
+		res = vdmSum(a, b);
+		vdmFree(a);
+		vdmFree(b);
+		vdmFree(res);
+
+		a = newNat1(rand());
+		b = newNat1(rand());
+		res = vdmSum(a, b);
+		vdmFree(a);
+		vdmFree(b);
+		vdmFree(res);
+
+		a = newReal(rand());
+		b = newReal(rand());
+		res = vdmSum(a, b);
+		vdmFree(a);
+		vdmFree(b);
+		vdmFree(res);
+
+		/*  Not yet implemented.
+		a = newRat(rand());
+		res = toInteger(a);
+		vdmFree(a);
+		 */
+	}
+}
+
+
+void test_vdmDifference()
+{
+	TVP a;
+	TVP b;
+	TVP res;
+	int i, numRuns;
+
+	srand(time(NULL));
+
+	for(i = 0, numRuns = 1000;  i < numRuns;  i++)
+	{
+		a = newInt(rand());
+		b = newInt(rand());
+		res = vdmDifference(a, b);
+		vdmFree(a);
+		vdmFree(b);
+		vdmFree(res);
+
+		a = newNat(rand());
+		b = newNat(rand());
+		res = vdmDifference(a, b);
+		vdmFree(a);
+		vdmFree(b);
+		vdmFree(res);
+
+		a = newNat1(rand());
+		b = newNat1(rand());
+		res = vdmDifference(a, b);
+		vdmFree(a);
+		vdmFree(b);
+		vdmFree(res);
+
+		a = newReal(rand());
+		b = newReal(rand());
+		res = vdmDifference(a, b);
+		vdmFree(a);
+		vdmFree(b);
+		vdmFree(res);
+
+		/*  Not yet implemented.
+		a = newRat(rand());
+		res = toInteger(a);
+		vdmFree(a);
+		 */
+	}
+}
+
+
+void test_vdmProduct()
+{
+	TVP a;
+	TVP b;
+	TVP res;
+	int i, numRuns;
+
+	srand(time(NULL));
+
+	for(i = 0, numRuns = 1000;  i < numRuns;  i++)
+	{
+		a = newInt(rand());
+		b = newInt(rand());
+		res = vdmProduct(a, b);
+		vdmFree(a);
+		vdmFree(b);
+		vdmFree(res);
+
+		a = newNat(rand());
+		b = newNat(rand());
+		res = vdmProduct(a, b);
+		vdmFree(a);
+		vdmFree(b);
+		vdmFree(res);
+
+		a = newNat1(rand());
+		b = newNat1(rand());
+		res = vdmProduct(a, b);
+		vdmFree(a);
+		vdmFree(b);
+		vdmFree(res);
+
+		a = newReal(rand());
+		b = newReal(rand());
+		res = vdmProduct(a, b);
+		vdmFree(a);
+		vdmFree(b);
+		vdmFree(res);
+
+		/*  Not yet implemented.
+		a = newRat(rand());
+		res = toInteger(a);
+		vdmFree(a);
+		 */
+	}
+}
+
+
+void test_vdmGreaterThan()
+{
+	TVP a;
+	TVP b;
+	TVP res;
+	int i, numRuns;
+
+	srand(time(NULL));
+
+	for(i = 0, numRuns = 1000;  i < numRuns;  i++)
+	{
+		a = newInt(rand());
+		b = newInt(rand());
+		res = vdmGreaterThan(a, b);
+		vdmFree(a);
+		vdmFree(b);
+		vdmFree(res);
+
+		a = newNat(rand());
+		b = newNat(rand());
+		res = vdmGreaterThan(a, b);
+		vdmFree(a);
+		vdmFree(b);
+		vdmFree(res);
+
+		a = newNat1(rand());
+		b = newNat1(rand());
+		res = vdmGreaterThan(a, b);
+		vdmFree(a);
+		vdmFree(b);
+		vdmFree(res);
+
+		a = newReal(rand());
+		b = newReal(rand());
+		res = vdmGreaterThan(a, b);
+		vdmFree(a);
+		vdmFree(b);
+		vdmFree(res);
+
+		/*  Not yet implemented.
+		a = newRat(rand());
+		res = toInteger(a);
+		vdmFree(a);
+		 */
+	}
+}
+
+
+
+void test_vdmGreaterOrEqual()
+{
+	TVP a;
+	TVP b;
+	TVP res;
+	int i, numRuns;
+
+	srand(time(NULL));
+
+	for(i = 0, numRuns = 1000;  i < numRuns;  i++)
+	{
+		a = newInt(rand());
+		b = newInt(rand());
+		res = vdmGreaterOrEqual(a, b);
+		vdmFree(a);
+		vdmFree(b);
+		vdmFree(res);
+
+		a = newNat(rand());
+		b = newNat(rand());
+		res = vdmGreaterOrEqual(a, b);
+		vdmFree(a);
+		vdmFree(b);
+		vdmFree(res);
+
+		a = newNat1(rand());
+		b = newNat1(rand());
+		res = vdmGreaterOrEqual(a, b);
+		vdmFree(a);
+		vdmFree(b);
+		vdmFree(res);
+
+		a = newReal(rand());
+		b = newReal(rand());
+		res = vdmGreaterOrEqual(a, b);
+		vdmFree(a);
+		vdmFree(b);
+		vdmFree(res);
+
+		/*  Not yet implemented.
+		a = newRat(rand());
+		res = toInteger(a);
+		vdmFree(a);
+		 */
+	}
+}
+
+
+
+void test_vdmEqual()
+{
+	TVP a;
+	TVP b;
+	TVP res;
+	int i, numRuns;
+
+	srand(time(NULL));
+
+	for(i = 0, numRuns = 1000;  i < numRuns;  i++)
+	{
+		a = newInt(rand());
+		b = newInt(rand());
+		res = vdmEqual(a, b);
+		vdmFree(a);
+		vdmFree(b);
+		vdmFree(res);
+
+		a = newNat(rand());
+		b = newNat(rand());
+		res = vdmEqual(a, b);
+		vdmFree(a);
+		vdmFree(b);
+		vdmFree(res);
+
+		a = newNat1(rand());
+		b = newNat1(rand());
+		res = vdmEqual(a, b);
+		vdmFree(a);
+		vdmFree(b);
+		vdmFree(res);
+
+		a = newReal(rand());
+		b = newReal(rand());
+		res = vdmEqual(a, b);
+		vdmFree(a);
+		vdmFree(b);
+		vdmFree(res);
+
+		/*  Not yet implemented.
+		a = newRat(rand());
+		res = toInteger(a);
+		vdmFree(a);
+		 */
+	}
+}
+
+
+
+
+void test_vdmNotEqual()
+{
+	TVP a;
+	TVP b;
+	TVP res;
+	int i, numRuns;
+
+	srand(time(NULL));
+
+	for(i = 0, numRuns = 1000;  i < numRuns;  i++)
+	{
+		a = newInt(rand());
+		b = newInt(rand());
+		res = vdmNotEqual(a, b);
+		vdmFree(a);
+		vdmFree(b);
+		vdmFree(res);
+
+		a = newNat(rand());
+		b = newNat(rand());
+		res = vdmNotEqual(a, b);
+		vdmFree(a);
+		vdmFree(b);
+		vdmFree(res);
+
+		a = newNat1(rand());
+		b = newNat1(rand());
+		res = vdmNotEqual(a, b);
+		vdmFree(a);
+		vdmFree(b);
+		vdmFree(res);
+
+		a = newReal(rand());
+		b = newReal(rand());
+		res = vdmNotEqual(a, b);
+		vdmFree(a);
+		vdmFree(b);
+		vdmFree(res);
+
+		/*  Not yet implemented.
+		a = newRat(rand());
+		res = toInteger(a);
+		vdmFree(a);
+		 */
+	}
+}
+
+
+
+void test_vdmLessThan()
+{
+	TVP a;
+	TVP b;
+	TVP res;
+	int i, numRuns;
+
+	srand(time(NULL));
+
+	for(i = 0, numRuns = 1000;  i < numRuns;  i++)
+	{
+		a = newInt(rand());
+		b = newInt(rand());
+		res = vdmLessThan(a, b);
+		vdmFree(a);
+		vdmFree(b);
+		vdmFree(res);
+
+		a = newNat(rand());
+		b = newNat(rand());
+		res = vdmLessThan(a, b);
+		vdmFree(a);
+		vdmFree(b);
+		vdmFree(res);
+
+		a = newNat1(rand());
+		b = newNat1(rand());
+		res = vdmLessThan(a, b);
+		vdmFree(a);
+		vdmFree(b);
+		vdmFree(res);
+
+		a = newReal(rand());
+		b = newReal(rand());
+		res = vdmLessThan(a, b);
+		vdmFree(a);
+		vdmFree(b);
+		vdmFree(res);
+
+		/*  Not yet implemented.
+		a = newRat(rand());
+		res = toInteger(a);
+		vdmFree(a);
+		 */
+	}
+}
+
+
+
+void test_vdmLessOrEqual()
+{
+	TVP a;
+	TVP b;
+	TVP res;
+	int i, numRuns;
+
+	srand(time(NULL));
+
+	for(i = 0, numRuns = 1000;  i < numRuns;  i++)
+	{
+		a = newInt(rand());
+		b = newInt(rand());
+		res = vdmLessOrEqual(a, b);
+		vdmFree(a);
+		vdmFree(b);
+		vdmFree(res);
+
+		a = newNat(rand());
+		b = newNat(rand());
+		res = vdmLessOrEqual(a, b);
+		vdmFree(a);
+		vdmFree(b);
+		vdmFree(res);
+
+		a = newNat1(rand());
+		b = newNat1(rand());
+		res = vdmLessOrEqual(a, b);
+		vdmFree(a);
+		vdmFree(b);
+		vdmFree(res);
+
+		a = newReal(rand());
+		b = newReal(rand());
+		res = vdmLessOrEqual(a, b);
+		vdmFree(a);
+		vdmFree(b);
+		vdmFree(res);
+
+		/*  Not yet implemented.
+		a = newRat(rand());
+		res = toInteger(a);
+		vdmFree(a);
+		 */
+	}
+}
+
+
+
+void test_vdmPower()
+{
+	TVP a;
+	TVP b;
+	TVP res;
+	int i, numRuns;
+
+	srand(time(NULL));
+
+	for(i = 0, numRuns = 1000;  i < numRuns;  i++)
+	{
+		a = newInt(rand() % 10);
+		b = newInt(rand() % 10);
+		res = vdmPower(a, b);
+		vdmFree(a);
+		vdmFree(b);
+		vdmFree(res);
+
+		a = newNat(rand() % 10);
+		b = newNat(rand() % 10);
+		res = vdmPower(a, b);
+		vdmFree(a);
+		vdmFree(b);
+		vdmFree(res);
+
+		a = newNat1(rand() % 10);
+		b = newNat1(rand() % 10);
+		res = vdmPower(a, b);
+		vdmFree(a);
+		vdmFree(b);
+		vdmFree(res);
+
+		a = newReal(rand() % 10);
+		b = newReal(rand() % 10);
+		res = vdmPower(a, b);
+		vdmFree(a);
+		vdmFree(b);
+		vdmFree(res);
+
+		/*  Not yet implemented.
+		a = newRat(rand());
+		vdmFree(a);
+		 */
+	}
+}
+
+
+
+void test_vdmDivision()
+{
+	TVP a;
+	TVP b;
+	TVP res;
+	int i, numRuns;
+
+	srand(time(NULL));
+
+	for(i = 0, numRuns = 1000;  i < numRuns;  i++)
+	{
+		a = newInt(rand());
+		b = newInt(rand() + 1);
+		res = vdmDivision(a, b);
+		vdmFree(a);
+		vdmFree(b);
+		vdmFree(res);
+
+		a = newNat(rand());
+		b = newNat(rand() + 1);
+		res = vdmDivision(a, b);
+		vdmFree(a);
+		vdmFree(b);
+		vdmFree(res);
+
+		a = newNat1(rand());
+		b = newNat1(rand() + 1);
+		res = vdmDivision(a, b);
+		vdmFree(a);
+		vdmFree(b);
+		vdmFree(res);
+
+		a = newReal(rand());
+		b = newReal(rand() + 1);
+		res = vdmDivision(a, b);
+		vdmFree(a);
+		vdmFree(b);
+		vdmFree(res);
+
+		/*  Not yet implemented.
+		a = newRat(rand());
+		res = toInteger(a);
+		vdmFree(a);
+		 */
+	}
+}
+
+
+
+void test_vdmDiv()
+{
+	TVP a;
+	TVP b;
+	TVP res;
+	int i, numRuns;
+
+	srand(time(NULL));
+
+	for(i = 0, numRuns = 1000;  i < numRuns;  i++)
+	{
+		a = newInt(rand());
+		b = newInt(rand() + 1);
+		res = vdmDiv(a, b);
+		vdmFree(a);
+		vdmFree(b);
+		vdmFree(res);
+	}
+}
+
+
+
+
+void test_vdmRem()
+{
+	TVP a;
+	TVP b;
+	TVP res;
+	int i, numRuns;
+
+	srand(time(NULL));
+
+	for(i = 0, numRuns = 1000;  i < numRuns;  i++)
+	{
+		a = newInt(rand());
+		b = newInt(rand() + 1);
+		res = vdmRem(a, b);
+		vdmFree(a);
+		vdmFree(b);
+		vdmFree(res);
+	}
+}
+
+
+
+void test_vdmMod()
+{
+	TVP a;
+	TVP b;
+	TVP res;
+	int i, numRuns;
+
+	srand(time(NULL));
+
+	for(i = 0, numRuns = 1000;  i < numRuns;  i++)
+	{
+		a = newInt(rand());
+		b = newInt(rand() + 1);
+		res = vdmMod(a, b);
+		vdmFree(a);
+		vdmFree(b);
+		vdmFree(res);
 	}
 }
 
@@ -152,9 +921,15 @@ void test_vdmBiimplication()
 
 void test_toBool()
 {
-	TVP a = newBool(false);
-	bool b = toBool(a);
+	TVP a;
+	bool b;
 
+	a = newBool(false);
+	b = toBool(a);
+	vdmFree(a);
+
+	a = newBool(true);
+	b = toBool(a);
 	vdmFree(a);
 }
 
@@ -345,6 +1120,25 @@ int main()
 	test_newInt();
 	test_newNat();
 	test_newNat1();
+	test_toInteger();
+	test_toDouble();
+	test_vdmMinus();
+	test_vdmAbs();
+	test_vdmFloor();
+	test_vdmSum();
+	test_vdmDifference();
+	test_vdmProduct();
+	test_vdmDivision();
+	test_vdmPower();
+	test_vdmDiv();
+	test_vdmRem();
+	test_vdmMod();
+	test_vdmGreaterThan();
+	test_vdmGreaterOrEqual();
+	test_vdmLessThan();
+	test_vdmLessOrEqual();
+	test_vdmEqual();
+	test_vdmNotEqual();
 
 	test_newBool();
 	test_vdmNot();
