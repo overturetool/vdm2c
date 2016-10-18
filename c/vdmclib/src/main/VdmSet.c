@@ -54,6 +54,8 @@ static void vdmSetAdd(struct TypedValue** value, int* index, TVP newValue)
 		value[*index] = newValue;
 		*index = (*index) + 1;
 	}
+	else
+		vdmFree(newValue);
 }
 //End utility functions
 //------------------------------------------------

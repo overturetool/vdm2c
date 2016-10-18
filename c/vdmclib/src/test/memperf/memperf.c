@@ -128,7 +128,7 @@ void testNewQuote()
 
 void testNewSetWithValues()
 {
-	int numElems = 100;
+	int numElems = 1000;
 	TVP elems[numElems];
 	TVP theSet;
 	int elem;
@@ -137,7 +137,7 @@ void testNewSetWithValues()
 
 	for(elem = 0;  elem < numElems;  elem++)
 	{
-		elems[elem] = newBool(true);
+		elems[elem] = newInt(rand() % 10);  //Modulo 10 to force some duplicates.
 	}
 
 	theSet = newSetWithValues(numElems, elems);
