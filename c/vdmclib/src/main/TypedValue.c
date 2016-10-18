@@ -378,7 +378,7 @@ bool collectionEqual(TVP col1,TVP col2)
 	return match;
 }
 
-void recursiveFree(struct TypedValue* ptr)
+void vdmFree(struct TypedValue* ptr)
 {
 	if (ptr == NULL)
 		return;
@@ -408,7 +408,7 @@ void recursiveFree(struct TypedValue* ptr)
 		{
 			if (cptr->value[i] != NULL)
 			{
-				recursiveFree(cptr->value[i]);
+				vdmFree(cptr->value[i]);
 			}
 		}
 		free(cptr);
