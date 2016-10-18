@@ -54,6 +54,7 @@ static void vdmSetAdd(struct TypedValue** value, int* index, TVP newValue)
 		value[*index] = newValue;
 		*index = (*index) + 1;
 	}
+	//This value is a duplicate, so must not leave it lying around.
 	else
 		vdmFree(newValue);
 }
