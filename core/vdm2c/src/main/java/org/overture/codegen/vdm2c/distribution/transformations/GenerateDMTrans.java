@@ -21,79 +21,85 @@ public class GenerateDMTrans extends DepthFirstAnalysisCAdaptor
 	{
 	}
 
-//	@Override
-//	public void caseAMethodDeclIR(AMethodDeclIR node) throws AnalysisException
-//	{
-//		if(node.getName().equals(SystemArchitectureAnalysis.systemName + "_static_init")){
-//		//System.out.println("Dist transformation, method name: " + node.getName());
-//		}
-//	}
-	
+	//	@Override
+	//	public void caseAMethodDeclIR(AMethodDeclIR node) throws AnalysisException
+	//	{
+	//		if(node.getName().equals(SystemArchitectureAnalysis.systemName + "_static_init")){
+	//		//System.out.println("Dist transformation, method name: " + node.getName());
+	//		}
+	//	}
+
 	@Override
 	public void caseADefaultClassDeclIR(ADefaultClassDeclIR node)
 			throws AnalysisException
 	{
-		
+
 		ADefaultClassDeclIR cl = node;
+
+		String tname = "";
+		
+		if(cl.getTag()!=null)
+			tname = cl.getTag().toString();
+			
 		
 		if(cl.getName().equals(SystemArchitectureAnalysis.systemName)){
-		
-		AClassHeaderDeclIR header = cl.getAncestor(AClassHeaderDeclIR.class);
-		
-		/** Init **/
-		String name = "DM";
-		AArrayDeclIR arrayDclInit = new AArrayDeclIR();
-		arrayDclInit.setStatic(null);
-		arrayDclInit.setName(name);
-		arrayDclInit.setType(newExternalType("extern bool"));
-		arrayDclInit.setSize(SystemArchitectureAnalysis.systemDeployedObjects.size());				
-		header.setArrDMinit(arrayDclInit);
-		
-		/** The map **/
-		AArrayDeclIR arrayDcl = new AArrayDeclIR();
-		arrayDcl.setStatic(null);
-		arrayDcl.setName(name);
-		arrayDcl.setType(newExternalType("extern bool"));
-		arrayDcl.setSize(SystemArchitectureAnalysis.systemDeployedObjects.size());
-		
-		// Add deployed objects information
-		ABoolLiteralExpIR b = new ABoolLiteralExpIR();
-		
-		b.setValue(true);
-		b.setType(new ABoolBasicTypeIR());
-		
-		
-		ABoolLiteralExpIR c = new ABoolLiteralExpIR();
-		
-		c.setValue(false);
-		c.setType(new ABoolBasicTypeIR());
-		
-		AAnonymousStruct structEntry = new AAnonymousStruct();
 
-		structEntry.getExp().add(b);
-		structEntry.getExp().add(c);
-		//arrayDcl.setInitial(structEntry);
-		
-		arrayDcl.getInitial().add(structEntry);
-				
-		header.setArrDM(arrayDcl);
-		
-		//header.get
-		
-		//System.out.println();
+			AClassHeaderDeclIR header = cl.getAncestor(AClassHeaderDeclIR.class);
+
+			/** Init **/
+			String name = "DM" + tname;
+			AArrayDeclIR arrayDclInit = new AArrayDeclIR();
+			arrayDclInit.setStatic(null);
+			arrayDclInit.setName(name);
+			arrayDclInit.setType(newExternalType("extern bool"));
+			arrayDclInit.setSize(SystemArchitectureAnalysis.systemDeployedObjects.size());				
+			header.setArrDMinit(arrayDclInit);
+
+			/** The map **/
+			AArrayDeclIR arrayDcl = new AArrayDeclIR();
+			arrayDcl.setStatic(null);
+			arrayDcl.setName(name);
+			arrayDcl.setType(newExternalType("bool"));
+			arrayDcl.setSize(SystemArchitectureAnalysis.systemDeployedObjects.size());
+
+			// Add deployed objects information
+			ABoolLiteralExpIR b = new ABoolLiteralExpIR();
+
+			b.setValue(true);
+			b.setType(new ABoolBasicTypeIR());
+
+
+			ABoolLiteralExpIR c = new ABoolLiteralExpIR();
+
+			c.setValue(false);
+			c.setType(new ABoolBasicTypeIR());
+
+			AAnonymousStruct structEntry = new AAnonymousStruct();
+
+			structEntry.getExp().add(b);
+			structEntry.getExp().add(c);
+			//arrayDcl.setInitial(structEntry);
+
+			arrayDcl.getInitial().add(structEntry);
+
+			header.setArrDM(arrayDcl);
+
+			//header.get
+
+			//System.out.println();
 		}
 	}
-	
-//	@Override
-//	public void caseAArrayDeclIR(AArrayDeclIR node) throws AnalysisException
-//	{
-//		// TODO Auto-generated method stub
-//		super.caseAArrayDeclIR(node);
-//		
-//		System.out.println(node.getName());
-//		
-//		
-//	}
-	
+
+	//	@Override
+	//	public void caseAArrayDeclIR(AArrayDeclIR node) throws AnalysisException
+	//	{
+	//		// TODO Auto-generated method stub
+	//		super.caseAArrayDeclIR(node);
+	//		
+	//		System.out.println(node.getName());
+	//		
+	//		
+	//	}
+
 
 }
