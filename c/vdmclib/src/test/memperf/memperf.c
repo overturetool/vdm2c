@@ -128,28 +128,63 @@ void testNewQuote()
 
 void testNewSetWithValues()
 {
-	int numElems = 1000;
+	int numElems = 100;
+	int numSubElems;
 	TVP elems[numElems];
+	TVP *subElems;
 	TVP theSet;
-	int elem;
-	
+	int elem, i;
+
 	srand(time(NULL));
 
+	//Test set containing basic values.
 	for(elem = 0;  elem < numElems;  elem++)
 	{
 		elems[elem] = newInt(rand() % 10);  //Modulo 10 to force some duplicates.
 	}
 
 	theSet = newSetWithValues(numElems, elems);
-	
-	vdmFree(theSet);
 
 	for(elem = 0;  elem < numElems;  elem++)
 	{
 		vdmFree(elems[elem]);
 	}
-}
 
+	vdmFree(theSet);
+
+	//Test set containing sets.
+	for(elem = 0;  elem < numElems;  elem++)
+	{
+		//Number of elements in current element.
+		numSubElems = rand() %	100;
+		subElems = malloc(numSubElems * sizeof(TVP));
+
+		//Populate current selement.
+		for(i = 0;  i < numSubElems;  i++)
+		{
+			subElems[i] = newInt(rand());
+		}
+
+		elems[elem] = newSetWithValues(numSubElems, subElems);
+
+		for(i = 0;  i < numSubElems;  i++)
+		{
+			vdmFree(subElems[i]);
+		}
+		free(subElems);
+	}
+
+	//Create test set.
+	theSet = newSetWithValues(numElems, elems);
+
+	//Clean up.
+	for(elem = 0;  elem < numElems;  elem++)
+	{
+		vdmFree(elems[elem]);
+	}
+
+	vdmFree(theSet);
+}
 
 
 int main()
