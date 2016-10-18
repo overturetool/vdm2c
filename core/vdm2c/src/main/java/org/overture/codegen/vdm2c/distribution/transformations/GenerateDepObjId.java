@@ -25,8 +25,8 @@ import org.overture.codegen.vdm2c.extast.statements.ALocalVariableDeclarationStm
 public class GenerateDepObjId extends DepthFirstAnalysisCAdaptor
 {
 
-	int obj_id = 0;
 	
+
 	public GenerateDepObjId(TransAssistantIR transformationAssistant)
 	{
 	}
@@ -34,11 +34,8 @@ public class GenerateDepObjId extends DepthFirstAnalysisCAdaptor
 	@Override
 	public void caseAMethodDeclIR(AMethodDeclIR node) throws AnalysisException
 	{
+		int obj_id = 0;
 
-		if(node.getName().equals("_Z8TestFuncEII")){
-			System.out.println();
-		}
-		
 		ADefaultClassDeclIR cl = node.getAncestor(ADefaultClassDeclIR.class);
 
 		// LinkedList<AMethodDeclIR> mthL = cl.getMethods();
@@ -48,10 +45,10 @@ public class GenerateDepObjId extends DepthFirstAnalysisCAdaptor
 				+ "_static_init"))
 		{
 			//System.out.println("Dist transformation, method name: "
-				//	+ node.getName());
+			//	+ node.getName());
 
 			LinkedList<String> initFunName = new LinkedList<>();
-			
+
 			// Get body
 
 			if (node.getBody() instanceof ABlockStmIR)
@@ -74,7 +71,7 @@ public class GenerateDepObjId extends DepthFirstAnalysisCAdaptor
 				}
 
 			}
-			
+
 			for (AMethodDeclIR m : cl.getMethods())
 			{
 				if (initFunName.contains(m.getName()))
@@ -83,26 +80,26 @@ public class GenerateDepObjId extends DepthFirstAnalysisCAdaptor
 					if (node.getBody() instanceof ABlockStmIR)
 					{
 						ABlockStmIR mBody = (ABlockStmIR) m.getBody();
-						
+
 						ALocalVariableDeclarationStmIR firstElem = (ALocalVariableDeclarationStmIR) mBody.getStatements().get(0);
-						
+
 						// Build new assignment expression
 						AAssignToExpStmIR sec = new AAssignToExpStmIR();
-											
+
 						// 1. Set exp
 						AIntLiteralExpIR id = new AIntLiteralExpIR();
 						ANat1NumericBasicTypeIR ty = new ANat1NumericBasicTypeIR();
 						id.setType(ty);
 						id.setValue((long) obj_id);
 						sec.setExp(id);
-						
+
 						// 2. Set target
 						AIdentifierVarExpIR ta = new AIdentifierVarExpIR();
 						ta.setIsLocal(true);
 						ta.setName(firstElem.getDecleration().getPattern().toString() + "->id");
 						ta.setType(new AIntNumericBasicTypeIR());
 						sec.setTarget(ta);
-						
+
 						// Add it to function body
 						mBody.getStatements().add(1, sec);
 					}
