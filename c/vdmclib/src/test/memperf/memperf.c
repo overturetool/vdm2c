@@ -989,6 +989,33 @@ void test_newQuote()
 
 
 //------------  Sets  -------------------
+TVP generateRandomSet()
+{
+	int numElems = 100;
+	TVP elems[numElems];
+	TVP theSet;
+	TVP res;
+	int elem, i;
+
+	srand(time(NULL));
+
+	//Test set containing basic values.
+	for(elem = 0;  elem < numElems;  elem++)
+	{
+		elems[elem] = newInt(rand() % 10);  //Modulo 10 to force some duplicates.
+	}
+
+	theSet = newSetWithValues(numElems, elems);
+
+	for(elem = 0;  elem < numElems;  elem++)
+	{
+		vdmFree(elems[elem]);
+	}
+
+	return theSet;
+}
+
+
 
 void test_newSetWithValues()
 {
@@ -1049,6 +1076,37 @@ void test_newSetWithValues()
 
 	vdmFree(theSet);
 }
+
+
+
+void test_vdmSetElementAt()
+{
+	TVP theSet;
+	TVP res;
+	int elem, i, numElems;
+
+	theSet = generateRandomSet();
+
+	res = vdmSetCard(theSet);
+	numElems = res->value.intVal;
+	vdmFree(res);
+
+	for(elem = 0;  elem < numElems;  elem++)
+	{
+		res = vdmSetElementAt(theSet, elem);
+		vdmFree(res);
+	}
+
+	vdmFree(theSet);
+}
+
+
+
+void test_vdmSetMemberOf()
+{
+
+}
+
 
 
 
@@ -1120,6 +1178,10 @@ int main()
 	test_newInt();
 	test_newNat();
 	test_newNat1();
+	test_newReal();
+	test_newChar();
+	test_newQuote();
+
 	test_toInteger();
 	test_toDouble();
 	test_vdmMinus();
@@ -1148,10 +1210,10 @@ int main()
 	test_vdmImplies();
 	test_vdmBiimplication();
 
-	test_newReal();
-	test_newChar();
-	test_newQuote();
 	test_newSetWithValues();
+	test_vdmSetElementAt();
+
+
 	test_newSeqWithValues();
 
 	return 0;
