@@ -45,9 +45,6 @@ public class ClassHeaderGenerator
 
 			header.setOriginalDef(classDef);
 
-			if(!(classDef.getTag()==null))
-				header.setTag(classDef.getTag().toString());
-			
 			AClassStateDeclIR state = new AClassStateDeclIR();
 			for (AFieldDeclIR field : classDef.getFields())
 			{
