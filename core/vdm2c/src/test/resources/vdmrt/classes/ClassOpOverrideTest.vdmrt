@@ -1,17 +1,24 @@
-class ClassOpOverrideTest is subclass of TestCase, ClassOpOverride1
+class ClassOpOverrideTest1 is subclass of TestCase, ClassOpOverride1
 
 operations
 
-public testOp : () ==>()
-testOp()== assertTrue( op());
+public testOp1 : () ==>()
+testOp1()== assertTrue( op1());
+
+public testOp3 : () ==>()
+testOp3()== assertTrue( op3());
+
+end ClassOpOverrideTest1
+
+
+class ClassOpOverrideTest2 is subclass of TestCase, ClassOpOverride2
+
+operations
 
 public testOp2 : () ==>()
 testOp2()== assertTrue( op2());
 
---public testOp3 : () ==>()
---testOp3()==assertTrue( op3());
---
---public testextCall: ()==>bool
---testextCall()==return extCall();
+public testOp4 : () ==>()
+testOp4()== assertTrue( op4());
 
-end ClassOpOverrideTest
+end ClassOpOverrideTest2

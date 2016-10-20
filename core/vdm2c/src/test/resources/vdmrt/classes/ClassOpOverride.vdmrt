@@ -2,8 +2,20 @@ class ClassOpOverride
 
 operations
 
-public op: () ==> bool
-op()==return false;
+public op1: () ==> bool
+op1()==return false;
+
+public op2: () ==> bool
+op2()==return false;
+
+public op3: () ==> bool
+op3()==return false;
+
+public op4: () ==> bool
+op4()==return false;
+
+public op5: () ==> bool
+op5()==return false;
 
 end ClassOpOverride
 
@@ -13,53 +25,95 @@ class ClassOpOverride1 is subclass of ClassOpOverride
 
 operations
 
-public op: () ==> bool
-op()==return true;
+public op1: () ==> bool
+op1()==return true;
 
 
-public op2: () ==> bool
-op2()==return false;
-
-public op2Only: () ==> bool
-op2Only()==return true;
+public op3: () ==> bool
+op3()==return true;
 
 end ClassOpOverride1
 
 
-class ClassOpOverride2 is subclass of ClassOpOverride1
+
+class ClassOpOverride2 is subclass of ClassOpOverride
 
 operations
-
-public op: () ==> bool
-op()==return false;
 
 public op2: () ==> bool
 op2()==return true;
 
-public op3: () ==> bool
-op3()==return true;
---
---public extCall : () ==> bool
---extCall()==let tmp =  new ClassOpOverride2()in
---(
---	let - = tmp.op2Only() in skip;
---	let - = tmp.op() in skip;
---	let - = tmp.op2() in skip;
---	let - = tmp.op3() in skip;
---	return true;
---); 
---
+
+public op4: () ==> bool
+op4()==return true;
+
 end ClassOpOverride2
 
---class ClassOpOverrideCaller
---
---operations
---
---public extCall : () ==> bool
---extCall()==let tmp =  new ClassOpOverride2()in
---(let - = tmp.op() in skip;
---let - =tmp.op2() in skip;
---let - =tmp.op3() in skip;
---return true;) 
---
---end ClassOpOverrideCaller
+
+
+class ClassOverrideCaller
+instance variables
+clbase : ClassOpOverride := new ClassOpOverride();
+cl1 : ClassOpOverride1 := new ClassOpOverride1();
+cl2 : ClassOpOverride2 := new ClassOpOverride2();
+
+operations
+public checkBaseOp1 : () ==> bool
+checkBaseOp1() ==
+	return clbase.op1();
+	
+public checkBaseOp2 : () ==> bool
+checkBaseOp2() ==
+	return clbase.op2();
+	
+public checkBaseOp3 : () ==> bool	
+checkBaseOp3() ==
+	return clbase.op3();
+
+public checkBaseOp4 : () ==> bool
+checkBaseOp4() ==
+	return clbase.op4();
+	
+	public checkBaseOp5 : () ==> bool
+checkBaseOp5() ==
+	return clbase.op5();
+
+public checkOverrideOp1 : () ==> bool
+checkOverrideOp1() ==
+	return cl1.op1();
+	
+public checkOverrideOp2 : () ==> bool
+checkOverrideOp2() ==
+	return cl1.op2();
+	
+public checkOverrideOp3 : () ==> bool	
+checkOverrideOp3() ==
+	return cl1.op3();
+	
+public checkOverrideOp4 : () ==> bool
+checkOverrideOp4() ==
+	return cl1.op4();
+	
+	public checkOverrideOp5 : () ==> bool
+checkOverrideOp5() ==
+	return cl1.op5();
+	
+	
+	
+public check2OverrideOp1 : () ==> bool
+check2OverrideOp1() ==
+	return cl2.op1();
+	
+public check2OverrideOp2 : () ==> bool
+check2OverrideOp2() ==
+	return cl2.op2();
+	
+public check2OverrideOp3 : () ==> bool	
+check2OverrideOp3() ==
+	return cl2.op3();
+	
+public check2OverrideOp4 : () ==> bool
+check2OverrideOp4() ==
+	return cl2.op4();
+
+end ClassOverrideCaller
