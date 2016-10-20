@@ -1,0 +1,8 @@
+class ClassOpInheritanceOverrideTest is subclass of TestCase,ClassOpInheritanceDepth0
+
+operations
+
+public testSumFields : () ==>()
+testSumFields()==assertFalse(op());
+
+end ClassOpInheritanceOverrideTest
