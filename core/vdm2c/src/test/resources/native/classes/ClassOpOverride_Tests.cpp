@@ -69,11 +69,6 @@ TEST(ClassOpOverride, op3override)
 	CHECK_TRUE(CLASS_ClassOverrideCaller__Z16checkOverrideOp3EV);
 }
 
-/*
-
-These two fail with segmentation faults.  This reproduces the error in the ClearSy model.
-
-
 TEST(ClassOpOverride, op4override)
 {	
 	CHECK_FALSE(CLASS_ClassOverrideCaller__Z16checkOverrideOp4EV);
@@ -84,4 +79,3 @@ TEST(ClassOpOverride, op5override)
 	CHECK_FALSE(CLASS_ClassOverrideCaller__Z16checkOverrideOp5EV);
 }
 
-*/
