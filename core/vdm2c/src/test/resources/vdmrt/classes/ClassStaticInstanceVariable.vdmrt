@@ -1,4 +1,4 @@
-class A
+class AAA
 
 instance variables
 
@@ -9,29 +9,33 @@ operations
 public getF: () ==> int
 getF()==return f;
 
-end A
+end AAA
 
-class B is subclass of A
+
+
+class BBB is subclass of AAA
 
 operations
 
 public testInitialisedFieldSubClass: () ==> bool
-testInitialisedFieldSubClass()==return A`f = 9;
+testInitialisedFieldSubClass()==return AAA`f = 9;
 
-end B
+end BBB
 
-class C
+
+
+class CCC
 
 operations
 
 public testInitialisedField : () ==> bool
-testInitialisedField()==return A`f = 9;
+testInitialisedField()==return AAA`f = 9;
 
 public testUpdatedField : () ==> bool
 testUpdatedField() ==
 (
-	A`f := 10;
-	return A`f = 10;
+	AAA`f := 10;
+	return AAA`f = 10;
 )
 
-end C
+end CCC

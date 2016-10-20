@@ -1,50 +1,50 @@
-class A
+class AAAA
 
 instance variables
-public static b : B := new B();
+public static b : BBBB := new BBBB();
 
-end A
+end AAAA
 
-class C
+class CCCC
 
 instance variables
 
 public n : int := 4;
 
-end C
+end CCCC
 
-class B
+class BBBB
 
 instance variables
 
 public n : int := 9;
-public static c : C := new C();
+public static c : CCCC := new CCCC();
 
 operations
 
 public testInitialisedField : () ==> bool
 testInitialisedField () ==
-  return A`b.n = 9;
+  return AAAA`b.n = 9;
   
 public testUpdatedField : () ==> bool
 testUpdatedField () ==
 (
-  A`b.n := 10;
-  return A`b.n = 10;
+  AAAA`b.n := 10;
+  return AAAA`b.n = 10;
 );
 
 public testUpdateStaticField : () ==> bool
 testUpdateStaticField () ==
 (
-  A`b := new B();
-  return A`b.n = 9;
+  AAAA`b := new BBBB();
+  return AAAA`b.n = 9;
 );
 
 public testUpdateStaticEnclosingField : () ==> bool
 testUpdateStaticEnclosingField () ==
 (
-  c := new C();
+  c := new CCCC();
   return c.n = 4;
 );
 
-end B
+end BBBB

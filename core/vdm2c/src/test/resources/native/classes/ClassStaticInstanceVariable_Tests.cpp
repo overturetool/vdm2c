@@ -12,8 +12,8 @@ extern "C"
 {
 #include "Vdm.h"
 #include <stdio.h>
-#include "C.h"
-#include "B.h"
+#include "CCC.h"
+#include "BBB.h"
 }
 
 #define CHECK(methodId, obj,clazz)\
@@ -25,19 +25,19 @@ vdmFree(obj)
 
 TEST(ClassStaticInstanceVariable, testInitialisedField)
 {
-	A_static_init();
-	CHECK(CLASS_C__Z20testInitialisedFieldEV, _Z1CEV(NULL), C);
+	AAA_static_init();
+	CHECK(CLASS_CCC__Z20testInitialisedFieldEV, _Z3CCCEV(NULL), CCC);
 }
 
 TEST(ClassStaticInstanceVariable, testUpdatedField)
 {
-	A_static_init();
-	CHECK(CLASS_C__Z16testUpdatedFieldEV, _Z1CEV(NULL), C);
+	AAA_static_init();
+	CHECK(CLASS_CCC__Z16testUpdatedFieldEV, _Z3CCCEV(NULL), CCC);
 }
 
 TEST(ClassStaticInstanceVariable, testInitialisedFieldSubClass)
 {
-	A_static_init();
-	CHECK(CLASS_B__Z28testInitialisedFieldSubClassEV, _Z1BEV(NULL), B);
+	AAA_static_init();
+	CHECK(CLASS_BBB__Z28testInitialisedFieldSubClassEV, _Z3BBBEV(NULL), BBB);
 }
 

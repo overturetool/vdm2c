@@ -1,4 +1,4 @@
-class ClassFieldAccessTest is subclass of TestCase, ClassFieldAccess, ClassFieldAccessAccessor
+class InstanceVariableTest is subclass of TestCase, ClassFieldAccess, ClassFieldAccessAccessor
 
 operations
 
@@ -26,4 +26,4 @@ testAccessFun()==assertTrue( accessFun());
 public testSetField : () ==> ()
 testSetField() == assertTrue(setField());
 
-end ClassFieldAccessTest
+end InstanceVariableTest
