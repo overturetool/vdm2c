@@ -23,10 +23,10 @@ vdmFree(c)
 
 TEST(ExpressionQuote, quoteEq)
 {
-	CHECK(CLASS_ExpressionQuote__Z2idE2YQ1,true,newQuote(QUOTE_Q2));
+	CHECK(CLASS_ExpressionQuote__Z2opE2YQ1,true,newQuote(QUOTE_Q2));
 }
 
 TEST(ExpressionQuote, quoteNotEq)
 {
-	CHECK(CLASS_ExpressionQuote__Z2idE2YQ1,false,newQuote(QUOTE_Q1));
+	CHECK(CLASS_ExpressionQuote__Z2opE2YQ1,false,newQuote(QUOTE_Q1));
 }

@@ -91,7 +91,8 @@ ${cname}CLASS ${cname}_Constructor(${cname}CLASS this_ptr)
 			if(! ${tn}[0].pFunc)
 			{
 				//obtain original $sname VTable
-				memcpy( $tn, this_ptr->_${sname}_pVTable, sizeof( struct VTable) * $vtable.getOverrides($sname).size() );
+				//This will require rework for multiple inheritance, specifically the "... [0].getVtable..."
+				memcpy( $tn, this_ptr->_${sname}_pVTable, sizeof( struct VTable) * $CFormat.getHeader($node).getFlattenedSupers()[0].getVtable().getTable().size());
 				
 				//install overrides
 				#foreach($entry in $vtable.getOverrides($sname).entrySet())
@@ -156,9 +157,4 @@ $CFormat.format($method)
 TVP $field.getName() = #if($CFormat.isNull($field.getInitial())) NULL #else $CFormat.format($field.getInitial())#end;
 	#end
 #end
-
-#if(!$CFormat.isNull($CFormat.getHeader($node).getArrDM())) 
-	$CFormat.format($CFormat.getHeader($node).getArrDM())
-#end
-
 

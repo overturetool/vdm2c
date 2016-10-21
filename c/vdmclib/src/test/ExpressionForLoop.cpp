@@ -111,8 +111,8 @@ TEST(ExpressionForLoop, forindex)
 	TVP TEST_TRUE = newBool(true);
 	TVP result = forindex();
 	EXPECT_EQ (true,equals(TEST_TRUE,result));
-	recursiveFree(result);
-	recursiveFree (TEST_TRUE);
+	vdmFree(result);
+	vdmFree (TEST_TRUE);
 }
 
 TEST(ExpressionForLoop, forset)
@@ -120,6 +120,6 @@ TEST(ExpressionForLoop, forset)
 	TVP TEST_TRUE = newBool(true);
 	TVP result = forset();
 	EXPECT_EQ (true,equals(TEST_TRUE,result));
-	recursiveFree(result);
-	recursiveFree (TEST_TRUE);
+	vdmFree(result);
+	vdmFree (TEST_TRUE);
 }

@@ -1,11 +1,14 @@
-class ClassStaticInstanceVariableTest is subclass of TestCase,UseClassStaticInstanceVariable
+class ClassStaticInstanceVariableTest is subclass of TestCase, CCC, BBB
 
 operations
 
-public testOp : () ==>()
-testOp()==assertTrue( op());
+public testtestInitialisedField : () ==>()
+testtestInitialisedField()==assertTrue( testInitialisedField());
 
-public testOp2 : () ==> ()
-testOp2() == assertTrue(op2());
+public testtestUpdatedField : () ==> ()
+testtestUpdatedField() == assertTrue(testUpdatedField());
+
+public testtestInitialisedFieldSubClass : () ==> ()
+testtestInitialisedFieldSubClass() == assertTrue(testInitialisedFieldSubClass());
 
 end ClassStaticInstanceVariableTest

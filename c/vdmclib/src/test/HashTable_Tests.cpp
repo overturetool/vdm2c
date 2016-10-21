@@ -112,7 +112,7 @@ TEST(HashTable, intHash)
 //void vdm_g_free(gpointer mem)
 //{
 //	TVP a = (TVP)mem;
-//	recursiveFree(a);
+//	vdmFree(a);
 //}
 
 TEST(HashTable, typedHash)

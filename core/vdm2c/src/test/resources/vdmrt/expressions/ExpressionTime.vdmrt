@@ -1,15 +1,15 @@
-class A
+class ATime
 
-end A
+end ATime
 
-class B
+class BTime
 
 values
 
 x = time;
 
-end B
+end BTime
 
-class C
+class CTime
 
-end C
+end CTime

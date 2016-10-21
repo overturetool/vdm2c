@@ -39,7 +39,7 @@
 #define va_arg(ap,TVP) NULL //just for Eclipse must not be defined
 #endif
 
-#define vdmFree recursiveFree
+#define recursiveFree vdmFree
 
 //#define ALLOC(t,n) (t *) malloc((n)*sizeof(t))
 
@@ -143,7 +143,7 @@ TVP vdmEquals(struct TypedValue* a, struct TypedValue* b);
 TVP vdmInEquals(struct TypedValue* a, struct TypedValue* b);
 bool collectionEqual(TVP col1,TVP col2);
 
-void recursiveFree(struct TypedValue* ptr);
+void vdmFree(struct TypedValue* ptr);
 
 
 

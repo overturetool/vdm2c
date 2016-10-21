@@ -97,7 +97,7 @@ struct TypedValue* newQuote(unsigned int x)
 			{ .quoteVal = x });
 }
 
-///
+
 
 struct TypedValue* newCollection(size_t size, vdmtype type)
 {
@@ -335,8 +335,6 @@ bool equals(struct TypedValue* a, struct TypedValue* b)
 				vdmFree(res);
 				return false;
 			}
-			//			tmpField = vdmClone(*((struct TypedValue**)((char*)(((struct ClassType*)x->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(struct TypedValue*) + sizeof(struct TypedValue*) * i)));
-			//			memcpy(((struct TypedValue**)((char*)(((struct ClassType*)tmp->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(struct TypedValue*) + sizeof(struct TypedValue*) * i)), &tmpField, sizeof(struct TypedValue*));
 		}
 
 		vdmFree(res);
@@ -378,7 +376,7 @@ bool collectionEqual(TVP col1,TVP col2)
 	return match;
 }
 
-void recursiveFree(struct TypedValue* ptr)
+void vdmFree(struct TypedValue* ptr)
 {
 	if (ptr == NULL)
 		return;
@@ -408,9 +406,10 @@ void recursiveFree(struct TypedValue* ptr)
 		{
 			if (cptr->value[i] != NULL)
 			{
-				recursiveFree(cptr->value[i]);
+				vdmFree(cptr->value[i]);
 			}
 		}
+		free(cptr->value);
 		free(cptr);
 		ptr->value.ptr = NULL;
 		break;
