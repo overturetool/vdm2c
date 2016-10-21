@@ -27,7 +27,7 @@ EXPECT_EQ (false, res->value.boolVal);\
 vdmFree(res);\
 vdmFree(c)
 
-
+//Call operations in base class.
 TEST(ClassOpOverride, op1base)
 {
 	CHECK_FALSE(CLASS_ClassOverrideCaller__Z12checkBaseOp1EV);
@@ -53,29 +53,58 @@ TEST(ClassOpOverride, op5base)
 	CHECK_FALSE(CLASS_ClassOverrideCaller__Z12checkBaseOp5EV);
 }
 
-TEST(ClassOpOverride, op1override)
+
+
+//Call first set of overriding operations.
+TEST(ClassOpOverride, op1override1)
 {	
 	CHECK_TRUE(CLASS_ClassOverrideCaller__Z16checkOverrideOp1EV);
 }
 
-
-TEST(ClassOpOverride, op2override)
+TEST(ClassOpOverride, op2override1)
 {	
 	CHECK_FALSE(CLASS_ClassOverrideCaller__Z16checkOverrideOp2EV);
 }
 
-TEST(ClassOpOverride, op3override)
+TEST(ClassOpOverride, op3override1)
 {	
 	CHECK_TRUE(CLASS_ClassOverrideCaller__Z16checkOverrideOp3EV);
 }
 
-TEST(ClassOpOverride, op4override)
+TEST(ClassOpOverride, op4override1)
 {	
 	CHECK_FALSE(CLASS_ClassOverrideCaller__Z16checkOverrideOp4EV);
 }
 
-TEST(ClassOpOverride, op5override)
+TEST(ClassOpOverride, op5override1)
 {	
 	CHECK_FALSE(CLASS_ClassOverrideCaller__Z16checkOverrideOp5EV);
 }
 
+
+
+//Call second set of overriding operations.
+TEST(ClassOpOverride, op1override2)
+{	
+	CHECK_FALSE(CLASS_ClassOverrideCaller__Z17check2OverrideOp1EV);
+}
+
+TEST(ClassOpOverride, op2override2)
+{	
+	CHECK_TRUE(CLASS_ClassOverrideCaller__Z17check2OverrideOp2EV);
+}
+
+TEST(ClassOpOverride, op3override2)
+{	
+	CHECK_FALSE(CLASS_ClassOverrideCaller__Z17check2OverrideOp3EV);
+}
+
+TEST(ClassOpOverride, op4override2)
+{	
+	CHECK_TRUE(CLASS_ClassOverrideCaller__Z17check2OverrideOp4EV);
+}
+
+TEST(ClassOpOverride, op5override2)
+{	
+	CHECK_FALSE(CLASS_ClassOverrideCaller__Z17check2OverrideOp5EV);
+}
