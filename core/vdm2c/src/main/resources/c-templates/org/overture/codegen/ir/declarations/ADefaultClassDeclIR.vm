@@ -158,3 +158,8 @@ TVP $field.getName() = #if($CFormat.isNull($field.getInitial())) NULL #else $CFo
 	#end
 #end
 
+#if(!$CFormat.isNull($CFormat.getHeader($node).getArrDM())) 
+	$CFormat.format($CFormat.getHeader($node).getArrDM())
+#end
+
+
