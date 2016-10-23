@@ -173,6 +173,8 @@ public class CGen extends CodeGenBase
 
 		sysAnalysis.generateDM();
 
+		sysAnalysis.generateMapStrVer();
+		
 		Map<String, LinkedList<Boolean>> dm = SystemArchitectureAnalysis.DM;
 
 		statuses = replaceSystemClassWithClass(statuses);
@@ -190,7 +192,6 @@ public class CGen extends CodeGenBase
 				}
 			}
 		}
-
 
 		statuses = ignoreVDMUnitTests(statuses);
 		List<IRStatus<PIR>> recClasses = makeRecsOuterClasses(statuses);
