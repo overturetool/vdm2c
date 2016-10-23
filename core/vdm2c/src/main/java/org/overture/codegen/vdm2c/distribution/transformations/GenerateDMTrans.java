@@ -14,6 +14,7 @@ import org.overture.codegen.ir.types.ABoolBasicTypeIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.distribution.SystemArchitectureAnalysis;
 import org.overture.codegen.vdm2c.extast.declarations.AAnonymousStruct;
+import org.overture.codegen.vdm2c.extast.declarations.AArrayDMDeclIR;
 import org.overture.codegen.vdm2c.extast.declarations.AArrayDeclIR;
 import org.overture.codegen.vdm2c.extast.declarations.AClassHeaderDeclIR;
 
@@ -41,7 +42,7 @@ public class GenerateDMTrans extends DepthFirstAnalysisCAdaptor
 
 		if(cl.getTag()!=null){
 			String cpu = cl.getTag().toString();
-
+			
 			LinkedList<AFieldDeclIR> depObjs = SystemArchitectureAnalysis.systemDeployedObjects;
 
 			if(cl.getName().equals(SystemArchitectureAnalysis.systemName)){
@@ -50,7 +51,7 @@ public class GenerateDMTrans extends DepthFirstAnalysisCAdaptor
 
 				/** Init **/
 				String name = "DM";
-				AArrayDeclIR arrayDclInit = new AArrayDeclIR();
+				AArrayDMDeclIR arrayDclInit = new AArrayDMDeclIR();
 				arrayDclInit.setStatic(null);
 				arrayDclInit.setName(name);
 				arrayDclInit.setType(newExternalType("extern bool"));
@@ -58,7 +59,7 @@ public class GenerateDMTrans extends DepthFirstAnalysisCAdaptor
 				header.setArrDMinit(arrayDclInit);
 
 				/** The map **/
-				AArrayDeclIR arrayDcl = new AArrayDeclIR();
+				AArrayDMDeclIR arrayDcl = new AArrayDMDeclIR();
 				arrayDcl.setStatic(null);
 				arrayDcl.setName(name);
 				arrayDcl.setType(newExternalType("bool"));

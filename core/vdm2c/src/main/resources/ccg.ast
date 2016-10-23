@@ -49,6 +49,7 @@ IR = #decl
     	[arrDMinit]:IR.#decl.array
     | {classState} (fields):IR.#decl.field*
     | {array} [static]:java_Boolean [type]:IR.#type [name]:java_String [size]:java_Integer [initial]:struct*
+    | {arrayDM} [static]:java_Boolean [type]:IR.#type [name]:java_String [size]:java_Integer [initial]:struct*
     | {quote} [name]:java_String [id]:java_Integer
        ;
  
