@@ -30,6 +30,11 @@ public class SystemArchitectureAnalysis
 	public static String systemName;
 	public static Map<String,LinkedList<Boolean>> DM = new HashMap<String, LinkedList<Boolean>>();
 
+	// String versions
+	public static LinkedList<String> systemDeployedObjectsStr = new LinkedList<String>();
+	public static Map<String, Set<String>> connectionMapStr = new HashMap<String,Set<String>>();
+	public static HashMap<String, Set<String>> distributionMapStr = new HashMap<String, Set<String>>();
+
 	public void initDistributionMap(String cpuName)
 	{
 		HashSet<SExpIR> set = new HashSet<SExpIR>();
@@ -134,8 +139,63 @@ public class SystemArchitectureAnalysis
 				li.add(val);
 			}
 			DM.put(cpu, li);
+		}	
+	}
+
+	public void generateMapStrVer(){
+
+		for(AFieldDeclIR field : systemDeployedObjects){
+			systemDeployedObjectsStr.add(field.getName().toString());
 		}
 
+		for(String bus : connectionMap.keySet()){
+
+			AEnumSetExpIR cpus = connectionMap.get(bus);
+
+			Set<String> cpuList = new HashSet<String>();
+
+			for(SExpIR c : cpus.getMembers()){
+				cpuList.add(c.toString());
+			}
+			connectionMapStr.put(bus,cpuList);
+			//systemDeployedObjectsStr.add(field.getName().toString());
+		}
+
+		for(String cpu : distributionMap.keySet()){
+
+			Set<String> objList = new HashSet<String>();
+
+			for(SExpIR obj : distributionMap.get(cpu)){
+				objList.add(obj.toString());
+			}
+			distributionMapStr.put(cpu, objList);
+		}
+
+		String cpu = "cpu1";
+		// the algorithm
+		for(String bus : connectionMapStr.keySet()){
+
+			Set<String> cpuList = connectionMapStr.get(bus);
+
+			if(cpuList.contains(cpu)){
+				for(String c : cpuList){
+					if(c.equals(cpu)) continue;
+
+					// get deployed object of a given cpu
+
+					Set<String> depObj = distributionMapStr.get(c);
+
+					for(String dobj : depObj){
+						// Add id to if for this specific bus
+						int id = systemDeployedObjectsStr.indexOf(dobj);
+					}
+				}
+			}
+			// Create the specific bus call
+			String bus_name = bus;
+		}
+		//for(bus : connectionMap.get(key))
+		System.out.println();
 	}
 
 
