@@ -119,4 +119,12 @@ public class NativeTests extends NativeTestBase
 		generate(getPath("expressions/ExpressionRecord.vdmrt"));
 //		compileAndTest();
 	}
+	
+	@Test
+	public void ExpressionSelf() throws IOException, InterruptedException,
+			CMakeGenerateException
+	{
+		generate(getPath("expressions/ExpressionSelf.vdmrt"));
+		compileAndTest(getTestCppFile("self/ExpressionsSelf_Tests.cpp"));
+	}
 }

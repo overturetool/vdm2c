@@ -1,0 +1,12 @@
+class SelfTest
+instance variables
+a : int := 33;
+
+operations
+public op : () ==> bool
+op() ==
+(
+	dcl tmp : SelfTest := self;
+	return tmp.a = 33;
+);
+end SelfTest
