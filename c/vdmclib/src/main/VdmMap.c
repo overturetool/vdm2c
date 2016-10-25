@@ -426,7 +426,6 @@ TVP newMapVarToGrow(size_t size, size_t expected_size, ...)
 	va_end(argList);
 
 	return theMap;
-
 }
 
 //Not a very useful operation, but here to support the map comprehension mechanism.
