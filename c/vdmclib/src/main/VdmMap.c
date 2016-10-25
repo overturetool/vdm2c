@@ -402,11 +402,17 @@ TVP newMap()
 //Not a very useful function, but here to support the map comprehension mechanism.
 TVP newMapVarToGrow(size_t size, size_t expected_size, ...)
 {
-	struct Map* ptr = (struct Map*) malloc(sizeof(struct Map));
+	struct Map* ptr;
 	TVP key;
 	TVP value;
 	TVP theMap;
 
+	if(size == 0)
+	{
+		return newMap();
+	}
+
+	ptr = (struct Map*) malloc(sizeof(struct Map));
 	ptr->table =  ht_create(expected_size);
 	theMap = newTypeValue(VDM_MAP, (TypedValueType){ .ptr = ptr });
 

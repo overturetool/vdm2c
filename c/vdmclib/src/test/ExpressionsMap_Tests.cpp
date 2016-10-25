@@ -387,9 +387,14 @@ TEST(Expression_Map, mapInEquals)
 
 TEST(Expression_Map, newMapVarToGrow)
 {
-	TVP theMap = newMapVarToGrow(3, 10, newChar('a'), newInt(1), newChar('b'), newInt(2), newChar('c'), newInt(3));
+	TVP theMap;
 	TVP val;
 	TVP res;
+
+	theMap = newMapVarToGrow(0, 10);
+	vdmFree(theMap);
+
+	theMap = newMapVarToGrow(3, 10, newChar('a'), newInt(1), newChar('b'), newInt(2), newChar('c'), newInt(3));
 
 	val = vdmMapApply(theMap, newChar('a'));
 	res = vdmEquals(val, newInt(1));
