@@ -417,3 +417,40 @@ TEST(Expression_Map, newMapVarToGrow)
 
 	vdmFree(theMap);
 }
+
+TEST(Expression_Map, vdmMapGrow)
+{
+	TVP theMap = newMap();
+	TVP val;
+	TVP res;
+
+	vdmMapGrow(theMap, newChar('a'), newInt(1));
+	vdmMapGrow(theMap, newChar('b'), newInt(2));
+	vdmMapGrow(theMap, newChar('c'), newInt(3));
+
+	val = vdmMapApply(theMap, newChar('a'));
+	res = vdmEquals(val, newInt(1));
+	EXPECT_EQ(true, res->value.boolVal);
+	vdmFree(val);
+	vdmFree(res);
+
+	val = vdmMapApply(theMap, newChar('b'));
+	res = vdmEquals(val, newInt(2));
+	EXPECT_EQ(true, res->value.boolVal);
+	vdmFree(val);
+	vdmFree(res);
+
+	val = vdmMapApply(theMap, newChar('c'));
+	res = vdmEquals(val, newInt(3));
+	EXPECT_EQ(true, res->value.boolVal);
+	vdmFree(val);
+	vdmFree(res);
+
+	val = vdmMapApply(theMap, newChar('c'));
+	res = vdmEquals(val, newInt(4));
+	EXPECT_EQ(false, res->value.boolVal);
+	vdmFree(val);
+	vdmFree(res);
+
+	vdmFree(theMap);
+}

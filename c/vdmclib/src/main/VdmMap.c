@@ -428,6 +428,17 @@ TVP newMapVarToGrow(size_t size, size_t expected_size, ...)
 
 }
 
+void vdmMapGrow(TVP theMap, TVP key, TVP val)
+{
+	vdmMapAdd(theMap, key, val);
+}
+
+
+void vdmMapFit(TVP theMap)
+{
+	return;
+}
+
 
 void vdmMapAdd(TVP map, TVP key, TVP value)
 {

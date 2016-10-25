@@ -78,6 +78,8 @@ struct TypedValue* newMap();
 void vdmMapAdd(TVP map,TVP key, TVP value);
 
 TVP newMapVarToGrow(size_t, size_t, ...);
+void vdmMapGrow(TVP, TVP, TVP);
+void vdmMapFit(TVP);
 
 //VDM map operators
 TVP vdmMapDom(TVP map);
