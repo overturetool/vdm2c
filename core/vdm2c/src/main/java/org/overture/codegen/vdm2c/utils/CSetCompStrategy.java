@@ -50,7 +50,8 @@ public class CSetCompStrategy extends SetCompStrategy
 		setCompResult.setIsLocal(true);
 
 		SExpIR setAdd = CTransUtil.newApply("vdmSetGrow", setCompResult, first.clone());
-		return Collections.singletonList(CTransUtil.toStm(setAdd));
+		
+		return consConditionalAdd(setCompResult, CTransUtil.toStm(setAdd));
 	}
 
 	@Override
