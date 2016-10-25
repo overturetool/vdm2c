@@ -5,4 +5,10 @@ functions
 public retSetComp :  () -> bool
 retSetComp () == {x | x in set {1,2,3} & x > 0} = {1,2,3};
 
+public letVarSeqComp :  () -> bool
+letVarSeqComp () ==
+let a = [ x * x | x in set {1, 2, 3, 4} & x > 3]
+in
+  a = [16]; 
+
 end ExpressionComprehensions

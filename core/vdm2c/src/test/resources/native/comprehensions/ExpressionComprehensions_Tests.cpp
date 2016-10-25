@@ -19,3 +19,8 @@ TEST(ExpressionComprehensions, retSetComp)
 	CHECK(CLASS_ExpressionComprehensions__Z10retSetCompEV);
 }
 
+TEST(ExpressionComprehensions, letVarSeqComp)
+{
+	CHECK(CLASS_ExpressionComprehensions__Z13letVarSeqCompEV);
+}
+
