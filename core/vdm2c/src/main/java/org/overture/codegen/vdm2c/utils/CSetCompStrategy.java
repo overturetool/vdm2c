@@ -1,18 +1,14 @@
 package org.overture.codegen.vdm2c.utils;
 
-import static org.overture.codegen.vdm2c.utils.CTransUtil.newApply;
-import static org.overture.codegen.vdm2c.utils.CTransUtil.newIntLiteralExp;
-import static org.overture.codegen.vdm2c.utils.CTransUtil.toStm;
-
 import java.util.Collections;
 import java.util.List;
 
+import org.overture.codegen.ir.ITempVarGen;
 import org.overture.codegen.ir.SExpIR;
 import org.overture.codegen.ir.SPatternIR;
 import org.overture.codegen.ir.SStmIR;
 import org.overture.codegen.ir.STypeIR;
 import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
-import org.overture.codegen.ir.ITempVarGen;
 import org.overture.codegen.trans.IterationVarPrefixes;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.trans.comp.SetCompStrategy;
@@ -32,13 +28,15 @@ public class CSetCompStrategy extends SetCompStrategy
 	@Override
 	protected SExpIR getEmptyCollection()
 	{
-		return CTransUtil.newApply("newSetVarToGrow", newIntLiteralExp(0), newIntLiteralExp(5));// TODO: request
-																								// Framework change such
-																								// that this is inserted
-																								// after the set is
-																								// Evaluated such that a
-																								// useful estimate can
-																								// be made of the size
+		// TODO: request
+		// Framework change such
+		// that this is inserted
+		// after the set is
+		// Evaluated such that a
+		// useful estimate can
+		// be made of the size
+		
+		return CTransUtil.newApply("newSetVarToGrow", CTransUtil.consCInt("0"), CTransUtil.consCInt("5"));
 	}
 
 	@Override
@@ -51,8 +49,8 @@ public class CSetCompStrategy extends SetCompStrategy
 		setCompResult.setIsLambda(false);
 		setCompResult.setIsLocal(true);
 
-		SExpIR setAdd = newApply("vdmSetGrow", setCompResult, first.clone());
-		return Collections.singletonList(toStm(setAdd));
+		SExpIR setAdd = CTransUtil.newApply("vdmSetGrow", setCompResult, first.clone());
+		return Collections.singletonList(CTransUtil.toStm(setAdd));
 	}
 
 	@Override
@@ -65,7 +63,7 @@ public class CSetCompStrategy extends SetCompStrategy
 		setCompResult.setIsLambda(false);
 		setCompResult.setIsLocal(true);
 
-		SExpIR setAdd = newApply("vdmSetFit", setCompResult);
-		return Collections.singletonList(toStm(setAdd));
+		SExpIR setAdd = CTransUtil.newApply("vdmSetFit", setCompResult);
+		return Collections.singletonList(CTransUtil.toStm(setAdd));
 	}
 }
