@@ -399,6 +399,7 @@ TVP newMap()
 }
 
 
+//Not a very useful function, but here to support the map comprehension mechanism.
 TVP newMapVarToGrow(size_t size, size_t expected_size, ...)
 {
 	struct Map* ptr = (struct Map*) malloc(sizeof(struct Map));
@@ -428,12 +429,13 @@ TVP newMapVarToGrow(size_t size, size_t expected_size, ...)
 
 }
 
+//Not a very useful operation, but here to support the map comprehension mechanism.
 void vdmMapGrow(TVP theMap, TVP key, TVP val)
 {
 	vdmMapAdd(theMap, key, val);
 }
 
-
+//Not a very useful operation, but here to support the map comprehension mechanism.
 void vdmMapFit(TVP theMap)
 {
 	return;
