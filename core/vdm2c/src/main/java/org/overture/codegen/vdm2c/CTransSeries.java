@@ -63,7 +63,7 @@ import org.overture.codegen.vdm2c.transformations.RemoveCWrappersTrans;
 import org.overture.codegen.vdm2c.transformations.RemoveRTConstructs;
 import org.overture.codegen.vdm2c.transformations.RenameFieldsDeclsTrans;
 import org.overture.codegen.vdm2c.transformations.ScopeCleanerTrans;
-import org.overture.codegen.vdm2c.transformations.SetCompToBlockTrans;
+import org.overture.codegen.vdm2c.transformations.CompToBlockTrans;
 import org.overture.codegen.vdm2c.transformations.StaticFieldAccessRenameTrans;
 import org.overture.codegen.vdm2c.transformations.SubClassResponsibilityMethodsTrans;
 import org.overture.codegen.vdm2c.transformations.ValueAccessRenameTrans;
@@ -141,7 +141,7 @@ public class CTransSeries
 		transformations.add(new LetBeStTrans(transAssistant, langIte, iteVarPrefixes));
 
 		transformations.add(new WhileStmTrans(transAssistant, varMan.whileCond()));
-		transformations.add(new SetCompToBlockTrans(iteVarPrefixes, transAssistant, consExists1CounterData(), langIte, exp2stmPrefixes));
+		transformations.add(new CompToBlockTrans(iteVarPrefixes, transAssistant, consExists1CounterData(), langIte, exp2stmPrefixes));
 		transformations.add(new PatternTrans(iteVarPrefixes, transAssistant, patternPrefixes, varMan.casesExp()));
 		transformations.add(new MethodReturnInsertTrans(transAssistant));
 		
