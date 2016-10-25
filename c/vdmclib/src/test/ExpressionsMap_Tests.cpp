@@ -34,7 +34,7 @@ TVP createMap1()
 	//{}
 	TVP map = newMap();
 
-//	//maplet1 1|->2
+	//	//maplet1 1|->2
 	TVP key1 = newInt(1);
 	TVP val1 =newInt(2);
 	vdmMapAdd(map,key1,val1);
@@ -382,4 +382,38 @@ TEST(Expression_Map, mapInEquals)
 
 	bool map_not_eq2 = vdmMapInEquals(map1,map3);
 	EXPECT_EQ(true, map_not_eq2);
+}
+
+
+TEST(Expression_Map, newMapVarToGrow)
+{
+	TVP theMap = newMapVarToGrow(3, 10, newChar('a'), newInt(1), newChar('b'), newInt(2), newChar('c'), newInt(3));
+	TVP val;
+	TVP res;
+
+	val = vdmMapApply(theMap, newChar('a'));
+	res = vdmEquals(val, newInt(1));
+	EXPECT_EQ(true, res->value.boolVal);
+	vdmFree(val);
+	vdmFree(res);
+
+	val = vdmMapApply(theMap, newChar('b'));
+	res = vdmEquals(val, newInt(2));
+	EXPECT_EQ(true, res->value.boolVal);
+	vdmFree(val);
+	vdmFree(res);
+
+	val = vdmMapApply(theMap, newChar('c'));
+	res = vdmEquals(val, newInt(3));
+	EXPECT_EQ(true, res->value.boolVal);
+	vdmFree(val);
+	vdmFree(res);
+
+	val = vdmMapApply(theMap, newChar('c'));
+	res = vdmEquals(val, newInt(4));
+	EXPECT_EQ(false, res->value.boolVal);
+	vdmFree(val);
+	vdmFree(res);
+
+	vdmFree(theMap);
 }
