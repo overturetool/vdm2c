@@ -79,6 +79,14 @@ public class NativeTests extends NativeTestBase
 		generate(getPath("expressions/ExpressionQuote.vdmrt"));
 		compileAndTest(getTestCppFile("quote/ExpressionQuote_Tests.cpp"));
 	}
+	
+	@Test
+	public void ExpressionComprehensions() throws IOException, InterruptedException,
+			CMakeGenerateException
+	{
+		generate(getPath("expressions/ExpressionComprehensions.vdmrt"));
+		compileAndTest(getTestCppFile("comprehensions/ExpressionComprehensions_Tests.cpp"));
+	}
 
 	@Test
 	public void SubclassResponsibility() throws IOException, InterruptedException,
