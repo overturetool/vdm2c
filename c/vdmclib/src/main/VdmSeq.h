@@ -31,8 +31,6 @@
 #define LIB_VDMSEQ_H_
 #include "TypedValue.h"
 
-#include "VdmSet.h"
-
 #define SET_SEQ(seq,index,val) {struct Collection* col =(struct Collection*) seq->value.ptr;col->value[index-1] =vdmClone(val);}
 
 /*
@@ -47,7 +45,10 @@ struct TypedValue* newSeqWithValues(size_t size,TVP* elements);
  * Create new seq from variadic list of elements
  */
 struct TypedValue* newSeqVar(size_t size,...);
+struct TypedValue* newSeqVarToGrow(size_t size, size_t expected_size, ...);
 
+void vdmSeqGrow(TVP seq, TVP element);
+void vdmSeqFit(TVP seq);
 TVP vdmSeqHd(TVP seq);
 TVP vdmSeqTl(TVP seq);
 TVP vdmSeqLen(TVP seq);

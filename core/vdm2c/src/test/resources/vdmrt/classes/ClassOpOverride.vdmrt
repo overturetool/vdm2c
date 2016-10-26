@@ -58,6 +58,7 @@ cl1 : ClassOpOverride1 := new ClassOpOverride1();
 cl2 : ClassOpOverride2 := new ClassOpOverride2();
 
 operations
+-- Call operations of base class.
 public checkBaseOp1 : () ==> bool
 checkBaseOp1() ==
 	return clbase.op1();
@@ -78,6 +79,8 @@ checkBaseOp4() ==
 checkBaseOp5() ==
 	return clbase.op5();
 
+
+-- Call first set of overriding operations. 
 public checkOverrideOp1 : () ==> bool
 checkOverrideOp1() ==
 	return cl1.op1();
@@ -99,7 +102,7 @@ checkOverrideOp5() ==
 	return cl1.op5();
 	
 	
-	
+	-- Call second set of overriding operations.
 public check2OverrideOp1 : () ==> bool
 check2OverrideOp1() ==
 	return cl2.op1();
@@ -115,5 +118,9 @@ check2OverrideOp3() ==
 public check2OverrideOp4 : () ==> bool
 check2OverrideOp4() ==
 	return cl2.op4();
+	
+public check2OverrideOp5 : () ==> bool
+check2OverrideOp5() ==
+	return cl2.op5();
 
 end ClassOverrideCaller

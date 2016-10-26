@@ -167,7 +167,7 @@ int toInteger(TVP a)
 	case VDM_NAT1:
 		return a->value.intVal;
 	case VDM_REAL:
-		//return a->value.doubleVal;
+		return a->value.doubleVal;
 	default:
 		FATAL_ERROR("Invalid type");
 		return 0;

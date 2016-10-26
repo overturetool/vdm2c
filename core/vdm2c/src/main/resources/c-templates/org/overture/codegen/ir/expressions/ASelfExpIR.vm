@@ -1,1 +1,2 @@
-this
+newTypeValue($CFormat.getVdmType($node), (TypedValueType)
+			{	.ptr=newClassValue(this->_$CFormat.findObjectName($node)_id, &this->_$CFormat.findObjectName($node)_refs, (freeVdmClassFunction)&$CFormat.findObjectName($node)_free, this)});
