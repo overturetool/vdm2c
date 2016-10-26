@@ -70,6 +70,9 @@ TVP vdmLessOrEqual(TVP a,TVP b);
  * internal use
  */
 bool isNumber(TVP val);
+TVP isInt(TVP);
+TVP isReal(TVP);
+TVP isBool(TVP);
 int toInteger(TVP a);
 double toDouble(TVP a);
 bool toBool(TVP a);

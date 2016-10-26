@@ -135,6 +135,27 @@ bool isNumber(TVP val)
 	}
 }
 
+TVP isInt(TVP v)
+{
+	if(v->type == VDM_INT)
+		return newBool(true);
+	return newBool(false);
+}
+
+TVP isReal(TVP v)
+{
+	if(v->type == VDM_REAL)
+		return newBool(true);
+	return newBool(false);
+}
+
+TVP isBool(TVP v)
+{
+	if(v->type == VDM_BOOL)
+		return newBool(true);
+	return newBool(false);
+}
+
 /*
  * Numeric
  *
