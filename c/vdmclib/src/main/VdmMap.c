@@ -30,6 +30,7 @@
 #include "VdmMap.h"
 
 #include <stdio.h> //FIXME remove all printf!
+#include <stdarg.h>
 
 #define ASSERT_CHECK(s) assert(s->type == VDM_MAP && "Value is not a map")
 
@@ -213,7 +214,6 @@ TVP vdmMapRng(TVP map)
 #else
 
 
-
 hashtable_t *ht_create( int size ) {
 
 	hashtable_t *hashtable = NULL;
@@ -387,7 +387,7 @@ TVP ht_get( hashtable_t *hashtable, TVP key ) {
 
 
 
-struct TypedValue* newMap()
+TVP newMap()
 {
 	struct Map* ptr = (struct Map*) malloc(sizeof(struct Map));
 	//TODO:  work out initial size.
@@ -398,6 +398,53 @@ struct TypedValue* newMap()
 			{ .ptr = ptr });
 }
 
+
+//Not a very useful function, but here to support the map comprehension mechanism.
+TVP newMapVarToGrow(size_t size, size_t expected_size, ...)
+{
+	struct Map* ptr;
+	TVP key;
+	TVP value;
+	TVP theMap;
+
+	if(size == 0)
+	{
+		return newMap();
+	}
+
+	ptr = (struct Map*) malloc(sizeof(struct Map));
+	ptr->table =  ht_create(expected_size);
+	theMap = newTypeValue(VDM_MAP, (TypedValueType){ .ptr = ptr });
+
+	va_list argList;
+	va_start(argList, size * 2);
+
+	for(int i = 0; i < size; i++)
+	{
+		key = vdmClone(va_arg(argList, TVP));
+		value = vdmClone(va_arg(argList, TVP));
+
+		vdmMapAdd(theMap, key, value);
+
+		vdmFree(key);
+		vdmFree(value);
+	}
+	va_end(argList);
+
+	return theMap;
+}
+
+//Not a very useful operation, but here to support the map comprehension mechanism.
+void vdmMapGrow(TVP theMap, TVP key, TVP val)
+{
+	vdmMapAdd(theMap, key, val);
+}
+
+//Not a very useful operation, but here to support the map comprehension mechanism.
+void vdmMapFit(TVP theMap)
+{
+	return;
+}
 
 
 void vdmMapAdd(TVP map, TVP key, TVP value)

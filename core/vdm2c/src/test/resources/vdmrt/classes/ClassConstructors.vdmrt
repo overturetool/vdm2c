@@ -1,0 +1,40 @@
+-- This test model is necessarily tied to the specific values
+-- being used in the file ClassConstructors_Test.cpp file.
+
+class Constructors
+instance variables
+	var1 : int := 10;
+	
+operations
+public Constructors : () ==> Constructors
+Constructors() ==
+	var1 := 11;
+	
+public Constructors : int ==> Constructors
+Constructors(i) ==
+	var1 := i;
+	
+public Constructors : int * int ==> Constructors
+Constructors(a, b) ==
+(
+	var1 := a;
+	var1 := b;
+	Constructors(a);
+);
+
+public TestDefaultConstruction : () ==> bool
+TestDefaultConstruction() ==
+	return var1 <> 10;
+	
+public TestCustom1Construction : () ==> bool
+TestCustom1Construction() ==
+	return var1 = 11;
+	
+public TestCustom2Construction : () ==> bool
+TestCustom2Construction() ==
+	return var1 = 12;
+
+public TestCustom3Construction : () ==> bool
+TestCustom3Construction() ==
+	return var1 = 13;
+end Constructors
