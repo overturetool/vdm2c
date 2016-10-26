@@ -203,4 +203,12 @@ public class NativeClassesTests extends NativeTestBase
 		generate(getPath("classes/ClassPublicFieldsTMP.vdmrt"));
 		compileAndTest();
 	}
+	
+	@Test
+	public void ClassConstructors() throws IOException,
+			InterruptedException, CMakeGenerateException
+	{
+		generate(getPath("classes/ClassConstructors.vdmrt"));
+		compileAndTest(getTestCppFile("classes/ClassConstructors_Tests.cpp"));
+	}
 }
