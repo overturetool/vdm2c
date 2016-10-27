@@ -1,1 +1,1 @@
-+$CFormat.formatUnary($node.getExp())
+$CFormat.formatUnary($node.getExp())

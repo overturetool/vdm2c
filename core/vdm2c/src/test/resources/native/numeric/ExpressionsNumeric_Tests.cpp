@@ -21,11 +21,6 @@ EXPECT_EQ (true,res->value.boolVal);\
 vdmFree(res);\
 vdmFree(c)
 
-TEST(ExpressionNumeric, unaryMinus)
-{
-	CHECK(CLASS_ExpressionNumeric__Z13unaryMinusExpEV);
-}
-
 TEST(ExpressionNumeric, abs)
 {
 	CHECK(CLASS_ExpressionNumeric__Z6absExpEV);
@@ -95,4 +90,14 @@ TEST(ExpressionNumeric, equal)
 TEST(ExpressionNumeric,notEqual )
 {
 	CHECK(CLASS_ExpressionNumeric__Z11notEqualExpEV);
+}
+
+TEST(ExpressionNumeric,unaryPlus )
+{
+	CHECK(CLASS_ExpressionNumeric__Z9unaryPlusEV);
+}
+
+TEST(ExpressionNumeric,unaryMinus )
+{
+	CHECK(CLASS_ExpressionNumeric__Z10unaryMinusEV);
 }

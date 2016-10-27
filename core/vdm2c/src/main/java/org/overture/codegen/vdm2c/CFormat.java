@@ -119,6 +119,11 @@ public class CFormat
 
 		return isolate ? "(" + formattedExp + ")" : formattedExp;
 	}
+	
+	public String formatUnary(SExpIR exp) throws AnalysisException
+	{
+		return format(exp, false);
+	}
 
 	public MergeVisitor GetMergeVisitor()
 	{
