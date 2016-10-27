@@ -133,7 +133,7 @@ TEST(Expression_SetRandom, setInSet)
 	elem = newInt(INT_MAX);
 
 	TVP res = vdmSetMemberOf(set, elem);
-	EXPECT_EQ(true, res->value.boolVal);
+	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(elem);
 
 	for(int i = 0; i < numelems; i++)
@@ -153,7 +153,7 @@ TEST(Expression_SetRandom, setInSet)
 	{
 		vdmFree(res);
 		res = vdmSetMemberOf(set, randelemscpy[i]);
-		EXPECT_EQ(true, res->value.boolVal);
+		EXPECT_TRUE(res->value.boolVal);
 	}
 
 	//Wrap up.
@@ -180,13 +180,13 @@ TEST(Expression_SetRandom, setNotInSet)
 	elem = newInt(INT_MAX);
 
 	TVP res = vdmSetNotMemberOf(set, elem);
-	EXPECT_EQ(false, res->value.boolVal);
+	EXPECT_FALSE(res->value.boolVal);
 	vdmFree(elem);
 	vdmFree(res);
 
 	elem = newInt(INT_MAX - 1);
 	res = vdmSetNotMemberOf(set, elem);
-	EXPECT_EQ(true, res->value.boolVal);
+	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(elem);
 
 	for(int i = 0; i < numelems; i++)
@@ -206,7 +206,7 @@ TEST(Expression_SetRandom, setNotInSet)
 	{
 		vdmFree(res);
 		res = vdmSetNotMemberOf(set, randelemscpy[i]);
-		EXPECT_EQ(false, res->value.boolVal);
+		EXPECT_FALSE(res->value.boolVal);
 	}
 
 	//Wrap up.
@@ -252,18 +252,18 @@ TEST(Expression_SetRandom, setUnion)
 	for(int i = 0; i < numelems1; i++)
 	{
 		res = vdmSetMemberOf(unionset, randelems1[i]);
-		EXPECT_EQ(true, res->value.boolVal);
+		EXPECT_TRUE(res->value.boolVal);
 		vdmFree(res);
 	}
 	for(int i = 0; i < numelems2; i++)
 	{
 		res = vdmSetMemberOf(unionset, randelems2[i]);
-		EXPECT_EQ(true, res->value.boolVal);
+		EXPECT_TRUE(res->value.boolVal);
 		vdmFree(res);
 	}
 
 	//Ensure that there are no other elements.
-	EXPECT_EQ(true, ((struct Collection*)(unionset->value.ptr))->size <= \
+	EXPECT_TRUE(((struct Collection*)(unionset->value.ptr))->size <= \
 				((struct Collection*)(set1->value.ptr))->size + \
 				((struct Collection*)(set2->value.ptr))->size);
 
@@ -315,16 +315,16 @@ TEST(Expression_SetRandom, setIntersection)
 
 	//Check that intersection is a subset of both sets.
 	res = vdmSetSubset(interset, set1);
-	EXPECT_EQ(true, res->value.boolVal);
+	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(res);
 	res = vdmSetSubset(interset, set2);
-	EXPECT_EQ(true, res->value.boolVal);
+	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(res);
 
 	//Ensure that intersection has at most as many elements as the smallest of the two sets.
 	UNWRAP_COLLECTION(col1, set1);
 	UNWRAP_COLLECTION(col2, set2);
-	EXPECT_EQ(true, (intercol->size <= col1->size) && (intercol->size <= col2->size));
+	EXPECT_TRUE((intercol->size <= col1->size) && (intercol->size <= col2->size));
 
 	//Wrap up.
 	vdmFree(set1);
@@ -375,13 +375,13 @@ TEST(Expression_SetRandom, setDifference)
 
 	//Check that the difference is a subset of the original set.
 	res = vdmSetSubset(diffset, set1);
-	EXPECT_EQ(true, res->value.boolVal);
+	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(res);
 
 	//Check that none of the elements in set2 is in the difference set.
 	interset = vdmSetInter(diffset, set2);
 	UNWRAP_COLLECTION(intercol, interset);
-	EXPECT_EQ(true, intercol->size == 0);
+	EXPECT_TRUE(intercol->size == 0);
 
 	//Wrap up.
 	vdmFree(set1);
@@ -418,7 +418,7 @@ TEST(Expression_SetRandom, setSubset)
 
 	//Set must be a subset of itself.
 	res = vdmSetSubset(set1, set1);
-	EXPECT_EQ(true, res->value.boolVal);
+	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(res);
 
 	//Get corresponding collection of test set without duplicates.
@@ -426,7 +426,7 @@ TEST(Expression_SetRandom, setSubset)
 	//Make this into a new but smaller set.
 	set2 = newSetWithValues(setnodupscol->size - 1, setnodupscol->value);
 	res = vdmSetSubset(set2, set1);
-	EXPECT_EQ(true, res->value.boolVal);
+	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(res);
 
 	//And a silly non-subset test.
@@ -435,7 +435,7 @@ TEST(Expression_SetRandom, setSubset)
 	set1 = newSetVar(1, newInt(1));
 	set2 = newSetVar(1, newInt(2));
 	res = vdmSetSubset(set1, set2);
-	EXPECT_EQ(false, res->value.boolVal);
+	EXPECT_FALSE(res->value.boolVal);
 	vdmFree(res);
 
 	//Wrap up.
@@ -468,7 +468,7 @@ TEST(Expression_SetRandom, setProperSubset)
 
 	//Set must not be a proper subset of itself.
 	res = vdmSetProperSubset(set1, set1);
-	EXPECT_EQ(false, res->value.boolVal);
+	EXPECT_FALSE(res->value.boolVal);
 	vdmFree(res);
 
 	//Get corresponding collection of test set without duplicates.
@@ -476,7 +476,7 @@ TEST(Expression_SetRandom, setProperSubset)
 	//Make this into a new but smaller set.
 	set2 = newSetWithValues(setnodupscol->size - 1, setnodupscol->value);
 	res = vdmSetProperSubset(set2, set1);
-	EXPECT_EQ(true, res->value.boolVal);
+	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(res);
 
 	//And a silly non-subset test.
@@ -485,7 +485,7 @@ TEST(Expression_SetRandom, setProperSubset)
 	set1 = newSetVar(1, newInt(1));
 	set2 = newSetVar(1, newInt(2), newInt(3));
 	res = vdmSetProperSubset(set1, set2);
-	EXPECT_EQ(false, res->value.boolVal);
+	EXPECT_FALSE(res->value.boolVal);
 
 	//Wrap up.
 	for(int i = 0; i < numelems1; i++)
@@ -519,7 +519,7 @@ TEST(Expression_SetRandom, setEquality)
 
 	//Sets must be equal.
 	res = vdmSetEquals(set1, set2);
-	EXPECT_EQ(true, res->value.boolVal);
+	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(res);
 
 	//And a silly inequality test.
@@ -528,7 +528,7 @@ TEST(Expression_SetRandom, setEquality)
 	set1 = newSetVar(1, newInt(1));
 	set2 = newSetVar(1, newInt(2));
 	res = vdmSetEquals(set1, set2);
-	EXPECT_EQ(false, res->value.boolVal);
+	EXPECT_FALSE(res->value.boolVal);
 
 	//Wrap up.
 	for(int i = 0; i < numelems1; i++)
@@ -562,7 +562,7 @@ TEST(Expression_SetRandom, setInequality)
 
 	//Sets must be equal.
 	res = vdmSetNotEquals(set1, set2);
-	EXPECT_EQ(false, res->value.boolVal);
+	EXPECT_FALSE(res->value.boolVal);
 	vdmFree(res);
 
 	//And a silly inequality test.
@@ -571,7 +571,7 @@ TEST(Expression_SetRandom, setInequality)
 	set1 = newSetVar(1, newInt(1));
 	set2 = newSetVar(1, newInt(2));
 	res = vdmSetNotEquals(set1, set2);
-	EXPECT_EQ(true, res->value.boolVal);
+	EXPECT_TRUE(res->value.boolVal);
 
 	for(int i = 0; i < numelems1; i++)
 	{
@@ -643,7 +643,7 @@ TEST(Expression_SetRandom, setDunion)
 	for(int i = 0; i < numelems1; i++)
 	{
 		res = vdmSetMemberOf(set1, randelems1[i]);
-		EXPECT_EQ(true, res->value.boolVal);
+		EXPECT_TRUE(res->value.boolVal);
 		vdmFree(res);
 	}
 
@@ -665,10 +665,10 @@ TEST(Expression_SetRandom, setDunion)
 	set2 = newSetVar(2, newInt(1), newInt(2));
 	set3 = newSetVar(3, newInt(3), newInt(4), newInt(5));
 	res = vdmSetSubset(set2, set1);
-	EXPECT_EQ(true, res->value.boolVal);
+	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(res);
 	res = vdmSetSubset(set3, set1);
-	EXPECT_EQ(true, res->value.boolVal);
+	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(res);
 
 	//Wrap up.
@@ -711,10 +711,10 @@ TEST(Expression_SetRandom, setDinter)
 	set5 = vdmSetInter(set1, set2);
 
 	res = vdmSetEquals(set1, set4);
-	EXPECT_EQ(true, res->value.boolVal);
+	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(res);
 	res = vdmSetEquals(set1, set5);
-	EXPECT_EQ(true, res->value.boolVal);
+	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(res);
 	vdmFree(set2);
 	vdmFree(set3);
@@ -728,10 +728,10 @@ TEST(Expression_SetRandom, setDinter)
 	set5 = vdmSetInter(set1, set2);
 
 	res = vdmSetEquals(set1, set4);
-	EXPECT_EQ(false, res->value.boolVal);
+	EXPECT_FALSE(res->value.boolVal);
 	vdmFree(res);
 	res = vdmSetEquals(set1, set5);
-	EXPECT_EQ(false, res->value.boolVal);
+	EXPECT_FALSE(res->value.boolVal);
 	vdmFree(res);
 
 	//Wrap up.
@@ -756,8 +756,8 @@ TEST(Expression_SetRandom, setPower)
 	UNWRAP_COLLECTION(col, set2);
 
 	//Set should have the right size.
-	EXPECT_EQ(true, col->size == pow(2, 4));
-	EXPECT_EQ(false, col->size == pow(2, 5));
+	EXPECT_TRUE(col->size == pow(2, 4));
+	EXPECT_FALSE(col->size == pow(2, 5));
 
 	//Power set should contain the subsets.  Only testing a few here.
 	vdmFree(set1);
@@ -765,32 +765,32 @@ TEST(Expression_SetRandom, setPower)
 	//Should definitely contain the empty set and the original.
 	set1 = newSetVar(0, NULL);
 	res = vdmSetMemberOf(set2, set1);
-	EXPECT_EQ(true, res->value.boolVal);
+	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(set1);
 	vdmFree(res);
 
 	set1 = newSetVar(4, newInt(1), newInt(2), newInt(3), newInt(4));
 	res = vdmSetMemberOf(set2, set1);
-	EXPECT_EQ(true, res->value.boolVal);
+	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(set1);
 	vdmFree(res);
 
 	//And some others.
 	set1 = newSetVar(1, newInt(3));
 	res = vdmSetMemberOf(set2, set1);
-	EXPECT_EQ(true, res->value.boolVal);
+	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(set1);
 	vdmFree(res);
 
 	set1 = newSetVar(2, newInt(2), newInt(3));
 	res = vdmSetMemberOf(set2, set1);
-	EXPECT_EQ(true, res->value.boolVal);
+	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(set1);
 	vdmFree(res);
 
 	set1 = newSetVar(2, newInt(2), newInt(5));
 	res = vdmSetMemberOf(set2, set1);
-	EXPECT_EQ(false, res->value.boolVal);
+	EXPECT_FALSE(res->value.boolVal);
 
 	//Wrap up.
 	vdmFree(set1);
