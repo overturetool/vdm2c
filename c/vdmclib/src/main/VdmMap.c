@@ -417,7 +417,7 @@ TVP newMapVarToGrow(size_t size, size_t expected_size, ...)
 	theMap = newTypeValue(VDM_MAP, (TypedValueType){ .ptr = ptr });
 
 	va_list argList;
-	va_start(argList, size * 2);
+	va_start(argList, expected_size);
 
 	for(int i = 0; i < size; i++)
 	{
