@@ -195,7 +195,7 @@ TEST(Expression_Numeric, equalExp)
 
 	assert(t1->type == VDM_REAL && "Value is not a real");
 	assert(t2->type == VDM_REAL && "Value is not a real");
-	TVP res = vdmEqual(t1,t2);
+	TVP res = vdmNumericEqual(t1,t2);
 	EXPECT_EQ(true,res->value.boolVal);
 
 	vdmFree(t1);

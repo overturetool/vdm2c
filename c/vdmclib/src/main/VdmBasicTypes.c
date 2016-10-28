@@ -135,6 +135,27 @@ bool isNumber(TVP val)
 	}
 }
 
+TVP isInt(TVP v)
+{
+	if(v->type == VDM_INT)
+		return newBool(true);
+	return newBool(false);
+}
+
+TVP isReal(TVP v)
+{
+	if(v->type == VDM_REAL)
+		return newBool(true);
+	return newBool(false);
+}
+
+TVP isBool(TVP v)
+{
+	if(v->type == VDM_BOOL)
+		return newBool(true);
+	return newBool(false);
+}
+
 /*
  * Numeric
  *
@@ -340,7 +361,7 @@ double bv = toDouble(b);
 return newReal(pow(av,bv));
 }
 
-TVP vdmEqual(TVP a,TVP b)
+TVP vdmNumericEqual(TVP a,TVP b)
 {	ASSERT_CHECK_NUMERIC(a);
 ASSERT_CHECK_NUMERIC(b);
 

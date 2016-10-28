@@ -1,0 +1,23 @@
+class IsTest
+instance variables
+intVar : int := 0;
+realVar : real := 0.0;
+boolVar : bool := false;
+
+operations
+public TestIsInt : () ==> bool
+TestIsInt() ==
+	return is_(intVar, int);
+	
+public TestIsBool : () ==> bool
+TestIsBool() ==
+	return is_(boolVar, bool);
+	
+public TestIsReal : () ==> bool
+TestIsReal() ==
+	return is_(realVar, real);
+
+public TestIsNotInt : () ==> bool
+TestIsNotInt() ==
+	return not is_(realVar, int);
+end IsTest

@@ -166,7 +166,7 @@ TEST(Expression_Map, mapDom)
 	TVP map_dom = vdmMapDom(map);
 
 	TVP res = vdmSetMemberOf(map_dom,newInt(3));
-	EXPECT_EQ(true, res->value.boolVal);
+	EXPECT_TRUE(res->value.boolVal);
 
 	vdmFree(map_dom);
 	vdmFree(res);
@@ -181,7 +181,7 @@ TEST(Expression_Map, mapRng)
 	TVP map_rng = vdmMapRng(map);
 
 	TVP res = vdmSetMemberOf(map_rng,newInt(4));
-	EXPECT_EQ(true, res->value.boolVal);
+	EXPECT_TRUE(res->value.boolVal);
 }
 
 TEST(Expression_Map, mapMunion)
@@ -236,10 +236,10 @@ TEST(Expression_Map, mapMerge)
 	TVP map_dom = vdmMapDom(map_res);
 
 	TVP res = vdmSetMemberOf(map_dom,newInt(3));
-	EXPECT_EQ(true, res->value.boolVal);
+	EXPECT_TRUE(res->value.boolVal);
 
 	res = vdmSetMemberOf(map_dom,newInt(9));
-	EXPECT_EQ(true, res->value.boolVal);
+	EXPECT_TRUE(res->value.boolVal);
 }
 
 TEST(Expression_Map, mapDomRestrictTo)
@@ -258,11 +258,11 @@ TEST(Expression_Map, mapDomRestrictTo)
 	TVP map_dom = vdmMapDom(map_res);
 	TVP res = vdmSetMemberOf(map_dom,newInt(3));
 
-	EXPECT_EQ(false, res->value.boolVal);
+	EXPECT_FALSE(res->value.boolVal);
 
 	vdmFree(res);
 	res = vdmSetMemberOf(map_dom, newInt(1));
-	EXPECT_EQ(true, res->value.boolVal);
+	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(res);
 }
 
@@ -284,7 +284,7 @@ TEST(Expression_Map, mapDomRestrictBy)
 	//Test if 1 is removed from map domain
 	TVP res = vdmSetMemberOf(map_dom,newInt(1));
 
-	EXPECT_EQ(false, res->value.boolVal);
+	EXPECT_FALSE(res->value.boolVal);
 }
 
 TEST(Expression_Map, mapRngRestrictTo)
@@ -305,7 +305,7 @@ TEST(Expression_Map, mapRngRestrictTo)
 	//Test if 6 is removed from map domain, because it maps to 7
 	TVP res = vdmSetMemberOf(map_dom,newInt(6));
 
-	EXPECT_EQ(false, res->value.boolVal);
+	EXPECT_FALSE(res->value.boolVal);
 }
 
 TEST(Expression_Map, mapRngRestrictBy)
@@ -326,7 +326,7 @@ TEST(Expression_Map, mapRngRestrictBy)
 	//Test if 1 is removed from map domain, because it maps to 2
 	TVP res = vdmSetMemberOf(map_dom,newInt(1));
 
-	EXPECT_EQ(false, res->value.boolVal);
+	EXPECT_FALSE(res->value.boolVal);
 }
 
 TEST(Expression_Map, mapInverse)
@@ -343,12 +343,12 @@ TEST(Expression_Map, mapInverse)
 	//Test if 1 is removed from map domain
 	TVP res = vdmSetMemberOf(map_dom,newInt(1));
 
-	EXPECT_EQ(false, res->value.boolVal);
+	EXPECT_FALSE(res->value.boolVal);
 
 	//Test if 4 is added to map domain
 	res = vdmSetMemberOf(map_dom,newInt(4));
 
-	EXPECT_EQ(true, res->value.boolVal);
+	EXPECT_TRUE(res->value.boolVal);
 }
 
 TEST(Expression_Map, mapEquals)
@@ -361,10 +361,10 @@ TEST(Expression_Map, mapEquals)
 	TVP map3 = createMap2();
 
 	bool map_eq1 = vdmMapEquals(map1,map2);
-	EXPECT_EQ(true, map_eq1);
+	EXPECT_TRUE(map_eq1);
 
 	bool map_eq2 = vdmMapEquals(map1,map3);
-	EXPECT_EQ(false, map_eq2);
+	EXPECT_FALSE(map_eq2);
 }
 
 
@@ -378,10 +378,10 @@ TEST(Expression_Map, mapInEquals)
 	TVP map3 = createMap2();
 
 	bool map_not_eq1 = vdmMapInEquals(map1,map2);
-	EXPECT_EQ(false, map_not_eq1);
+	EXPECT_FALSE(map_not_eq1);
 
 	bool map_not_eq2 = vdmMapInEquals(map1,map3);
-	EXPECT_EQ(true, map_not_eq2);
+	EXPECT_TRUE(map_not_eq2);
 }
 
 
@@ -398,25 +398,25 @@ TEST(Expression_Map, newMapVarToGrow)
 
 	val = vdmMapApply(theMap, newChar('a'));
 	res = vdmEquals(val, newInt(1));
-	EXPECT_EQ(true, res->value.boolVal);
+	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(val);
 	vdmFree(res);
 
 	val = vdmMapApply(theMap, newChar('b'));
 	res = vdmEquals(val, newInt(2));
-	EXPECT_EQ(true, res->value.boolVal);
+	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(val);
 	vdmFree(res);
 
 	val = vdmMapApply(theMap, newChar('c'));
 	res = vdmEquals(val, newInt(3));
-	EXPECT_EQ(true, res->value.boolVal);
+	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(val);
 	vdmFree(res);
 
 	val = vdmMapApply(theMap, newChar('c'));
 	res = vdmEquals(val, newInt(4));
-	EXPECT_EQ(false, res->value.boolVal);
+	EXPECT_FALSE(res->value.boolVal);
 	vdmFree(val);
 	vdmFree(res);
 
@@ -435,25 +435,25 @@ TEST(Expression_Map, vdmMapGrow)
 
 	val = vdmMapApply(theMap, newChar('a'));
 	res = vdmEquals(val, newInt(1));
-	EXPECT_EQ(true, res->value.boolVal);
+	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(val);
 	vdmFree(res);
 
 	val = vdmMapApply(theMap, newChar('b'));
 	res = vdmEquals(val, newInt(2));
-	EXPECT_EQ(true, res->value.boolVal);
+	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(val);
 	vdmFree(res);
 
 	val = vdmMapApply(theMap, newChar('c'));
 	res = vdmEquals(val, newInt(3));
-	EXPECT_EQ(true, res->value.boolVal);
+	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(val);
 	vdmFree(res);
 
 	val = vdmMapApply(theMap, newChar('c'));
 	res = vdmEquals(val, newInt(4));
-	EXPECT_EQ(false, res->value.boolVal);
+	EXPECT_FALSE(res->value.boolVal);
 	vdmFree(val);
 	vdmFree(res);
 

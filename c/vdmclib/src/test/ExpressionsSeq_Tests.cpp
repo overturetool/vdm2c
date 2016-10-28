@@ -60,14 +60,14 @@ TEST(Expression_Seq, seqGrow)
 	vdmSeqGrow(seq1, newInt(2));
 
 	res = vdmSeqEqual(seq1, seq2);
-	EXPECT_EQ(true, res->value.boolVal);
+	EXPECT_TRUE(res->value.boolVal);
 
 	vdmSeqGrow(seq1, newInt(3));
 
 	UNWRAP_COLLECTION(col, seq1);
 	vdmFree(res);
 	res = vdmSeqEqual(seq1, seq2);
-	EXPECT_EQ(false, res->value.boolVal);
+	EXPECT_FALSE(res->value.boolVal);
 
 	//Clean up.
 	vdmFree(res);
@@ -89,14 +89,14 @@ TEST(Expression_Seq, seqFit)
 	vdmSeqGrow(seq1, newInt(2));
 
 	res = vdmSeqEqual(seq1, seq2);
-	EXPECT_EQ(true, res->value.boolVal);
+	EXPECT_TRUE(res->value.boolVal);
 
 	vdmSeqGrow(seq1, newInt(3));
 
 	UNWRAP_COLLECTION(col, seq1);
 	vdmFree(res);
 	res = vdmSeqEqual(seq1, seq2);
-	EXPECT_EQ(false, res->value.boolVal);
+	EXPECT_FALSE(res->value.boolVal);
 	vdmFree(res);
 
 //	vdmSeqFit(seq1);
@@ -105,7 +105,7 @@ TEST(Expression_Seq, seqFit)
 	//vdmSeqVarToGrow it is not as efficient.
 	vdmSeqGrow(seq2, newInt(3));
 	res = vdmSeqEqual(seq1, seq2);
-	EXPECT_EQ(true, res->value.boolVal);
+	EXPECT_TRUE(res->value.boolVal);
 
 	//Clean up.
 	vdmFree(res);
@@ -172,7 +172,7 @@ TEST(Expression_Seq, seqElems)
 	TVP res = vdmSeqElems(t);
 
 	TVP tmp = vdmEquals(res,elems);
-	EXPECT_EQ(true, tmp->value.boolVal);
+	EXPECT_TRUE(tmp->value.boolVal);
 	vdmFree(res);
 	vdmFree(a);
 	vdmFree(b);
@@ -286,7 +286,7 @@ TEST(Expression_Seq, seqEqual)
 
 	TVP res = vdmSeqEqual(t,t2);
 
-	EXPECT_EQ(true, res->value.boolVal);
+	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(res);
 //
 	vdmFree(t);
@@ -305,7 +305,7 @@ TEST(Expression_Seq, seqInEqual)
 
 	TVP res = vdmSeqInEqual(t,t2);
 
-	EXPECT_EQ(true, res->value.boolVal);
+	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(res);
 	//
 	vdmFree(t);

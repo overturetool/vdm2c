@@ -31,6 +31,8 @@
 #define LIB_VDMSEQ_H_
 #include "TypedValue.h"
 
+#include "VdmSet.h"
+
 #define SET_SEQ(seq,index,val) {struct Collection* col =(struct Collection*) seq->value.ptr;col->value[index-1] =vdmClone(val);}
 
 /*
