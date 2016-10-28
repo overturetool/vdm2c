@@ -351,7 +351,7 @@ TEST(Expression_Map, mapInverse)
 	EXPECT_TRUE(res->value.boolVal);
 }
 
-TEST(Expression_Map, mapEquals)
+TEST(Expression_Map, mapEquals1)
 {
 	//map1: {1|->2,3|->4,6|->7}
 	TVP map1 = createMap1();
@@ -367,6 +367,32 @@ TEST(Expression_Map, mapEquals)
 	TVP map_eq2 = vdmMapEquals(map1,map3);
 	EXPECT_FALSE(map_eq2->value.boolVal);
 	vdmFree(map_eq2);
+}
+
+TEST(Expression_Map, mapEquals2)
+{
+	// {1 |-> 2}
+	TVP m1 = newMapVarToGrow(1, 5, newInt(1), newInt(2));
+
+	// {3 |-> 4}
+	TVP m2 = newMapVarToGrow(1, 5, newInt(3), newInt(4));
+
+	// m1 union m2
+	TVP mapUnionResult = vdmMapMunion(m1,m2);
+
+	// {1 |-> 2, 3 |-> 4}
+	TVP expectedResult = newMapVarToGrow(2, 5, newInt(3), newInt(4), newInt(1), newInt(2));
+
+	TVP res = vdmEquals(mapUnionResult, expectedResult);
+	bool b = res->value.boolVal;
+
+	EXPECT_TRUE(b);
+
+	vdmFree(res);
+	vdmFree(m1);
+	vdmFree(m2);
+	vdmFree(mapUnionResult);
+	vdmFree(expectedResult);
 }
 
 
