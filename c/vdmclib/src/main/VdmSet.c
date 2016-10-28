@@ -464,7 +464,19 @@ TVP vdmSetEquals(TVP set1, TVP set2)
 	ASSERT_CHECK(set1);
 	ASSERT_CHECK(set2);
 
-	return vdmEquals(set1, set2);
+	TVP subset12Res;
+	TVP subset21Res;
+	bool subsetRes;
+
+	//Check mutual inclusion.
+	subset12Res = vdmSetSubset(set1, set2);
+	subset21Res = vdmSetSubset(set2, set1);
+
+	subsetRes = subset12Res->value.boolVal && subset21Res->value.boolVal;
+	vdmFree(subset12Res);
+	vdmFree(subset21Res);
+
+	return newBool(subsetRes);
 }
 
 

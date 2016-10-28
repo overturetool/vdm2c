@@ -360,11 +360,13 @@ TEST(Expression_Map, mapEquals)
 	//map3: {6|->7,9|->11}
 	TVP map3 = createMap2();
 
-	bool map_eq1 = vdmMapEquals(map1,map2);
-	EXPECT_TRUE(map_eq1);
+	TVP map_eq1 = vdmMapEquals(map1,map2);
+	EXPECT_TRUE(map_eq1->value.boolVal);
+	vdmFree(map_eq1);
 
-	bool map_eq2 = vdmMapEquals(map1,map3);
-	EXPECT_FALSE(map_eq2);
+	TVP map_eq2 = vdmMapEquals(map1,map3);
+	EXPECT_FALSE(map_eq2->value.boolVal);
+	vdmFree(map_eq2);
 }
 
 
