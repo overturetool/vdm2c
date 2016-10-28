@@ -284,8 +284,7 @@ bool equals(struct TypedValue* a, struct TypedValue* b)
 	}
 	case VDM_MAP:
 	{
-		//			return mapEqual(a, b);
-		break;
+		return vdmMapEquals(a, b);
 	}
 	case VDM_PRODUCT:
 	case VDM_SEQ:
