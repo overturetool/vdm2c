@@ -10,12 +10,14 @@ import static org.overture.codegen.vdm2c.utils.CTransUtil.toExp;
 
 import java.util.List;
 
+import org.overture.codegen.assistant.AssistantBase;
 import org.overture.codegen.ir.SExpIR;
 import org.overture.codegen.ir.SPatternIR;
 import org.overture.codegen.ir.SStmIR;
 import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.declarations.AVarDeclIR;
 import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
+import org.overture.codegen.ir.patterns.AIdentifierPatternIR;
 import org.overture.codegen.ir.statements.ALocalPatternAssignmentStmIR;
 import org.overture.codegen.trans.IterationVarPrefixes;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
@@ -87,7 +89,18 @@ public class CForIterator extends AbstractLanguageIterator
 			SPatternIR pattern, AVarDeclIR successVarDecl,
 			AVarDeclIR nextElementDecl) throws AnalysisException
 	{
-		return null;
+		if(!(pattern instanceof AIdentifierPatternIR))
+		{
+			transAssistant.getInfo().addUnsupportedNode(AssistantBase.getVdmNode(pattern), "This transformation currently only support identifier patterns");
+			return null;
+		}
+		
+		ALocalPatternAssignmentStmIR assign = new ALocalPatternAssignmentStmIR();
+		assign.setNextElementDecl(nextElementDecl);
+		assign.setTarget(pattern);
+		assign.setExp(newApply("vdmSetElementAt", newIdentifier(setName, null), newApply("toInteger", newIdentifier(iteratorName, null))));
+		
+		return assign;
 	}
 
 	@Override
@@ -97,6 +110,8 @@ public class CForIterator extends AbstractLanguageIterator
 		return null;
 	}
 	
-	
+	public String getIteratorName() {
+		return iteratorName;
+	}
 
 }
