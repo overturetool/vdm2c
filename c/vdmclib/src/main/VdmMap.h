@@ -94,7 +94,7 @@ TVP vdmMapRngRestrictBy(TVP set,TVP map);
 TVP vdmMapApply(TVP map, TVP key);
 TVP vdmMapInverse(TVP map);
 
-bool vdmMapEquals(TVP map1, TVP map2);
+TVP vdmMapEquals(TVP map1, TVP map2);
 bool vdmMapInEquals(TVP map1, TVP map2);
 
 #ifdef WITH_GLIB_HASH

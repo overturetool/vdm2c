@@ -782,7 +782,7 @@ TVP vdmMapInverse(TVP map){
 	return map_res;
 }
 
-bool vdmMapEquals(TVP map1, TVP map2){
+TVP vdmMapEquals(TVP map1, TVP map2){
 
 	//Assert map
 	ASSERT_CHECK(map1);
@@ -797,7 +797,7 @@ bool vdmMapEquals(TVP map1, TVP map2){
 	UNWRAP_COLLECTION(m2,map2_dom);
 
 	if(m1->size!=m2->size)
-		return false;
+		return newBool(false);
 
 	// Add key/val for map1
 	for (int i=0; i<m1->size; i++){
@@ -813,7 +813,7 @@ bool vdmMapEquals(TVP map1, TVP map2){
 		}
 	}
 
-	return eq;
+	return newBool(eq);
 
 }
 
