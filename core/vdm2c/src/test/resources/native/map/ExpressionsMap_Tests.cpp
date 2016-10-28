@@ -16,11 +16,6 @@ vdmFree(res);\
 vdmFree(c)
 
 
-TEST(ExpressionMap, mapEnum)
-{
-	CHECK(CLASS_ExpressionMap__Z7mapEnumEV);
-}
-
 TEST(ExpressionMap, mapDom)
 {
 	CHECK(CLASS_ExpressionMap__Z6mapDomEV);
@@ -34,4 +29,14 @@ TEST(ExpressionMap, mapRng)
 TEST(ExpressionMap, mapAccessSimple)
 {
 	CHECK(CLASS_ExpressionMap__Z15mapAccessSimpleEV);
+}
+
+TEST(ExpressionMap, mapEq)
+{
+	CHECK(CLASS_ExpressionMap__Z5mapEqEV);
+}
+
+TEST(ExpressionMap, mapNeq)
+{
+	CHECK(CLASS_ExpressionMap__Z6mapNeqEV);
 }
