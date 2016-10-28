@@ -45,3 +45,8 @@ TEST(ExpressionMap, mapInv)
 {
 	CHECK(CLASS_ExpressionMap__Z6mapInvEV);
 }
+
+TEST(ExpressionMap, mapUnion)
+{
+	CHECK(CLASS_ExpressionMap__Z8mapUnionEV);
+}
