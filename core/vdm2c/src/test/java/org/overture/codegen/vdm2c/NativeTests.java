@@ -39,6 +39,14 @@ public class NativeTests extends NativeTestBase
 		generate(getPath("expressions/ExpressionLetBeSt.vdmrt"));
 		compileAndTest(getTestCppFile("let/ExpressionsLetBeSt_Tests.cpp"));
 	}
+	
+	@Test
+	public void ExpressionMap() throws IOException, InterruptedException,
+			CMakeGenerateException
+	{
+		generate(getPath("expressions/ExpressionMap.vdmrt"));
+		compileAndTest(getTestCppFile("map/ExpressionsMap_Tests.cpp"));
+	}
 
 
 	@Test

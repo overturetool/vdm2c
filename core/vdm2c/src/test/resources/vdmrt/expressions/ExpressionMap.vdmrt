@@ -1,0 +1,21 @@
+class ExpressionMap
+
+functions
+
+public mapEnum :  () -> bool
+mapEnum () ==  {1 |-> 2, 3 |-> 4} = {3 |-> 4, 1 |-> 2};
+
+public mapDom :  () -> bool
+mapDom () == dom {1 |-> 2, 3 |-> 4} = {3,1};
+
+public mapRng :  () -> bool
+mapRng () == rng {1 |-> 2, 3 |-> 4} = {4,2};
+
+public mapAccessSimple : () -> bool
+mapAccessSimple () ==
+let m = {1 |-> 2, 3 |-> 4},
+    v = m(3)
+in
+  v = 4;
+
+end ExpressionMap
