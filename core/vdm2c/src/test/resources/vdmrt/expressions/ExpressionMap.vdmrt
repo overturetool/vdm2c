@@ -21,4 +21,7 @@ mapEq () ==  {1 |-> 2, 3 |-> 4} = {3 |-> 4, 1 |-> 2};
 public mapNeq :  () -> bool
 mapNeq () ==  {1 |-> 2, 3 |-> 4} <> {30 |-> 40, 10 |-> 20};
 
+public mapInv :  () -> bool
+mapInv () == inverse {1 |-> 2, 3 |-> 4} = {4 |-> 3, 2 |-> 1} 
+
 end ExpressionMap

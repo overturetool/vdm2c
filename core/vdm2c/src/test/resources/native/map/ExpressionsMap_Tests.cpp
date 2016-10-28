@@ -40,3 +40,8 @@ TEST(ExpressionMap, mapNeq)
 {
 	CHECK(CLASS_ExpressionMap__Z6mapNeqEV);
 }
+
+TEST(ExpressionMap, mapInv)
+{
+	CHECK(CLASS_ExpressionMap__Z6mapInvEV);
+}
