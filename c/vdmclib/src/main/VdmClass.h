@@ -103,13 +103,13 @@ struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction
 /*
  * Class Value unwrap macro - TODO: How to assert inline
  */
-#define TO_CLASS_PTR(tv,type) ((struct type *) ( ((struct ClassType*)tv->value.ptr)->value))
+#define TO_CLASS_PTR(tv, type) ((struct type *) ( ((struct ClassType*)tv->value.ptr)->value))
 
 /*
  * Cast to class pointer by moving it forward to the class specific VTable
  * Note that we only adjust the pointer if a subtype is given (i.e. not the type of it self)
  */
-#define CLASS_CAST(ptr,from,to) (((unsigned char*)ptr) + (SAME_ARGS(from,to)?0: offsetof(struct from, _##to##_pVTable)))
+#define CLASS_CAST(ptr, from, to) ((struct to *)(((unsigned char*)ptr) + (SAME_ARGS(from,to)?0: offsetof(struct from, _##to##_pVTable))))
 
 /*
  * Down-casting a super class pointer to the concrete class. i.e if A extends B and we have a 'b' pointer we can downcast it to an 'a'
@@ -124,7 +124,7 @@ struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction
 /*
  * Macro to obtain the (sub-)class specific field from a class struct
  */
-#define GET_STRUCT_FIELD(tname,ptr,fieldtype,fieldname) (*( (fieldtype*) (  ((unsigned char*)ptr) + offsetof(struct tname, fieldname) )  ))
+#define GET_STRUCT_FIELD(tname, ptr, fieldtype, fieldname) (*((fieldtype*)((((unsigned char*)ptr) + offsetof(struct tname, fieldname)))))
 
 /*
  * Macro to set the (sub-)class specific field from a class struct
@@ -136,23 +136,23 @@ struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction
 /*
  * Macro to obtain the (sub-)class specific VTable from a class struct
  */
-#define GET_VTABLE_FUNC(thisTypeName,funcTname,ptr,id)   GET_STRUCT_FIELD(thisTypeName,ptr,struct VTable*,_##funcTname##_pVTable)[id].pFunc
+#define GET_VTABLE_FUNC(thisTypeName, funcTname, ptr, id)   GET_STRUCT_FIELD(thisTypeName,ptr,struct VTable*,_##funcTname##_pVTable)[id].pFunc
 
 /*
  * Macro to obtain a function from a (sub-)class specific VTable from a class struct
  */
-#define CALL_FUNC(thisTypeName,funcTname,classValue,id, args... )     GET_VTABLE_FUNC( thisTypeName,funcTname,TO_CLASS_PTR(classValue,thisTypeName),id)(CLASS_CAST(TO_CLASS_PTR(classValue,thisTypeName),thisTypeName,funcTname), ## args)
+#define CALL_FUNC(thisTypeName, funcTname, classValue, id, args... )     GET_VTABLE_FUNC( thisTypeName,funcTname,TO_CLASS_PTR(classValue,thisTypeName),id)(CLASS_CAST(TO_CLASS_PTR(classValue,thisTypeName),thisTypeName,funcTname), ## args)
 
 /*
  * Macro to obtain a field from a (sub-)class specific class struct. We clone to preserve value semantics and the rule of freeing
  */
-#define GET_FIELD(thisTypeName,fieldTypeName,classValue,fieldName) vdmClone(GET_STRUCT_FIELD(fieldTypeName,CLASS_CAST(TO_CLASS_PTR(classValue,thisTypeName),thisTypeName,fieldTypeName) ,struct TypedValue*,m_##fieldTypeName##_##fieldName))
+#define GET_FIELD(thisTypeName, fieldTypeName, classValue, fieldName) vdmClone(GET_STRUCT_FIELD(fieldTypeName,CLASS_CAST(TO_CLASS_PTR(classValue,thisTypeName),thisTypeName,fieldTypeName) ,struct TypedValue*,m_##fieldTypeName##_##fieldName))
 
 
 /*
  * Macro to set a field from a (sub-)class specific class struct. We clone to preserve value semantics and the rule of freeing
  */
-#define SET_FIELD(thisTypeName,fieldTypeName,classValue,fieldName,newValue) SET_FIELD_PTR(thisTypeName,\
+#define SET_FIELD(thisTypeName, fieldTypeName, classValue, fieldName, newValue) SET_FIELD_PTR(thisTypeName,\
 																							fieldTypeName,\
 																							 TO_CLASS_PTR(classValue,thisTypeName),\
 																							 fieldName,\
@@ -169,12 +169,12 @@ struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction
 /*
  * Macro to obtain a field from a (sub-)class specific class struct. We clone to preserve value semantics and the rule of freeing
  */
-#define GET_FIELD_PTR(thisTypeName,fieldTypeName,ptr,fieldName) vdmClone(GET_STRUCT_FIELD(fieldTypeName,CLASS_CAST(ptr,thisTypeName,fieldTypeName) ,struct TypedValue*,m_##fieldTypeName##_##fieldName))
+#define GET_FIELD_PTR(thisTypeName, fieldTypeName, ptr, fieldName) vdmClone(GET_STRUCT_FIELD(fieldTypeName,CLASS_CAST(ptr,thisTypeName,fieldTypeName) ,struct TypedValue*,m_##fieldTypeName##_##fieldName))
 
 /*
  * Macro to set a field from a (sub-)class specific class struct.
  */
-#define SET_FIELD_PTR(thisTypeName,fieldTypeName,ptr,fieldName,newValue) SET_STRUCT_FIELD(fieldTypeName,\
+#define SET_FIELD_PTR(thisTypeName, fieldTypeName, ptr, fieldName, newValue) SET_STRUCT_FIELD(fieldTypeName,\
 																							 CLASS_CAST(ptr,thisTypeName,fieldTypeName) ,\
 																							 struct TypedValue*,\
 																							 m_##fieldTypeName##_##fieldName,\
@@ -183,7 +183,7 @@ struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction
 /*
  * Macro to obtain a function from a (sub-)class specific VTable from a class struct
  */
-#define CALL_FUNC_PTR(thisTypeName,funcTname,ptr,id, args... )     GET_VTABLE_FUNC( thisTypeName,funcTname,ptr,id)(CLASS_CAST(ptr,thisTypeName,funcTname), ## args)
+#define CALL_FUNC_PTR(thisTypeName, funcTname, ptr, id, args... )     GET_VTABLE_FUNC( thisTypeName,funcTname,ptr,id)(CLASS_CAST(ptr,thisTypeName,funcTname), ## args)
 
 
 // ############ UTILITIES #####################
@@ -191,6 +191,6 @@ struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction
  * compare arguments. Techinically we wated: typeid(from)==typeid(to)
  * but this is not valid C. However it can be ifdeed for C++. But the name compare if ok
  */
-#define SAME_ARGS(x,y) #x==#y
+#define SAME_ARGS(x, y) #x==#y
 
 #endif /* LIB_VDMCLASS_H_ */
