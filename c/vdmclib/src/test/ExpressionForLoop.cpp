@@ -42,7 +42,7 @@ TVP forindex()
 	vdmFree(e3);
 
 	TVP tmp1 = newInt(25);
-	TVP ret = vdmEqual(tmp,tmp1);
+	TVP ret = vdmNumericEqual(tmp,tmp1);
 	vdmFree(tmp1);
 	vdmFree(tmp);
 	return ret;
@@ -99,7 +99,7 @@ TVP forset()
 	vdmFree(S);
 
 	TVP tmp1 = newInt(6);
-	TVP ret = vdmEqual(tmp,tmp1);
+	TVP ret = vdmNumericEqual(tmp,tmp1);
 	vdmFree(tmp1);
 	vdmFree(tmp);
 	return ret;

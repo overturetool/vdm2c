@@ -35,7 +35,7 @@ TEST(Expression_Boolean, notExp)
 
 	assert(t->type == VDM_BOOL && "Value is not a bool");
 	TVP res = vdmNot(t);
-	EXPECT_EQ (true,res->value.boolVal);
+	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(res);
 
 	vdmFree(t);
@@ -53,7 +53,7 @@ TEST(Expression_Boolean, andExp)
 	assert(t->type == VDM_BOOL && "Value is not a bool");
 	assert(t1->type == VDM_BOOL && "Value is not a bool");
 	TVP res = vdmAnd(t,t1);
-	EXPECT_EQ (false,res->value.boolVal);
+	EXPECT_FALSE(res->value.boolVal);
 	vdmFree(res);
 
 	vdmFree(t);
@@ -72,13 +72,13 @@ TEST(Expression_Boolean, andExp)
 
 	t1 = newBool(false);
 	res = vdmAnd(t, t1);
-	EXPECT_EQ(false, res->value.boolVal);
+	EXPECT_FALSE(res->value.boolVal);
 	vdmFree(res);
 
 	vdmFree(t);
 	t = NULL;
 	res = vdmAnd(t1, t);
-	EXPECT_EQ(false, res->value.boolVal);
+	EXPECT_FALSE(res->value.boolVal);
 
 	vdmFree(res);
 	vdmFree(t);
@@ -94,7 +94,7 @@ TEST(Expression_Boolean, orExp)
 	assert(t->type == VDM_BOOL && "Value is not a bool");
 	assert(t1->type == VDM_BOOL && "Value is not a bool");
 	TVP res = vdmOr(t,t1);
-	EXPECT_EQ (true,res->value.boolVal);
+	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(res);
 
 	vdmFree(t);
@@ -112,13 +112,13 @@ TEST(Expression_Boolean, orExp)
 
 	t1 = newBool(true);
 	res = vdmOr(t, t1);
-	EXPECT_EQ(true, res->value.boolVal);
+	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(res);
 
 	vdmFree(t);
 	t = NULL;
 	res = vdmOr(t1, t);
-	EXPECT_EQ(true, res->value.boolVal);
+	EXPECT_TRUE(res->value.boolVal);
 
 	vdmFree(res);
 	vdmFree(t);
@@ -133,7 +133,7 @@ TEST(Expression_Boolean, xorExp)
 	assert(t->type == VDM_BOOL && "Value is not a bool");
 	assert(t1->type == VDM_BOOL && "Value is not a bool");
 	TVP res = vdmXor(t,t1);
-	EXPECT_EQ (true,res->value.boolVal);
+	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(res);
 
 	vdmFree(t);
@@ -154,7 +154,7 @@ TEST(Expression_Boolean, implicationExp)
 	// A=> B == not A or B
 
 	TVP res =vdmImplies(t,t1);
-	EXPECT_EQ (false,res->value.boolVal);
+	EXPECT_FALSE(res->value.boolVal);
 	vdmFree(res);
 
 	vdmFree(t);
@@ -172,13 +172,13 @@ TEST(Expression_Boolean, implicationExp)
 
 	t1 = newBool(false);
 	res = vdmImplies(t, t1);
-	EXPECT_EQ(false, res->value.boolVal);
+	EXPECT_FALSE(res->value.boolVal);
 	vdmFree(res);
 
 	vdmFree(t);
 	t = NULL;
 	res = vdmImplies(t1, t);
-	EXPECT_EQ(true, res->value.boolVal);
+	EXPECT_TRUE(res->value.boolVal);
 
 	vdmFree(res);
 	vdmFree(t);
@@ -195,7 +195,7 @@ TEST(Expression_Boolean, biimplicationExp)
 	assert(t->type == VDM_BOOL && "Value is not a bool");
 	assert(t1->type == VDM_BOOL && "Value is not a bool");
 	TVP res =vdmBiimplication(t,t1); //newBool((!t->value.boolVal || t1->value.boolVal) && (!t1->value.boolVal || t->value.boolVal));
-	EXPECT_EQ (false,res->value.boolVal);
+	EXPECT_FALSE(res->value.boolVal);
 	vdmFree(res);
 
 	vdmFree(t);
@@ -216,7 +216,7 @@ TEST(Expression_Boolean, equalityExp)
 	assert(t->type == VDM_BOOL && "Value is not a bool");
 	assert(t1->type == VDM_BOOL && "Value is not a bool");
 	TVP res = vdmEquals(t,t1);
-	EXPECT_EQ (true,res->value.boolVal);
+	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(res);
 
 	vdmFree(t);
@@ -232,7 +232,7 @@ TEST(Expression_Boolean, inequalityExp)
 	assert(t->type == VDM_BOOL && "Value is not a bool");
 	assert(t1->type == VDM_BOOL && "Value is not a bool");
 	TVP res = vdmInEquals(t,t1);
-	EXPECT_EQ (true,res->value.boolVal);
+	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(res);
 
 	vdmFree(t);

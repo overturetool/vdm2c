@@ -21,9 +21,7 @@ import org.overture.codegen.trans.CallObjStmTrans;
 import org.overture.codegen.trans.DivideTrans;
 import org.overture.codegen.trans.Exp2StmVarPrefixes;
 import org.overture.codegen.trans.IterationVarPrefixes;
-import org.overture.codegen.trans.LetBeStTrans;
 import org.overture.codegen.trans.WhileStmTrans;
-//import org.overture.codegen.trans.TempVarPrefixes;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.trans.funcvalues.FuncValAssistant;
 import org.overture.codegen.trans.funcvalues.FuncValPrefixes;
@@ -35,7 +33,9 @@ import org.overture.codegen.trans.patterns.PatternTrans;
 import org.overture.codegen.trans.patterns.PatternVarPrefixes;
 import org.overture.codegen.trans.quantifier.Exists1CounterData;
 import org.overture.codegen.vdm2c.transformations.AddThisArgToMethodsTrans;
+import org.overture.codegen.vdm2c.transformations.CLetBeStStmTrans;
 import org.overture.codegen.vdm2c.transformations.CallRewriteTrans;
+import org.overture.codegen.vdm2c.transformations.CompToBlockTrans;
 import org.overture.codegen.vdm2c.transformations.CreateGlobalConstInitFunctionTrans;
 import org.overture.codegen.vdm2c.transformations.CreateGlobalStaticInitFunctionTrans;
 import org.overture.codegen.vdm2c.transformations.CtorTrans;
@@ -63,7 +63,6 @@ import org.overture.codegen.vdm2c.transformations.RemoveCWrappersTrans;
 import org.overture.codegen.vdm2c.transformations.RemoveRTConstructs;
 import org.overture.codegen.vdm2c.transformations.RenameFieldsDeclsTrans;
 import org.overture.codegen.vdm2c.transformations.ScopeCleanerTrans;
-import org.overture.codegen.vdm2c.transformations.CompToBlockTrans;
 import org.overture.codegen.vdm2c.transformations.StaticFieldAccessRenameTrans;
 import org.overture.codegen.vdm2c.transformations.SubClassResponsibilityMethodsTrans;
 import org.overture.codegen.vdm2c.transformations.ValueAccessRenameTrans;
@@ -138,7 +137,7 @@ public class CTransSeries
 		
 		// ILanguageIterator langIte = new JavaLanguageIterator(transAssist, iteVarPrefixes);
 		AbstractLanguageIterator langIte = new CForIterator(transAssistant, iteVarPrefixes);
-		transformations.add(new LetBeStTrans(transAssistant, langIte, iteVarPrefixes));
+		transformations.add(new CLetBeStStmTrans(transAssistant, langIte, iteVarPrefixes));
 
 		transformations.add(new WhileStmTrans(transAssistant, varMan.whileCond()));
 		transformations.add(new CompToBlockTrans(iteVarPrefixes, transAssistant, consExists1CounterData(), langIte, exp2stmPrefixes));

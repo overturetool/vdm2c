@@ -361,7 +361,7 @@ double bv = toDouble(b);
 return newReal(pow(av,bv));
 }
 
-TVP vdmEqual(TVP a,TVP b)
+TVP vdmNumericEqual(TVP a,TVP b)
 {	ASSERT_CHECK_NUMERIC(a);
 ASSERT_CHECK_NUMERIC(b);
 

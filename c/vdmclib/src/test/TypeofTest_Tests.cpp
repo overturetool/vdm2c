@@ -35,5 +35,5 @@ extern "C"
 TEST(TypeofTest, test1)
 {
 	for (int i = 0; i < 9; i++)
-		EXPECT_EQ(true, typeoftest(i));
+		EXPECT_TRUE(typeoftest(i));
 }

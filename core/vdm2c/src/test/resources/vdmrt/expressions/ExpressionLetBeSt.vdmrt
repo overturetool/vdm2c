@@ -1,0 +1,33 @@
+class ExpressionLetBeSt
+
+functions
+
+public expPred :  () -> bool
+expPred () ==
+let x in set {1,2,3} be st x > 2
+in
+  x = 3;
+  
+public expNoPred :  () -> bool
+expNoPred () ==
+let x in set {2}
+in
+  x = 2;
+  
+operations
+
+public stmPredReturn :  () ==> bool
+stmPredReturn () ==
+let x in set {1,2,3} be st x > 2
+in
+  return x = 3;
+  
+public stmNoPredNestedLet :  () ==> bool
+stmNoPredNestedLet () ==
+let S = {2}
+in
+  let x in set S
+  in
+   return x = 2;
+
+end ExpressionLetBeSt

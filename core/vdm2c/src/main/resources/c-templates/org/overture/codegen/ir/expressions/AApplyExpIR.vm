@@ -12,17 +12,7 @@ vdmSeqIndex(${root},${index})
 ##
 #elseif ($CFormat.isMapType($node.getRoot()) && $node.getArgs().size() == 1)
 	#set( $key = $CFormat.format($node.getArgs().get(0)))
-	#set ( $mapRead = "" )
-	#if ($CFormat.castNotNeeded($node.getType()))
-		#set ( $mapRead = "Utils.get(${root},${key})" )
-	#else
-		#set ( $mapRead = "(($CFormat.format($node.getType())) Utils.get(${root},${key}))" )
-	#end
-	#if ($ValueSemantics.shouldClone($node))
-		Utils.copy(${mapRead})
-	#else
-		${mapRead}
-	#end
+	vdmMapApply(${root},${key})
 ##
 #elseif ($CFormat.isStringType($node.getRoot()))
 	#set( $index = $CFormat.format($node.getArgs().get(0)))
