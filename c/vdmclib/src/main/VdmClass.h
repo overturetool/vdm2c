@@ -98,6 +98,35 @@ struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction
  * - Class handling macros for calling functions and obtaining fields
  * --------------------------------------------------
  */
+ 
+ // ############ PRIVATE INTERNAL MACROS #####################
+ 
+ 
+
+/*
+ * Make a FOREACH macro for call cast
+ * TODO: change void* into the concrete type of the struct
+ */
+#define TVP_VARG_CAST_FE_1(WHAT, X) void*
+#define TVP_VARG_CAST_FE_2(WHAT, X, ...) TVP_VARG_CAST_FE_1(WHAT, __VA_ARGS__)WHAT(X)
+#define TVP_VARG_CAST_FE_3(WHAT, X, ...) TVP_VARG_CAST_FE_2(WHAT, __VA_ARGS__)WHAT(X)
+#define TVP_VARG_CAST_FE_4(WHAT, X, ...) TVP_VARG_CAST_FE_3(WHAT, __VA_ARGS__)WHAT(X)
+#define TVP_VARG_CAST_FE_5(WHAT, X, ...) TVP_VARG_CAST_FE_4(WHAT, __VA_ARGS__)WHAT(X)
+//... repeat as needed
+
+#define TVP_VARG_CAST_GET_MACRO(_1,_2,_3,_4,_5,NAME,...) NAME
+#define TVP_VARG_CAST_FOR_EACH(action,...) \
+  TVP_VARG_CAST_GET_MACRO(__VA_ARGS__,TVP_VARG_CAST_FE_5,TVP_VARG_CAST_FE_4,TVP_VARG_CAST_FE_3,TVP_VARG_CAST_FE_2,TVP_VARG_CAST_FE_1)(action,__VA_ARGS__)
+
+/*
+ * Make a FOREACH macro for call cast base argument type
+ */
+#define TVP_VARG_CAST_ARG_TYPE(N) , TVP
+
+/*
+ * Macro to generate VTable function cast to match original function. This is to avoid undefined behaviour in the C compiler
+ */
+#define CREATE_CALL_VARG_CAST( ...) (TVP (*)( TVP_VARG_CAST_FOR_EACH(TVP_VARG_CAST_ARG_TYPE , ##__VA_ARGS__)))
 
 // ############ PUBLIC CLASS VALUE ACCESS #####################
 /*
@@ -141,7 +170,8 @@ struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction
 /*
  * Macro to obtain a function from a (sub-)class specific VTable from a class struct
  */
-#define CALL_FUNC(thisTypeName,funcTname,classValue,id, args... )     GET_VTABLE_FUNC( thisTypeName,funcTname,TO_CLASS_PTR(classValue,thisTypeName),id)(CLASS_CAST(TO_CLASS_PTR(classValue,thisTypeName),thisTypeName,funcTname), ## args)
+
+#define CALL_FUNC(thisTypeName,funcTname,classValue,id, ... )     (CREATE_CALL_VARG_CAST(struct thisTypeName*, ## __VA_ARGS__ )GET_VTABLE_FUNC( thisTypeName,funcTname,TO_CLASS_PTR(classValue,thisTypeName),id))(CLASS_CAST(TO_CLASS_PTR(classValue,thisTypeName),thisTypeName,funcTname), ##  __VA_ARGS__)
 
 /*
  * Macro to obtain a field from a (sub-)class specific class struct. We clone to preserve value semantics and the rule of freeing
@@ -183,7 +213,7 @@ struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction
 /*
  * Macro to obtain a function from a (sub-)class specific VTable from a class struct
  */
-#define CALL_FUNC_PTR(thisTypeName,funcTname,ptr,id, args... )     GET_VTABLE_FUNC( thisTypeName,funcTname,ptr,id)(CLASS_CAST(ptr,thisTypeName,funcTname), ## args)
+#define CALL_FUNC_PTR(thisTypeName,funcTname,ptr,id, ... )     (CREATE_CALL_VARG_CAST(struct thisTypeName*, ## __VA_ARGS__ )GET_VTABLE_FUNC( thisTypeName,funcTname,ptr,id))(CLASS_CAST(ptr,thisTypeName,funcTname), ##  __VA_ARGS__)
 
 
 // ############ UTILITIES #####################
