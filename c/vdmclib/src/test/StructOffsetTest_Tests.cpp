@@ -51,14 +51,6 @@ struct VTable VTableArrayForK[] =
 
 };
 
-
-
-
-//Obtain a struct field
-#define GET_STRUCT_FIELD(tname,ptr,fieldtype,fieldname) (*( (fieldtype*) (  ((unsigned char*)ptr) + offsetof(struct tname, fieldname) )  ))
-
-
-
 struct KK
 {
 
