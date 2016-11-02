@@ -166,33 +166,37 @@ public class CGen extends CodeGenBase
 			throws AnalysisException
 	{
 
-		/** Distribution Analysis **/
-		SystemArchitectureAnalysis sysAnalysis = new SystemArchitectureAnalysis();
+		Boolean dist_gen = false;
 
-		sysAnalysis.analyseSystem(statuses);
+		if(dist_gen){
+			/** Distribution Analysis **/
+			SystemArchitectureAnalysis sysAnalysis = new SystemArchitectureAnalysis();
 
-		sysAnalysis.generateDM();
+			sysAnalysis.analyseSystem(statuses);
 
-		sysAnalysis.generateMapStrVer();
-		
-		Map<String, LinkedList<Boolean>> dm = SystemArchitectureAnalysis.DM;
+			sysAnalysis.generateDM();
 
+			sysAnalysis.generateMapStrVer();
+
+			Map<String, LinkedList<Boolean>> dm = SystemArchitectureAnalysis.DM;
+		}
 		statuses = replaceSystemClassWithClass(statuses);
 
-		// Add individual system definition pr. CPU
-		for (IRStatus<ADefaultClassDeclIR> r : IRStatus.extract(statuses, ADefaultClassDeclIR.class))
-		{
-			for(String cpuName : SystemArchitectureAnalysis.distributionMap.keySet()){				
-				if (r.getIrNode().getName().equals(SystemArchitectureAnalysis.systemName))
-				{
-					ADefaultClassDeclIR dep = r.getIrNode().clone();
-					dep.setTag(cpuName);
-					IRStatus<PIR> stat = new IRStatus<PIR>(null, cpuName, dep, new HashSet<VdmNodeInfo>(), new HashSet<IrNodeInfo>());
-					statuses.add(stat);
+		if(dist_gen){
+			//Add individual system definition pr. CPU
+			for (IRStatus<ADefaultClassDeclIR> r : IRStatus.extract(statuses, ADefaultClassDeclIR.class))
+			{
+				for(String cpuName : SystemArchitectureAnalysis.distributionMap.keySet()){				
+					if (r.getIrNode().getName().equals(SystemArchitectureAnalysis.systemName))
+					{
+						ADefaultClassDeclIR dep = r.getIrNode().clone();
+						dep.setTag(cpuName);
+						IRStatus<PIR> stat = new IRStatus<PIR>(null, cpuName, dep, new HashSet<VdmNodeInfo>(), new HashSet<IrNodeInfo>());
+						statuses.add(stat);
+					}
 				}
 			}
 		}
-
 		statuses = ignoreVDMUnitTests(statuses);
 		List<IRStatus<PIR>> recClasses = makeRecsOuterClasses(statuses);
 		statuses.addAll(recClasses);
@@ -228,30 +232,30 @@ public class CGen extends CodeGenBase
 		writeHeaders(outputFolder, statuses, my_formatter);
 		writeClasses(outputFolder, statuses, my_formatter);
 
-		/** Distribution Transformations **/
-		applyDistTransformations(statuses);
+		if(dist_gen){
+			/** Distribution Transformations **/
+			applyDistTransformations(statuses);
 
-		/** Create a new folder for each CPU **/
-		for (String cpuName : SystemArchitectureAnalysis.distributionMap.keySet())
-		{
-			File outputDir = new File(outputFolder.getName() + "/" + cpuName);
+			/** Create a new folder for each CPU **/
+			for (String cpuName : SystemArchitectureAnalysis.distributionMap.keySet())
+			{
+				File outputDir = new File(outputFolder.getName() + "/" + cpuName);
 
-			// Print the unique system class representation
+				// Print the unique system class representation
 
-			List<IRStatus<PIR>> printStatuses = new LinkedList<IRStatus<PIR>>();
+				List<IRStatus<PIR>> printStatuses = new LinkedList<IRStatus<PIR>>();
 
-			for(IRStatus<PIR> st: statuses){
-				if(st.getIrNodeName().equals(cpuName))
-					printStatuses.add(st);
-				if(!(SystemArchitectureAnalysis.distributionMap.keySet().contains(st.getIrNodeName())) && 
-						!(SystemArchitectureAnalysis.systemName.equals(st.getIrNodeName())))
-					printStatuses.add(st);
+				for(IRStatus<PIR> st: statuses){
+					if(st.getIrNodeName().equals(cpuName))
+						printStatuses.add(st);
+					if(!(SystemArchitectureAnalysis.distributionMap.keySet().contains(st.getIrNodeName())) && 
+							!(SystemArchitectureAnalysis.systemName.equals(st.getIrNodeName())))
+						printStatuses.add(st);
+				}
+				writeHeaders(outputDir, printStatuses, my_formatter);
+				writeClasses(outputDir, printStatuses, my_formatter);
 			}
-
-			writeHeaders(outputDir, printStatuses, my_formatter);
-			writeClasses(outputDir, printStatuses, my_formatter);
 		}
-
 		/**
 		 * FIXME: PVJ: This method does not return the generated data as it should. Instead the method writes the
 		 * generated code to the file system and returns an empty data structure. The date structure below is empty!
@@ -408,7 +412,7 @@ public class CGen extends CodeGenBase
 			logger.debug("Completed transformation: {}. Time elapsed: {}", trans.getClass().getSimpleName(), stopwatch);
 		}
 	}
-	
+
 	private CFormat consFormatter(final List<IRStatus<PIR>> statuses)
 	{
 		CFormat my_formatter = new CFormat(generator.getIRInfo(), new IHeaderFinder()
