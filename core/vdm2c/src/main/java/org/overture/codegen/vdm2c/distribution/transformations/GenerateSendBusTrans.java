@@ -63,7 +63,7 @@ public class GenerateSendBusTrans extends DepthFirstAnalysisCAdaptor
 			// First parameter
 			AFormalParamLocalParamIR par1 = new AFormalParamLocalParamIR();
 			AIdentifierPatternIR idPat1 = new AIdentifierPatternIR();
-			idPat1.setName("objId");
+			idPat1.setName("objID");
 			par1.setPattern(idPat1);
 			AExternalTypeIR tyPat = new AExternalTypeIR();
 			tyPat.setName("int");
@@ -73,12 +73,20 @@ public class GenerateSendBusTrans extends DepthFirstAnalysisCAdaptor
 			// Second parameter
 			AFormalParamLocalParamIR par2 = new AFormalParamLocalParamIR();
 			AIdentifierPatternIR idPat2 = new AIdentifierPatternIR();
-			idPat2.setName("funId");
+			idPat2.setName("funID");
 			par2.setPattern(idPat2);
 			par2.setType(tyPat.clone());
 			par.add(par2);
 
 			// Third parameter
+			AFormalParamLocalParamIR par4 = new AFormalParamLocalParamIR();
+			AIdentifierPatternIR idPat4 = new AIdentifierPatternIR();
+			idPat4.setName("nrArgs");
+			par4.setPattern(idPat4);
+			par4.setType(tyPat.clone());
+			par.add(par4);
+			
+			// Fourth parameter
 			AFormalParamLocalParamIR par3 = new AFormalParamLocalParamIR();
 			AIdentifierPatternIR idPat3 = new AIdentifierPatternIR();
 			idPat3.setName("");
@@ -227,10 +235,8 @@ public class GenerateSendBusTrans extends DepthFirstAnalysisCAdaptor
 			//LinkedList<SStmIR> s = ((ABlockStmIR) node.getBody()).getStatements();
 
 			m.setBody(body);
-
 			cl.getMethods().add(m);
-
-			System.out.println();
+			//System.out.println();
 
 		}
 
