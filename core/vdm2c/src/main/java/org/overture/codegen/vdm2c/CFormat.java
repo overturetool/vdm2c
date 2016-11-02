@@ -4,6 +4,7 @@ import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +22,7 @@ import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.declarations.AFormalParamLocalParamIR;
 import org.overture.codegen.ir.declarations.AMethodDeclIR;
 import org.overture.codegen.ir.declarations.SClassDeclIR;
+import org.overture.codegen.ir.expressions.AMapletExpIR;
 import org.overture.codegen.ir.expressions.ASelfExpIR;
 import org.overture.codegen.ir.statements.ABlockStmIR;
 import org.overture.codegen.ir.types.AExternalTypeIR;
@@ -152,7 +154,7 @@ public class CFormat
 		return writer.toString();
 	}
 
-	public String formatArgs(List<? extends SExpIR> exps)
+	public String formatArgs(List<SExpIR> exps)
 			throws AnalysisException
 	{
 		StringWriter writer = new StringWriter();
@@ -172,6 +174,19 @@ public class CFormat
 		}
 
 		return writer.toString();
+	}
+	
+	public String formatMapArgs(List<AMapletExpIR> exps) throws AnalysisException
+	{
+		List<SExpIR> flattened = new LinkedList<>();
+		
+		for(AMapletExpIR e : exps)
+		{
+			flattened.add(e.getLeft());
+			flattened.add(e.getRight());
+		}
+		
+		return formatArgs(flattened);
 	}
 
 	public boolean isNull(INode node)
@@ -281,6 +296,11 @@ public class CFormat
 		// We do it like this because the name is just constructed on the fly
 		// rather than being mangled
 		return extType.getName().replaceFirst("CLASS$", "");
+	}
+	
+	public boolean isMapType(SExpIR exp)
+	{
+		return info.getAssistantManager().getTypeAssistant().isMapType(exp);
 	}
 	
 }
