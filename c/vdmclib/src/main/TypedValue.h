@@ -40,6 +40,9 @@
 #endif
 
 #define recursiveFree vdmFree
+extern struct alloc_list_node *allocd_mem_head;
+extern struct alloc_list_node *allocd_mem_current;
+
 
 //#define ALLOC(t,n) (t *) malloc((n)*sizeof(t))
 
@@ -89,10 +92,18 @@ typedef union TypedValueType
 struct TypedValue
 {
 	vdmtype type;
+	struct TypedValue **ref_from;
 	TypedValueType value;
 };
 
 #define TVP struct TypedValue*
+
+struct alloc_list_node
+{
+	TVP loc;
+	struct alloc_list_node *next;
+};
+
 
 struct Collection
 {
@@ -102,6 +113,13 @@ struct Collection
 
 int vdmCollectionSize(TVP collection);
 TVP vdmCollectionIndex(TVP collection,int index);
+void vdm_gc_init();
+void vdm_gc();
+void vdm_gc_shutdown();
+struct TypedValue* newInt2(int x, TVP *ref_from);
+struct TypedValue* newTypeValue2(vdmtype type, TypedValueType value, TVP *ref_from);
+
+
 
 #define ASSERT_CHECK_COLLECTION(s) assert((s->type == VDM_SEQ || s->type == VDM_SET || s->type == VDM_PRODUCT) &&"Value is not a collection")
 #define UNWRAP_COLLECTION(var,collection) struct Collection* var = (struct Collection*)collection->value.ptr

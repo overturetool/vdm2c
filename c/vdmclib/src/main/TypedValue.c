@@ -42,12 +42,134 @@
 #define ASSERT_CHECK_CHAR(s) assert((s->type ==  VDM_CHAR) && "Value is not a character")
 
 
+struct alloc_list_node *allocd_mem_current;
+struct alloc_list_node *allocd_mem_head;
+
+
+void add_allocd_mem(TVP l, TVP *from)
+{
+	if(allocd_mem_current->loc == NULL)
+	{
+		allocd_mem_current->loc = l;
+		allocd_mem_current->loc->ref_from = from;
+	}
+	else
+	{
+		allocd_mem_current->next = malloc(sizeof(struct alloc_list_node));
+		allocd_mem_current = allocd_mem_current->next;
+		allocd_mem_current->loc = l;
+		allocd_mem_current->loc->ref_from = from;
+		allocd_mem_current->next = NULL;
+	}
+}
+
+void vdm_gc_init()
+{
+	allocd_mem_head = malloc(sizeof(struct alloc_list_node));
+	allocd_mem_head->loc = NULL;
+	allocd_mem_head->next = NULL;
+	allocd_mem_current = allocd_mem_head;
+}
+
+void vdm_gc_shutdown()
+{
+	free(allocd_mem_head);
+}
+
+void vdm_gc()
+{
+	struct alloc_list_node *current;
+	struct alloc_list_node *tmp;
+
+	current = allocd_mem_head;
+	tmp = allocd_mem_head;
+
+	//Nothing to do if no memory currently allocated.
+	if(current->loc == NULL && current->next == NULL)
+		return;
+
+	while(current != NULL)
+	{
+		if(current->loc->ref_from == NULL)
+		{
+			vdmFree(current->loc);
+
+			if(current == allocd_mem_head)
+			{
+				if(allocd_mem_current == tmp)
+					allocd_mem_current = current->next;
+				current = current->next;
+				free(tmp);
+				tmp = current;
+				allocd_mem_head = current;
+			}
+			else
+			{
+				tmp->next = current->next;
+				if(allocd_mem_current == current)
+					allocd_mem_current = tmp->next;
+				free(current);
+				current = tmp->next;
+			}
+		}
+		else if(*(current->loc->ref_from) != current->loc)
+		{
+			vdmFree(current->loc);
+
+			if(current == allocd_mem_head)
+			{
+				if(allocd_mem_current == tmp)
+					allocd_mem_current = current->next;
+				current = current->next;
+				free(tmp);
+				tmp = current;
+				allocd_mem_head = current;
+			}
+			else
+			{
+				tmp->next = current->next;
+				if(allocd_mem_current == current)
+					allocd_mem_current = tmp->next;
+				free(current);
+				current = tmp->next;
+			}
+		}
+		else
+		{
+			if(tmp != current)
+				tmp = tmp->next;
+
+			current = current->next;
+		}
+	}
+
+	if(allocd_mem_current == NULL)
+		vdm_gc_init();
+
+	if(allocd_mem_head == allocd_mem_current)
+	{
+		free(allocd_mem_head);
+		vdm_gc_init();
+	}
+}
+
 
 struct TypedValue* newTypeValue(vdmtype type, TypedValueType value)
 {
 	struct TypedValue* ptr = (struct TypedValue*) malloc(sizeof(struct TypedValue));
 	ptr->type = type;
 	ptr->value = value;
+
+	return ptr;
+}
+
+struct TypedValue* newTypeValue2(vdmtype type, TypedValueType value, TVP *ref_from)
+{
+	struct TypedValue* ptr = (struct TypedValue*) malloc(sizeof(struct TypedValue));
+	ptr->type = type;
+	ptr->value = value;
+	add_allocd_mem(ptr, ref_from);
+
 	return ptr;
 }
 
@@ -58,6 +180,14 @@ struct TypedValue* newInt(int x)
 	)
 			{ .intVal = x });
 }
+
+struct TypedValue* newInt2(int x, TVP *ref_from)
+{
+	return newTypeValue2(VDM_INT, (TypedValueType
+	)
+			{ .intVal = x }, ref_from);
+}
+
 struct TypedValue* newNat1(int x)
 {
 	return newTypeValue(VDM_NAT1, (TypedValueType
