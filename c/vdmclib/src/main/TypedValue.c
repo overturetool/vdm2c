@@ -163,7 +163,7 @@ struct TypedValue* newTypeValue(vdmtype type, TypedValueType value)
 	return ptr;
 }
 
-struct TypedValue* newTypeValue2(vdmtype type, TypedValueType value, TVP *ref_from)
+struct TypedValue* newTypeValueGC(vdmtype type, TypedValueType value, TVP *ref_from)
 {
 	struct TypedValue* ptr = (struct TypedValue*) malloc(sizeof(struct TypedValue));
 	ptr->type = type;
@@ -179,13 +179,6 @@ struct TypedValue* newInt(int x)
 	return newTypeValue(VDM_INT, (TypedValueType
 	)
 			{ .intVal = x });
-}
-
-struct TypedValue* newInt2(int x, TVP *ref_from)
-{
-	return newTypeValue2(VDM_INT, (TypedValueType
-	)
-			{ .intVal = x }, ref_from);
 }
 
 struct TypedValue* newNat1(int x)
@@ -250,6 +243,81 @@ struct TypedValue* newCollectionWithValues(size_t size, vdmtype type, TVP* eleme
 	}
 	return product;
 }
+
+//===============  Garbage collected versions  ==============
+/// Basic
+struct TypedValue* newIntGC(int x, TVP *from)
+{
+	return newTypeValueGC(VDM_INT, (TypedValueType
+	)
+			{ .intVal = x }, from);
+}
+
+struct TypedValue* newNat1GC(int x, TVP *from)
+{
+	return newTypeValueGC(VDM_NAT1, (TypedValueType
+	)
+			{ .intVal = x }, from);
+}
+
+struct TypedValue* newNatGC(int x, TVP *from)
+{
+	return newTypeValueGC(VDM_NAT, (TypedValueType
+	)
+			{ .intVal = x }, from);
+}
+
+struct TypedValue* newBoolGC(bool x, TVP *from)
+{
+	return newTypeValueGC(VDM_BOOL, (TypedValueType
+	)
+			{ .boolVal = x }, from);
+}
+struct TypedValue* newRealGC(double x, TVP *from)
+{
+	return newTypeValueGC(VDM_REAL, (TypedValueType
+	)
+			{ .doubleVal = x }, from);
+}
+struct TypedValue* newCharGC(char x, TVP *from)
+{
+	return newTypeValueGC(VDM_CHAR, (TypedValueType
+	)
+			{ .charVal = x }, from);
+}
+struct TypedValue* newQuoteGC(unsigned int x, TVP *from)
+{
+	return newTypeValueGC(VDM_QUOTE, (TypedValueType
+	)
+			{ .quoteVal = x }, from);
+}
+
+
+
+struct TypedValue* newCollectionGC(size_t size, vdmtype type)
+{
+	struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
+	ptr->size = size;
+	ptr->value = (struct TypedValue**) calloc(size, sizeof(struct TypedValue*)); //I know this is slower than malloc but better for products
+	return newTypeValue(type, (TypedValueType
+	)
+			{ .ptr = ptr });
+}
+
+struct TypedValue* newCollectionWithValuesGC(size_t size, vdmtype type, TVP* elements)
+{
+	TVP product = newCollection(size,type);
+	UNWRAP_COLLECTION(col,product);
+
+	for (int i = 0; i < size; i++)
+	{
+		col->value[i]= vdmClone(elements[i]);
+	}
+	return product;
+}
+//=============  Garbage collected versions  ================
+
+
 
 
 
