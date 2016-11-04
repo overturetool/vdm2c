@@ -54,18 +54,31 @@ TVP vdmFloor(TVP arg);
 TVP vdmSum(TVP a,TVP b);
 TVP vdmSumGC(TVP a,TVP b, TVP *from);
 TVP vdmDifference(TVP a,TVP b);
+TVP vdmDifferenceGC(TVP a,TVP b, TVP *from);
 TVP vdmProduct(TVP a,TVP b);
+TVP vdmProductGC(TVP a,TVP b, TVP *from);
 TVP vdmDivision(TVP a,TVP b);
+TVP vdmDivisionGC(TVP a,TVP b, TVP *from);
 TVP vdmDiv(TVP a,TVP b);
+TVP vdmDivGC(TVP a, TVP b, TVP *from);
 TVP vdmRem(TVP a,TVP b);
+TVP vdmRemGC(TVP a, TVP b, TVP *from);
 TVP vdmMod(TVP a,TVP b);
+TVP vdmModGC(TVP a, TVP b, TVP *from);
 TVP vdmPower(TVP a,TVP b);
+TVP vdmPowerGC(TVP a, TVP b, TVP *from);
 TVP vdmNumericEqual(TVP a,TVP b);
+TVP vdmNumericEqualGC(TVP a, TVP b, TVP *from);
 TVP vdmNotEqual(TVP a,TVP b);
+TVP vdmNotEqualGC(TVP a, TVP b, TVP *from);
 TVP vdmGreaterThan(TVP a,TVP b);
+TVP vdmGreaterThanGC(TVP a, TVP b, TVP *from);
 TVP vdmGreaterOrEqual(TVP a,TVP b);
+TVP vdmGreaterOrEqualGC(TVP a, TVP b, TVP *from);
 TVP vdmLessThan(TVP a,TVP b);
+TVP vdmLessThanGC(TVP a, TVP b, TVP *from);
 TVP vdmLessOrEqual(TVP a,TVP b);
+TVP vdmLessOrEqualGC(TVP a, TVP b, TVP *from);
 
 /*
  * internal use
