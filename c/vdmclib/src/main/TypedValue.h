@@ -166,6 +166,7 @@ struct TypedValue* newCollectionWithValues(size_t size, vdmtype type, TVP* eleme
 struct TypedValue* newCollection(size_t size, vdmtype type);
 
 struct TypedValue* vdmClone(struct TypedValue* x);
+struct TypedValue* vdmCloneGC(TVP x, TVP *from);
 bool equals(struct TypedValue* a, struct TypedValue* b);
 TVP vdmEquals(struct TypedValue* a, struct TypedValue* b);
 TVP vdmInEquals(struct TypedValue* a, struct TypedValue* b);

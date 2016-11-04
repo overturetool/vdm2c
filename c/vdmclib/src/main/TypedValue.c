@@ -446,6 +446,110 @@ TVP vdmClone(TVP x)
 	return tmp;
 }
 
+TVP vdmCloneGC(TVP x, TVP *from)
+{
+	TVP tmp;
+
+	if(x == NULL)
+	{
+		return NULL;
+	}
+
+	tmp = newTypeValueGC(x->type, x->value, from);
+
+	//FIXME vdmClone any pointers
+	switch (tmp->type)
+	{
+	case VDM_BOOL:
+	case VDM_CHAR:
+	case VDM_INT:
+	case VDM_NAT:
+	case VDM_NAT1:
+	case VDM_REAL:
+	case VDM_RAT:
+	case VDM_QUOTE:
+	{
+		//encoded as values so the initial copy line handles these
+		break;
+	}
+	case VDM_MAP:
+		//todo
+		break;
+	case VDM_PRODUCT:
+	case VDM_SEQ:
+	case VDM_SET:
+	{
+		UNWRAP_COLLECTION(cptr, tmp);
+
+		struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
+
+		//copy (size)
+		*ptr = *cptr;
+		ptr->value = (struct TypedValue**) malloc(sizeof(struct TypedValue) * ptr->size);
+
+		for (int i = 0; i < cptr->size; i++)
+		{
+			ptr->value[i] = vdmClone(cptr->value[i]);
+		}
+
+		tmp->value.ptr = ptr;
+		break;
+	}
+	//	case VDM_OPTIONAL:
+	//		//TODO
+	//		break;
+	case VDM_RECORD:
+	{
+		ASSERT_CHECK_RECORD(x);
+
+		int i;
+		TVP tmpField = NULL;
+		int numFields;
+
+		//Create a shell for a new class and populate it with the information
+		//that can be used from the one being cloned, but all of it should be
+		//irrelevant for records.
+		(tmp->value).ptr = newClassValue(((struct ClassType*)(x->value.ptr))->classId,
+				((struct ClassType*)(x->value.ptr))->refs,
+				NULL,
+				NULL);
+
+		//Generic way of accessing the number-of-fields field.  The name of the record type is
+		//hard-coded into the corresponding struct name.
+		numFields = (*((struct TypedValue**)((char*)(((struct ClassType*)x->value.ptr)->value) + \
+				sizeof(struct VTable*) + \
+				sizeof(int) + \
+				sizeof(unsigned int))))->value.intVal;
+
+		//Allocate memory to be populated with the pointers pointing to the cloned fields.
+		((struct ClassType*)((tmp->value).ptr))->value = malloc(sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(struct TypedValue*) + sizeof(struct TypedValue*) * numFields);
+
+		for(i = 0; i <= numFields; i++)
+		{
+			//Start cloning the fields one by one, including the number-of-fields field,
+			//since it is just a TVP.
+			tmpField = vdmClone(*((struct TypedValue**)((char*)(((struct ClassType*)x->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(struct TypedValue*) * i)));
+
+			//Only copy the address stored in tmpField so that that memory is now addressed by the current field in the struct.
+			memcpy(((struct TypedValue**)((char*)(((struct ClassType*)tmp->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(struct TypedValue*) * i)), &tmpField, sizeof(struct TypedValue*));
+		}
+
+		break;
+	}
+	case VDM_CLASS:
+	{
+		//handle smart pointer
+		struct ClassType* classTptr = (struct ClassType*) tmp->value.ptr;
+
+		//improve using memcpy
+		tmp->value.ptr = newClassValue(classTptr->classId, classTptr->refs, classTptr->freeClass, classTptr->value);
+		break;
+	}
+	}
+
+	return tmp;
+}
+
 bool equals(struct TypedValue* a, struct TypedValue* b)
 {
 	if(isNumber(a)&& isNumber(b))
