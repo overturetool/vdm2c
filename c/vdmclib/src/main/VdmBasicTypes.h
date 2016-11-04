@@ -49,8 +49,11 @@ TVP vdmBiimplication(TVP a,TVP b);
  * Numeric
  */
 TVP vdmMinus(TVP arg);
+TVP vdmMinusGC(TVP arg, TVP *from);
 TVP vdmAbs(TVP arg);
+TVP vdmAbsGC(TVP arg, TVP *from);
 TVP vdmFloor(TVP arg);
+TVP vdmFloorGC(TVP arg, TVP *from);
 TVP vdmSum(TVP a,TVP b);
 TVP vdmSumGC(TVP a,TVP b, TVP *from);
 TVP vdmDifference(TVP a,TVP b);

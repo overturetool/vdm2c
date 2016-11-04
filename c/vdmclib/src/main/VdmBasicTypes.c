@@ -53,6 +53,16 @@ TVP vdmNot(TVP arg)
 	return newBool(!arg->value.boolVal);
 }
 
+TVP vdmNotGC(TVP arg, TVP *from)
+{
+	if(arg == NULL)
+		return NULL;
+
+	ASSERT_CHECK_BOOL(arg);
+
+	return newBoolGC(!arg->value.boolVal, from);
+}
+
 TVP vdmAnd(TVP a,TVP b)
 {
 	if(a == NULL)
@@ -68,6 +78,23 @@ TVP vdmAnd(TVP a,TVP b)
 	ASSERT_CHECK_BOOL(b);
 	return newBool(b->value.boolVal);
 }
+
+TVP vdmAndGC(TVP a, TVP b, TVP *from)
+{
+	if(a == NULL)
+		return NULL;
+
+	ASSERT_CHECK_BOOL(a);
+	if(!a->value.boolVal)
+		return newBoolGC(false, from);
+
+	if(b == NULL)
+		return NULL;
+
+	ASSERT_CHECK_BOOL(b);
+	return newBoolGC(b->value.boolVal, from);
+}
+
 TVP vdmOr(TVP a,TVP b)
 {
 	if(a == NULL)
@@ -84,6 +111,22 @@ TVP vdmOr(TVP a,TVP b)
 	return newBool(b->value.boolVal);
 }
 
+TVP vdmOrGC(TVP a, TVP b, TVP *from)
+{
+	if(a == NULL)
+		return NULL;
+
+	ASSERT_CHECK_BOOL(a);
+	if(a->value.boolVal)
+		return newBoolGC(true, from);
+
+	if(b == NULL)
+		return NULL;
+
+	ASSERT_CHECK_BOOL(b);
+	return newBoolGC(b->value.boolVal, from);
+}
+
 TVP vdmXor(TVP a,TVP b)
 {
 	if(a == NULL || b == NULL)
@@ -92,6 +135,16 @@ TVP vdmXor(TVP a,TVP b)
 	ASSERT_CHECK_BOOL(a);
 	ASSERT_CHECK_BOOL(b);
 	return newBool((!(a->value.boolVal) && b->value.boolVal) || ((a->value.boolVal) && !(b->value.boolVal)));
+}
+
+TVP vdmXorGC(TVP a, TVP b, TVP *from)
+{
+	if(a == NULL || b == NULL)
+		return NULL;
+
+	ASSERT_CHECK_BOOL(a);
+	ASSERT_CHECK_BOOL(b);
+	return newBoolGC((!(a->value.boolVal) && b->value.boolVal) || ((a->value.boolVal) && !(b->value.boolVal)), from);
 }
 
 TVP vdmImplies(TVP a,TVP b)
@@ -110,6 +163,22 @@ TVP vdmImplies(TVP a,TVP b)
 	return newBool(b->value.boolVal);
 }
 
+TVP vdmImpliesGC(TVP a, TVP b, TVP *from)
+{
+	if(a == NULL)
+		return NULL;
+
+	ASSERT_CHECK_BOOL(a);
+	if(!a->value.boolVal)
+		return newBoolGC(true, from);
+
+	if(b == NULL)
+		return NULL;
+
+	ASSERT_CHECK_BOOL(b);
+	return newBoolGC(b->value.boolVal, from);
+}
+
 TVP vdmBiimplication(TVP a,TVP b)
 {
 	if(a == NULL || b == NULL)
@@ -118,6 +187,16 @@ TVP vdmBiimplication(TVP a,TVP b)
 	ASSERT_CHECK_BOOL(a);
 	ASSERT_CHECK_BOOL(b);
 	return newBool((!a->value.boolVal || b->value.boolVal) && (!b->value.boolVal || a->value.boolVal));
+}
+
+TVP vdmBiimplicationGC(TVP a, TVP b, TVP *from)
+{
+	if(a == NULL || b == NULL)
+		return NULL;
+
+	ASSERT_CHECK_BOOL(a);
+	ASSERT_CHECK_BOOL(b);
+	return newBoolGC((!a->value.boolVal || b->value.boolVal) && (!b->value.boolVal || a->value.boolVal), from);
 }
 
 bool isNumber(TVP val)
@@ -142,6 +221,13 @@ TVP isInt(TVP v)
 	return newBool(false);
 }
 
+TVP isIntGC(TVP v, TVP *from)
+{
+	if(v->type == VDM_INT)
+		return newBoolGC(true, from);
+	return newBoolGC(false, from);
+}
+
 TVP isReal(TVP v)
 {
 	if(v->type == VDM_REAL)
@@ -149,11 +235,25 @@ TVP isReal(TVP v)
 	return newBool(false);
 }
 
+TVP isRealGC(TVP v, TVP *from)
+{
+	if(v->type == VDM_REAL)
+		return newBoolGC(true, from);
+	return newBoolGC(false, from);
+}
+
 TVP isBool(TVP v)
 {
 	if(v->type == VDM_BOOL)
 		return newBool(true);
 	return newBool(false);
+}
+
+TVP isBoolGC(TVP v, TVP *from)
+{
+	if(v->type == VDM_BOOL)
+		return newBoolGC(true, from);
+	return newBoolGC(false, from);
 }
 
 /*
@@ -219,6 +319,24 @@ TVP vdmMinus(TVP arg)
 	}
 }
 
+TVP vdmMinusGC(TVP arg, TVP *from)
+{
+	ASSERT_CHECK_NUMERIC(arg);
+
+	switch(arg->type)
+	{
+	case VDM_INT:
+	case VDM_NAT:
+	case VDM_NAT1:
+		return newIntGC(-arg->value.intVal, from);
+	case VDM_REAL:
+		return newRealGC(-arg->value.doubleVal, from);
+	default:
+		FATAL_ERROR("Invalid type");
+		return NULL;
+	}
+}
+
 TVP vdmAbs(TVP arg)
 {
 	ASSERT_CHECK_NUMERIC(arg);
@@ -237,12 +355,38 @@ TVP vdmAbs(TVP arg)
 	}
 }
 
+TVP vdmAbsGC(TVP arg, TVP *from)
+{
+	ASSERT_CHECK_NUMERIC(arg);
+
+	switch(arg->type)
+	{
+	case VDM_INT:
+	case VDM_NAT:
+	case VDM_NAT1:
+		return newIntGC(abs(arg->value.intVal), from);
+	case VDM_REAL:
+		return newRealGC(fabs(arg->value.doubleVal), from);
+	default:
+		FATAL_ERROR("Invalid type");
+		return NULL;
+	}
+}
+
 TVP vdmFloor(TVP arg)
 {
 	ASSERT_CHECK_REAL(arg);
 
 	//TODO: Why do we return a Real, when floor is int in VDM?
 	return newReal(floor(arg->value.doubleVal));
+}
+
+TVP vdmFloorGC(TVP arg, TVP *from)
+{
+	ASSERT_CHECK_REAL(arg);
+
+	//TODO: Why do we return a Real, when floor is int in VDM?
+	return newRealGC(floor(arg->value.doubleVal), from);
 }
 
 TVP vdmSum(TVP a,TVP b)
