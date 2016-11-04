@@ -1,19 +1,13 @@
-class ScratchA
-end ScratchA
+class Scratch
+instance variables
+field1 : int := 1 + 2 + 3;
 
-class ClassScratchWork
 operations
-op : () ==> ()
+public op : () ==> int
 op() ==
-(
-	dcl a : ScratchA := new ScratchA();
-	dcl b : ScratchA;
-	dcl c : int := 0;
-	dcl d: int;
-	b := a;
-	d := c;
-	c := 3;
-	)
-end ClassScratchWork
---  This test illustrates that assignment needs to be more sophisticated to achieve value semantics.
---  Check generated code to observe aliasing.
+	return 1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10;
+
+public op2 : () ==> int
+op2() ==
+	return field1;
+end Scratch

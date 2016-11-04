@@ -90,6 +90,8 @@ void vdm_gc()
 
 	while(current != NULL)
 	{
+		//No information was passed about where the reference was assigned.
+		//This is the case when the value is created in-place.
 		if(current->loc->ref_from == NULL)
 		{
 			vdmFree(current->loc);
@@ -509,7 +511,6 @@ bool equals(struct TypedValue* a, struct TypedValue* b)
 		ASSERT_CHECK_RECORD(b);
 
 		int i;
-		TVP tmpField;
 		TVP res;
 		int numFields_a, numFields_b;
 

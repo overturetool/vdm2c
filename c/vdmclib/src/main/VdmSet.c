@@ -329,7 +329,6 @@ TVP vdmSetUnion(TVP set1, TVP set2)
 
 TVP vdmSetInter(TVP set1, TVP set2)
 {
-	TVP testelem;
 	TVP inter;
 	TVP tmpset1;
 	TVP tmpset2;
@@ -374,7 +373,6 @@ TVP vdmSetDifference(TVP set1, TVP set2)
 	TVP tmpset1;
 	TVP tmpset2;
 	TVP resultset;
-	TVP tmpelem;
 	TVP res;
 
 	ASSERT_CHECK(set1);
