@@ -256,6 +256,17 @@ TVP vdmSum(TVP a,TVP b)
 	return newReal(av+bv);
 }
 
+TVP vdmSumGC(TVP a,TVP b, TVP *from)
+{
+	ASSERT_CHECK_NUMERIC(a);
+	ASSERT_CHECK_NUMERIC(b);
+
+	double av = toDouble(a);
+	double bv=toDouble(b);
+
+	return newRealGC(av+bv, from);
+}
+
 TVP vdmDifference(TVP a,TVP b)
 {
 	ASSERT_CHECK_NUMERIC(a);

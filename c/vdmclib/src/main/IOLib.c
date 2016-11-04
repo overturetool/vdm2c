@@ -173,8 +173,6 @@ TVP vdm_IO_fecho(TVP filename, TVP text, TVP fdir)
 }
 TVP vdm_IO_echo(TVP text)
 {
-	int a;
-
 	//TODO:  Ensure a string is passed.
 	char *str = unpackString(text);
 

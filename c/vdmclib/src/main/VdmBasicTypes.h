@@ -52,6 +52,7 @@ TVP vdmMinus(TVP arg);
 TVP vdmAbs(TVP arg);
 TVP vdmFloor(TVP arg);
 TVP vdmSum(TVP a,TVP b);
+TVP vdmSumGC(TVP a,TVP b, TVP *from);
 TVP vdmDifference(TVP a,TVP b);
 TVP vdmProduct(TVP a,TVP b);
 TVP vdmDivision(TVP a,TVP b);
