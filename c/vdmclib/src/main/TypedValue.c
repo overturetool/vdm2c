@@ -41,117 +41,91 @@
 #define ASSERT_CHECK_INT(s) assert((s->type ==  VDM_INT) && "Value is not integer")
 #define ASSERT_CHECK_CHAR(s) assert((s->type ==  VDM_CHAR) && "Value is not a character")
 
-
-struct alloc_list_node *allocd_mem_current;
-struct alloc_list_node *allocd_mem_head;
-
-
-void add_allocd_mem(TVP l, TVP *from)
-{
-	if(allocd_mem_current->loc == NULL)
-	{
-		allocd_mem_current->loc = l;
-		allocd_mem_current->loc->ref_from = from;
-	}
-	else
-	{
-		allocd_mem_current->next = malloc(sizeof(struct alloc_list_node));
-		allocd_mem_current = allocd_mem_current->next;
-		allocd_mem_current->loc = l;
-		allocd_mem_current->loc->ref_from = from;
-		allocd_mem_current->next = NULL;
-	}
-}
+struct alloc_list_node *allocd_mem_head, *allocd_mem_tail;
 
 void vdm_gc_init()
 {
-	allocd_mem_head = malloc(sizeof(struct alloc_list_node));
+	allocd_mem_head = malloc(sizeof (struct alloc_list_node));
+	allocd_mem_tail = allocd_mem_head;
+
 	allocd_mem_head->loc = NULL;
 	allocd_mem_head->next = NULL;
-	allocd_mem_current = allocd_mem_head;
+	allocd_mem_head->prev = NULL;
+}
+
+void add_allocd_mem(TVP l, TVP *from)
+{
+	allocd_mem_tail->loc = l;
+	allocd_mem_tail->loc->ref_from = from;
+
+	allocd_mem_tail->next = malloc(sizeof(struct alloc_list_node));
+	allocd_mem_tail->next->prev = allocd_mem_tail;
+	allocd_mem_tail = allocd_mem_tail->next;
+	allocd_mem_tail->next = NULL;
+}
+
+void remove_allocd_mem(struct alloc_list_node *node)
+{
+	struct alloc_list_node *tmp;
+
+	tmp = allocd_mem_head;
+
+	while(tmp != node)
+	{
+		tmp = tmp->next;
+	}
+
+	if(tmp == allocd_mem_head)
+	{
+		allocd_mem_head = allocd_mem_head->next;
+		allocd_mem_head->prev = NULL;
+		if(allocd_mem_tail == tmp)
+		{
+			allocd_mem_tail = allocd_mem_head;
+		}
+
+		free(node);
+		return;
+	}
+	else
+	{
+		tmp->prev->next = tmp->next;
+		tmp->next->prev = tmp->prev;
+		free(tmp);
+		return;
+	}
+	return;
 }
 
 void vdm_gc_shutdown()
 {
+	//TODO:  deallocate entire list.
 	free(allocd_mem_head);
 }
 
 void vdm_gc()
 {
 	struct alloc_list_node *current;
-	struct alloc_list_node *tmp;
 
 	current = allocd_mem_head;
-	tmp = allocd_mem_head;
 
 	//Nothing to do if no memory currently allocated.
 	if(current->loc == NULL && current->next == NULL)
 		return;
 
-	while(current != NULL)
+	while(current != allocd_mem_tail)
 	{
 		//No information was passed about where the reference was assigned.
-		//This is the case when the value is created in-place.
+		//This is the case when the value is created in-place (or when vdmFreed???)
 		if(current->loc->ref_from == NULL)
 		{
 			vdmFree(current->loc);
-
-			if(current == allocd_mem_head)
-			{
-				if(allocd_mem_current == tmp)
-					allocd_mem_current = current->next;
-				current = current->next;
-				free(tmp);
-				tmp = current;
-				allocd_mem_head = current;
-			}
-			else
-			{
-				tmp->next = current->next;
-				if(allocd_mem_current == current)
-					allocd_mem_current = tmp->next;
-				free(current);
-				current = tmp->next;
-			}
-		}
-		else if(*(current->loc->ref_from) != current->loc)
-		{
-			vdmFree(current->loc);
-
-			if(current == allocd_mem_head)
-			{
-				if(allocd_mem_current == tmp)
-					allocd_mem_current = current->next;
-				current = current->next;
-				free(tmp);
-				tmp = current;
-				allocd_mem_head = current;
-			}
-			else
-			{
-				tmp->next = current->next;
-				if(allocd_mem_current == current)
-					allocd_mem_current = tmp->next;
-				free(current);
-				current = tmp->next;
-			}
+			remove_allocd_mem(current);
 		}
 		else
 		{
-			if(tmp != current)
-				tmp = tmp->next;
-
 			current = current->next;
 		}
-	}
-
-	if(allocd_mem_current == NULL)
-		vdm_gc_init();
-
-	if(allocd_mem_head == allocd_mem_current)
-	{
-		free(allocd_mem_head);
-		vdm_gc_init();
 	}
 }
 
