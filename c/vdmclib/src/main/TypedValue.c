@@ -99,7 +99,20 @@ void remove_allocd_mem(struct alloc_list_node *node)
 
 void vdm_gc_shutdown()
 {
-	//TODO:  deallocate entire list.
+	struct alloc_list_node *tmp;
+
+	tmp = allocd_mem_head;
+
+	while(tmp != allocd_mem_tail)
+	{
+		if(tmp->loc != NULL)
+		{
+			vdmFree(tmp->loc);
+			remove_allocd_mem(tmp);
+		}
+
+		tmp = tmp->next;
+	}
 	free(allocd_mem_head);
 }
 
