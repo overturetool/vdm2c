@@ -122,10 +122,14 @@ void vdm_gc()
 			vdmFree(current->loc);
 			remove_allocd_mem(current);
 		}
-		else
+		else if(*(current->loc->ref_from) != current->loc)
 		{
-			current = current->next;
+			vdmFree(current->loc);
+			remove_allocd_mem(current);
+
 		}
+
+		current = current->next;
 	}
 }
 
