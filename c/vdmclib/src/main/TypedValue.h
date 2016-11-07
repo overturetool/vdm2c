@@ -103,9 +103,6 @@ struct Collection
 
 int vdmCollectionSize(TVP collection);
 TVP vdmCollectionIndex(TVP collection,int index);
-struct TypedValue* newInt2(int x, TVP *ref_from);
-struct TypedValue* newTypeValue2(vdmtype type, TypedValueType value, TVP *ref_from);
-
 
 
 #define ASSERT_CHECK_COLLECTION(s) assert((s->type == VDM_SEQ || s->type == VDM_SET || s->type == VDM_PRODUCT) &&"Value is not a collection")
@@ -118,9 +115,8 @@ struct OptionalType
 	struct TypedValue value;
 };
 
-
-
 struct TypedValue* newTypeValue(vdmtype type, TypedValueType value);
+struct TypedValue* newTypeValueGC(vdmtype type, TypedValueType value, TVP *ref_from);
 
 
 // Basic - these should inline

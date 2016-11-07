@@ -57,7 +57,7 @@ struct TypedValue* newTypeValueGC(vdmtype type, TypedValueType value, TVP *ref_f
 	struct TypedValue* ptr = (struct TypedValue*) malloc(sizeof(struct TypedValue));
 	ptr->type = type;
 	ptr->value = value;
-	add_allocd_mem(ptr, ref_from);
+	add_allocd_mem_node(ptr, ref_from);
 
 	return ptr;
 }

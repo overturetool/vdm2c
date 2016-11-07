@@ -12,7 +12,7 @@ void vdm_gc_init()
 	allocd_mem_head->prev = NULL;
 }
 
-void add_allocd_mem(TVP l, TVP *from)
+void add_allocd_mem_node(TVP l, TVP *from)
 {
 	allocd_mem_tail->loc = l;
 	allocd_mem_tail->loc->ref_from = from;
@@ -23,7 +23,7 @@ void add_allocd_mem(TVP l, TVP *from)
 	allocd_mem_tail->next = NULL;
 }
 
-void remove_allocd_mem(struct alloc_list_node *node)
+void remove_allocd_mem_node(struct alloc_list_node *node)
 {
 	struct alloc_list_node *tmp;
 
@@ -67,7 +67,7 @@ void vdm_gc_shutdown()
 		if(tmp->loc != NULL)
 		{
 			vdmFree(tmp->loc);
-			remove_allocd_mem(tmp);
+			remove_allocd_mem_node(tmp);
 		}
 
 		tmp = tmp->next;
@@ -92,12 +92,12 @@ void vdm_gc()
 		if(current->loc->ref_from == NULL)
 		{
 			vdmFree(current->loc);
-			remove_allocd_mem(current);
+			remove_allocd_mem_node(current);
 		}
 		else if(*(current->loc->ref_from) != current->loc)
 		{
 			vdmFree(current->loc);
-			remove_allocd_mem(current);
+			remove_allocd_mem_node(current);
 
 		}
 
