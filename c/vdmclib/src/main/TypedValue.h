@@ -40,9 +40,6 @@
 #endif
 
 #define recursiveFree vdmFree
-extern struct alloc_list_node *allocd_mem_head;
-extern struct alloc_list_node *allocd_mem_current;
-
 
 //#define ALLOC(t,n) (t *) malloc((n)*sizeof(t))
 
@@ -98,14 +95,6 @@ struct TypedValue
 
 #define TVP struct TypedValue*
 
-struct alloc_list_node
-{
-	TVP loc;
-	struct alloc_list_node *prev;
-	struct alloc_list_node *next;
-};
-
-
 struct Collection
 {
 	struct TypedValue** value;
@@ -114,9 +103,6 @@ struct Collection
 
 int vdmCollectionSize(TVP collection);
 TVP vdmCollectionIndex(TVP collection,int index);
-void vdm_gc_init();
-void vdm_gc();
-void vdm_gc_shutdown();
 struct TypedValue* newInt2(int x, TVP *ref_from);
 struct TypedValue* newTypeValue2(vdmtype type, TypedValueType value, TVP *ref_from);
 

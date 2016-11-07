@@ -32,8 +32,7 @@
 #include "VdmClass.h"
 #include "VdmRecord.h"
 #include "VdmBasicTypes.h"
-
-
+#include "VdmGC.h"
 
 #define ASSERT_CHECK_BOOL(s) assert(s->type == VDM_BOOL && "Value is not a boolean")
 #define ASSERT_CHECK_NUMERIC(s) assert((s->type == VDM_INT||s->type == VDM_NAT||s->type == VDM_NAT1||s->type == VDM_REAL||s->type == VDM_RAT) && "Value is not numeric")
@@ -41,110 +40,7 @@
 #define ASSERT_CHECK_INT(s) assert((s->type ==  VDM_INT) && "Value is not integer")
 #define ASSERT_CHECK_CHAR(s) assert((s->type ==  VDM_CHAR) && "Value is not a character")
 
-struct alloc_list_node *allocd_mem_head, *allocd_mem_tail;
 
-void vdm_gc_init()
-{
-	allocd_mem_head = malloc(sizeof (struct alloc_list_node));
-	allocd_mem_tail = allocd_mem_head;
-
-	allocd_mem_head->loc = NULL;
-	allocd_mem_head->next = NULL;
-	allocd_mem_head->prev = NULL;
-}
-
-void add_allocd_mem(TVP l, TVP *from)
-{
-	allocd_mem_tail->loc = l;
-	allocd_mem_tail->loc->ref_from = from;
-
-	allocd_mem_tail->next = malloc(sizeof(struct alloc_list_node));
-	allocd_mem_tail->next->prev = allocd_mem_tail;
-	allocd_mem_tail = allocd_mem_tail->next;
-	allocd_mem_tail->next = NULL;
-}
-
-void remove_allocd_mem(struct alloc_list_node *node)
-{
-	struct alloc_list_node *tmp;
-
-	tmp = allocd_mem_head;
-
-	while(tmp != node)
-	{
-		tmp = tmp->next;
-	}
-
-	if(tmp == allocd_mem_head)
-	{
-		allocd_mem_head = allocd_mem_head->next;
-		allocd_mem_head->prev = NULL;
-		if(allocd_mem_tail == tmp)
-		{
-			allocd_mem_tail = allocd_mem_head;
-		}
-
-		free(node);
-		return;
-	}
-	else
-	{
-		tmp->prev->next = tmp->next;
-		tmp->next->prev = tmp->prev;
-		free(tmp);
-		return;
-	}
-	return;
-}
-
-void vdm_gc_shutdown()
-{
-	struct alloc_list_node *tmp;
-
-	tmp = allocd_mem_head;
-
-	while(tmp != allocd_mem_tail)
-	{
-		if(tmp->loc != NULL)
-		{
-			vdmFree(tmp->loc);
-			remove_allocd_mem(tmp);
-		}
-
-		tmp = tmp->next;
-	}
-	free(allocd_mem_head);
-}
-
-void vdm_gc()
-{
-	struct alloc_list_node *current;
-
-	current = allocd_mem_head;
-
-	//Nothing to do if no memory currently allocated.
-	if(current->loc == NULL && current->next == NULL)
-		return;
-
-	while(current != allocd_mem_tail)
-	{
-		//No information was passed about where the reference was assigned.
-		//This is the case when the value is created in-place (or when vdmFreed???)
-		if(current->loc->ref_from == NULL)
-		{
-			vdmFree(current->loc);
-			remove_allocd_mem(current);
-		}
-		else if(*(current->loc->ref_from) != current->loc)
-		{
-			vdmFree(current->loc);
-			remove_allocd_mem(current);
-
-		}
-
-		current = current->next;
-	}
-}
 
 
 struct TypedValue* newTypeValue(vdmtype type, TypedValueType value)

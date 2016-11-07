@@ -46,7 +46,7 @@
 #include "TypedValue.h"
 
 
-
+#include "VdmGC.h"
 #include "VdmBasicTypes.h"
 #include "VdmClass.h"
 #include "VdmSet.h"
