@@ -385,7 +385,7 @@ TVP vdmFloorGC(TVP arg, TVP *from)
 	ASSERT_CHECK_REAL(arg);
 
 	//TODO: Why do we return a Real, when floor is int in VDM?
-	return newRealGC(floor(arg->value.doubleVal), from);
+	return newIntGC(floor(arg->value.doubleVal), from);
 }
 
 TVP vdmSum(TVP a,TVP b)
@@ -411,7 +411,11 @@ TVP vdmSumGC(TVP a,TVP b, TVP *from)
 	double av = toDouble(a);
 	double bv=toDouble(b);
 
-	return newRealGC(av+bv, from);
+	if((a->type == VDM_INT || a->type == VDM_NAT || a->type == VDM_NAT1) &&
+				(b->type == VDM_INT || b->type == VDM_NAT || b->type == VDM_NAT1))
+			return newIntGC((int)(av + bv), from);
+
+		return newRealGC(av+bv, from);
 }
 
 TVP vdmDifference(TVP a,TVP b)
@@ -437,7 +441,11 @@ TVP vdmDifferenceGC(TVP a,TVP b, TVP *from)
 	double av = toDouble(a);
 	double bv=toDouble(b);
 
-	return newRealGC(av-bv, from);
+	if((a->type == VDM_INT || a->type == VDM_NAT || a->type == VDM_NAT1) &&
+				(b->type == VDM_INT || b->type == VDM_NAT || b->type == VDM_NAT1))
+			return newIntGC((int)(av - bv), from);
+
+		return newRealGC(av - bv, from);
 }
 
 TVP vdmProduct(TVP a,TVP b)
@@ -463,7 +471,11 @@ TVP vdmProductGC(TVP a, TVP b, TVP *from)
 	double av = toDouble(a);
 	double bv=toDouble(b);
 
-	return newRealGC(av*bv, from);
+	if((a->type == VDM_INT || a->type == VDM_NAT || a->type == VDM_NAT1) &&
+				(b->type == VDM_INT || b->type == VDM_NAT || b->type == VDM_NAT1))
+			return newIntGC((int)(av * bv), from);
+
+		return newRealGC(av * bv, from);
 }
 
 TVP vdmDivision(TVP a,TVP b)
@@ -587,7 +599,7 @@ TVP vdmMod(TVP a,TVP b)
 			(b->type == VDM_INT || b->type == VDM_NAT || b->type == VDM_NAT1))
 		return newInt((int)(lv-rv*(long) floor(lv/rv)));
 
-return newReal(lv-rv*(long) floor(lv/rv));
+	return newReal(lv-rv*(long) floor(lv/rv));
 }
 
 TVP vdmModGC(TVP a, TVP b, TVP *from)
@@ -602,7 +614,11 @@ TVP vdmModGC(TVP a, TVP b, TVP *from)
 	double lv =(int) toDouble(a);
 	double rv = (int)toDouble(b);
 
-	return newRealGC(lv-rv*(long) floor(lv/rv), from);
+	if((a->type == VDM_INT || a->type == VDM_NAT || a->type == VDM_NAT1) &&
+				(b->type == VDM_INT || b->type == VDM_NAT || b->type == VDM_NAT1))
+			return newIntGC((int)(lv-rv*(long) floor(lv/rv)), from);
+
+		return newRealGC(lv-rv*(long) floor(lv/rv), from);
 }
 
 TVP vdmPower(TVP a,TVP b)
