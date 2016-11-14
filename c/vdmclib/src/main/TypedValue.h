@@ -138,6 +138,7 @@ struct TypedValue* newBoolGC(bool x, TVP *from);
 struct TypedValue* newRealGC(double x, TVP *from);
 struct TypedValue* newCharGC(char x, TVP *from);
 struct TypedValue* newQuoteGC(unsigned int x, TVP *from);
+struct TypedValue* vdmEqualsGC(struct TypedValue* a, struct TypedValue* b, TVP *from);
 
 
 // Complex

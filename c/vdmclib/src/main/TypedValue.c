@@ -654,5 +654,8 @@ void vdmFree(struct TypedValue* ptr)
 TVP vdmEquals(struct TypedValue* a, struct TypedValue* b)
 {	return newBool(equals(a,b));}
 
+TVP vdmEqualsGC(struct TypedValue* a, struct TypedValue* b, TVP *from)
+{	return newBoolGC(equals(a,b), from);}
+
 TVP vdmInEquals(struct TypedValue* a, struct TypedValue* b)
 {	return newBool(!equals(a,b));}
