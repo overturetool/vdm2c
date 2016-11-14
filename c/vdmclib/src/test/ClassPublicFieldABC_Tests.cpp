@@ -92,7 +92,7 @@ TEST(B, B_sum)
 
 	//out class
 
-	EXPECT_EQ (9,res->value.doubleVal);
+	EXPECT_EQ (9,res->value.intVal);
 
 	vdmFree(res);
 	vdmFree(c);
