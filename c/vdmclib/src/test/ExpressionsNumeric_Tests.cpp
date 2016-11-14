@@ -60,7 +60,7 @@ TEST(Expression_Numeric, floorExp)
 
 	assert(t->type == VDM_REAL && "Value is not a real");
 	TVP res = vdmFloor(t);
-	EXPECT_EQ(5,res->value.doubleVal);
+	EXPECT_EQ(5,res->value.intVal);
 
 	vdmFree(t);
 	vdmFree(res);
@@ -74,7 +74,17 @@ TEST(Expression_Numeric, sumExp)
 	assert(t1->type == VDM_INT && "Value is not a integer");
 	assert(t2->type == VDM_INT && "Value is not a integer");
 	TVP res = vdmSum(t1,t2);
-	EXPECT_EQ(9,res->value.doubleVal);
+	EXPECT_EQ(9,res->value.intVal);
+
+	vdmFree(t1);
+	vdmFree(t2);
+	vdmFree(res);
+
+	t1 = newReal(6);
+	t2 = newReal(5);
+	res = vdmSum(t1, t2);
+
+	EXPECT_EQ(11, res->value.doubleVal);
 
 	vdmFree(t1);
 	vdmFree(t2);
@@ -89,7 +99,17 @@ TEST(Expression_Numeric, differenceExp)
 	assert(t1->type == VDM_INT && "Value is not a integer");
 	assert(t2->type == VDM_INT && "Value is not a integer");
 	TVP res = vdmDifference(t1,t2);
-	EXPECT_EQ(1,res->value.doubleVal);
+	EXPECT_EQ(1,res->value.intVal);
+
+	vdmFree(t1);
+	vdmFree(t2);
+	vdmFree(res);
+
+	t1 = newReal(6);
+	t2 = newReal(5);
+	res = vdmDifference(t1, t2);
+
+	EXPECT_EQ(1, res->value.doubleVal);
 
 	vdmFree(t1);
 	vdmFree(t2);
@@ -105,6 +125,16 @@ TEST(Expression_Numeric, productExp)
 	assert(t2->type == VDM_REAL && "Value is not a real");
 	TVP res = vdmProduct(t1,t2);
 	EXPECT_EQ(42,res->value.doubleVal);
+
+	vdmFree(t1);
+	vdmFree(t2);
+	vdmFree(res);
+
+	t1 = newReal(6);
+	t2 = newReal(5);
+	res = vdmProduct(t1, t2);
+
+	EXPECT_EQ(30, res->value.doubleVal);
 
 	vdmFree(t1);
 	vdmFree(t2);

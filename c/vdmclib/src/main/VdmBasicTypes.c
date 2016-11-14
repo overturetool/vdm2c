@@ -377,8 +377,7 @@ TVP vdmFloor(TVP arg)
 {
 	ASSERT_CHECK_REAL(arg);
 
-	//TODO: Why do we return a Real, when floor is int in VDM?
-	return newReal(floor(arg->value.doubleVal));
+	return newInt(floor(arg->value.doubleVal));
 }
 
 TVP vdmFloorGC(TVP arg, TVP *from)
@@ -395,7 +394,11 @@ TVP vdmSum(TVP a,TVP b)
 	ASSERT_CHECK_NUMERIC(b);
 
 	double av = toDouble(a);
-	double bv=toDouble(b);
+	double bv = toDouble(b);
+
+	if((a->type == VDM_INT || a->type == VDM_NAT || a->type == VDM_NAT1) &&
+			(b->type == VDM_INT || b->type == VDM_NAT || b->type == VDM_NAT1))
+		return newInt((int)(av + bv));
 
 	return newReal(av+bv);
 }
@@ -419,7 +422,11 @@ TVP vdmDifference(TVP a,TVP b)
 	double av = toDouble(a);
 	double bv=toDouble(b);
 
-	return newReal(av-bv);
+	if((a->type == VDM_INT || a->type == VDM_NAT || a->type == VDM_NAT1) &&
+			(b->type == VDM_INT || b->type == VDM_NAT || b->type == VDM_NAT1))
+		return newInt((int)(av - bv));
+
+	return newReal(av - bv);
 }
 
 TVP vdmDifferenceGC(TVP a,TVP b, TVP *from)
@@ -441,7 +448,11 @@ TVP vdmProduct(TVP a,TVP b)
 	double av = toDouble(a);
 	double bv=toDouble(b);
 
-	return newReal(av*bv);
+	if((a->type == VDM_INT || a->type == VDM_NAT || a->type == VDM_NAT1) &&
+			(b->type == VDM_INT || b->type == VDM_NAT || b->type == VDM_NAT1))
+		return newInt((int)(av * bv));
+
+	return newReal(av * bv);
 }
 
 TVP vdmProductGC(TVP a, TVP b, TVP *from)
@@ -572,7 +583,11 @@ TVP vdmMod(TVP a,TVP b)
 	double lv =(int) toDouble(a);
 	double rv = (int)toDouble(b);
 
-	return newReal(lv-rv*(long) floor(lv/rv));
+	if((a->type == VDM_INT || a->type == VDM_NAT || a->type == VDM_NAT1) &&
+			(b->type == VDM_INT || b->type == VDM_NAT || b->type == VDM_NAT1))
+		return newInt((int)(lv-rv*(long) floor(lv/rv)));
+
+return newReal(lv-rv*(long) floor(lv/rv));
 }
 
 TVP vdmModGC(TVP a, TVP b, TVP *from)

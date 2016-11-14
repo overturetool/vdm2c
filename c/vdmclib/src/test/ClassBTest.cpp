@@ -79,7 +79,7 @@ TEST(ClassBTest, calc)
 	TVP a = newInt(1);
 	TVP b = newInt(4);
 
-	checkFreeDouble("calculation calc",5,CALL_FUNC(B, A, c, CLASS_A_calc, a, b)
+	checkFreeInt("calculation calc",5,CALL_FUNC(B, A, c, CLASS_A_calc, a, b)
 	);
 
 	vdmFree(a);
@@ -94,7 +94,7 @@ TEST(ClassBTest, sum)
 	TVP a = newInt(1);
 	TVP b = newInt(4);
 
-	checkFreeDouble("calculation sum",9,CALL_FUNC(B, A, c, CLASS_A_sum)	);//TODO overload test. This test is working but not supported by generator yet
+	checkFreeInt("calculation sum",9,CALL_FUNC(B, A, c, CLASS_A_sum)	);//TODO overload test. This test is working but not supported by generator yet
 
 	vdmFree(a);
 	vdmFree(b);
