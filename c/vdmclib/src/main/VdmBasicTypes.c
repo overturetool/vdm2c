@@ -361,6 +361,10 @@ ASSERT_CHECK_INT(b);
 double lv =(int) toDouble(a);
 double rv = (int)toDouble(b);
 
+if((a->type == VDM_INT || a->type == VDM_NAT || a->type == VDM_NAT1) &&
+			(b->type == VDM_INT || b->type == VDM_NAT || b->type == VDM_NAT1))
+		return newInt((int)(lv-rv*(long) floor(lv/rv)));
+
 return newReal(lv-rv*(long) floor(lv/rv));
 }
 
