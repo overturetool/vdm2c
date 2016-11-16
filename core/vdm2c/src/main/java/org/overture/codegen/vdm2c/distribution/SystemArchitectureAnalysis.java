@@ -35,6 +35,8 @@ public class SystemArchitectureAnalysis
 	public static Map<String, Set<String>> connectionMapStr = new HashMap<String,Set<String>>();
 	public static HashMap<String, Set<String>> distributionMapStr = new HashMap<String, Set<String>>();
 
+	public static Set<String> systemClasses = new HashSet<String>();
+	
 	public void initDistributionMap(String cpuName)
 	{
 		HashSet<SExpIR> set = new HashSet<SExpIR>();
