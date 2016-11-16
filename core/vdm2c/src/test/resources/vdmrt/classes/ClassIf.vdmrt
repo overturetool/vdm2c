@@ -1,4 +1,4 @@
-class ClassIfNotEq
+class ClassIf
 
 operations
 
@@ -24,4 +24,4 @@ then
 else 
 	return false;
 	
-end ClassIfNotEq
+end ClassIf

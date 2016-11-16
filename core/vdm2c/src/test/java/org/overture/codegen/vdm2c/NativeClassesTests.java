@@ -155,11 +155,11 @@ public class NativeClassesTests extends NativeTestBase
 	}
 	
 	@Test
-	public void ClassIfNotEq() throws IOException,
+	public void ClassIf() throws IOException,
 			InterruptedException, CMakeGenerateException
 	{
-		generate(getPath("classes/ClassIfNotEq.vdmrt"));
-		compileAndTest(getTestCppFile("classes/ClassIfNotEq_Tests.cpp"));
+		generate(getPath("classes/ClassIf.vdmrt"));
+		compileAndTest(getTestCppFile("classes/ClassIf_Tests.cpp"));
 	}
 	
 	@Test
