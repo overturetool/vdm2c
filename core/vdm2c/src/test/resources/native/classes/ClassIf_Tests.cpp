@@ -16,14 +16,24 @@ vdmFree(res);\
 vdmFree(c)
 
 
-TEST(ClassIfNotEq, checkEq)
+TEST(ClassIf, checkEq)
 {
  CHECK(CLASS_ClassIf__Z7checkEqEV);
 }
 
-TEST(ClassIfNotEq, checkNe)
+TEST(ClassIf, checkNe)
 {
  CHECK(CLASS_ClassIf__Z7checkNeEV);
+}
+
+TEST(ClassIfNotEq, opCallInIfTestTrue)
+{
+ CHECK(CLASS_ClassIf__Z18opCallInIfTestTrueEV);
+}
+
+TEST(ClassIfNotEq, opCallInIfTestFalse)
+{
+ CHECK(CLASS_ClassIf__Z19opCallInIfTestFalseEV);
 }
 
 
