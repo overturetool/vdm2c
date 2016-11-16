@@ -9,6 +9,7 @@ import org.overture.codegen.ir.SStmIR;
 import org.overture.codegen.ir.STypeIR;
 import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.declarations.ADefaultClassDeclIR;
+import org.overture.codegen.ir.declarations.AFieldDeclIR;
 import org.overture.codegen.ir.declarations.AFormalParamLocalParamIR;
 import org.overture.codegen.ir.declarations.AMethodDeclIR;
 import org.overture.codegen.ir.expressions.AApplyExpIR;
@@ -124,7 +125,7 @@ public class GenerateGetResTrans extends DepthFirstAnalysisCAdaptor
 			for(String bus : SystemArchitectureAnalysis.connectionMapStr.keySet()){
 
 				// 1. statement
-				AIfStmIR first = new AIfStmIR();
+				//				AIfStmIR first = new AIfStmIR();
 
 				//**** Exp part
 				//AEqualsBinaryExpIR bin = new AEqualsBinaryExpIR();
@@ -133,7 +134,7 @@ public class GenerateGetResTrans extends DepthFirstAnalysisCAdaptor
 				AIdentifierVarExpIR id = new AIdentifierVarExpIR();
 				id.setIsLambda(false);
 				id.setIsLocal(true);
-				id.setName("id");
+				id.setName("objID");
 				id.setType(new AIntNumericBasicTypeIR());
 
 
@@ -141,128 +142,115 @@ public class GenerateGetResTrans extends DepthFirstAnalysisCAdaptor
 
 				Set<String> cpuList = SystemArchitectureAnalysis.connectionMapStr.get(bus);
 
+				int obj_id = 0;
+
 				if(cpuList.contains(cpu)){
 					for(String c : cpuList){
-						if(c.equals(cpu)) continue;
+						if(c.equals(cpu)){
 
-						// get deployed objects of a given cpu
-						Set<String> depObj = SystemArchitectureAnalysis.distributionMapStr.get(c);
+							// get deployed objects of the current CPU
+							Set<String> depObj = SystemArchitectureAnalysis.distributionMapStr.get(c);
 
-						for(String dobj : depObj){
-							AEqualsBinaryExpIR binEq = new AEqualsBinaryExpIR();
-							// Left side: id
-							binEq.setLeft(id.clone());
-							// Right side: Add id to if for this specific bus
-							// Add 1 since we start from 1 and not 0
-							int idVal = SystemArchitectureAnalysis.systemDeployedObjectsStr.indexOf(dobj) + 1;
-							AIntLiteralExpIR val = new AIntLiteralExpIR();
-							val.setType(new ANatNumericBasicTypeIR());
-							val.setValue((long) idVal);
-							binEq.setRight(val);
+							for(String dobj : depObj){
+								// One if statement pr. deployed object
 
-							binList.add(binEq);
+								AIfStmIR first = new AIfStmIR();
+
+								AEqualsBinaryExpIR binEq = new AEqualsBinaryExpIR();
+								// Left side: id
+								binEq.setLeft(id.clone());
+								// Right side: Add id to if for this specific bus
+								// Add 1 since we start from 1 and not 0
+								int idVal = SystemArchitectureAnalysis.systemDeployedObjectsStr.indexOf(dobj) + 1;
+								AIntLiteralExpIR val = new AIntLiteralExpIR();
+								val.setType(new ANatNumericBasicTypeIR());
+								val.setValue((long) idVal);
+								binEq.setRight(val);
+
+								first.setIfExp(binEq);
+
+								//binList.add(binEq);
+
+								obj_id = idVal - 1; // stor current object id
+
+
+								//**** Then part, e.g. call the specific BUS
+								AReturnStmIR ret = new AReturnStmIR();
+								AApplyExpIR app = new AApplyExpIR();
+								// Set args
+								LinkedList<SExpIR> args = new LinkedList<SExpIR>();
+								AIntLiteralExpIR v = new AIntLiteralExpIR();
+								v.setValue((long) 6);
+
+								// 1. argument: Global variable name
+								AIdentifierVarExpIR arg1 = new AIdentifierVarExpIR();
+								arg1.setIsLambda(false);
+								arg1.setIsLocal(true);
+								arg1.setName("objID");
+								arg1.setType(new AIntNumericBasicTypeIR());
+								args.add(arg1);
+
+								// 2. argument: function id
+								AIdentifierVarExpIR arg2 = new AIdentifierVarExpIR();
+								arg2.setIsLambda(false);
+								arg2.setIsLocal(true);
+								arg2.setName("funID");
+								arg2.setType(new AIntNumericBasicTypeIR());
+								args.add(arg2);
+
+								// 3. argument: number of arguments
+								AIdentifierVarExpIR arg3 = new AIdentifierVarExpIR();
+								arg3.setIsLambda(false);
+								arg3.setIsLocal(true);
+								arg3.setName("nrArgs");
+								arg3.setType(new AIntNumericBasicTypeIR());
+								args.add(arg3);
+
+								// 4. argument: Array of arguments
+								AIdentifierVarExpIR arg4 = new AIdentifierVarExpIR();
+								arg4.setIsLambda(false);
+								arg4.setIsLocal(true);
+								arg4.setName("args");
+								arg4.setType(new AIntNumericBasicTypeIR());
+								args.add(arg4);
+
+								//args.add(id);
+								app.setArgs(args);
+
+
+								// Type
+								app.setType(new AIntNumericBasicTypeIR());
+
+								// Root
+								AIdentifierVarExpIR idVar = new AIdentifierVarExpIR();
+								idVar.setIsLambda(false);
+								idVar.setIsLocal(false);
+
+								// get id of current object:
+								String name = "Zone";
+
+								LinkedList<AFieldDeclIR> va = SystemArchitectureAnalysis.systemDeployedObjects;
+
+								AFieldDeclIR o = va.get(obj_id);
+
+								idVar.setName("dist" + o.getType().toString());
+								// set method type
+								idVar.setType(mTy.clone());
+								app.setRoot(idVar);
+								ret.setExp(app);
+
+								first.setThenStm(ret);
+
+								//first.setIfExp(orBin);
+
+								st.add(first);
+								//st.add(first.clone());
+
+							}
 						}
 					}
 				}
 
-				if(binList.size()==1) first.setIfExp(binList.get(0));
-				else{
-
-					LinkedList<AOrBoolBinaryExpIR> orBinList = new LinkedList<AOrBoolBinaryExpIR>(); 
-
-					for(AEqualsBinaryExpIR li : binList){
-						AOrBoolBinaryExpIR orb = new AOrBoolBinaryExpIR();
-						orBinList.add(orb);
-					}
-					orBinList.remove();
-
-					int i = 0;
-					for(AOrBoolBinaryExpIR ors : orBinList){
-						if(i==orBinList.size()-1){
-							ors.setLeft(binList.get(i));
-							ors.setRight(binList.get(i+1));
-						}
-						else{
-							ors.setLeft(binList.get(i));
-							ors.setRight(orBinList.get(i+1));
-							i = i + 1;
-						}
-					}
-
-					first.setIfExp(orBinList.get(0));
-
-					//					AOrBoolBinaryExpIR orBin = new AOrBoolBinaryExpIR();
-					//					orBin.setLeft(binList.get(0));
-					//					orBin.setRight(binList.get(1));
-					//					first.setIfExp(orBin);
-				}
-
-				//**** Then part, e.g. call the specific BUS
-				AReturnStmIR ret = new AReturnStmIR();
-				AApplyExpIR app = new AApplyExpIR();
-				// Set args
-				LinkedList<SExpIR> args = new LinkedList<SExpIR>();
-				AIntLiteralExpIR v = new AIntLiteralExpIR();
-				v.setValue((long) 6);
-
-				// 1. argument: Global variable name
-				AIdentifierVarExpIR arg1 = new AIdentifierVarExpIR();
-				arg1.setIsLambda(false);
-				arg1.setIsLocal(true);
-				arg1.setName("globalVar");
-				arg1.setType(new AIntNumericBasicTypeIR());
-				args.add(arg1);
-				
-				// 2. argument: function id
-				AIdentifierVarExpIR arg2 = new AIdentifierVarExpIR();
-				arg2.setIsLambda(false);
-				arg2.setIsLocal(true);
-				arg2.setName("funID");
-				arg2.setType(new AIntNumericBasicTypeIR());
-				args.add(arg2);
-				
-				// 3. argument: number of arguments
-				AIdentifierVarExpIR arg3 = new AIdentifierVarExpIR();
-				arg3.setIsLambda(false);
-				arg3.setIsLocal(true);
-				arg3.setName("nrArgs");
-				arg3.setType(new AIntNumericBasicTypeIR());
-				args.add(arg3);
-				
-				// 4. argument: Array of arguments
-				AIdentifierVarExpIR arg4 = new AIdentifierVarExpIR();
-				arg4.setIsLambda(false);
-				arg4.setIsLocal(true);
-				arg4.setName("nrArgs");
-				arg4.setType(new AIntNumericBasicTypeIR());
-				args.add(arg4);
-				
-				//args.add(id);
-				app.setArgs(args);
-
-
-
-				// Type
-				app.setType(new AIntNumericBasicTypeIR());
-				// Root
-				AIdentifierVarExpIR idVar = new AIdentifierVarExpIR();
-				idVar.setIsLambda(false);
-				idVar.setIsLocal(false);
-				idVar.setName("distZone");
-				// set method type
-				idVar.setType(mTy.clone());
-				app.setRoot(idVar);
-				ret.setExp(app);
-
-				first.setThenStm(ret);
-
-
-
-				//first.setIfExp(orBin);
-
-				st.add(first);
-				st.add(first.clone());
-				
 				body.setStatements(st);
 
 			}
