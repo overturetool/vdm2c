@@ -154,14 +154,25 @@ public class GenerateGetResTrans extends DepthFirstAnalysisCAdaptor
 							for(String dobj : depObj){
 								// One if statement pr. deployed object
 
+								int idVal = SystemArchitectureAnalysis.systemDeployedObjectsStr.indexOf(dobj) + 1;
+								LinkedList<AFieldDeclIR> va = SystemArchitectureAnalysis.systemDeployedObjects;
+								obj_id = idVal - 1; // stor current object id
+								AFieldDeclIR o = va.get(obj_id);
+
 								AIfStmIR first = new AIfStmIR();
 
 								AEqualsBinaryExpIR binEq = new AEqualsBinaryExpIR();
 								// Left side: id
-								binEq.setLeft(id.clone());
+								AIdentifierVarExpIR idObj = new AIdentifierVarExpIR();
+								idObj.setIsLambda(false);
+								idObj.setIsLocal(true);
+								idObj.setName("objID");
+								idObj.setType(new AIntNumericBasicTypeIR());
+
+								binEq.setLeft(idObj);
 								// Right side: Add id to if for this specific bus
 								// Add 1 since we start from 1 and not 0
-								int idVal = SystemArchitectureAnalysis.systemDeployedObjectsStr.indexOf(dobj) + 1;
+
 								AIntLiteralExpIR val = new AIntLiteralExpIR();
 								val.setType(new ANatNumericBasicTypeIR());
 								val.setValue((long) idVal);
@@ -171,7 +182,7 @@ public class GenerateGetResTrans extends DepthFirstAnalysisCAdaptor
 
 								//binList.add(binEq);
 
-								obj_id = idVal - 1; // stor current object id
+
 
 
 								//**** Then part, e.g. call the specific BUS
@@ -186,7 +197,7 @@ public class GenerateGetResTrans extends DepthFirstAnalysisCAdaptor
 								AIdentifierVarExpIR arg1 = new AIdentifierVarExpIR();
 								arg1.setIsLambda(false);
 								arg1.setIsLocal(true);
-								arg1.setName("objID");
+								arg1.setName("g_" + SystemArchitectureAnalysis.systemName + "_" + o.getName());
 								arg1.setType(new AIntNumericBasicTypeIR());
 								args.add(arg1);
 
@@ -228,10 +239,6 @@ public class GenerateGetResTrans extends DepthFirstAnalysisCAdaptor
 
 								// get id of current object:
 								String name = "Zone";
-
-								LinkedList<AFieldDeclIR> va = SystemArchitectureAnalysis.systemDeployedObjects;
-
-								AFieldDeclIR o = va.get(obj_id);
 
 								idVar.setName("dist" + o.getType().toString());
 								// set method type
