@@ -457,8 +457,14 @@ void vdmMapAdd(TVP map, TVP key, TVP value)
 }
 
 
+void vdmMapUpdate(TVP map, TVP key, TVP value)
+{
+	vdmMapAdd(map, key, value);
+}
 
-// TODO: Apply does not work, if they key is not found
+
+
+// TODO: Apply does not work if the key is not found
 TVP vdmMapApply(TVP map, TVP key)
 {
 	ASSERT_CHECK(map);
