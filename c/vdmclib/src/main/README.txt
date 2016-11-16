@@ -2,7 +2,10 @@ This source code is generated.  To compile, rename the file ProjectCMakeLists.tx
 
 	cmake .
 
-This should generate the required makefiles in order to be able to build the generated model with
+or
+	cmake -DCMAKE_BUILD_TYPE=Debug .
+
+if you intend to debug the generated code.  This should generate the required makefiles in order to be able to build the generated model with
 
 	make
 
