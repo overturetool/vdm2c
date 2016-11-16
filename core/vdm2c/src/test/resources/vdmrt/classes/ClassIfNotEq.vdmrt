@@ -1,32 +1,27 @@
 class ClassIfNotEq
 
-instance variables
-
-g: ClassIfNotEq := new ClassIfNotEq();
-
 operations
 
-public op: () ==> bool
-op()==return true;
+private opTrue: () ==> bool
+opTrue()==return true;
 
+private opFalse: () ==> bool
+opFalse ()==return false;
 
-checkNe  : ()==>bool
+public checkNe  : ()==>bool
 checkNe()== 
-if(g.op()<>false) 
+if(opTrue()<>false) 
 then 
 	return true 
 else 
 	return false;
 	
-checkEq  : ()==>bool
+public checkEq  : ()==>bool
 checkEq()== 
-if(g.op()=false) 
+if(opFalse()=false) 
 then 
 	return true 
 else 
 	return false;
 	
-check  : ()==>bool
-check()== return g.op()=false;
-
 end ClassIfNotEq
