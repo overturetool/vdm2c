@@ -182,10 +182,12 @@ public class GenerateGetResTrans extends DepthFirstAnalysisCAdaptor
 
 								//binList.add(binEq);
 
-
-
-
 								//**** Then part, e.g. call the specific BUS
+								
+								// Then part is a block statement pr. inheritaed class
+								
+								ABlockStmIR if_block = new ABlockStmIR();
+								
 								AReturnStmIR ret = new AReturnStmIR();
 								AApplyExpIR app = new AApplyExpIR();
 								// Set args
@@ -237,16 +239,18 @@ public class GenerateGetResTrans extends DepthFirstAnalysisCAdaptor
 								idVar.setIsLambda(false);
 								idVar.setIsLocal(false);
 
-								// get id of current object:
-								String name = "Zone";
-
 								idVar.setName("dist" + o.getType().toString());
 								// set method type
 								idVar.setType(mTy.clone());
 								app.setRoot(idVar);
 								ret.setExp(app);
 
+								// Create inner if statement for 
 								first.setThenStm(ret);
+								if_block.getStatements().add(first.clone());
+								if_block.getStatements().add(first.clone());
+								
+								first.setThenStm(if_block);
 
 								//first.setIfExp(orBin);
 
