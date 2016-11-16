@@ -11,6 +11,7 @@ import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.declarations.ADefaultClassDeclIR;
 import org.overture.codegen.ir.declarations.AFormalParamLocalParamIR;
 import org.overture.codegen.ir.declarations.AMethodDeclIR;
+import org.overture.codegen.ir.declarations.AVarDeclIR;
 import org.overture.codegen.ir.expressions.AApplyExpIR;
 import org.overture.codegen.ir.expressions.AEqualsBinaryExpIR;
 import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
@@ -19,11 +20,13 @@ import org.overture.codegen.ir.expressions.AOrBoolBinaryExpIR;
 import org.overture.codegen.ir.patterns.AIdentifierPatternIR;
 import org.overture.codegen.ir.statements.ABlockStmIR;
 import org.overture.codegen.ir.statements.AIfStmIR;
+import org.overture.codegen.ir.statements.APlainCallStmIR;
 import org.overture.codegen.ir.statements.AReturnStmIR;
 import org.overture.codegen.ir.types.AExternalTypeIR;
 import org.overture.codegen.ir.types.AIntNumericBasicTypeIR;
 import org.overture.codegen.ir.types.AMethodTypeIR;
 import org.overture.codegen.ir.types.ANatNumericBasicTypeIR;
+import org.overture.codegen.ir.types.AVoidTypeIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.distribution.SystemArchitectureAnalysis;
 
@@ -47,7 +50,6 @@ public class GenerateSendBusTrans extends DepthFirstAnalysisCAdaptor
 			String cpu = cl.getTag().toString();
 
 			// Create a new method: 
-
 			AMethodDeclIR m = new AMethodDeclIR();
 
 			m.setAsync(false);
@@ -85,7 +87,7 @@ public class GenerateSendBusTrans extends DepthFirstAnalysisCAdaptor
 			par4.setPattern(idPat4);
 			par4.setType(tyPat.clone());
 			par.add(par4);
-			
+
 			// Fourth parameter
 			AFormalParamLocalParamIR par3 = new AFormalParamLocalParamIR();
 			AIdentifierPatternIR idPat3 = new AIdentifierPatternIR();
@@ -119,14 +121,34 @@ public class GenerateSendBusTrans extends DepthFirstAnalysisCAdaptor
 			// Create the statements
 			LinkedList<SStmIR> st = new LinkedList<SStmIR>();
 
+			APlainCallStmIR plain = new APlainCallStmIR();
+			
+			plain.setType(new AIntNumericBasicTypeIR());
+			
+			plain.setName("va_start");
+			
+			AIdentifierVarExpIR id1 = new AIdentifierVarExpIR();
+			id1.setIsLambda(false);
+			id1.setIsLocal(false);
+			id1.setName("args");
+			id1.setType(new AIntNumericBasicTypeIR());
+			plain.getArgs().add(id1);
+			
+			AIdentifierVarExpIR id2 = new AIdentifierVarExpIR();
+			id2.setIsLambda(false);
+			id2.setIsLocal(false);
+			id2.setName("nr_args");
+			id2.setType(new AVoidTypeIR());
+			plain.getArgs().add(id2);
+			
+			//st.add(plain);
+			
 			/** One if statement pr. bus for a cpu ***/
 
 			for(String bus : SystemArchitectureAnalysis.connectionMapStr.keySet()){
 
 				// 1. statement
 				AIfStmIR first = new AIfStmIR();
-
-
 
 				//**** Exp part
 				//AEqualsBinaryExpIR bin = new AEqualsBinaryExpIR();
@@ -137,7 +159,6 @@ public class GenerateSendBusTrans extends DepthFirstAnalysisCAdaptor
 				id.setIsLocal(true);
 				id.setName("id");
 				id.setType(new AIntNumericBasicTypeIR());
-
 
 				LinkedList<AEqualsBinaryExpIR> binList = new LinkedList<AEqualsBinaryExpIR>();
 
@@ -167,6 +188,7 @@ public class GenerateSendBusTrans extends DepthFirstAnalysisCAdaptor
 					}
 				}
 
+				// TODO: If no bus exists we get an error
 				if(binList.size()==1) first.setIfExp(binList.get(0));
 				else{
 
@@ -202,15 +224,46 @@ public class GenerateSendBusTrans extends DepthFirstAnalysisCAdaptor
 				//**** Then part, e.g. call the specific BUS
 				AReturnStmIR ret = new AReturnStmIR();
 				AApplyExpIR app = new AApplyExpIR();
-				// Set args
+				
+				// Set arguments
 				LinkedList<SExpIR> args = new LinkedList<SExpIR>();
-				AIntLiteralExpIR v = new AIntLiteralExpIR();
-				v.setValue((long) 6);
-				args.add(v);
-				args.add(id);
+				//AIntLiteralExpIR v = new AIntLiteralExpIR();
+				//v.setValue((long) 6);
+				//args.add(v);
+				
+				// 1. argument
+				args.add(id); 
+				
+				// 2. argument
+				AIdentifierVarExpIR funID = new AIdentifierVarExpIR();
+				funID.setIsLambda(false);
+				funID.setIsLocal(true);
+				funID.setName("funID");
+				funID.setType(new AIntNumericBasicTypeIR());
+				args.add(funID);
+				
+				// 3. argument
+				AIdentifierVarExpIR nrArgs = new AIdentifierVarExpIR();
+				nrArgs.setIsLambda(false);
+				nrArgs.setIsLocal(true);
+				nrArgs.setName("nrArgs");
+				nrArgs.setType(new AIntNumericBasicTypeIR());
+				args.add(nrArgs);
+				
+				// 4. argument
+				AIdentifierVarExpIR ar = new AIdentifierVarExpIR();
+				ar.setIsLambda(false);
+				ar.setIsLocal(true);
+				ar.setName("args");
+				ar.setType(new AIntNumericBasicTypeIR());
+				args.add(ar);
+				
+				// Set arguments of apply expression
 				app.setArgs(args);
+				
 				// Type
 				app.setType(new AIntNumericBasicTypeIR());
+				
 				// Root
 				AIdentifierVarExpIR idVar = new AIdentifierVarExpIR();
 				idVar.setIsLambda(false);
@@ -223,17 +276,56 @@ public class GenerateSendBusTrans extends DepthFirstAnalysisCAdaptor
 
 				first.setThenStm(ret);
 
-
-
 				//first.setIfExp(orBin);
-
+				
+				//st.add(app);
+				
 				st.add(first);
 
-				body.setStatements(st);
-
+//				st.add(first.clone());
 			}
+			
+			body.setStatements(st);
+			
 			//LinkedList<SStmIR> s = ((ABlockStmIR) node.getBody()).getStatements();
 
+			
+//			AVarDeclIR args_list = new AVarDeclIR();
+//			
+//			AExternalTypeIR tyArgs = new AExternalTypeIR();
+//			tyPat.setName("va_list");
+//			
+//			// set expression
+//			
+//			AIntLiteralExpIR ex = new AIntLiteralExpIR();
+//			//ex.setValue((long) 0);
+//			ex.setType(tyArgs);
+//			args_list.setExp(null);
+//			
+//			args_list.setFinal(false);
+//			
+//			AIdentifierPatternIR idP = new AIdentifierPatternIR();
+//			
+//			idP.setName("args");
+//			
+//			args_list.setPattern(idP);
+//			
+//			args_list.setType(tyArgs);
+			
+//			AIdentifierVarExpIR ar = new AIdentifierVarExpIR();
+//			ar.setIsLambda(false);
+//			ar.setIsLocal(true);
+//			ar.setName("args");
+//			ar.setType(tyArgs);
+			
+//			args_list.setPattern(value);
+			
+//			body.getLocalDefs().add(args_list);
+			
+			//st.add(0, idVar);
+			
+//			body.setStatements(st);
+			
 			m.setBody(body);
 			cl.getMethods().add(m);
 			//System.out.println();
