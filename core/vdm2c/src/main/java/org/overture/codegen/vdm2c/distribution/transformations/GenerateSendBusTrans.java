@@ -157,7 +157,7 @@ public class GenerateSendBusTrans extends DepthFirstAnalysisCAdaptor
 				AIdentifierVarExpIR id = new AIdentifierVarExpIR();
 				id.setIsLambda(false);
 				id.setIsLocal(true);
-				id.setName("id");
+				id.setName("objID");
 				id.setType(new AIntNumericBasicTypeIR());
 
 				LinkedList<AEqualsBinaryExpIR> binList = new LinkedList<AEqualsBinaryExpIR>();
