@@ -38,6 +38,16 @@ public class CallFuncMacroExpTrans extends DepthFirstAnalysisCAdaptor
 				AIntLiteralExpIR a = new AIntLiteralExpIR();
 				a.setValue((long) args_len);
 				
+				// get super type name
+				AIdentifierVarExpIR supTy = (AIdentifierVarExpIR) node.getArgs().get(1).clone();
+				
+				supTy.setName("CLASS_ID_" + supTy.getName() + "_ID");
+				
+				//supTy.set
+				
+				// Add number of function arguments to second last position
+				node.getArgs().add(node.getArgs().size() - 1, supTy);
+				
 				// Add number of function arguments to second last position
 				node.getArgs().add(node.getArgs().size() - 1, a);
 

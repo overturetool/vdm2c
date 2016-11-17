@@ -3,6 +3,8 @@ package org.overture.codegen.vdm2c.distribution.transformations;
 import java.util.LinkedList;
 import java.util.Set;
 
+import org.overture.ast.intf.lex.ILexNameToken;
+import org.overture.ast.types.AClassType;
 import org.overture.cgc.extast.analysis.DepthFirstAnalysisCAdaptor;
 import org.overture.codegen.ir.SExpIR;
 import org.overture.codegen.ir.SStmIR;
@@ -79,6 +81,14 @@ public class GenerateGetResTrans extends DepthFirstAnalysisCAdaptor
 			par2.setType(tyPat.clone());
 			par.add(par2);
 
+			// Third parameter
+			AFormalParamLocalParamIR par5 = new AFormalParamLocalParamIR();
+			AIdentifierPatternIR idPat5 = new AIdentifierPatternIR();
+			idPat5.setName("supID");
+			par5.setPattern(idPat5);
+			par5.setType(tyPat.clone());
+			par.add(par5);
+			
 			// Third parameter
 			AFormalParamLocalParamIR par4 = new AFormalParamLocalParamIR();
 			AIdentifierPatternIR idPat4 = new AIdentifierPatternIR();
@@ -159,102 +169,157 @@ public class GenerateGetResTrans extends DepthFirstAnalysisCAdaptor
 								obj_id = idVal - 1; // stor current object id
 								AFieldDeclIR o = va.get(obj_id);
 
-								AIfStmIR first = new AIfStmIR();
+								LinkedList<ILexNameToken> classSupNames = new LinkedList<ILexNameToken>();
 
-								AEqualsBinaryExpIR binEq = new AEqualsBinaryExpIR();
+								if(o.getType().getSourceNode().getVdmNode() instanceof AClassType){
+									AClassType classN = (AClassType) o.getType().getSourceNode().getVdmNode();
+
+									classSupNames = classN.getClassdef().getSupernames();
+								}
+
+								LinkedList<String> classNames = new LinkedList<String>();
+								
+								classNames.add(o.getType().toString());
+								
+								for(ILexNameToken sup : classSupNames){
+									classNames.add(sup.toString());
+								}
+								
+								AIfStmIR firstStm = new AIfStmIR();
+
+								AEqualsBinaryExpIR binEqStm = new AEqualsBinaryExpIR();
 								// Left side: id
-								AIdentifierVarExpIR idObj = new AIdentifierVarExpIR();
-								idObj.setIsLambda(false);
-								idObj.setIsLocal(true);
-								idObj.setName("objID");
-								idObj.setType(new AIntNumericBasicTypeIR());
+								AIdentifierVarExpIR idObjStm = new AIdentifierVarExpIR();
+								idObjStm.setIsLambda(false);
+								idObjStm.setIsLocal(true);
+								idObjStm.setName("objID");
+								idObjStm.setType(new AIntNumericBasicTypeIR());
 
-								binEq.setLeft(idObj);
+								binEqStm.setLeft(idObjStm);
 								// Right side: Add id to if for this specific bus
 								// Add 1 since we start from 1 and not 0
 
 								AIntLiteralExpIR val = new AIntLiteralExpIR();
 								val.setType(new ANatNumericBasicTypeIR());
 								val.setValue((long) idVal);
-								binEq.setRight(val);
+								binEqStm.setRight(val);
 
-								first.setIfExp(binEq);
+								firstStm.setIfExp(binEqStm);
 
-								//binList.add(binEq);
+								int len = classSupNames.size() + 1;
 
-								//**** Then part, e.g. call the specific BUS
-								
-								// Then part is a block statement pr. inheritaed class
-								
 								ABlockStmIR if_block = new ABlockStmIR();
-								
-								AReturnStmIR ret = new AReturnStmIR();
-								AApplyExpIR app = new AApplyExpIR();
-								// Set args
-								LinkedList<SExpIR> args = new LinkedList<SExpIR>();
-								AIntLiteralExpIR v = new AIntLiteralExpIR();
-								v.setValue((long) 6);
 
-								// 1. argument: Global variable name
-								AIdentifierVarExpIR arg1 = new AIdentifierVarExpIR();
-								arg1.setIsLambda(false);
-								arg1.setIsLocal(true);
-								arg1.setName("g_" + SystemArchitectureAnalysis.systemName + "_" + o.getName());
-								arg1.setType(new AIntNumericBasicTypeIR());
-								args.add(arg1);
+								for(int p = 0; p<len; p++){
 
-								// 2. argument: function id
-								AIdentifierVarExpIR arg2 = new AIdentifierVarExpIR();
-								arg2.setIsLambda(false);
-								arg2.setIsLocal(true);
-								arg2.setName("funID");
-								arg2.setType(new AIntNumericBasicTypeIR());
-								args.add(arg2);
+									AIfStmIR first = new AIfStmIR();
 
-								// 3. argument: number of arguments
-								AIdentifierVarExpIR arg3 = new AIdentifierVarExpIR();
-								arg3.setIsLambda(false);
-								arg3.setIsLocal(true);
-								arg3.setName("nrArgs");
-								arg3.setType(new AIntNumericBasicTypeIR());
-								args.add(arg3);
+									AEqualsBinaryExpIR binEq = new AEqualsBinaryExpIR();
+									// Left side: id
+									AIdentifierVarExpIR idObj = new AIdentifierVarExpIR();
+									idObj.setIsLambda(false);
+									idObj.setIsLocal(true);
+									idObj.setName("supID");
+									idObj.setType(new AIntNumericBasicTypeIR());
 
-								// 4. argument: Array of arguments
-								AIdentifierVarExpIR arg4 = new AIdentifierVarExpIR();
-								arg4.setIsLambda(false);
-								arg4.setIsLocal(true);
-								arg4.setName("args");
-								arg4.setType(new AIntNumericBasicTypeIR());
-								args.add(arg4);
+									binEq.setLeft(idObj);
+									// Right side: Add id to if for this specific bus
+									// Add 1 since we start from 1 and not 0
 
-								//args.add(id);
-								app.setArgs(args);
+									AIdentifierVarExpIR valS = new AIdentifierVarExpIR();
+									valS.setIsLambda(false);
+									valS.setIsLocal(true);
+									valS.setName("CLASS_ID_" + classNames.get(p) +  "_ID");
+									valS.setType(new AIntNumericBasicTypeIR());
+									binEq.setRight(valS);
+									
+									first.setIfExp(binEq);
+
+									//binList.add(binEq);
+
+									//**** Then part, e.g. call the specific BUS
+
+									// Then part is a block statement pr. inheritaed class
+
+									AReturnStmIR ret = new AReturnStmIR();
+									AApplyExpIR app = new AApplyExpIR();
+									// Set args
+									LinkedList<SExpIR> args = new LinkedList<SExpIR>();
+									AIntLiteralExpIR v = new AIntLiteralExpIR();
+									v.setValue((long) 6);
+
+									// 1. argument: Global variable name
+									AIdentifierVarExpIR arg1 = new AIdentifierVarExpIR();
+									arg1.setIsLambda(false);
+									arg1.setIsLocal(true);
+									arg1.setName("g_" + SystemArchitectureAnalysis.systemName + "_" + o.getName());
+									arg1.setType(new AIntNumericBasicTypeIR());
+									args.add(arg1);
+
+									// 2. argument: function id
+									AIdentifierVarExpIR arg2 = new AIdentifierVarExpIR();
+									arg2.setIsLambda(false);
+									arg2.setIsLocal(true);
+									arg2.setName("funID");
+									arg2.setType(new AIntNumericBasicTypeIR());
+									args.add(arg2);
+
+//									// 3. argument: number of arguments
+//									AIdentifierVarExpIR arg3 = new AIdentifierVarExpIR();
+//									arg3.setIsLambda(false);
+//									arg3.setIsLocal(true);
+//									arg3.setName("supID");
+//									arg3.setType(new AIntNumericBasicTypeIR());
+//									args.add(arg3);
+//									
+									// 4. argument: number of arguments
+									AIdentifierVarExpIR arg5 = new AIdentifierVarExpIR();
+									arg5.setIsLambda(false);
+									arg5.setIsLocal(true);
+									arg5.setName("nrArgs");
+									arg5.setType(new AIntNumericBasicTypeIR());
+									args.add(arg5);
+
+									// 5. argument: Array of arguments
+									AIdentifierVarExpIR arg4 = new AIdentifierVarExpIR();
+									arg4.setIsLambda(false);
+									arg4.setIsLocal(true);
+									arg4.setName("args");
+									arg4.setType(new AIntNumericBasicTypeIR());
+									args.add(arg4);
+
+									//args.add(id);
+									app.setArgs(args);
 
 
-								// Type
-								app.setType(new AIntNumericBasicTypeIR());
+									// Type
+									app.setType(new AIntNumericBasicTypeIR());
 
-								// Root
-								AIdentifierVarExpIR idVar = new AIdentifierVarExpIR();
-								idVar.setIsLambda(false);
-								idVar.setIsLocal(false);
+									// Root
+									AIdentifierVarExpIR idVar = new AIdentifierVarExpIR();
+									idVar.setIsLambda(false);
+									idVar.setIsLocal(false);
 
-								idVar.setName("dist" + o.getType().toString());
-								// set method type
-								idVar.setType(mTy.clone());
-								app.setRoot(idVar);
-								ret.setExp(app);
+									idVar.setName("dist" + classNames.get(p));
+									// set method type
+									idVar.setType(mTy.clone());
+									app.setRoot(idVar);
+									ret.setExp(app);
 
-								// Create inner if statement for 
-								first.setThenStm(ret);
-								if_block.getStatements().add(first.clone());
-								if_block.getStatements().add(first.clone());
-								
-								first.setThenStm(if_block);
+									// Create inner if statement for 
+									first.setThenStm(ret);
+									if_block.getStatements().add(first.clone());
+
+								}
+
+
+								//if_block.getStatements().add(first.clone());
+
+								firstStm.setThenStm(if_block);
 
 								//first.setIfExp(orBin);
 
-								st.add(first);
+								st.add(firstStm);
 								//st.add(first.clone());
 
 							}
