@@ -174,6 +174,12 @@ struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction
 #define CALL_FUNC(thisTypeName,funcTname,classValue,id, ... )     (CREATE_CALL_VARG_CAST(struct thisTypeName*, ## __VA_ARGS__ )GET_VTABLE_FUNC( thisTypeName,funcTname,TO_CLASS_PTR(classValue,thisTypeName),id))(CLASS_CAST(TO_CLASS_PTR(classValue,thisTypeName),thisTypeName,funcTname), ##  __VA_ARGS__)
 
 /*
+ * Macro used for distribution support
+ */
+
+#define DIST_CALL(sTy, bTy, obj, supID ,nrArgs ,funID, args...) ((DM[obj->id]) ? CALL_FUNC(sTy, bTy, obj, funID, ## args) : send_bus(obj->id, funID, supID, nrArgs, ## args))
+
+/*
  * Macro to obtain a field from a (sub-)class specific class struct. We clone to preserve value semantics and the rule of freeing
  */
 #define GET_FIELD(thisTypeName, fieldTypeName, classValue, fieldName) vdmClone(GET_STRUCT_FIELD(fieldTypeName,CLASS_CAST(TO_CLASS_PTR(classValue,thisTypeName),thisTypeName,fieldTypeName) ,struct TypedValue*,m_##fieldTypeName##_##fieldName))
