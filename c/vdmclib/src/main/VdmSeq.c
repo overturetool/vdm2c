@@ -228,7 +228,7 @@ TVP vdmSeqReverse(TVP seq)
 	//copy  list
 	for (int i = 0; i < col->size; i++)
 	{
-		elems->value[i] = vdmClone(col->value[offset-i]);
+		elems->value[i] = vdmClone(col->value[offset - i]);
 	}
 
 	return elemsVal;
@@ -244,7 +244,7 @@ TVP vdmSeqIndex(TVP seq,TVP indexVal) //VDM uses 1 based index
 	int index = indexVal->value.intVal;
 	UNWRAP_COLLECTION(col,seq);
 
-	assert(index-1>=0 && index-1<col->size && "invalid index");
+	assert(index - 1 >= 0 && index - 1 < col->size && "invalid index");
 	return vdmClone(col->value[index-1]);
 }
 TVP vdmSeqEqual(TVP seq,TVP seq2)
@@ -268,8 +268,8 @@ void vdmSeqUpdate(TVP seq, TVP indexVal, TVP newValue)
 	assert((indexVal->type == VDM_INT||indexVal->type == VDM_NAT||indexVal->type == VDM_NAT1) && "index is not a int");
 
 	int index = indexVal->value.intVal;
-	UNWRAP_COLLECTION(col,seq);
+	UNWRAP_COLLECTION(col, seq);
 
-	assert(index-1>=0 && index-1<col->size && "invalid index");
-	col->value[index-1] = vdmClone(newValue);
+	assert(index - 1 >= 0 && index - 1 < col->size && "invalid index");
+	col->value[index - 1] = vdmClone(newValue);
 }
