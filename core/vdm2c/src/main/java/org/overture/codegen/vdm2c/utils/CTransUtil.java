@@ -52,7 +52,7 @@ public class CTransUtil
 {
 	public static final String GET_FIELD_PTR = "GET_FIELD_PTR";
 	public static final String SET_FIELD_PTR = "SET_FIELD_PTR";
-	public static final String GET_FIELD_NO_CLONE = "GET_FIELD_NO_CLONE";
+	public static final String GET_FIELD_PTR_BYREF = "GET_FIELD_PTR_BYREF";
 
 	public static final String GET_FIELD = "GET_FIELD";
 	public static final String SET_FIELD = "SET_FIELD";

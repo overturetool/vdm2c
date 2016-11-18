@@ -1,7 +1,7 @@
 package org.overture.codegen.vdm2c.transformations;
 
 import static org.overture.codegen.vdm2c.utils.CTransUtil.GET_FIELD;
-import static org.overture.codegen.vdm2c.utils.CTransUtil.GET_FIELD_NO_CLONE;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.GET_FIELD_PTR_BYREF;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.GET_FIELD_PTR;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.createIdentifier;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newMacroApply;
@@ -258,7 +258,7 @@ public class FieldReadToFieldGetMacroTrans extends DepthFirstAnalysisCAdaptor
 	{
 		if(designator != null && (designator.getMapType() != null || designator.getSeqType() != null))
 		{
-			return GET_FIELD_NO_CLONE;
+			return GET_FIELD_PTR_BYREF;
 		}
 		else
 		{

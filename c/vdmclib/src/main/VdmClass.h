@@ -204,7 +204,7 @@ struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction
 /*
  * Macro to obtain a field from a (sub-)class specific class struct. This macro is intended to be used for updating sequences and maps, which is why the field is not cloned.
  */
-#define GET_FIELD_NO_CLONE(thisTypeName, fieldTypeName, ptr, fieldName) GET_STRUCT_FIELD(fieldTypeName,CLASS_CAST(ptr,thisTypeName,fieldTypeName) ,struct TypedValue*,m_##fieldTypeName##_##fieldName)
+#define GET_FIELD_PTR_BYREF(thisTypeName, fieldTypeName, ptr, fieldName) GET_STRUCT_FIELD(fieldTypeName,CLASS_CAST(ptr,thisTypeName,fieldTypeName) ,struct TypedValue*,m_##fieldTypeName##_##fieldName)
 
 /*
  * Macro to set a field from a (sub-)class specific class struct.
