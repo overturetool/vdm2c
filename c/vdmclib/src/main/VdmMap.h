@@ -76,6 +76,7 @@ struct TypedValue* newMap();
 
 //util method for adding maplets
 void vdmMapAdd(TVP map,TVP key, TVP value);
+void vdmMapUpdate(TVP map, TVP key, TVP value);
 
 TVP newMapVarToGrow(size_t, size_t, ...);
 void vdmMapGrow(TVP, TVP, TVP);

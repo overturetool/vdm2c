@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.overturetool.vdm2c</groupId>
     <artifactId>ide</artifactId>
-		 <version>0.0.9-SNAPSHOT</version>
+		 <version>0.0.11-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
