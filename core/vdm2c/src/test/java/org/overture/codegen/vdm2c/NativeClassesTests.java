@@ -2,6 +2,7 @@ package org.overture.codegen.vdm2c;
 
 import java.io.IOException;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.overture.codegen.vdm2c.CMakeUtil.CMakeGenerateException;
 
@@ -188,12 +189,13 @@ public class NativeClassesTests extends NativeTestBase
 	}
 	
 	//Some "scratch work" tests.
+	@Ignore("This is only used internally for development debugging purposes.")
 	@Test
 	public void ClassScratchWork() throws IOException,
     InterruptedException, CMakeGenerateException
 	{
 		generate(getPath("classes/ClassScratchWork.vdmrt"));
-		compileAndTest();
+		compileAndTest(getTestCppFile("classes/ClassScratchWork_Tests.cpp"));
 	}
 	
 	@Test
