@@ -43,6 +43,13 @@ public class NativeClassesTests extends NativeTestBase
 	}
 	
 	@Test
+	public void ClassCollectionUpdate() throws IOException, InterruptedException, CMakeGenerateException 
+	{
+		generate(getPath("classes/ClassCollectionUpdate.vdmrt"));
+		compileAndTest(getTestCppFile("classes/ClassCollectionUpdate_Tests.cpp"));
+	}
+	
+	@Test
 	public void ClassInstanceVariableSeqCall() throws IOException,
 			InterruptedException, CMakeGenerateException
 	{
@@ -156,11 +163,11 @@ public class NativeClassesTests extends NativeTestBase
 	}
 	
 	@Test
-	public void ClassIfNotEq() throws IOException,
+	public void ClassIf() throws IOException,
 			InterruptedException, CMakeGenerateException
 	{
-		generate(getPath("classes/ClassIfNotEq.vdmrt"));
-		compileAndTest();
+		generate(getPath("classes/ClassIf.vdmrt"));
+		compileAndTest(getTestCppFile("classes/ClassIf_Tests.cpp"));
 	}
 	
 	@Test

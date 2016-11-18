@@ -1,0 +1,41 @@
+class ClassCollectionUpdate
+
+instance variables
+
+ivarSeq : seq of nat := [1];
+ivarMap : map nat to nat := {|->};
+
+operations
+
+public updateSeqLocal : () ==> bool
+updateSeqLocal () ==
+(
+ dcl localSeq : seq of nat := [1];
+ localSeq(1) := 5;
+ return localSeq(1) = 5;
+);
+
+public updateMapLocal : () ==> bool
+updateMapLocal () ==
+(
+ dcl localMap : map nat to nat := {|->};
+ localMap(5) := 42;
+ return localMap(5) = 42;
+);
+
+public updateSeqInstanceVar : () ==> bool
+updateSeqInstanceVar () ==
+(
+ ivarSeq(1) := 5;
+ return ivarSeq(1) = 5;
+);
+
+public updateMapInstanceVar : () ==> bool
+updateMapInstanceVar () ==
+(
+ ivarMap(5) := 42;
+ return ivarMap(5) = 42;
+);
+
+
+end ClassCollectionUpdate

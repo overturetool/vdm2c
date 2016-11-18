@@ -1,7 +1,8 @@
 package org.overture.codegen.vdm2c.transformations;
 
-import static org.overture.codegen.vdm2c.utils.CTransUtil.GET_FIELD_PTR;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.GET_FIELD;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.GET_FIELD_PTR_BYREF;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.GET_FIELD_PTR;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.createIdentifier;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newMacroApply;
 
@@ -19,6 +20,7 @@ import org.overture.ast.definitions.SClassDefinitionBase;
 import org.overture.ast.expressions.AVariableExp;
 import org.overture.ast.node.INode;
 import org.overture.ast.statements.AIdentifierStateDesignator;
+import org.overture.ast.statements.AMapSeqStateDesignator;
 import org.overture.ast.types.AFunctionType;
 import org.overture.ast.types.AOperationType;
 import org.overture.cgc.extast.analysis.DepthFirstAnalysisCAdaptor;
@@ -144,6 +146,9 @@ public class FieldReadToFieldGetMacroTrans extends DepthFirstAnalysisCAdaptor
 		String fieldClassName = null;
 
 		INode vdmNode = node.getSourceNode().getVdmNode();
+		
+		AMapSeqStateDesignator mapSeq = vdmNode.getAncestor(AMapSeqStateDesignator.class);
+		
 		if (vdmNode instanceof AVariableExp)
 		{
 			AVariableExp varExp = (AVariableExp) vdmNode;
@@ -234,7 +239,7 @@ public class FieldReadToFieldGetMacroTrans extends DepthFirstAnalysisCAdaptor
 
 		if (thisClassName != null && fieldClassName != null)
 		{
-			AMacroApplyExpIR apply = newMacroApply(GET_FIELD_PTR);
+			AMacroApplyExpIR apply = newMacroApply(findMacroName(mapSeq));
 			assist.replaceNodeWith(node, apply);
 
 			// add this type
@@ -246,6 +251,18 @@ public class FieldReadToFieldGetMacroTrans extends DepthFirstAnalysisCAdaptor
 			// add field name
 			apply.getArgs().add(node);
 			apply.setType(node.getType());
+		}
+	}
+	
+	public String findMacroName(AMapSeqStateDesignator designator)
+	{
+		if(designator != null && (designator.getMapType() != null || designator.getSeqType() != null))
+		{
+			return GET_FIELD_PTR_BYREF;
+		}
+		else
+		{
+			return GET_FIELD_PTR;
 		}
 	}
 }
