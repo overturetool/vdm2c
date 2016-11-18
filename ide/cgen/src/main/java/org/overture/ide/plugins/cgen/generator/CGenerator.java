@@ -127,7 +127,7 @@ public class CGenerator
 			while (filejarentry != null)
 			{
 				if(!filejarentry.getName().contains("src/main") ||
-						filejarentry.getName().contains("META"))
+						filejarentry.getName().contains("META") || filejarentry.isDirectory())
 				{
 					filejarentry = jarstream.getNextJarEntry();
 					continue;
@@ -135,20 +135,19 @@ public class CGenerator
 
 				outputFile = new File(outfolder.toString()
 						+ File.separator
-						+ filejarentry.getName().replace("src/main" + File.separator, ""));
+						+ filejarentry.getName().replace("src/main/", ""));
 
-				if (filejarentry.isDirectory())
-				{
-					outputFile.mkdir();
-					filejarentry = jarstream.getNextJarEntry();
-					continue;
-				}
 				if (filejarentry.getName().contains("ProjectCMakeLists") ||
 						filejarentry.getName().contains("main.c") ||
 						filejarentry.getName().contains("README"))
 				{
 					outputFile = new File(outputFile.getAbsolutePath().replace("nativelib"
 							+ File.separator, ""));
+				}
+				
+				if(outputFile.getParentFile() != null)
+				{
+					outputFile.getParentFile().mkdirs();
 				}
 
 				fos = new java.io.FileOutputStream(outputFile);
