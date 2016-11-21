@@ -17,9 +17,12 @@ import org.overture.ast.analysis.AnalysisException;
 import org.overture.ast.definitions.SClassDefinition;
 import org.overture.ast.lex.Dialect;
 import org.overture.ast.node.INode;
+import org.overture.codegen.printer.MsgPrinter;
+import org.overture.codegen.utils.GeneralCodeGenUtils;
 import org.overture.codegen.utils.GeneralUtils;
 import org.overture.codegen.utils.GeneratedData;
 import org.overture.codegen.utils.GeneratedModule;
+import org.overture.codegen.vdm2c.extast.declarations.AClassHeaderDeclIR;
 import org.overture.codegen.vdm2c.sourceformat.ISourceFileFormatter;
 import org.overture.config.Settings;
 import org.overture.typechecker.util.TypeCheckerUtil;
@@ -178,22 +181,56 @@ public class CGenMain
 			
 			GeneratedData data = cGen.generate(filter);
 			
-			println("C code generated to folder: "
-					+ outputDir.getAbsolutePath());
+			println("C code generated to folder: " + outputDir.getAbsolutePath());
+			
+			if (!data.getClasses().isEmpty()) {
+				for (GeneratedModule generatedClass : data.getClasses()) {
 
-			if (print)
-			{
-				for (GeneratedModule module : data.getClasses())
-				{
+					if (generatedClass.hasMergeErrors()) {
+						MsgPrinter.getPrinter()
+								.println(String.format(
+										"Class %s could not be merged. Following merge errors were found:",
+										generatedClass.getName()));
 
-					if (module.canBeGenerated())
-					{
-						println(module.getContent());
-						println(module.getUnsupportedInIr());
-						println(module.getMergeErrors());
-						println(module.getUnsupportedInTargLang());
+						GeneralCodeGenUtils.printMergeErrors(generatedClass.getMergeErrors());
+					} else if (!generatedClass.canBeGenerated()) {
+						MsgPrinter.getPrinter().println("Could not generate class: " + generatedClass.getName() + "\n");
+
+						if (generatedClass.hasUnsupportedIrNodes()) {
+							MsgPrinter.getPrinter()
+									.println("Following VDM constructs are not supported by the code generator:");
+							GeneralCodeGenUtils.printUnsupportedIrNodes(generatedClass.getUnsupportedInIr());
+						}
+
+						if (generatedClass.hasUnsupportedTargLangNodes()) {
+							MsgPrinter.getPrinter()
+									.println("Following constructs are not supported by the code generator:");
+							GeneralCodeGenUtils.printUnsupportedNodes(generatedClass.getUnsupportedInTargLang());
+						}
+
+					} else {
+						String extension;
+
+						if (generatedClass.getIrNode() instanceof AClassHeaderDeclIR) {
+							extension = "h";
+						} else {
+							extension = "c";
+						}
+
+						try {
+
+							cGen.writeFile(generatedClass, extension, outputDir);
+						}catch (Exception e) {
+							
+							error("Problems writing " + generatedClass.getName() + " to file: " + e.getMessage());
+							e.printStackTrace();
+						}
 					}
 				}
+			}
+			else
+			{
+				println("No classes were generated!");
 			}
 
 		} catch (AnalysisException e)
