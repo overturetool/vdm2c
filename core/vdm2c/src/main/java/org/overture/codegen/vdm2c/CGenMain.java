@@ -106,14 +106,14 @@ public class CGenMain
 
 			if (!path.isDirectory())
 			{
-				usage(options, sourceOpt, outputDir + " is not a directory");
+				usage(options, sourceOpt, path + " is not a directory");
 			}
 
 			List<File> filterFiles = filterFiles(GeneralUtils.getFilesRecursively(path));
 			
 			if(filterFiles == null || filterFiles.isEmpty())
 			{
-				usage(options, sourceOpt, "No VDM-RT source files found in " + outputDir);
+				usage(options, sourceOpt, "No VDM-RT source files found in " + path);
 			}
 			
 			files.addAll(filterFiles);
@@ -238,12 +238,8 @@ public class CGenMain
 		System.exit(1);
 	}
 	
-	public static void error(String msg)
-	{
-		if(print)
-		{
-			System.err.println(msg);
-		}
+	public static void error(String msg) {
+		System.err.println(msg);
 	}
 	
 	//TODO: Update to accept strings
