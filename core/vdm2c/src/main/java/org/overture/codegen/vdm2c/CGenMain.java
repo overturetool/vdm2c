@@ -22,7 +22,6 @@ import org.overture.codegen.utils.GeneralCodeGenUtils;
 import org.overture.codegen.utils.GeneralUtils;
 import org.overture.codegen.utils.GeneratedData;
 import org.overture.codegen.utils.GeneratedModule;
-import org.overture.codegen.vdm2c.extast.declarations.AClassHeaderDeclIR;
 import org.overture.codegen.vdm2c.sourceformat.ISourceFileFormatter;
 import org.overture.config.Settings;
 import org.overture.typechecker.util.TypeCheckerUtil;
@@ -209,17 +208,10 @@ public class CGenMain
 						}
 
 					} else {
-						String extension;
-
-						if (generatedClass.getIrNode() instanceof AClassHeaderDeclIR) {
-							extension = "h";
-						} else {
-							extension = "c";
-						}
-
+						
 						try {
 
-							cGen.writeFile(generatedClass, extension, outputDir);
+							cGen.writeFile(generatedClass, outputDir);
 						}catch (Exception e) {
 							
 							error("Problems writing " + generatedClass.getName() + " to file: " + e.getMessage());

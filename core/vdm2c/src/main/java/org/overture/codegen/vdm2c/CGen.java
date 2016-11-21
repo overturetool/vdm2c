@@ -376,15 +376,38 @@ public class CGen extends CodeGenBase
 			e2.printStackTrace();
 		}
 	}
+	
+	public String getFileExtension(GeneratedModule generatedClass) {
+		String extension;
+
+		if (generatedClass.getIrNode() instanceof AClassHeaderDeclIR) {
+			extension = "h";
+		} else {
+			extension = "c";
+		}
+		return extension;
+	}
+	
+	public void genCSourceFiles(File root,
+			List<GeneratedModule> generatedClasses) throws Exception, IOException
+	{
+		for (GeneratedModule classCg : generatedClasses)
+		{
+			if (classCg.canBeGenerated())
+			{
+				writeFile(classCg, root);
+			}
+		}
+	}
 
 	//TODO: PVJ use the emitCode method
-	public void writeFile(GeneratedModule module, String extension, File output_dir)
+	public void writeFile(GeneratedModule module, File output_dir)
 					throws org.overture.codegen.ir.analysis.AnalysisException,
 					IOException
 	{
 		output_dir.mkdirs();
 
-		String fileName = module.getName() + (extension == null ? "" : "." + extension);
+		String fileName = module.getName() + "."  + getFileExtension(module);
 
 		File file = new File(output_dir, fileName);
 		BufferedWriter output = new BufferedWriter(new FileWriter(file));
