@@ -207,20 +207,11 @@ public class CGen extends CodeGenBase
 		
 		for (IRStatus<PIR> status : canBeGenerated)
 		{
-			org.overture.ast.node.INode vdmClass = status.getVdmNode();
+			try {
+				genModules.add(genIrModule(my_formatter.GetMergeVisitor(), status));
 
-			try
-			{
-				if (shouldGenerateVdmNode(vdmClass))
-				{
-					genModules.add(genIrModule(my_formatter.GetMergeVisitor(), status));
-
-				}
-
-			} catch (org.overture.codegen.ir.analysis.AnalysisException e)
-			{
-				log.error("Error generating code for class "
-						+ status.getIrNodeName() + ": " + e.getMessage());
+			} catch (org.overture.codegen.ir.analysis.AnalysisException e) {
+				log.error("Error generating code for class " + status.getIrNodeName() + ": " + e.getMessage());
 				log.error("Skipping class..");
 				e.printStackTrace();
 			}
