@@ -47,6 +47,7 @@ public class CGen extends CodeGenBase
 {
 	final static Logger logger = LoggerFactory.getLogger(CGen.class);
 	final File outputFolder;
+	private List<File> emittedFiles = new LinkedList<>();
 	private ISourceFileFormatter formatter;
 	
 	public static Map<String, Boolean> hasTimeMap = null;
@@ -62,6 +63,11 @@ public class CGen extends CodeGenBase
 	{
 		super.preProcessAst(ast);
 		hasTimeMap = TimeFinder.computeTimeMap(getClasses(ast));
+	}
+	
+	public List<File> getEmittedFiles()
+	{
+		return emittedFiles;
 	}
 	
 	public List<IRStatus<PIR>> makeRecsOuterClasses(List<IRStatus<PIR>> ast)
@@ -364,6 +370,7 @@ public class CGen extends CodeGenBase
 				stopwatchClass.start();
 				// logger.trace("Emitting code and writing: {}", classCg.getName());
 				writeFile(classCg, classCg.getName(), "c", my_formatter, outputFolder);
+				
 				stopwatchClass.stop();
 				logger.trace("Emitted code for class: {} in: {}", classCg.getName(), stopwatchClass);
 			} catch (org.overture.codegen.ir.analysis.AnalysisException e1)
@@ -426,6 +433,8 @@ public class CGen extends CodeGenBase
 
 		File file = new File(output_dir, fileName);
 		BufferedWriter output = new BufferedWriter(new FileWriter(file));
+		
+		emittedFiles.add(new File(fileName));
 		output.write(writer.toString());
 		output.close();
 
