@@ -14,6 +14,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.overture.ast.analysis.AnalysisException;
 import org.overture.ast.lex.Dialect;
 import org.overture.codegen.utils.GeneralUtils;
+import org.overture.codegen.utils.GeneratedData;
 import org.overture.codegen.vdm2c.CGen;
 import org.overture.codegen.vdm2c.utils.NameMangler;
 import org.overture.ide.core.IVdmModel;
@@ -44,7 +45,15 @@ public class CGenerator
 		final IVdmModel model = vdmProject.getModel();
 
 		// Generate user specified classes
-		vdm2c.generate(PluginVdm2CUtil.getNodes(model.getSourceUnits()));
+		GeneratedData data = vdm2c.generate(PluginVdm2CUtil.getNodes(model.getSourceUnits()));
+		
+		try {
+			vdm2c.genCSourceFiles(cCodeOutputFolder, data.getClasses());
+		} catch (Exception e) {
+		
+			CodeGenConsole.GetInstance().printErrorln("Problems encountered while generating C sources: " + e.getMessage());
+			e.printStackTrace();
+		}
 
 		CodeGenConsole.GetInstance().println("Project dialect: "
 				+ PluginVdm2CUtil.dialect2Str(vdmProject.getDialect()));
