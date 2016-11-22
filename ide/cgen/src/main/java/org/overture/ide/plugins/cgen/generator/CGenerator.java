@@ -2,15 +2,11 @@ package org.overture.ide.plugins.cgen.generator;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.jar.JarEntry;
-import java.util.jar.JarInputStream;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
@@ -32,6 +28,7 @@ import org.overture.codegen.utils.GeneratedData;
 import org.overture.codegen.utils.GeneratedModule;
 import org.overture.codegen.vdm2c.CGen;
 import org.overture.codegen.vdm2c.extast.declarations.AClassHeaderDeclIR;
+import org.overture.codegen.vdm2c.utils.CGenUtil;
 import org.overture.codegen.vdm2c.utils.NameMangler;
 import org.overture.ide.core.IVdmModel;
 import org.overture.ide.core.resources.IVdmProject;
@@ -93,8 +90,8 @@ public class CGenerator
 		// mvn package here makes
 		// this work
 		// Copy files from vdmclib.jar.
-		copyNativeLibFiles(new File(cCodeOutputFolder + File.separator
-				+ "nativelib"));
+		CGenUtil.copyNativeLibFiles(Vdm2CCommand.class.getClassLoader().getResourceAsStream("jars/vdmclib.jar"),
+				new File(cCodeOutputFolder + File.separator + "nativelib"));
 
 		//Emit empty main.c file so that the generated project compiles.
 		emitMainFile(new File(cCodeOutputFolder + File.separator + "main.c"));
@@ -295,76 +292,4 @@ public class CGenerator
 			e.printStackTrace();
 		}
 	}
-
-	private void copyNativeLibFiles(File outfolder)
-	{
-		File outputFile = null;
-		InputStream jarfile = null;
-		FileOutputStream fos = null;
-		JarInputStream jarstream = null;
-		JarEntry filejarentry = null;
-
-		if (!outfolder.exists())
-		{
-			outfolder.mkdir();
-		}
-
-		try
-		{
-			jarfile = Vdm2CCommand.class.getClassLoader().getResourceAsStream("jars/vdmclib.jar");
-			jarstream = new JarInputStream(jarfile);
-			filejarentry = jarstream.getNextJarEntry();
-
-			// Simply step through the JAR containing the library files and extract only the code files.
-			// These are copied to the source output folder.
-			while (filejarentry != null)
-			{
-				if(!filejarentry.getName().contains("src/main") ||
-						filejarentry.getName().contains("META") || filejarentry.isDirectory())
-				{
-					filejarentry = jarstream.getNextJarEntry();
-					continue;
-				}
-
-				outputFile = new File(outfolder.toString()
-						+ File.separator
-						+ filejarentry.getName().replace("src/main/", ""));
-
-				if (filejarentry.getName().contains("ProjectCMakeLists") ||
-						filejarentry.getName().contains("main.c") ||
-						filejarentry.getName().contains("README"))
-				{
-					outputFile = new File(outputFile.getAbsolutePath().replace("nativelib"
-							+ File.separator, ""));
-				}
-				
-				if(outputFile.getParentFile() != null)
-				{
-					outputFile.getParentFile().mkdirs();
-				}
-
-				fos = new java.io.FileOutputStream(outputFile);
-
-				while (jarstream.available() > 0)
-				{
-					int b = jarstream.read();
-					if (b >= 0)
-					{
-						fos.write(b);
-					}
-				}
-				fos.flush();
-				fos.close();
-				jarstream.closeEntry();
-				filejarentry = jarstream.getNextJarEntry();
-
-			}
-			jarstream.close();
-			jarfile.close();
-		} catch (IOException e)
-		{
-			e.printStackTrace();
-		}
-	}
-
 }
