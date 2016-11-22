@@ -29,7 +29,7 @@ import org.overture.typechecker.util.TypeCheckerUtil.TypeCheckResult;
 
 public class CGenMain
 {
-	public static boolean print = false;
+	private static boolean print = false;
 	
 	public static void main(String[] args)
 	{
@@ -228,19 +228,19 @@ public class CGenMain
 
 		} catch (AnalysisException e)
 		{
-			// TODO Auto-generated catch block
+			error("Unexpected problems encountered during the code generation process: " + e.getMessage());
 			e.printStackTrace();
 		}
 
 	}
 
-	public static void showHelp(Options options)
+	private static void showHelp(Options options)
 	{
 		HelpFormatter formatter = new HelpFormatter();
 		formatter.printHelp("cgen", options);
 	}
 
-	public static List<File> filterFiles(List<File> files)
+	private static List<File> filterFiles(List<File> files)
 	{
 		List<File> filtered = new LinkedList<File>();
 
@@ -268,12 +268,11 @@ public class CGenMain
 		System.exit(1);
 	}
 	
-	public static void error(String msg) {
+	private static void error(String msg) {
 		System.err.println(msg);
 	}
 	
-	//TODO: Update to accept strings
-	public static void println(Object msg)
+	private static void println(String msg)
 	{
 		if(print)
 		{
