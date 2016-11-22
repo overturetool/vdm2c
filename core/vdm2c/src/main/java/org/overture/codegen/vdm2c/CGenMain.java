@@ -30,7 +30,7 @@ import org.overture.typechecker.util.TypeCheckerUtil.TypeCheckResult;
 
 public class CGenMain
 {
-	private static boolean print = false;
+	private static boolean quiet = false;
 	
 	public static void main(String[] args)
 	{
@@ -42,17 +42,19 @@ public class CGenMain
 		Options options = new Options();
 
 		// add t option
-		Option verboseOpt = Option.builder("q").longOpt("quiet").desc("Do not print processing information").build();
-		Option sourceOpt = Option.builder("sf").longOpt("folder").desc("Path to a source folder containing VDM files").hasArg().build();
+		Option quietOpt = Option.builder("q").longOpt("quiet").desc("Do not print processing information").build();
+		Option sourceOpt = Option.builder("sf").longOpt("folder").desc("Path to a source folder containing VDM-RT files").hasArg().build();
 		Option formatOpt = Option.builder("fm").longOpt("formatter").desc("Name of the formatter which should be loaded from the class path").hasArg().build();
-		Option destOpt = Option.builder("dest").longOpt("destination").desc("Output directory").hasArg().required().build();
+		Option destOpt = Option.builder("dest").longOpt("destination").desc("Output directory").required().hasArg().build();
 		Option helpOpt = Option.builder("h").longOpt("help").desc("Show this description").build();
-
-		options.addOption(verboseOpt);
+		Option defaultArg = Option.builder("").desc("A VDM-RT file to code generate").hasArg().build();
+		
+		options.addOption(quietOpt);
 		options.addOption(sourceOpt);
 		options.addOption(destOpt);
 		options.addOption(helpOpt);
 		options.addOption(formatOpt);
+		options.addOption(defaultArg);
 
 		CommandLineParser parser = new DefaultParser();
 		CommandLine cmd = null;
@@ -70,7 +72,7 @@ public class CGenMain
 		File outputDir = null;
 		ISourceFileFormatter formatter = null;
 
-		print = !cmd.hasOption(verboseOpt.getOpt());
+		quiet = cmd.hasOption(quietOpt.getOpt());
 
 		if (cmd.hasOption(helpOpt.getOpt()))
 		{
@@ -182,30 +184,27 @@ public class CGenMain
 			
 			GeneratedData data = cGen.generate(filter);
 			
-			println("C code generated to folder: " + outputDir.getAbsolutePath());
+			print("C code generated to folder: " + outputDir.getAbsolutePath());
 			
 			if (!data.getClasses().isEmpty()) {
 				for (GeneratedModule generatedClass : data.getClasses()) {
 
 					if (generatedClass.hasMergeErrors()) {
-						MsgPrinter.getPrinter()
-								.println(String.format(
+						print(String.format(
 										"Class %s could not be merged. Following merge errors were found:",
 										generatedClass.getName()));
 
 						GeneralCodeGenUtils.printMergeErrors(generatedClass.getMergeErrors());
 					} else if (!generatedClass.canBeGenerated()) {
-						MsgPrinter.getPrinter().println("Could not generate class: " + generatedClass.getName() + "\n");
+						print("Could not generate class: " + generatedClass.getName() + "\n");
 
 						if (generatedClass.hasUnsupportedIrNodes()) {
-							MsgPrinter.getPrinter()
-									.println("Following VDM constructs are not supported by the code generator:");
+							print("Following VDM constructs are not supported by the code generator:");
 							GeneralCodeGenUtils.printUnsupportedIrNodes(generatedClass.getUnsupportedInIr());
 						}
 
 						if (generatedClass.hasUnsupportedTargLangNodes()) {
-							MsgPrinter.getPrinter()
-									.println("Following constructs are not supported by the code generator:");
+							print("Following constructs are not supported by the code generator:");
 							GeneralCodeGenUtils.printUnsupportedNodes(generatedClass.getUnsupportedInTargLang());
 						}
 
@@ -214,6 +213,13 @@ public class CGenMain
 						try {
 
 							cGen.writeFile(generatedClass, outputDir);
+							
+							if(!quiet)
+							{
+								String fileName = generatedClass.getName() + "."  + cGen.getFileExtension(generatedClass);
+								print("Generated file: " + new File(outputDir, fileName).getAbsolutePath());
+							}
+							
 						}catch (Exception e) {
 							
 							error("Problems writing " + generatedClass.getName() + " to file: " + e.getMessage());
@@ -224,7 +230,7 @@ public class CGenMain
 			}
 			else
 			{
-				println("No classes were generated!");
+				print("No classes were generated!");
 			}
 
 		} catch (AnalysisException e)
@@ -269,15 +275,16 @@ public class CGenMain
 		System.exit(1);
 	}
 	
+	private static void print(String msg)
+	{
+		if(!quiet)
+		{
+			MsgPrinter.getPrinter().println(msg);
+		}
+	}
+	
 	private static void error(String msg) {
 		System.err.println(msg);
 	}
-	
-	private static void println(String msg)
-	{
-		if(print)
-		{
-			System.out.println(msg);
-		}
-	}
+
 }
