@@ -17,6 +17,7 @@ import org.overture.ast.analysis.AnalysisException;
 import org.overture.ast.definitions.SClassDefinition;
 import org.overture.ast.lex.Dialect;
 import org.overture.ast.node.INode;
+import org.overture.codegen.ir.CodeGenBase;
 import org.overture.codegen.printer.MsgPrinter;
 import org.overture.codegen.utils.GeneralCodeGenUtils;
 import org.overture.codegen.utils.GeneralUtils;
@@ -176,8 +177,8 @@ public class CGenMain
 			{
 				cGen.setSourceCodeFormatter(formatter);
 			}
-
-			List<INode> filter = CGen.filter(ast, org.overture.ast.node.INode.class);
+			
+			List<INode> filter = CodeGenBase.getNodes(ast);
 			
 			GeneratedData data = cGen.generate(filter);
 			

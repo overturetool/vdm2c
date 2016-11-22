@@ -8,9 +8,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
-import org.apache.commons.lang.time.StopWatch;
 import org.overture.ast.analysis.AnalysisException;
 import org.overture.codegen.ir.CodeGenBase;
 import org.overture.codegen.ir.IRConstants;
@@ -38,12 +36,9 @@ import org.overture.codegen.vdm2c.extast.declarations.AClassHeaderDeclIR;
 import org.overture.codegen.vdm2c.sourceformat.ISourceFileFormatter;
 import org.overture.codegen.vdm2c.transformations.AddFieldTrans;
 import org.overture.codegen.vdm2c.utils.CTransUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class CGen extends CodeGenBase
 {
-	private final static Logger logger = LoggerFactory.getLogger(CGen.class);
 	private ISourceFileFormatter formatter;
 	
 	public static Map<String, Boolean> hasTimeMap = null;
@@ -224,7 +219,6 @@ public class CGen extends CodeGenBase
 	private List<IRStatus<PIR>> ignoreVDMUnitTests(
 			List<IRStatus<PIR>> statuses)
 	{
-		//IRStatus<PIR> status = null;
 		List<IRStatus<PIR>> newstatuses = new LinkedList<IRStatus<PIR>>();
 
 		for (IRStatus<PIR> irStatus : statuses)
@@ -316,12 +310,8 @@ public class CGen extends CodeGenBase
 	{
 		List<DepthFirstAnalysisAdaptor> transformations = new CTransSeries(this).consAnalyses();
 
-		final StopWatch stopwatch = new StopWatch();
 		for (DepthFirstAnalysisAdaptor trans : transformations)
 		{
-			logger.debug("Applying transformation: {}", trans.getClass().getSimpleName());
-			stopwatch.reset();
-			stopwatch.start();
 			for (IRStatus<ADefaultClassDeclIR> status : IRStatus.extract(statuses, ADefaultClassDeclIR.class))
 			{
 				try
@@ -329,13 +319,11 @@ public class CGen extends CodeGenBase
 					generator.applyPartialTransformation(status, trans);
 				} catch (org.overture.codegen.ir.analysis.AnalysisException e)
 				{
-					logger.error("Error when generating code for class "
+					log.error("Error when generating code for class "
 							+ status.getIrNodeName() + ": " + e.getMessage() + ". Skipping class..");
 					e.printStackTrace();
 				}
 			}
-			stopwatch.stop();
-			logger.debug("Completed transformation: {}. Time elapsed: {}", trans.getClass().getSimpleName(), stopwatch);
 		}
 	}
 
@@ -363,15 +351,15 @@ public class CGen extends CodeGenBase
 		return my_formatter;
 	}
 
-	public void generateClassHeaders(final List<IRStatus<PIR>> statuses)
+	protected void generateClassHeaders(final List<IRStatus<PIR>> statuses)
 	{
 		try
 		{
 			statuses.addAll(new ClassHeaderGenerator().generateClassHeaders(IRStatus.extract(statuses, ADefaultClassDeclIR.class)));
-		} catch (org.overture.codegen.ir.analysis.AnalysisException e2)
+		} catch (org.overture.codegen.ir.analysis.AnalysisException e)
 		{
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
+			log.error("Could not generate class headers: " + e.getMessage());
+			e.printStackTrace();
 		}
 	}
 	
@@ -416,31 +404,6 @@ public class CGen extends CodeGenBase
 		{
 			formatter.format(file);
 		}
-	}
-	
-
-	/**
-	 * Generic filter method for AST lists. It works both up and down.
-	 * 
-	 * @param ast
-	 *            the list of input objects
-	 * @param clz
-	 *            the class which the returned list should be of
-	 * @return
-	 */
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static <T> List<T> filter(List ast, Class<T> clz)
-	{
-		List<T> filtered = new Vector<T>();
-		for (Object t : ast)
-		{
-			if (clz.isAssignableFrom(t.getClass()))
-			{
-				filtered.add((T) t);
-			}
-		}
-		return filtered;
-
 	}
 
 	public void setSourceCodeFormatter(ISourceFileFormatter formatter)
