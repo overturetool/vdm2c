@@ -61,7 +61,7 @@ public class CGenerator
 		// Clean folder with generated Java code
 		GeneralUtils.deleteFolderContents(eclipseProjectFolder, true);
 
-		final CGen vdm2c = new CGen(cCodeOutputFolder);
+		final CGen vdm2c = new CGen();
 
 		final IVdmModel model = vdmProject.getModel();
 

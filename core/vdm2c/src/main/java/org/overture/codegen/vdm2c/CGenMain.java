@@ -170,7 +170,8 @@ public class CGenMain
 
 			List<SClassDefinition> ast = res.result;
 
-			CGen cGen = new CGen(outputDir);
+			CGen cGen = new CGen();
+			
 			if(formatter!=null)
 			{
 				cGen.setSourceCodeFormatter(formatter);

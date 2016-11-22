@@ -43,15 +43,13 @@ import org.slf4j.LoggerFactory;
 
 public class CGen extends CodeGenBase
 {
-	final static Logger logger = LoggerFactory.getLogger(CGen.class);
-	final File outputFolder;
+	private final static Logger logger = LoggerFactory.getLogger(CGen.class);
 	private ISourceFileFormatter formatter;
 	
 	public static Map<String, Boolean> hasTimeMap = null;
 
-	public CGen(File outputFolder)
+	public CGen()
 	{
-		this.outputFolder = outputFolder;
 	}
 
 	@Override
