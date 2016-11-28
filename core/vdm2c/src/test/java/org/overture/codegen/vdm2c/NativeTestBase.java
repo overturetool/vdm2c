@@ -118,31 +118,33 @@ public class NativeTestBase extends BaseGeneratorTest
 	{
 		CMakeUtil cmakeUtil = new CMakeUtil(new File(VDMCLIB), new File("src/test/resources/CMakeLists.txt"), false);
 
-		for (File file : tests)
-		{
-			try
-			{
-				FileUtils.copyFile(file, new File(root, file.getName()));
-			}
-			catch(IOException e)
-			{
-				if(e.getMessage().contains("are the same"))
-				{
-					logger.warn(e.getMessage());
-				}
-				else
-				{
-					throw e;
-				}
-			}
-		}
+		copyTestFiles(tests);
 
+		runTests(cmakeUtil);
+		
+		assertTestsExecuted(tests);
+	}
+
+	protected void runTests(CMakeUtil cmakeUtil) throws IOException, InterruptedException, CMakeGenerateException {
 		cmakeUtil.createTestProject(name.getMethodName(), root);
 		Assert.assertTrue("Failed to run cmake", cmakeUtil.generate(root));
 		Assert.assertTrue("Failed to run make and compile", cmakeUtil.make(root));
 		Assert.assertTrue("Failed to run tests", cmakeUtil.run(root, name.getMethodName(), TEST_OUTPUT != null));
 		Assert.assertTrue("Failed to run make test", cmakeUtil.make(root, "test"));
-		
+		runAdditionalTests(cmakeUtil);
+	}
+
+	/**
+	 * Enables sub-classes to add additional test steps
+	 * 
+	 * @param cmakeUtil
+	 */
+	protected void runAdditionalTests(CMakeUtil cmakeUtil)
+			throws IOException, InterruptedException, CMakeGenerateException {
+
+	}
+
+	protected void assertTestsExecuted(File... tests) {
 		if(tests.length > 0)
 		{
 			File testReport = new File(root, TEST_REPORT);
@@ -172,6 +174,27 @@ public class NativeTestBase extends BaseGeneratorTest
 			{
 				Assert.fail("Unexpected problem encountered while trying to analyse the test report: " + e.getMessage());
 				e.printStackTrace();
+			}
+		}
+	}
+
+	protected void copyTestFiles(File... tests) throws IOException {
+		for (File file : tests)
+		{
+			try
+			{
+				FileUtils.copyFile(file, new File(root, file.getName()));
+			}
+			catch(IOException e)
+			{
+				if(e.getMessage().contains("are the same"))
+				{
+					logger.warn(e.getMessage());
+				}
+				else
+				{
+					throw e;
+				}
 			}
 		}
 	}
