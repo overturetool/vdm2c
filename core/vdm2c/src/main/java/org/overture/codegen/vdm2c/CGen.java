@@ -39,12 +39,15 @@ import org.overture.codegen.vdm2c.utils.CTransUtil;
 
 public class CGen extends CodeGenBase
 {
+	final File outputFolder;
+	private List<File> emittedFiles = new LinkedList<>();
 	private ISourceFileFormatter formatter;
 	
 	public static Map<String, Boolean> hasTimeMap = null;
 
 	public CGen()
 	{
+		outputFolder = null;
 	}
 
 	@Override
@@ -53,6 +56,11 @@ public class CGen extends CodeGenBase
 	{
 		super.preProcessAst(ast);
 		hasTimeMap = TimeFinder.computeTimeMap(getClasses(ast));
+	}
+	
+	public List<File> getEmittedFiles()
+	{
+		return emittedFiles;
 	}
 	
 	public List<IRStatus<PIR>> makeRecsOuterClasses(List<IRStatus<PIR>> ast)
@@ -397,6 +405,8 @@ public class CGen extends CodeGenBase
 
 		File file = new File(output_dir, fileName);
 		BufferedWriter output = new BufferedWriter(new FileWriter(file));
+
+		emittedFiles.add(new File(fileName));
 		output.write(module.getContent());
 		output.close();
 
