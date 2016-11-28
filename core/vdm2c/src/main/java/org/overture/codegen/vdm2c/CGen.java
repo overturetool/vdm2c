@@ -39,7 +39,6 @@ import org.overture.codegen.vdm2c.utils.CTransUtil;
 
 public class CGen extends CodeGenBase
 {
-	final File outputFolder;
 	private List<File> emittedFiles = new LinkedList<>();
 	private ISourceFileFormatter formatter;
 	
@@ -47,7 +46,6 @@ public class CGen extends CodeGenBase
 
 	public CGen()
 	{
-		outputFolder = null;
 	}
 
 	@Override
