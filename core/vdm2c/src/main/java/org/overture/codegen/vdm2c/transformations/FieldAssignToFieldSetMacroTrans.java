@@ -19,7 +19,6 @@ import org.overture.codegen.ir.INode;
 import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.declarations.AVarDeclIR;
 import org.overture.codegen.ir.declarations.SClassDeclIR;
-import org.overture.codegen.ir.expressions.AApplyExpIR;
 import org.overture.codegen.ir.expressions.AExplicitVarExpIR;
 import org.overture.codegen.ir.expressions.AFieldExpIR;
 import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
@@ -139,11 +138,7 @@ DepthFirstAnalysisCAdaptor
 
 			replBlock.getStatements().add(exp2Stm(apply));
 
-			AApplyExpIR vdmFree = new AApplyExpIR();
-			vdmFree.setRoot(createIdentifier("vdmFree", node.getSourceNode()));
-			vdmFree.getArgs().add(createIdentifier(name, retVar.getSourceNode()));
-
-			replBlock.getStatements().add(exp2Stm(vdmFree));
+			replBlock.getStatements().add(exp2Stm(ValueSemantics.free(name, retVar.getSourceNode())));
 		}
 		//I think these two cases should be made more generic for static function and operation calls, not only in the context of an assignment.
 		else if(node.getTarget() instanceof AExplicitVarExpIR)
@@ -187,12 +182,7 @@ DepthFirstAnalysisCAdaptor
 			assist.replaceNodeWith(node, replBlock);
 
 			replBlock.getStatements().add(staticFieldAssign);
-
-			AApplyExpIR vdmFree = new AApplyExpIR();
-			vdmFree.setRoot(createIdentifier("vdmFree", node.getSourceNode()));
-			vdmFree.getArgs().add(createIdentifier(name, retVar.getSourceNode()));
-
-			replBlock.getStatements().add(exp2Stm(vdmFree));
+			replBlock.getStatements().add(exp2Stm(ValueSemantics.free(name, retVar.getSourceNode())));
 		}
 		else if(node.getTarget() instanceof AFieldExpIR)
 		{
@@ -241,11 +231,7 @@ DepthFirstAnalysisCAdaptor
 
 			replBlock.getStatements().add(staticFieldAssign);
 
-			AApplyExpIR vdmFree = new AApplyExpIR();
-			vdmFree.setRoot(createIdentifier("vdmFree", node.getSourceNode()));
-			vdmFree.getArgs().add(createIdentifier(name, retVar.getSourceNode()));
-
-			replBlock.getStatements().add(exp2Stm(vdmFree));
+			replBlock.getStatements().add(exp2Stm(ValueSemantics.free(name, retVar.getSourceNode())));
 		}
 	}
 

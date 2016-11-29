@@ -76,7 +76,7 @@ public class ForLoopTrans extends DepthFirstAnalysisCAdaptor
 		loop.setBody(whileBlock);
 		whileBlock.getLocalDefs().add(newDeclarationAssignment(bindName, newTvpType(), newApply("newInt", createIdentifier(indexName, null)), null));
 		whileBlock.getStatements().add(node.getBody());
-		whileBlock.getStatements().add(toStm(newApply("vdmFree", createIdentifier(bindName, null))));
+		whileBlock.getStatements().add(toStm(ValueSemantics.free(bindName, node.getSourceNode())));
 
 		APlusNumericBinaryExpIR pp = new APlusNumericBinaryExpIR();
 		pp.setLeft(createIdentifier(indexName, null));
