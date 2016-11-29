@@ -111,7 +111,7 @@ DepthFirstAnalysisCAdaptor
 
 			// process right side of assignment
 			node.getExp().apply(THIS);
-			AVarDeclIR retVar = newDeclarationAssignment(name, node.getExp().getType().clone(), CTransUtil.newApply("vdmClone", node.getExp().clone()), node.getExp().getSourceNode());
+			AVarDeclIR retVar = newDeclarationAssignment(name, node.getExp().getType().clone(), ValueSemantics.clone(node.getExp().clone()), node.getExp().getSourceNode());
 
 			ABlockStmIR replBlock = new ABlockStmIR();
 			replBlock.setScoped(true);
@@ -178,7 +178,7 @@ DepthFirstAnalysisCAdaptor
 							NameConverter.getCName(fieldUtil.lookupField(cDef, node.getTarget().toString())), null),
 							newIdentifier(name, null));
 
-			AVarDeclIR retVar = newDeclarationAssignment(name, node.getExp().getType().clone(), CTransUtil.newApply("vdmClone", node.getExp().clone()), node.getExp().getSourceNode());
+			AVarDeclIR retVar = newDeclarationAssignment(name, node.getExp().getType().clone(), ValueSemantics.clone(node.getExp().clone()), node.getExp().getSourceNode());
 
 			ABlockStmIR replBlock = new ABlockStmIR();
 			replBlock.setScoped(true);
@@ -231,7 +231,7 @@ DepthFirstAnalysisCAdaptor
 							NameConverter.getCName(fieldUtil.lookupField(cDef, fieldName)), null),
 							newIdentifier(name, null));
 
-			AVarDeclIR retVar = newDeclarationAssignment(name, node.getExp().getType().clone(), CTransUtil.newApply("vdmClone", node.getExp().clone()), node.getExp().getSourceNode());
+			AVarDeclIR retVar = newDeclarationAssignment(name, node.getExp().getType().clone(), ValueSemantics.clone(node.getExp().clone()), node.getExp().getSourceNode());
 
 			ABlockStmIR replBlock = new ABlockStmIR();
 			replBlock.setScoped(true);
