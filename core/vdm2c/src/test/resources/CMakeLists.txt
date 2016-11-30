@@ -3,6 +3,10 @@ project (##PROJECT_NAME## C CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR on)
 
+## valgrind
+find_program(CTEST_MEMORYCHECK_COMMAND NAMES valgrind)
+set(MEMORYCHECK_COMMAND_OPTIONS "--xml=yes --xml-file=valgrind.xml")
+
 enable_testing()
 
 FIND_PACKAGE(PkgConfig)

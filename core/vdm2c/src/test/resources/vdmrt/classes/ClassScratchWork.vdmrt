@@ -15,6 +15,22 @@ updateSeqInstanceVar () ==
 
 end ClassCollectionUpdate
 
+
+class Collatz
+instance variables
+	val : int;
+
+operations
+public run : () ==> ()
+run() ==
+	if val = 1 then
+		return
+	elseif val mod 2 = 0 then
+		val := val div 2
+	else
+		val := 3 * val + 1;
+end Collatz
+
 --class ScratchA
 --end ScratchA
 --

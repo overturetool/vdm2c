@@ -17,6 +17,9 @@ import org.overture.ast.analysis.AnalysisException;
 import org.overture.ast.definitions.SClassDefinition;
 import org.overture.ast.lex.Dialect;
 import org.overture.ast.node.INode;
+import org.overture.codegen.ir.CodeGenBase;
+import org.overture.codegen.printer.MsgPrinter;
+import org.overture.codegen.utils.GeneralCodeGenUtils;
 import org.overture.codegen.utils.GeneralUtils;
 import org.overture.codegen.utils.GeneratedData;
 import org.overture.codegen.utils.GeneratedModule;
@@ -27,7 +30,7 @@ import org.overture.typechecker.util.TypeCheckerUtil.TypeCheckResult;
 
 public class CGenMain
 {
-	public static boolean print = false;
+	private static boolean quiet = false;
 	
 	public static void main(String[] args)
 	{
@@ -39,17 +42,19 @@ public class CGenMain
 		Options options = new Options();
 
 		// add t option
-		Option verboseOpt = Option.builder("q").longOpt("quiet").desc("Do not print processing information").build();
-		Option sourceOpt = Option.builder("sf").longOpt("folder").desc("Path to a source folder containing VDM files").hasArg().build();
+		Option quietOpt = Option.builder("q").longOpt("quiet").desc("Do not print processing information").build();
+		Option sourceOpt = Option.builder("sf").longOpt("folder").desc("Path to a source folder containing VDM-RT files").hasArg().build();
 		Option formatOpt = Option.builder("fm").longOpt("formatter").desc("Name of the formatter which should be loaded from the class path").hasArg().build();
-		Option destOpt = Option.builder("dest").longOpt("destination").desc("Output directory").hasArg().required().build();
+		Option destOpt = Option.builder("dest").longOpt("destination").desc("Output directory").required().hasArg().build();
 		Option helpOpt = Option.builder("h").longOpt("help").desc("Show this description").build();
-
-		options.addOption(verboseOpt);
+		Option defaultArg = Option.builder("").desc("A VDM-RT file to code generate").hasArg().build();
+		
+		options.addOption(quietOpt);
 		options.addOption(sourceOpt);
 		options.addOption(destOpt);
 		options.addOption(helpOpt);
 		options.addOption(formatOpt);
+		options.addOption(defaultArg);
 
 		CommandLineParser parser = new DefaultParser();
 		CommandLine cmd = null;
@@ -67,7 +72,7 @@ public class CGenMain
 		File outputDir = null;
 		ISourceFileFormatter formatter = null;
 
-		print = !cmd.hasOption(verboseOpt.getOpt());
+		quiet = cmd.hasOption(quietOpt.getOpt());
 
 		if (cmd.hasOption(helpOpt.getOpt()))
 		{
@@ -106,14 +111,14 @@ public class CGenMain
 
 			if (!path.isDirectory())
 			{
-				usage(options, sourceOpt, outputDir + " is not a directory");
+				usage(options, sourceOpt, path + " is not a directory");
 			}
 
 			List<File> filterFiles = filterFiles(GeneralUtils.getFilesRecursively(path));
 			
 			if(filterFiles == null || filterFiles.isEmpty())
 			{
-				usage(options, sourceOpt, "No VDM-RT source files found in " + outputDir);
+				usage(options, sourceOpt, "No VDM-RT source files found in " + path);
 			}
 			
 			files.addAll(filterFiles);
@@ -168,49 +173,81 @@ public class CGenMain
 
 			List<SClassDefinition> ast = res.result;
 
-			CGen cGen = new CGen(outputDir);
+			CGen cGen = new CGen();
+			
 			if(formatter!=null)
 			{
 				cGen.setSourceCodeFormatter(formatter);
 			}
-
-			List<INode> filter = CGen.filter(ast, org.overture.ast.node.INode.class);
+			
+			List<INode> filter = CodeGenBase.getNodes(ast);
 			
 			GeneratedData data = cGen.generate(filter);
 			
-			println("C code generated to folder: "
-					+ outputDir.getAbsolutePath());
+			print("C code generated to folder: " + outputDir.getAbsolutePath());
+			
+			if (!data.getClasses().isEmpty()) {
+				for (GeneratedModule generatedClass : data.getClasses()) {
 
-			if (print)
-			{
-				for (GeneratedModule module : data.getClasses())
-				{
+					if (generatedClass.hasMergeErrors()) {
+						print(String.format(
+										"Class %s could not be merged. Following merge errors were found:",
+										generatedClass.getName()));
 
-					if (module.canBeGenerated())
-					{
-						println(module.getContent());
-						println(module.getUnsupportedInIr());
-						println(module.getMergeErrors());
-						println(module.getUnsupportedInTargLang());
+						GeneralCodeGenUtils.printMergeErrors(generatedClass.getMergeErrors());
+					} else if (!generatedClass.canBeGenerated()) {
+						print("Could not generate class: " + generatedClass.getName() + "\n");
+
+						if (generatedClass.hasUnsupportedIrNodes()) {
+							print("Following VDM constructs are not supported by the code generator:");
+							GeneralCodeGenUtils.printUnsupportedIrNodes(generatedClass.getUnsupportedInIr());
+						}
+
+						if (generatedClass.hasUnsupportedTargLangNodes()) {
+							print("Following constructs are not supported by the code generator:");
+							GeneralCodeGenUtils.printUnsupportedNodes(generatedClass.getUnsupportedInTargLang());
+						}
+
+					} else {
+						
+						try {
+
+							cGen.writeFile(generatedClass, outputDir);
+							
+							if(!quiet)
+							{
+								String fileName = generatedClass.getName() + "."  + cGen.getFileExtension(generatedClass);
+								print("Generated file: " + new File(outputDir, fileName).getAbsolutePath());
+							}
+							
+						}catch (Exception e) {
+							
+							error("Problems writing " + generatedClass.getName() + " to file: " + e.getMessage());
+							e.printStackTrace();
+						}
 					}
 				}
+			}
+			else
+			{
+				print("No classes were generated!");
 			}
 
 		} catch (AnalysisException e)
 		{
-			// TODO Auto-generated catch block
+			error("Unexpected problems encountered during the code generation process: " + e.getMessage());
 			e.printStackTrace();
 		}
 
 	}
 
-	public static void showHelp(Options options)
+	private static void showHelp(Options options)
 	{
 		HelpFormatter formatter = new HelpFormatter();
 		formatter.printHelp("cgen", options);
 	}
 
-	public static List<File> filterFiles(List<File> files)
+	private static List<File> filterFiles(List<File> files)
 	{
 		List<File> filtered = new LinkedList<File>();
 
@@ -238,20 +275,16 @@ public class CGenMain
 		System.exit(1);
 	}
 	
-	public static void error(String msg)
+	private static void print(String msg)
 	{
-		if(print)
+		if(!quiet)
 		{
-			System.err.println(msg);
+			MsgPrinter.getPrinter().println(msg);
 		}
 	}
 	
-	//TODO: Update to accept strings
-	public static void println(Object msg)
-	{
-		if(print)
-		{
-			System.out.println(msg);
-		}
+	private static void error(String msg) {
+		System.err.println(msg);
 	}
+
 }
