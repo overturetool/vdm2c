@@ -194,6 +194,9 @@ public class CGen extends CodeGenBase
 						IRStatus<PIR> stat = new IRStatus<PIR>(null, cpuName, dep, new HashSet<VdmNodeInfo>(), new HashSet<IrNodeInfo>());
 						statuses.add(stat);
 					}
+					else{
+						SystemArchitectureAnalysis.systemClasses.add(r.getIrNodeName().toString());
+					}
 				}
 			}
 		}

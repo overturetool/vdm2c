@@ -55,7 +55,7 @@ public class GenerateDMTrans extends DepthFirstAnalysisCAdaptor
 				arrayDclInit.setStatic(null);
 				arrayDclInit.setName(name);
 				arrayDclInit.setType(newExternalType("extern bool"));
-				arrayDclInit.setSize(SystemArchitectureAnalysis.systemDeployedObjects.size());				
+				arrayDclInit.setSize(SystemArchitectureAnalysis.systemDeployedObjects.size()+1);				
 				header.setArrDMinit(arrayDclInit);
 
 				/** The map **/
