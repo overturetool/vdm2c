@@ -1,6 +1,7 @@
 package org.overture.codegen.vdm2c;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -18,11 +19,14 @@ import org.overture.ast.definitions.SClassDefinition;
 import org.overture.ast.lex.Dialect;
 import org.overture.ast.node.INode;
 import org.overture.codegen.ir.CodeGenBase;
+import org.overture.codegen.ir.declarations.ADefaultClassDeclIR;
 import org.overture.codegen.printer.MsgPrinter;
 import org.overture.codegen.utils.GeneralCodeGenUtils;
 import org.overture.codegen.utils.GeneralUtils;
 import org.overture.codegen.utils.GeneratedData;
 import org.overture.codegen.utils.GeneratedModule;
+import org.overture.codegen.vdm2c.distribution.SystemArchitectureAnalysis;
+import org.overture.codegen.vdm2c.extast.declarations.AClassHeaderDeclIR;
 import org.overture.codegen.vdm2c.sourceformat.ISourceFileFormatter;
 import org.overture.config.Settings;
 import org.overture.typechecker.util.TypeCheckerUtil;
@@ -31,13 +35,13 @@ import org.overture.typechecker.util.TypeCheckerUtil.TypeCheckResult;
 public class CGenMain
 {
 	private static boolean quiet = false;
-	
+
 	public static void main(String[] args)
 	{
 		Settings.dialect = Dialect.VDM_RT;
-		
+
 		LogManager.getRootLogger().setLevel(Level.ERROR);
-		
+
 		// create Options object
 		Options options = new Options();
 
@@ -48,7 +52,7 @@ public class CGenMain
 		Option destOpt = Option.builder("dest").longOpt("destination").desc("Output directory").required().hasArg().build();
 		Option helpOpt = Option.builder("h").longOpt("help").desc("Show this description").build();
 		Option defaultArg = Option.builder("").desc("A VDM-RT file to code generate").hasArg().build();
-		
+
 		options.addOption(quietOpt);
 		options.addOption(sourceOpt);
 		options.addOption(destOpt);
@@ -115,12 +119,12 @@ public class CGenMain
 			}
 
 			List<File> filterFiles = filterFiles(GeneralUtils.getFilesRecursively(path));
-			
+
 			if(filterFiles == null || filterFiles.isEmpty())
 			{
 				usage(options, sourceOpt, "No VDM-RT source files found in " + path);
 			}
-			
+
 			files.addAll(filterFiles);
 
 		}
@@ -174,25 +178,38 @@ public class CGenMain
 			List<SClassDefinition> ast = res.result;
 
 			CGen cGen = new CGen();
-			
+
 			if(formatter!=null)
 			{
 				cGen.setSourceCodeFormatter(formatter);
 			}
-			
+
 			List<INode> filter = CodeGenBase.getNodes(ast);
-			
+
 			GeneratedData data = cGen.generate(filter);
-			
+
 			print("C code generated to folder: " + outputDir.getAbsolutePath());
-			
+
+			try
+			{
+				emitDistCode(data, cGen, outputDir);
+			} catch (org.overture.codegen.ir.analysis.AnalysisException e1)
+			{
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (IOException e1)
+			{
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+
 			if (!data.getClasses().isEmpty()) {
 				for (GeneratedModule generatedClass : data.getClasses()) {
 
 					if (generatedClass.hasMergeErrors()) {
 						print(String.format(
-										"Class %s could not be merged. Following merge errors were found:",
-										generatedClass.getName()));
+								"Class %s could not be merged. Following merge errors were found:",
+								generatedClass.getName()));
 
 						GeneralCodeGenUtils.printMergeErrors(generatedClass.getMergeErrors());
 					} else if (!generatedClass.canBeGenerated()) {
@@ -209,19 +226,19 @@ public class CGenMain
 						}
 
 					} else {
-						
+
 						try {
 
 							cGen.writeFile(generatedClass, outputDir);
-							
+
 							if(!quiet)
 							{
 								String fileName = generatedClass.getName() + "."  + cGen.getFileExtension(generatedClass);
 								print("Generated file: " + new File(outputDir, fileName).getAbsolutePath());
 							}
-							
+
 						}catch (Exception e) {
-							
+
 							error("Problems writing " + generatedClass.getName() + " to file: " + e.getMessage());
 							e.printStackTrace();
 						}
@@ -239,6 +256,46 @@ public class CGenMain
 			e.printStackTrace();
 		}
 
+	}
+
+	private static void emitDistCode(GeneratedData data, CGen cGen, File outputDir) throws org.overture.codegen.ir.analysis.AnalysisException, IOException
+	{
+		for (String cpuName : SystemArchitectureAnalysis.distributionMap.keySet()){
+			File outputD = new File(outputDir.getName() + "/" + cpuName);
+
+			for (GeneratedModule generatedClass : data.getClasses()) {
+
+				org.overture.codegen.ir.INode node = generatedClass.getIrNode();
+
+				if(node instanceof ADefaultClassDeclIR){
+					ADefaultClassDeclIR st = (ADefaultClassDeclIR) node;
+
+					Object tag = st.getTag();
+
+					if(tag != null)
+						if(st.getTag().equals(cpuName))
+							cGen.writeFile(generatedClass, outputD, st.getName());
+
+					if(!(SystemArchitectureAnalysis.distributionMap.keySet().contains(st.toString())) && 
+							!(SystemArchitectureAnalysis.systemName.equals(st.toString())))
+						cGen.writeFile(generatedClass, outputD);
+
+				}
+				else {
+					AClassHeaderDeclIR st = (AClassHeaderDeclIR ) node;
+
+					Object tag = st.getTag();
+
+					if(tag != null)
+						if(st.getTag().equals(cpuName))
+							cGen.writeFile(generatedClass, outputD, st.getName());
+
+					if(!(SystemArchitectureAnalysis.distributionMap.keySet().contains(st.toString())) && 
+							!(SystemArchitectureAnalysis.systemName.equals(st.toString())))
+						cGen.writeFile(generatedClass, outputD);
+				}
+			}
+		}
 	}
 
 	private static void showHelp(Options options)
@@ -274,7 +331,7 @@ public class CGenMain
 		showHelp(options);
 		System.exit(1);
 	}
-	
+
 	private static void print(String msg)
 	{
 		if(!quiet)
@@ -282,7 +339,7 @@ public class CGenMain
 			MsgPrinter.getPrinter().println(msg);
 		}
 	}
-	
+
 	private static void error(String msg) {
 		System.err.println(msg);
 	}

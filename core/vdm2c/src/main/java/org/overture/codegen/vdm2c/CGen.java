@@ -32,6 +32,8 @@ import org.overture.codegen.ir.types.AClassTypeIR;
 import org.overture.codegen.ir.types.AMethodTypeIR;
 import org.overture.codegen.utils.GeneratedData;
 import org.overture.codegen.utils.GeneratedModule;
+import org.overture.codegen.vdm2c.distribution.CDistTransSeries;
+import org.overture.codegen.vdm2c.distribution.SystemArchitectureAnalysis;
 import org.overture.codegen.vdm2c.extast.declarations.AClassHeaderDeclIR;
 import org.overture.codegen.vdm2c.sourceformat.ISourceFileFormatter;
 import org.overture.codegen.vdm2c.transformations.AddFieldTrans;
@@ -41,7 +43,7 @@ public class CGen extends CodeGenBase
 {
 	private List<File> emittedFiles = new LinkedList<>();
 	private ISourceFileFormatter formatter;
-	
+
 	public static Map<String, Boolean> hasTimeMap = null;
 
 	public CGen()
@@ -55,12 +57,12 @@ public class CGen extends CodeGenBase
 		super.preProcessAst(ast);
 		hasTimeMap = TimeFinder.computeTimeMap(getClasses(ast));
 	}
-	
+
 	public List<File> getEmittedFiles()
 	{
 		return emittedFiles;
 	}
-	
+
 	public List<IRStatus<PIR>> makeRecsOuterClasses(List<IRStatus<PIR>> ast)
 	{
 		List<IRStatus<PIR>> extraClasses = new LinkedList<IRStatus<PIR>>();
@@ -105,48 +107,48 @@ public class CGen extends CodeGenBase
 					AFieldDeclIR newField = f.clone();
 					fields.add(newField);
 				}
-				
+
 				recClass.setFields(fields);
-				
+
 				AClassTypeIR retType = new AClassTypeIR();
 				retType.setName(recClass.getName());
-				
+
 				AMethodTypeIR ctorMethodType = new AMethodTypeIR();
 				ctorMethodType.setResult(retType);
-				
+
 				ABlockStmIR ctorBody = new ABlockStmIR();
-				
+
 				AMethodDeclIR ctor = new AMethodDeclIR();
 				ctor.setIsConstructor(true);
 				ctor.setAbstract(false);
 				ctor.setAccess(IRConstants.PUBLIC);
 				ctor.setName(recClass.getName());
 				ctor.setBody(ctorBody);
-				
-				
+
+
 				ctor.setMethodType(ctorMethodType);
-				
+
 				for(AFieldDeclIR f : recClass.getFields())
 				{
 					AFormalParamLocalParamIR param = new AFormalParamLocalParamIR();
 					String name = "param_" + f.getName();
 					param.setPattern(CTransUtil.newIdentifierPattern(name));
 					param.setType(f.getType().clone());
-					
+
 					ctor.getFormalParams().add(param);
 					ctorMethodType.getParams().add(f.getType().clone());
-					
+
 					AIdentifierVarExpIR target = CTransUtil.newIdentifier(f.getName(), f.getSourceNode());
 					target.setType(f.getType().clone());
 					target.setIsLocal(false);
-					
+
 					AIdentifierVarExpIR assignVal = CTransUtil.newIdentifier(name, f.getSourceNode());
 					assignVal.setType(f.getType().clone());
-					
+
 					ctorBody.getStatements().add(CTransUtil.newAssignment(
 							target, assignVal));	
 				}
-				
+
 				recClass.getMethods().add(ctor);
 
 				extraClasses.add(new IRStatus<PIR>(recClass.getSourceNode().getVdmNode(), recClass.getName(), recClass, new HashSet<VdmNodeInfo>()));
@@ -155,25 +157,60 @@ public class CGen extends CodeGenBase
 
 		return extraClasses;
 	}
-	
+
 	@Override
 	protected GeneratedData genVdmToTargetLang(List<IRStatus<PIR>> statuses)
 			throws AnalysisException
 	{
 		List<GeneratedModule> genModules = new LinkedList<GeneratedModule>();
-		
+
+		Boolean dist_gen = true;
+
+		if(dist_gen){
+			/** Distribution Analysis **/
+			SystemArchitectureAnalysis sysAnalysis = new SystemArchitectureAnalysis();
+
+			sysAnalysis.analyseSystem(statuses);
+
+			sysAnalysis.generateDM();
+
+			sysAnalysis.generateMapStrVer();
+
+			Map<String, LinkedList<Boolean>> dm = SystemArchitectureAnalysis.DM;
+		}
+
 		statuses = replaceSystemClassWithClass(statuses);
+
+		if(dist_gen){
+			//Add individual system definition pr. CPU
+			for (IRStatus<ADefaultClassDeclIR> r : IRStatus.extract(statuses, ADefaultClassDeclIR.class))
+			{
+				for(String cpuName : SystemArchitectureAnalysis.distributionMap.keySet()){				
+					if (r.getIrNode().getName().equals(SystemArchitectureAnalysis.systemName))
+					{
+						ADefaultClassDeclIR dep = r.getIrNode().clone();
+						dep.setTag(cpuName);
+						IRStatus<PIR> stat = new IRStatus<PIR>(null, cpuName, dep, new HashSet<VdmNodeInfo>(), new HashSet<IrNodeInfo>());
+						statuses.add(stat);
+					}
+					else{
+						SystemArchitectureAnalysis.systemClasses.add(r.getIrNodeName().toString());
+					}
+				}
+			}
+		}
+
 		statuses = ignoreVDMUnitTests(statuses);
 		List<IRStatus<PIR>> recClasses = makeRecsOuterClasses(statuses);
 		statuses.addAll(recClasses);
-		
+
 		for(IRStatus<ADefaultClassDeclIR> r : IRStatus.extract(recClasses, ADefaultClassDeclIR.class))
 		{
 			getInfo().getClasses().add(r.getIrNode());
 		}
-		
+
 		List<IRStatus<PIR>> canBeGenerated = new LinkedList<>();
-		
+
 		for (IRStatus<PIR> status : statuses)
 		{
 			if (status.canBeGenerated())
@@ -195,15 +232,18 @@ public class CGen extends CodeGenBase
 				e.printStackTrace();
 			}
 		}
-		
+
 		generateClassHeaders(canBeGenerated);
 		applyTransformations(canBeGenerated);
 
 		VTableGenerator.generate(IRStatus.extract(canBeGenerated, AClassHeaderDeclIR.class));
 
 		CFormat my_formatter = consFormatter(canBeGenerated);
-		
-		
+
+		/** Distribution Transformations **/
+		if(dist_gen)
+			applyDistTransformations(canBeGenerated);
+
 		for (IRStatus<PIR> status : canBeGenerated)
 		{
 			try {
@@ -215,7 +255,7 @@ public class CGen extends CodeGenBase
 				e.printStackTrace();
 			}
 		}
-		
+
 		GeneratedData data = new GeneratedData();
 		data.setClasses(genModules);
 
@@ -333,6 +373,28 @@ public class CGen extends CodeGenBase
 		}
 	}
 
+	private void applyDistTransformations(final List<IRStatus<PIR>> statuses)
+	{
+		List<DepthFirstAnalysisAdaptor> transformations = new CDistTransSeries(this).consAnalyses();
+
+		for (DepthFirstAnalysisAdaptor trans : transformations)
+		{
+			for (IRStatus<ADefaultClassDeclIR> status : IRStatus.extract(statuses, ADefaultClassDeclIR.class))
+			{
+				try
+				{
+					generator.applyPartialTransformation(status, trans);
+				} catch (org.overture.codegen.ir.analysis.AnalysisException e)
+				{
+					log.error("Error when generating code for class "
+							+ status.getIrNodeName() + ": " + e.getMessage() + ". Skipping class..");
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
+	
 	private CFormat consFormatter(final List<IRStatus<PIR>> statuses)
 	{
 		CFormat my_formatter = new CFormat(generator.getIRInfo(), new IHeaderFinder()
@@ -368,7 +430,7 @@ public class CGen extends CodeGenBase
 			e.printStackTrace();
 		}
 	}
-	
+
 	public String getFileExtension(GeneratedModule generatedClass) {
 		String extension;
 
@@ -379,7 +441,7 @@ public class CGen extends CodeGenBase
 		}
 		return extension;
 	}
-	
+
 	public void genCSourceFiles(File root,
 			List<GeneratedModule> generatedClasses) throws Exception, IOException
 	{
@@ -394,8 +456,8 @@ public class CGen extends CodeGenBase
 
 	//TODO: PVJ use the emitCode method
 	public void writeFile(GeneratedModule module, File output_dir)
-					throws org.overture.codegen.ir.analysis.AnalysisException,
-					IOException
+			throws org.overture.codegen.ir.analysis.AnalysisException,
+			IOException
 	{
 		output_dir.mkdirs();
 
@@ -414,6 +476,28 @@ public class CGen extends CodeGenBase
 		}
 	}
 
+	public void writeFile(GeneratedModule module, File output_dir, String name)
+			throws org.overture.codegen.ir.analysis.AnalysisException,
+			IOException
+	{
+		output_dir.mkdirs();
+
+		String fileName = name + "."  + getFileExtension(module);
+
+		File file = new File(output_dir, fileName);
+		BufferedWriter output = new BufferedWriter(new FileWriter(file));
+
+		emittedFiles.add(new File(fileName));
+		output.write(module.getContent());
+		output.close();
+
+		if(formatter!=null)
+		{
+			formatter.format(file);
+		}
+	}
+	
+	
 	public void setSourceCodeFormatter(ISourceFileFormatter formatter)
 	{
 		this.formatter = formatter;
