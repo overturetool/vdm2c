@@ -13,7 +13,7 @@ public class ValueSemantics {
 		if (exp instanceof SVarExpIR) {
 			AApplyExpIR vdmCloneApply = CTransUtil.newApply("vdmClone", exp);
 			vdmCloneApply.setType(exp.getType().clone());
-			return exp;
+			return vdmCloneApply;
 		} else {
 			// Don't clone literals
 			return exp;
