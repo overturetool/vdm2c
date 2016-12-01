@@ -3,4 +3,8 @@ class SimpleCases
 values
 v = 5;
 
+instance variables
+
+public static s : int := 10;
+
 end SimpleCases
