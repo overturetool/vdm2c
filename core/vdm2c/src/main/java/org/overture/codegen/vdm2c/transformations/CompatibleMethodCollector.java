@@ -95,6 +95,6 @@ public class CompatibleMethodCollector
 			return argTypes;
 		}
 
-		return null;
+		return new LinkedList<PType>();
 	}
 }
