@@ -7,4 +7,13 @@ instance variables
 
 public static s : int := 10;
 
+public f : int := 10;
+
+public u : int;
+
+operations
+
+public SimpleCases : int ==> SimpleCases
+SimpleCases (p) == u := p;
+
 end SimpleCases
