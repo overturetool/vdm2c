@@ -81,14 +81,14 @@ vdm2c $ git push
 
 ### Performing the release
 
-AUs public build server is configured to run a script that performs most of the release tasks. To perform the release go to the [build server](https://build.overture.au.dk/jenkins/) and execute the `vdm2c-release` build job. This will automatically generate and upload the VDM2C plugin to a publicly accessible p2 repository (see the [installation instructions](#installation)). Once the build job has completed you'll notice that build server has added a tag, Release/`v${RELEASE_VER}`, to the commit that marks the release.
+AUs public build server is configured to run a script that performs most of the release tasks. To perform the release go to the [build server](https://build.overture.au.dk/jenkins/) and execute the `vdm2c-release` build job. This will automatically generate and upload the VDM2C plugin to a publicly accessible p2 repository (see the [installation instructions](#installation)). Once the build job has completed you'll notice that the build server has added a tag, Release/`v${RELEASE_VER}`, to the commit that marks the release.
 
 Finally, by convention the `master` branch must always point to latest release:
 
 ```bash
-git checkout master
-git merge Release/v${RELEASE_VER}
-git push
+vdm2c $ git checkout master
+vdm2c $ git merge Release/v${RELEASE_VER}
+vdm2c $ git push
 ```
 
 ### Publish the release on Github
