@@ -295,10 +295,10 @@ public class CGenerator
 		{
 			for(SClassDefinition dcl : vdmProject.getModel().getClassList())
 			{
-				constInitCalls = constInitCalls + dcl.getName().getName() + "_const_init();\n";
-				constShutdownCalls = constShutdownCalls + dcl.getName().getName() + "_const_shutdown();\n";
-				staticInitCalls = staticInitCalls + dcl.getName().getName() + "_static_init();\n";
-				staticShutdownCalls = staticShutdownCalls + dcl.getName().getName() + "_static_shutdown();\n";
+				constInitCalls = constInitCalls + "\t" + dcl.getName().getName() + "_const_init();\n";
+				constShutdownCalls = constShutdownCalls + "\t" + dcl.getName().getName() + "_const_shutdown();\n";
+				staticInitCalls = staticInitCalls + "\t" + dcl.getName().getName() + "_static_init();\n";
+				staticShutdownCalls = staticShutdownCalls + "\t" + dcl.getName().getName() + "_static_shutdown();\n";
 				includes = includes + "#include \"" + dcl.getName().getName() + ".h\"\n";
 			}
 		} catch(NotAllowedException e)
