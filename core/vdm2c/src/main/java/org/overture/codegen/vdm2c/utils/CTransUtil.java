@@ -27,6 +27,7 @@ import org.overture.codegen.ir.declarations.SClassDeclIR;
 import org.overture.codegen.ir.expressions.AApplyExpIR;
 import org.overture.codegen.ir.expressions.ACastUnaryExpIR;
 import org.overture.codegen.ir.expressions.AExplicitVarExpIR;
+import org.overture.codegen.ir.expressions.AExternalExpIR;
 import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
 import org.overture.codegen.ir.expressions.AIntLiteralExpIR;
 import org.overture.codegen.ir.expressions.SVarExpIR;
@@ -51,6 +52,7 @@ public class CTransUtil
 {
 	public static final String GET_FIELD_PTR = "GET_FIELD_PTR";
 	public static final String SET_FIELD_PTR = "SET_FIELD_PTR";
+	public static final String GET_FIELD_PTR_BYREF = "GET_FIELD_PTR_BYREF";
 
 	public static final String GET_FIELD = "GET_FIELD";
 	public static final String SET_FIELD = "SET_FIELD";
@@ -429,5 +431,15 @@ public class CTransUtil
 		}
 		return null;
 	}
+	
+	public static AExternalExpIR consCInt(String cIntStr) {
+		AExternalTypeIR cIntType = new AExternalTypeIR();
+		cIntType.setName("int");
 
+		AExternalExpIR cIntExp = new AExternalExpIR();
+		cIntExp.setType(cIntType);
+		cIntExp.setTargetLangExp(cIntStr);
+
+		return cIntExp;
+	}
 }

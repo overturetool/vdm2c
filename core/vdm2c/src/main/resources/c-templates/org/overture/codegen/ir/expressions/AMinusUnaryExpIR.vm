@@ -1,1 +1,1 @@
--$CFormat.format($node.getExp())
+vdmMinus(${CFormat.formatUnary($node.getExp())})

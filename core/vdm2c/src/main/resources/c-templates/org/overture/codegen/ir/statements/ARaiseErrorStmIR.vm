@@ -1,1 +1,1 @@
-throw $CFormat.format($node.getError())
+assert( ${CFormat.format($node.getError())} )

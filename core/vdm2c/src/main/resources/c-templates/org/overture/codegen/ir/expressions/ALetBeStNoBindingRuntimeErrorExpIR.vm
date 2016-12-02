@@ -1,1 +1,1 @@
-new RuntimeException("Let Be St found no applicable bindings")
+false && "Let Be St found no applicable bindings"

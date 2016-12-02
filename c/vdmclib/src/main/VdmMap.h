@@ -76,6 +76,11 @@ struct TypedValue* newMap();
 
 //util method for adding maplets
 void vdmMapAdd(TVP map,TVP key, TVP value);
+void vdmMapUpdate(TVP map, TVP key, TVP value);
+
+TVP newMapVarToGrow(size_t, size_t, ...);
+void vdmMapGrow(TVP, TVP, TVP);
+void vdmMapFit(TVP);
 
 //VDM map operators
 TVP vdmMapDom(TVP map);
@@ -90,7 +95,7 @@ TVP vdmMapRngRestrictBy(TVP set,TVP map);
 TVP vdmMapApply(TVP map, TVP key);
 TVP vdmMapInverse(TVP map);
 
-bool vdmMapEquals(TVP map1, TVP map2);
+TVP vdmMapEquals(TVP map1, TVP map2);
 bool vdmMapInEquals(TVP map1, TVP map2);
 
 #ifdef WITH_GLIB_HASH

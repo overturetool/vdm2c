@@ -8,7 +8,6 @@ import org.overture.codegen.ir.STypeIR;
 import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.statements.AElseIfStmIR;
 import org.overture.codegen.ir.statements.AIfStmIR;
-import org.overture.codegen.ir.types.AExternalTypeIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 
 public class IfTrans extends DepthFirstAnalysisCAdaptor
@@ -22,15 +21,15 @@ public class IfTrans extends DepthFirstAnalysisCAdaptor
 
 	boolean mustUnpack(STypeIR type)
 	{
-		return type != null && !(type instanceof AExternalTypeIR);
+		return type != null;
 	}
 
-	void unpack(SExpIR exp)
+	private void unpack(SExpIR exp)
 	{
 		assist.replaceNodeWith(exp, newApply("toBool", exp.clone()));
 	}
 
-	void process(SExpIR exp)
+	private void process(SExpIR exp)
 	{
 		if (mustUnpack(exp.getType()))
 		{

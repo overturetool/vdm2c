@@ -284,8 +284,10 @@ bool equals(struct TypedValue* a, struct TypedValue* b)
 	}
 	case VDM_MAP:
 	{
-		//			return mapEqual(a, b);
-		break;
+		TVP r0 = vdmMapEquals(a, b);
+		bool r = toBool(r0);
+		vdmFree(r0);
+		return r;
 	}
 	case VDM_PRODUCT:
 	case VDM_SEQ:
@@ -294,8 +296,10 @@ bool equals(struct TypedValue* a, struct TypedValue* b)
 	}
 	case VDM_SET:
 	{
-		//FIXME
-		return collectionEqual(a, b);
+		TVP r0 = vdmSetEquals(a, b);
+		bool r = toBool(r0);
+		vdmFree(r0);
+		return r;
 	}
 	//	case VDM_OPTIONAL:
 	//	{
@@ -335,8 +339,6 @@ bool equals(struct TypedValue* a, struct TypedValue* b)
 				vdmFree(res);
 				return false;
 			}
-			//			tmpField = vdmClone(*((struct TypedValue**)((char*)(((struct ClassType*)x->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(struct TypedValue*) + sizeof(struct TypedValue*) * i)));
-			//			memcpy(((struct TypedValue**)((char*)(((struct ClassType*)tmp->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(struct TypedValue*) + sizeof(struct TypedValue*) * i)), &tmpField, sizeof(struct TypedValue*));
 		}
 
 		vdmFree(res);

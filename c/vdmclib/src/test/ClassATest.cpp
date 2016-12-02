@@ -80,7 +80,7 @@ TEST(ClassATest, calc)
 	TVP a = newInt(1);
 	TVP b = newInt(4);
 
-	checkFreeDouble("calculation calc",5,CALL_FUNC(A, A, c, CLASS_A_calc, a, b)
+	checkFreeInt("calculation calc",5,CALL_FUNC(A, A, c, CLASS_A_calc, a, b)
 	);
 
 	vdmFree(a);

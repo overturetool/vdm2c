@@ -30,6 +30,7 @@
 #include "VdmMap.h"
 
 #include <stdio.h> //FIXME remove all printf!
+#include <stdarg.h>
 
 #define ASSERT_CHECK(s) assert(s->type == VDM_MAP && "Value is not a map")
 
@@ -213,7 +214,6 @@ TVP vdmMapRng(TVP map)
 #else
 
 
-
 hashtable_t *ht_create( int size ) {
 
 	hashtable_t *hashtable = NULL;
@@ -387,7 +387,7 @@ TVP ht_get( hashtable_t *hashtable, TVP key ) {
 
 
 
-struct TypedValue* newMap()
+TVP newMap()
 {
 	struct Map* ptr = (struct Map*) malloc(sizeof(struct Map));
 	//TODO:  work out initial size.
@@ -398,6 +398,53 @@ struct TypedValue* newMap()
 			{ .ptr = ptr });
 }
 
+
+//Not a very useful function, but here to support the map comprehension mechanism.
+TVP newMapVarToGrow(size_t size, size_t expected_size, ...)
+{
+	struct Map* ptr;
+	TVP key;
+	TVP value;
+	TVP theMap;
+
+	if(size == 0)
+	{
+		return newMap();
+	}
+
+	ptr = (struct Map*) malloc(sizeof(struct Map));
+	ptr->table =  ht_create(expected_size);
+	theMap = newTypeValue(VDM_MAP, (TypedValueType){ .ptr = ptr });
+
+	va_list argList;
+	va_start(argList, expected_size);
+
+	for(int i = 0; i < size; i++)
+	{
+		key = vdmClone(va_arg(argList, TVP));
+		value = vdmClone(va_arg(argList, TVP));
+
+		vdmMapAdd(theMap, key, value);
+
+		vdmFree(key);
+		vdmFree(value);
+	}
+	va_end(argList);
+
+	return theMap;
+}
+
+//Not a very useful operation, but here to support the map comprehension mechanism.
+void vdmMapGrow(TVP theMap, TVP key, TVP val)
+{
+	vdmMapAdd(theMap, key, val);
+}
+
+//Not a very useful operation, but here to support the map comprehension mechanism.
+void vdmMapFit(TVP theMap)
+{
+	return;
+}
 
 
 void vdmMapAdd(TVP map, TVP key, TVP value)
@@ -410,8 +457,14 @@ void vdmMapAdd(TVP map, TVP key, TVP value)
 }
 
 
+void vdmMapUpdate(TVP map, TVP key, TVP value)
+{
+	vdmMapAdd(map, key, value);
+}
 
-// TODO: Apply does not work, if they key is not found
+
+
+// TODO: Apply does not work if the key is not found
 TVP vdmMapApply(TVP map, TVP key)
 {
 	ASSERT_CHECK(map);
@@ -735,7 +788,7 @@ TVP vdmMapInverse(TVP map){
 	return map_res;
 }
 
-bool vdmMapEquals(TVP map1, TVP map2){
+TVP vdmMapEquals(TVP map1, TVP map2){
 
 	//Assert map
 	ASSERT_CHECK(map1);
@@ -743,30 +796,76 @@ bool vdmMapEquals(TVP map1, TVP map2){
 
 	bool eq = true;
 
-	TVP map1_dom = vdmMapDom(map1);
-	UNWRAP_COLLECTION(m1,map1_dom);
+	TVP key1;
+	TVP val1;
+	TVP key2;
+	TVP val2;
+	TVP map1_dom;
+	TVP map2_dom;
 
-	TVP map2_dom = vdmMapDom(map2);
-	UNWRAP_COLLECTION(m2,map2_dom);
+	TVP map1_rng;
+	TVP map2_rng;
 
-	if(m1->size!=m2->size)
-		return false;
+	map1_dom = vdmMapDom(map1);
+	map2_dom = vdmMapDom(map2);
+	if(!equals(map1_dom, map2_dom))
+	{
+		eq = false;
 
-	// Add key/val for map1
-	for (int i=0; i<m1->size; i++){
-		TVP key1 = m1->value[i];
-		TVP val1 = vdmMapApply(map1,key1);
+		vdmFree(map1_dom);
+		vdmFree(map2_dom);
 
-		TVP key2 = m2->value[i];
-		TVP val2 = vdmMapApply(map2,key2);
+		return newBool(eq);
+	}
 
-		if(!equals(key1,key2) || !equals(val1,val2)){
+
+	map1_rng = vdmMapRng(map1);
+	map2_rng = vdmMapRng(map2);
+	if(!equals(map1_rng, map2_rng))
+	{
+		eq = false;
+
+		vdmFree(map1_dom);
+		vdmFree(map2_dom);
+		vdmFree(map1_rng);
+		vdmFree(map2_rng);
+
+		return newBool(eq);
+	}
+
+	UNWRAP_COLLECTION(m1, map1_dom);
+
+	for (int i = 0; i < m1->size; i++)
+	{
+		key1 = m1->value[i];
+		val1 = vdmMapApply(map1, key1);
+
+		key2 = m1->value[i];
+		val2 = vdmMapApply(map2, key2);
+
+		if(!equals(val1, val2))
+		{
 			eq = false;
-			break;
+
+			vdmFree(val1);
+			vdmFree(val2);
+			vdmFree(map1_dom);
+			vdmFree(map2_dom);
+			vdmFree(map1_rng);
+			vdmFree(map2_rng);
+
+			return newBool(eq);
 		}
 	}
 
-	return eq;
+	vdmFree(val1);
+	vdmFree(val2);
+	vdmFree(map1_dom);
+	vdmFree(map2_dom);
+	vdmFree(map1_rng);
+	vdmFree(map2_rng);
+
+	return newBool(eq);
 
 }
 

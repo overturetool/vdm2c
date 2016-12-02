@@ -21,7 +21,11 @@ public setField1: int *int ==> ()
 setField1(index,v)== fieldSeq(index):=v;
 
 public getField0: () ==> seq of int
-getField0()==return fieldSeq0;
+getField0() == return fieldSeq0;
+
+public getField0Test : () ==> bool
+getField0Test() ==
+	return getField0() = [9];
 
 public setField0: int *int ==> ()
 setField0(index,v)== fieldSeq0(index):=v;

@@ -42,6 +42,8 @@ public class ClassHeaderGenerator
 			ADefaultClassDeclIR classDef = irStatus.getIrNode();
 
 			AClassHeaderDeclIR header = new AClassHeaderDeclIR();
+			
+			header.setSourceNode(classDef.getSourceNode());
 
 			header.setOriginalDef(classDef);
 

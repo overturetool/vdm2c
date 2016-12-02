@@ -29,8 +29,8 @@ public class TimeFinderTest
 
 		Assert.assertEquals("Got wrong number of classes", 3, hasTimeMap.size());
 		
-		Assert.assertFalse("Expected class not to use 'time'", hasTimeMap.get("A"));
-		Assert.assertTrue("Expected class to use 'time'", hasTimeMap.get("B"));
-		Assert.assertFalse("Expected class not to use 'time'", hasTimeMap.get("C"));
+		Assert.assertFalse("Expected class not to use 'time'", hasTimeMap.get("ATime"));
+		Assert.assertTrue("Expected class to use 'time'", hasTimeMap.get("BTime"));
+		Assert.assertFalse("Expected class not to use 'time'", hasTimeMap.get("CTime"));
 	}
 }

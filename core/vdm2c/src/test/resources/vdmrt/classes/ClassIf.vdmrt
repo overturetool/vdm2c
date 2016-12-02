@@ -1,0 +1,47 @@
+class ClassIf
+
+operations
+
+private opTrue: () ==> bool
+opTrue()==return true;
+
+private opFalse: () ==> bool
+opFalse ()==return false;
+
+public checkNe  : ()==>bool
+checkNe()== 
+if(opTrue()<>false) 
+then 
+	return true 
+else 
+	return false;
+	
+public checkEq  : ()==>bool
+checkEq()== 
+if(opFalse()=false) 
+then 
+	return true 
+else 
+	return false;
+
+public opCallInIfTestTrue  : ()==>bool
+opCallInIfTestTrue()==
+let o = new ClassIf()
+in
+  if(o.opTrue()) 
+  then 
+   return true 
+	else 
+   return false;
+   
+public opCallInIfTestFalse  : ()==>bool
+opCallInIfTestFalse ()==
+let o = new ClassIf()
+in
+  if(o.opFalse()) 
+  then 
+   return false 
+	else 
+   return true;
+	
+end ClassIf

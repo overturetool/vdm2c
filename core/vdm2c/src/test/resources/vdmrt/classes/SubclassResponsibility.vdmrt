@@ -1,8 +1,8 @@
-class A
+class AAAAA
 
 operations
 
-public op : () ==> bool
+protected op : () ==> bool
 op() == is subclass responsibility;
 
 functions
@@ -10,9 +10,9 @@ functions
 public f :  () -> bool
 f () == is subclass responsibility;
 
-end A
+end AAAAA
 
-class B is subclass of A
+class BBBBB is subclass of AAAAA
 
 operations
 
@@ -24,4 +24,4 @@ functions
 public f :  () -> bool
 f () == true;
 
-end B
+end BBBBB

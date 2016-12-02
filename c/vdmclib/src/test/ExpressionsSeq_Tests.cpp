@@ -28,6 +28,10 @@ extern "C"
 #include <stdio.h>
 }
 
+#define DEFAULT_SEQ_COMP_BUFFER 1
+#define DEFAULT_SEQ_COMP_BUFFER_STEPSIZE 10
+
+
 TVP newSequence(int size, int* arr)
 {
 	TVP seq = newSeq(size);
@@ -42,17 +46,73 @@ TVP newSequence(int size, int* arr)
 	return seq;
 }
 
-//TVP seqHd(TVP seq);
-//TVP seqTl(TVP seq);
-//TVP seqLen(TVP seq);
-//TVP seqElems(TVP seq);
-//TVP seqInds(TVP seq);
-//TVP seqConc(TVP seq,TVP seq);
-//TVP seqReverse(TVP seq);
-////TVP seqMod(TVP seq,TVP seq);
-//TVP seqIndex(TVP seq,int index);
-//TVP seqEqual(TVP seq,TVP seq);
-//TVP seqInEqual(TVP seq,TVP seq);
+
+TEST(Expression_Seq, seqGrow)
+{
+	TVP seq1;
+	TVP seq2;
+	TVP res;
+
+	//Create test set.
+	seq1 = newSeqVarToGrow(1, 2, newInt(1));
+	seq2 = newSeqVar(2, newInt(1), newInt(2));
+
+	vdmSeqGrow(seq1, newInt(2));
+
+	res = vdmSeqEqual(seq1, seq2);
+	EXPECT_TRUE(res->value.boolVal);
+
+	vdmSeqGrow(seq1, newInt(3));
+
+	UNWRAP_COLLECTION(col, seq1);
+	vdmFree(res);
+	res = vdmSeqEqual(seq1, seq2);
+	EXPECT_FALSE(res->value.boolVal);
+
+	//Clean up.
+	vdmFree(res);
+	vdmFree(seq1);
+	vdmFree(seq2);
+}
+
+
+TEST(Expression_Seq, seqFit)
+{
+	TVP seq1;
+	TVP seq2;
+	TVP res;
+
+	//Create test set.
+	seq1 = newSeqVarToGrow(1, 2, newInt(1));
+	seq2 = newSeqVar(2, newInt(1), newInt(2));
+
+	vdmSeqGrow(seq1, newInt(2));
+
+	res = vdmSeqEqual(seq1, seq2);
+	EXPECT_TRUE(res->value.boolVal);
+
+	vdmSeqGrow(seq1, newInt(3));
+
+	UNWRAP_COLLECTION(col, seq1);
+	vdmFree(res);
+	res = vdmSeqEqual(seq1, seq2);
+	EXPECT_FALSE(res->value.boolVal);
+	vdmFree(res);
+
+//	vdmSeqFit(seq1);
+
+	//vdmSeqGrow works for any sequence, but if it wasn't preallocated with
+	//vdmSeqVarToGrow it is not as efficient.
+	vdmSeqGrow(seq2, newInt(3));
+	res = vdmSeqEqual(seq1, seq2);
+	EXPECT_TRUE(res->value.boolVal);
+
+	//Clean up.
+	vdmFree(res);
+	vdmFree(seq1);
+	vdmFree(seq2);
+}
+
 
 TEST(Expression_Seq, seqHd)
 {
@@ -112,7 +172,7 @@ TEST(Expression_Seq, seqElems)
 	TVP res = vdmSeqElems(t);
 
 	TVP tmp = vdmEquals(res,elems);
-	EXPECT_EQ(true, tmp->value.boolVal);
+	EXPECT_TRUE(tmp->value.boolVal);
 	vdmFree(res);
 	vdmFree(a);
 	vdmFree(b);
@@ -226,7 +286,7 @@ TEST(Expression_Seq, seqEqual)
 
 	TVP res = vdmSeqEqual(t,t2);
 
-	EXPECT_EQ(true, res->value.boolVal);
+	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(res);
 //
 	vdmFree(t);
@@ -245,9 +305,25 @@ TEST(Expression_Seq, seqInEqual)
 
 	TVP res = vdmSeqInEqual(t,t2);
 
-	EXPECT_EQ(true, res->value.boolVal);
+	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(res);
 	//
 	vdmFree(t);
 	vdmFree(t2);
+}
+
+TEST(Expression_Seq, seqUpdate)
+{
+	int arr[] = {3};
+	TVP seq;
+	TVP res;
+
+	seq  = newSequence(1, arr);
+	vdmSeqUpdate(seq, newInt(1), newInt(4));
+	res = vdmSeqIndex(seq, newInt(1));
+	EXPECT_EQ(4, res->value.intVal);
+	EXPECT_NE(5, res->value.intVal);
+
+	vdmFree(seq);
+	vdmFree(res);
 }

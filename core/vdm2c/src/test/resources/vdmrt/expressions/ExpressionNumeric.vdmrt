@@ -1,9 +1,6 @@
 class ExpressionNumeric
 functions
 
-protected unaryMinusExp: () -> bool
-unaryMinusExp()== -5=-5;
-
 protected absExp: () -> bool
 absExp()== abs(-5)=5;
 
@@ -57,4 +54,11 @@ equalExp()== 6=6;
 
 protected notEqualExp: () -> bool
 notEqualExp()== 8<>9;
+
+protected unaryPlus: () -> bool
+unaryPlus()== +42 = 42;
+
+protected unaryMinus: () -> bool
+unaryMinus()== 1 - 3 = -2;
+
 end ExpressionNumeric

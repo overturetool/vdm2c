@@ -32,6 +32,23 @@
 
 #define ASSERT_CHECK(s) assert(s->type == VDM_SEQ && "Value is not a sequence")
 
+#define DEFAULT_SEQ_COMP_BUFFER 2
+#define DEFAULT_SEQ_COMP_BUFFER_STEPSIZE 10
+
+//Utility functions.
+//------------------------------------------------
+static void vdmSeqAdd(struct TypedValue** value, int* index, TVP newValue)
+{
+	value[*index] = newValue;
+	*index = (*index) + 1;
+}
+//End utility functions
+//------------------------------------------------
+
+
+
+
+
 struct TypedValue* newSeq(size_t size)
 {
 	return newCollection(size, VDM_SEQ);
@@ -57,6 +74,64 @@ struct TypedValue* newSeqVar(size_t size, ...)
 	va_end(ap);
 
 	return newCollectionWithValues(size, VDM_SEQ, elements);
+}
+
+//Just like newSeqVar, but with memory preallocated to an expected
+//result sequence length.
+struct TypedValue* newSeqVarToGrow(size_t size, size_t expected_size, ...)
+{
+	va_list ap;
+	va_start(ap, expected_size);
+
+	int count = 0;
+
+	int bufsize = expected_size;  //DEFAULT_SEQ_COMP_BUFFER;
+	struct TypedValue** value = (struct TypedValue**) calloc(bufsize, sizeof(struct TypedValue*));
+
+	for (int i = 0; i < size; i++)
+	{
+		TVP arg = va_arg(ap, TVP);
+		TVP v= vdmClone(arg); // set binding
+
+
+		//Extra security measure.  Will only be true if size >= expected_size.
+		if(count>=bufsize)
+		{
+			//buffer too small add memory chunk
+			bufsize += DEFAULT_SEQ_COMP_BUFFER_STEPSIZE;
+			value = (struct TypedValue**)realloc(value, bufsize * sizeof(struct TypedValue*));
+		}
+		vdmSeqAdd(value,&count,v);
+	}
+
+	va_end(ap);
+
+	TVP res = newCollectionWithValues(count, VDM_SEQ, value);
+	free(value);
+	return res;
+}
+
+void vdmSeqGrow(TVP seq, TVP element)
+{
+	int bufsize = DEFAULT_SEQ_COMP_BUFFER;
+
+	UNWRAP_COLLECTION(col, seq);
+
+	if(col->size >= bufsize)
+	{
+		//buffer too small add memory chunk
+		bufsize += DEFAULT_SEQ_COMP_BUFFER_STEPSIZE;
+		col->value = (struct TypedValue**)realloc(col->value, bufsize * sizeof(struct TypedValue*));
+	}
+	vdmSeqAdd(col->value, &(col->size), element);
+}
+
+void vdmSeqFit(TVP seq)
+{
+	UNWRAP_COLLECTION(col, seq);
+
+	//Assumes that more memory is allocated in the col->value array than there are elements.
+	col->value = (struct TypedValue**)realloc(col->value, col->size * sizeof(struct TypedValue*));
 }
 
 TVP vdmSeqHd(TVP seq)
@@ -153,7 +228,7 @@ TVP vdmSeqReverse(TVP seq)
 	//copy  list
 	for (int i = 0; i < col->size; i++)
 	{
-		elems->value[i] = vdmClone(col->value[offset-i]);
+		elems->value[i] = vdmClone(col->value[offset - i]);
 	}
 
 	return elemsVal;
@@ -169,7 +244,7 @@ TVP vdmSeqIndex(TVP seq,TVP indexVal) //VDM uses 1 based index
 	int index = indexVal->value.intVal;
 	UNWRAP_COLLECTION(col,seq);
 
-	assert(index-1>=0 && index-1<col->size && "invalid index");
+	assert(index - 1 >= 0 && index - 1 < col->size && "invalid index");
 	return vdmClone(col->value[index-1]);
 }
 TVP vdmSeqEqual(TVP seq,TVP seq2)
@@ -193,8 +268,8 @@ void vdmSeqUpdate(TVP seq, TVP indexVal, TVP newValue)
 	assert((indexVal->type == VDM_INT||indexVal->type == VDM_NAT||indexVal->type == VDM_NAT1) && "index is not a int");
 
 	int index = indexVal->value.intVal;
-	UNWRAP_COLLECTION(col,seq);
+	UNWRAP_COLLECTION(col, seq);
 
-	assert(index-1>=0 && index-1<col->size && "invalid index");
-	col->value[index-1] = vdmClone(newValue);
+	assert(index - 1 >= 0 && index - 1 < col->size && "invalid index");
+	col->value[index - 1] = vdmClone(newValue);
 }

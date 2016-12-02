@@ -1,0 +1,30 @@
+class ExpressionMap
+
+functions
+
+public mapDom :  () -> bool
+mapDom () == dom {1 |-> 2, 3 |-> 4} = {3,1};
+
+public mapRng :  () -> bool
+mapRng () == rng {1 |-> 2, 3 |-> 4} = {4,2};
+
+public mapAccessSimple : () -> bool
+mapAccessSimple () ==
+let m = {1 |-> 2, 3 |-> 4},
+    v = m(3)
+in
+  v = 4;
+
+public mapEq :  () -> bool
+mapEq () ==  {1 |-> 2, 3 |-> 4} = {3 |-> 4, 1 |-> 2};
+
+public mapNeq :  () -> bool
+mapNeq () ==  {1 |-> 2, 3 |-> 4} <> {30 |-> 40, 10 |-> 20};
+
+public mapInv :  () -> bool
+mapInv () == inverse {1 |-> 2, 3 |-> 4} = {4 |-> 3, 2 |-> 1};
+
+public mapUnion :  () -> bool
+mapUnion () == {1 |-> 2} munion {3 |-> 4} = {3 |-> 4, 1 |-> 2};
+
+end ExpressionMap

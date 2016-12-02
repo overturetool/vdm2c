@@ -37,7 +37,7 @@ public class NameMangler
 {
 	final static Logger logger = LoggerFactory.getLogger(NameMangler.class);
 	
-	public static Map<String, String> mangledNames = null;
+	public static Map<String, String> mangledNames = new HashMap<String, String>();
 
 	static final String preFix = "_Z";
 	static final String intId = "I";
@@ -83,9 +83,6 @@ public class NameMangler
 
 	public static String mangle(AMethodDeclIR method) throws AnalysisException
 	{
-		if(mangledNames == null)
-			mangledNames = new HashMap<String, String>();
-		
 		if (method.getName().startsWith(preFix))
 		{
 			return method.getName();
