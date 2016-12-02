@@ -33,8 +33,17 @@ TEST(Class_StaticMethodAccess, op)
 	CHECK(CLASS_ClassFunCall__Z2opEV);
 }
 
-TEST(Class_StaticMethodAccess, localfn)
+TEST(Class_StaticMethodAccess, op2)
 {
-	CHECK(CLASS_ClassFunCall__Z7localfnEV);
+	CHECK(CLASS_ClassFunCall__Z3op2EV);
 }
 
+TEST(Class_StaticMethodAccess, externalfn)
+{
+	CHECK(CLASS_ClassFunCall__Z10externalfnEV);
+}
+
+TEST(Class_StaticMethodAccess, localfn)
+{
+	CHECK_FALSE(CLASS_ClassFunCall__Z7localfnEV);
+}
