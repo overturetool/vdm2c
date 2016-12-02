@@ -32,3 +32,8 @@ TEST(RTConstructs, rtCyclesRemove)
 {
 	CHECK(CLASS_RTConstructs__Z10testcyclesEV);
 }
+
+TEST(RTConstructs, startStm)
+{
+	CHECK(CLASS_RTConstructs__Z8startStmEV);
+}

@@ -11,6 +11,16 @@ testcycles : () ==> bool
 testcycles() == cycles(4)
 	(return true);
 
+startStm : () ==> bool
+startStm () ==
+(
+  start(new RTConstructs());
+  return true;
+);
+
+thread
+  skip;
+
 end RTConstructs
 
 system SystemClass
