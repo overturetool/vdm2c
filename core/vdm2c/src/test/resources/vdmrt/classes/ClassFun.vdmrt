@@ -4,6 +4,9 @@ functions
 
 public static fn: () -> bool
 fn()== true;
+
+public nonstaticfn: () -> bool
+nonstaticfn() == true;
 end ClassFun
 
 
@@ -11,24 +14,20 @@ end ClassFun
 class ClassFunCall
 
 functions
-	--public fn : () -> bool
-	--fn() == true;
-	--Defining a fn here overrides the outer one (wrongly)
-	--and the call gets generated correctly.
+	public fn : () -> bool
+	fn() == false;
+	
+	public externalfn : () -> bool
+	externalfn() == ClassFun`fn();
 	
 	public localfn : () -> bool
-	localfn() == ClassFun`fn();
+	localfn() == fn();
+
 
 operations
-	
-	
 	public op:  () ==> bool
 	op() ==	ClassFun`fn();
+	
+	public op2 : () ==> bool
+	op2() == ClassFun`nonstaticfn();
 end ClassFunCall
-
---Check the generated code for the above and determine what
---it means in each context.  Because the case is 
---caseAApplyExpIR i expected the function one to work, because
---that should be when it's an expression, but it's the 
---operation that works.  In the case of the function it does
---not match the case override.
