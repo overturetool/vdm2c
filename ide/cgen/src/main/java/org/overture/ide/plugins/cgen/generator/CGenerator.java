@@ -299,7 +299,7 @@ public class CGenerator
 				constShutdownCalls = constShutdownCalls + dcl.getName().getName() + "_const_shutdown();\n";
 				staticInitCalls = staticInitCalls + dcl.getName().getName() + "_static_init();\n";
 				staticShutdownCalls = staticShutdownCalls + dcl.getName().getName() + "_static_shutdown();\n";
-				includes = includes + "#include <" + dcl.getName().getName() + ".h>\n";
+				includes = includes + "#include \"" + dcl.getName().getName() + ".h\"\n";
 			}
 		} catch(NotAllowedException e)
 		{
