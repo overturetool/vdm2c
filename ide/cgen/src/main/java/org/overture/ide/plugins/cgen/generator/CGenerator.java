@@ -289,6 +289,7 @@ public class CGenerator
 		String staticInitCalls = "";
 		String staticShutdownCalls = "";
 		String constShutdownCalls = "";
+		String includes = "";
 
 		try
 		{
@@ -298,6 +299,7 @@ public class CGenerator
 				constShutdownCalls = constShutdownCalls + dcl.getName().getName() + "_const_shutdown();\n";
 				staticInitCalls = staticInitCalls + dcl.getName().getName() + "_static_init();\n";
 				staticShutdownCalls = staticShutdownCalls + dcl.getName().getName() + "_static_shutdown();\n";
+				includes = includes + "#include <" + dcl.getName().getName() + ".h>\n";
 			}
 		} catch(NotAllowedException e)
 		{
@@ -306,6 +308,8 @@ public class CGenerator
 
 		try {
 			BufferedWriter fileWriter = new BufferedWriter(new FileWriter(outfile));
+			//Write header include directives.
+			fileWriter.write(includes + "\n");
 			//Write the main constant and static init and shutdown functions.
 			fileWriter.write("void systemConstStaticInit()\n{\n" + constInitCalls + "\n" + staticInitCalls + "}\n\n");
 			fileWriter.write("void systemConstStaticShutdown()\n{\n" + constShutdownCalls + "\n" + staticShutdownCalls + "}\n\n");
