@@ -16,6 +16,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.overture.ast.analysis.AnalysisException;
+import org.overture.ast.definitions.SClassDefinition;
 import org.overture.ast.intf.lex.ILexLocation;
 import org.overture.ast.lex.Dialect;
 import org.overture.ast.node.INode;
@@ -31,6 +32,7 @@ import org.overture.codegen.vdm2c.extast.declarations.AClassHeaderDeclIR;
 import org.overture.codegen.vdm2c.utils.CGenUtil;
 import org.overture.codegen.vdm2c.utils.NameMangler;
 import org.overture.ide.core.IVdmModel;
+import org.overture.ide.core.ast.NotAllowedException;
 import org.overture.ide.core.resources.IVdmProject;
 import org.overture.ide.core.utility.FileUtility;
 import org.overture.ide.plugins.cgen.CodeGenConsole;
@@ -43,7 +45,7 @@ public class CGenerator
 	final IVdmProject vdmProject;
 
 	private AssistantManager assistantManager;
-	
+
 	public CGenerator(IVdmProject vdmProject)
 	{
 		this.vdmProject = vdmProject;
@@ -71,18 +73,18 @@ public class CGenerator
 			CodeGenConsole.GetInstance().println("Please refer to the Overture User Manual for a discussion of supported language features.");
 			CodeGenConsole.GetInstance().println("");
 		}
-		
+
 		// Generate user specified classes
 		GeneratedData data = vdm2c.generate(PluginVdm2CUtil.getNodes(model.getSourceUnits()));
-		
+
 		try {
 			vdm2c.genCSourceFiles(cCodeOutputFolder, data.getClasses());
 		} catch (Exception e) {
-		
+
 			CodeGenConsole.GetInstance().printErrorln("Problems encountered while generating C sources: " + e.getMessage());
 			e.printStackTrace();
 		}
-		
+
 		outputUserspecifiedModules(cCodeOutputFolder, data.getClasses());
 
 		CodeGenConsole.GetInstance().println("Code generation completed successfully.");
@@ -100,7 +102,7 @@ public class CGenerator
 
 
 	}
-	
+
 	private void outputUserspecifiedModules(File outputFolder,
 			List<GeneratedModule> userspecifiedClasses)
 	{
@@ -120,7 +122,7 @@ public class CGenerator
 			{
 				CodeGenConsole.GetInstance().println("Could not code generate class: "
 						+ generatedModule.getName() + ".");
-				
+
 				if(generatedModule.hasUnsupportedIrNodes())
 				{
 					LocationAssistantIR locationAssistant = assistantManager.getLocationAssistant();
@@ -136,7 +138,7 @@ public class CGenerator
 						addMarkers(nodeInfo, locationAssistant);
 					}
 				}
-				
+
 				if(generatedModule.hasUnsupportedTargLangNodes())
 				{
 					Set<IrNodeInfo> unsupportedInTargLang = generatedModule.getUnsupportedInTargLang();
@@ -147,7 +149,7 @@ public class CGenerator
 						CodeGenConsole.GetInstance().println(nodeInfo.toString());
 					}
 				}
-				
+
 			} else
 			{
 				if (!(generatedModule.getIrNode() instanceof AClassHeaderDeclIR)) {
@@ -165,7 +167,7 @@ public class CGenerator
 
 				if (!warnings.isEmpty()) {
 					CodeGenConsole.GetInstance()
-							.println("The following warnings were found for class " + generatedModule.getName() + ":");
+					.println("The following warnings were found for class " + generatedModule.getName() + ":");
 
 					for (IrNodeInfo nodeInfo : warnings) {
 						CodeGenConsole.GetInstance().println(nodeInfo.getReason());
@@ -176,7 +178,7 @@ public class CGenerator
 			CodeGenConsole.GetInstance().println("");
 		}
 	}
-	
+
 	public static IFile convert(File file)
 	{
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
@@ -185,7 +187,7 @@ public class CGenerator
 
 		return iFile;
 	}
-	
+
 	public static void addMarkers(VdmNodeInfo nodeInfo,
 			LocationAssistantIR locationAssistant)
 	{
@@ -213,7 +215,7 @@ public class CGenerator
 
 		FileUtility.addMarker(ifile, message, location, IMarker.PRIORITY_NORMAL, ICodeGenConstants.PLUGIN_ID, -1);
 	}
-	
+
 	public static String limitStr(String str)
 	{
 		if (str == null)
@@ -273,7 +275,7 @@ public class CGenerator
 			{
 				fileWriter.append("#define " + entry.getKey() + " " + entry.getValue() + "\n");
 			}
-			
+
 			fileWriter.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -283,8 +285,34 @@ public class CGenerator
 
 	private void emitMainFile(File outfile)
 	{
+		String constInitCalls = "";
+		String staticInitCalls = "";
+		String staticShutdownCalls = "";
+		String constShutdownCalls = "";
+		String includes = "";
+
+		try
+		{
+			for(SClassDefinition dcl : vdmProject.getModel().getClassList())
+			{
+				constInitCalls = constInitCalls + "\t" + dcl.getName().getName() + "_const_init();\n";
+				constShutdownCalls = constShutdownCalls + "\t" + dcl.getName().getName() + "_const_shutdown();\n";
+				staticInitCalls = staticInitCalls + "\t" + dcl.getName().getName() + "_static_init();\n";
+				staticShutdownCalls = staticShutdownCalls + "\t" + dcl.getName().getName() + "_static_shutdown();\n";
+				includes = includes + "#include \"" + dcl.getName().getName() + ".h\"\n";
+			}
+		} catch(NotAllowedException e)
+		{
+			e.printStackTrace();
+		}
+
 		try {
 			BufferedWriter fileWriter = new BufferedWriter(new FileWriter(outfile));
+			//Write header include directives.
+			fileWriter.write(includes + "\n");
+			//Write the main constant and static init and shutdown functions.
+			fileWriter.write("void systemConstStaticInit()\n{\n" + constInitCalls + "\n" + staticInitCalls + "}\n\n");
+			fileWriter.write("void systemConstStaticShutdown()\n{\n" + constShutdownCalls + "\n" + staticShutdownCalls + "}\n\n");
 			fileWriter.write("int main()\n{\n\treturn 0;\n}\n");
 			fileWriter.close();
 		} catch (IOException e) {
