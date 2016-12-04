@@ -35,6 +35,7 @@ import org.overture.typechecker.util.TypeCheckerUtil.TypeCheckResult;
 public class CGenMain
 {
 	private static boolean quiet = false;
+	public static boolean distGen = false;
 
 	public static void main(String[] args)
 	{
@@ -47,12 +48,14 @@ public class CGenMain
 
 		// add t option
 		Option quietOpt = Option.builder("q").longOpt("quiet").desc("Do not print processing information").build();
+		Option distGenOpt = Option.builder("dist").longOpt("distGen").desc("Do not print processing information").build();
 		Option sourceOpt = Option.builder("sf").longOpt("folder").desc("Path to a source folder containing VDM-RT files").hasArg().build();
 		Option formatOpt = Option.builder("fm").longOpt("formatter").desc("Name of the formatter which should be loaded from the class path").hasArg().build();
 		Option destOpt = Option.builder("dest").longOpt("destination").desc("Output directory").required().hasArg().build();
 		Option helpOpt = Option.builder("h").longOpt("help").desc("Show this description").build();
 		Option defaultArg = Option.builder("").desc("A VDM-RT file to code generate").hasArg().build();
 
+		options.addOption(distGenOpt);
 		options.addOption(quietOpt);
 		options.addOption(sourceOpt);
 		options.addOption(destOpt);
@@ -77,6 +80,8 @@ public class CGenMain
 		ISourceFileFormatter formatter = null;
 
 		quiet = cmd.hasOption(quietOpt.getOpt());
+
+		distGen = cmd.hasOption(distGenOpt.getOpt());
 
 		if (cmd.hasOption(helpOpt.getOpt()))
 		{
@@ -190,17 +195,19 @@ public class CGenMain
 
 			print("C code generated to folder: " + outputDir.getAbsolutePath());
 
-			try
-			{
-				emitDistCode(data, cGen, outputDir);
-			} catch (org.overture.codegen.ir.analysis.AnalysisException e1)
-			{
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (IOException e1)
-			{
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+			if(distGen){
+				try
+				{
+					emitDistCode(data, cGen, outputDir);
+				} catch (org.overture.codegen.ir.analysis.AnalysisException e1)
+				{
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (IOException e1)
+				{
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 
 			if (!data.getClasses().isEmpty()) {

@@ -164,7 +164,7 @@ public class CGen extends CodeGenBase
 	{
 		List<GeneratedModule> genModules = new LinkedList<GeneratedModule>();
 
-		Boolean dist_gen = true;
+		Boolean dist_gen = CGenMain.distGen;
 
 		if(dist_gen){
 			/** Distribution Analysis **/
@@ -393,8 +393,8 @@ public class CGen extends CodeGenBase
 			}
 		}
 	}
-	
-	
+
+
 	private CFormat consFormatter(final List<IRStatus<PIR>> statuses)
 	{
 		CFormat my_formatter = new CFormat(generator.getIRInfo(), new IHeaderFinder()
@@ -496,8 +496,8 @@ public class CGen extends CodeGenBase
 			formatter.format(file);
 		}
 	}
-	
-	
+
+
 	public void setSourceCodeFormatter(ISourceFileFormatter formatter)
 	{
 		this.formatter = formatter;
