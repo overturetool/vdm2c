@@ -178,7 +178,7 @@ public class CGen extends CodeGenBase
 
 			Map<String, LinkedList<Boolean>> dm = SystemArchitectureAnalysis.DM;
 		}
-
+		
 		statuses = replaceSystemClassWithClass(statuses);
 
 		if(dist_gen){

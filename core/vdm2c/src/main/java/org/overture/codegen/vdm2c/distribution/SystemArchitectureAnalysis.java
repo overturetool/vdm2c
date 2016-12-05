@@ -197,7 +197,7 @@ public class SystemArchitectureAnalysis
 			String bus_name = bus;
 		}
 		//for(bus : connectionMap.get(key))
-		System.out.println();
+		//System.out.println();
 	}
 
 
