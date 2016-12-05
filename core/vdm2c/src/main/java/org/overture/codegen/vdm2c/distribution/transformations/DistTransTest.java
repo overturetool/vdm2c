@@ -38,8 +38,8 @@ public class DistTransTest extends DepthFirstAnalysisCAdaptor
 	{
 		System.out.println("Dist transformation, method name: " + node.getName());
 
-		if(node.getName().equals("_Z8TestFuncEII")){ // _Z8TestFuncEII
-			System.out.println();
+		if(node.getName().equals("TestFunc") || node.getName().equals("_Z8TestFuncEII")){
+			//System.out.println();
 
 			ADefaultClassDeclIR cl = node.getAncestor(ADefaultClassDeclIR.class);
 
