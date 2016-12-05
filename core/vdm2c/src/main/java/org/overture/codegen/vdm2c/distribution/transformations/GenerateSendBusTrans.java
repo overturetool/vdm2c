@@ -19,16 +19,16 @@ import org.overture.codegen.ir.expressions.AIntLiteralExpIR;
 import org.overture.codegen.ir.expressions.AOrBoolBinaryExpIR;
 import org.overture.codegen.ir.patterns.AIdentifierPatternIR;
 import org.overture.codegen.ir.statements.ABlockStmIR;
+import org.overture.codegen.ir.statements.AExpStmIR;
 import org.overture.codegen.ir.statements.AIfStmIR;
-import org.overture.codegen.ir.statements.APlainCallStmIR;
 import org.overture.codegen.ir.statements.AReturnStmIR;
 import org.overture.codegen.ir.types.AExternalTypeIR;
 import org.overture.codegen.ir.types.AIntNumericBasicTypeIR;
 import org.overture.codegen.ir.types.AMethodTypeIR;
 import org.overture.codegen.ir.types.ANatNumericBasicTypeIR;
-import org.overture.codegen.ir.types.AVoidTypeIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.distribution.SystemArchitectureAnalysis;
+import org.overture.codegen.vdm2c.extast.expressions.AMacroApplyExpIR;
 import org.overture.codegen.vdm2c.extast.statements.ALocalVariableDeclarationStmIR;
 
 public class GenerateSendBusTrans extends DepthFirstAnalysisCAdaptor
@@ -88,7 +88,7 @@ public class GenerateSendBusTrans extends DepthFirstAnalysisCAdaptor
 			par5.setPattern(idPat5);
 			par5.setType(tyPat.clone());
 			par.add(par5);
-			
+
 			// Third parameter
 			AFormalParamLocalParamIR par4 = new AFormalParamLocalParamIR();
 			AIdentifierPatternIR idPat4 = new AIdentifierPatternIR();
@@ -130,28 +130,6 @@ public class GenerateSendBusTrans extends DepthFirstAnalysisCAdaptor
 			// Create the statements
 			LinkedList<SStmIR> st = new LinkedList<SStmIR>();
 
-//			APlainCallStmIR plain = new APlainCallStmIR();
-//			
-//			plain.setType(new AIntNumericBasicTypeIR());
-//			
-//			plain.setName("va_start");
-//			
-//			AIdentifierVarExpIR id1 = new AIdentifierVarExpIR();
-//			id1.setIsLambda(false);
-//			id1.setIsLocal(false);
-//			id1.setName("args");
-//			id1.setType(new AIntNumericBasicTypeIR());
-//			plain.getArgs().add(id1);
-//			
-//			AIdentifierVarExpIR id2 = new AIdentifierVarExpIR();
-//			id2.setIsLambda(false);
-//			id2.setIsLocal(false);
-//			id2.setName("nr_args");
-//			id2.setType(new AVoidTypeIR());
-//			plain.getArgs().add(id2);
-			
-			//st.add(plain);
-			
 			/** One if statement pr. bus for a cpu ***/
 
 			for(String bus : SystemArchitectureAnalysis.connectionMapStr.keySet()){
@@ -233,16 +211,16 @@ public class GenerateSendBusTrans extends DepthFirstAnalysisCAdaptor
 				//**** Then part, e.g. call the specific BUS
 				AReturnStmIR ret = new AReturnStmIR();
 				AApplyExpIR app = new AApplyExpIR();
-				
+
 				// Set arguments
 				LinkedList<SExpIR> args = new LinkedList<SExpIR>();
 				//AIntLiteralExpIR v = new AIntLiteralExpIR();
 				//v.setValue((long) 6);
 				//args.add(v);
-				
+
 				// 1. argument
 				args.add(id); 
-				
+
 				// 2. argument
 				AIdentifierVarExpIR funID = new AIdentifierVarExpIR();
 				funID.setIsLambda(false);
@@ -250,7 +228,7 @@ public class GenerateSendBusTrans extends DepthFirstAnalysisCAdaptor
 				funID.setName("funID");
 				funID.setType(new AIntNumericBasicTypeIR());
 				args.add(funID);
-				
+
 				// 3. argument
 				AIdentifierVarExpIR sup = new AIdentifierVarExpIR();
 				sup.setIsLambda(false);
@@ -258,7 +236,7 @@ public class GenerateSendBusTrans extends DepthFirstAnalysisCAdaptor
 				sup.setName("supID");
 				sup.setType(new AIntNumericBasicTypeIR());
 				args.add(sup);
-				
+
 				// 4. argument
 				AIdentifierVarExpIR nrArgs = new AIdentifierVarExpIR();
 				nrArgs.setIsLambda(false);
@@ -266,7 +244,7 @@ public class GenerateSendBusTrans extends DepthFirstAnalysisCAdaptor
 				nrArgs.setName("nrArgs");
 				nrArgs.setType(new AIntNumericBasicTypeIR());
 				args.add(nrArgs);
-				
+
 				// 5. argument
 				AIdentifierVarExpIR ar = new AIdentifierVarExpIR();
 				ar.setIsLambda(false);
@@ -274,13 +252,13 @@ public class GenerateSendBusTrans extends DepthFirstAnalysisCAdaptor
 				ar.setName("args");
 				ar.setType(new AIntNumericBasicTypeIR());
 				args.add(ar);
-				
+
 				// Set arguments of apply expression
 				app.setArgs(args);
-				
+
 				// Type
 				app.setType(new AIntNumericBasicTypeIR());
-				
+
 				// Root
 				AIdentifierVarExpIR idVar = new AIdentifierVarExpIR();
 				idVar.setIsLambda(false);
@@ -292,67 +270,77 @@ public class GenerateSendBusTrans extends DepthFirstAnalysisCAdaptor
 				ret.setExp(app);
 
 				first.setThenStm(ret);
-
-				//first.setIfExp(orBin);
-				
-				//st.add(app);
-				
 				st.add(first);
-
-//				st.add(first.clone());
 			}
-			
-			body.setStatements(st);
-			
-			//LinkedList<SStmIR> s = ((ABlockStmIR) node.getBody()).getStatements();
 
-			
+			body.setStatements(st);
+
 			AVarDeclIR args_list = new AVarDeclIR();
-			
+
 			AExternalTypeIR tyArgs = new AExternalTypeIR();
 			tyArgs.setName("va_list");
-//			
-//			// set expression
-//			
-//			AIntLiteralExpIR ex = new AIntLiteralExpIR();
-//			//ex.setValue((long) 0);
+
 			args_list.setType(tyArgs);
 			args_list.setExp(null);
-//			
-//			args_list.setFinal(false);
-//			
+
 			AIdentifierPatternIR idP = new AIdentifierPatternIR();
-//			
+
 			idP.setName("args");
-//			
+
 			args_list.setPattern(idP);
 			args_list.setType(tyArgs.clone());
-			
-//			AIdentifierVarExpIR ar = new AIdentifierVarExpIR();
-//			ar.setIsLambda(false);
-//			ar.setIsLocal(true);
-//			ar.setName("args");
-//			ar.setType(tyArgs);
-			
-//			args_list.setPattern(value);
-			
-//			body.getLocalDefs().add(args_list);
-			
+
 			ALocalVariableDeclarationStmIR loc = new ALocalVariableDeclarationStmIR();
-			
+
 			loc.setDecleration(args_list);
-			
-			//st.add(0, idVar);
-			
-//			body.setStatements(st);
-			
+
 			body.getStatements().add(0, loc);
-			
-			//body.getLocalDefs().add(args_list);
+
+
+			// Add function call
+			AExpStmIR expApp = new AExpStmIR();
+
+			AMacroApplyExpIR macApp = new AMacroApplyExpIR();
+
+			// Set arguments
+			LinkedList<SExpIR> args = new LinkedList<SExpIR>();
+
+			// 1. argument
+			AIdentifierVarExpIR funID = new AIdentifierVarExpIR();
+			funID.setIsLambda(false);
+			funID.setIsLocal(true);
+			funID.setName("args");
+			funID.setType(null);
+			args.add(funID);
+
+			// 2. argument
+			AIdentifierVarExpIR nrArgs = new AIdentifierVarExpIR();
+			nrArgs.setIsLambda(false);
+			nrArgs.setIsLocal(true);
+			nrArgs.setName("nrArgs");
+			nrArgs.setType(null);
+			args.add(nrArgs);
+
+			// Set arguments
+			macApp.setArgs(args);
+
+			// Function call to va_start generation
+			AIdentifierVarExpIR va_start = new AIdentifierVarExpIR();
+			va_start.setIsLambda(false);
+			va_start.setIsLocal(true);
+			va_start.setName("va_start");
+			va_start.setType(new AIntNumericBasicTypeIR());
+			args.add(va_start);
+
+			macApp.setRoot(va_start);
+
+			expApp.setExp(macApp);
+
+
+			body.getStatements().add(1,expApp);
+
 			m.setBody(body);
 			cl.getMethods().add(m);
-			//System.out.println();
-
 		}
 
 
