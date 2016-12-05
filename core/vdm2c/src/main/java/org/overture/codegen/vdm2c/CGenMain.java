@@ -268,7 +268,7 @@ public class CGenMain
 	private static void emitDistCode(GeneratedData data, CGen cGen, File outputDir) throws org.overture.codegen.ir.analysis.AnalysisException, IOException
 	{
 		for (String cpuName : SystemArchitectureAnalysis.distributionMap.keySet()){
-			File outputD = new File(outputDir.getName() + "/" + cpuName);
+			File outputD = new File(outputDir.getAbsolutePath() + "/" + cpuName);
 
 			for (GeneratedModule generatedClass : data.getClasses()) {
 
