@@ -459,21 +459,7 @@ public class CGen extends CodeGenBase
 			throws org.overture.codegen.ir.analysis.AnalysisException,
 			IOException
 	{
-		output_dir.mkdirs();
-
-		String fileName = module.getName() + "."  + getFileExtension(module);
-
-		File file = new File(output_dir, fileName);
-		BufferedWriter output = new BufferedWriter(new FileWriter(file));
-
-		emittedFiles.add(new File(fileName));
-		output.write(module.getContent());
-		output.close();
-
-		if(formatter!=null)
-		{
-			formatter.format(file);
-		}
+		writeFile(module, output_dir, module.getName());
 	}
 
 	public void writeFile(GeneratedModule module, File output_dir, String name)
