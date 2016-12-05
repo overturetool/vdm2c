@@ -29,6 +29,7 @@ import org.overture.codegen.ir.types.ANatNumericBasicTypeIR;
 import org.overture.codegen.ir.types.AVoidTypeIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.distribution.SystemArchitectureAnalysis;
+import org.overture.codegen.vdm2c.extast.statements.ALocalVariableDeclarationStmIR;
 
 public class GenerateSendBusTrans extends DepthFirstAnalysisCAdaptor
 {
@@ -306,27 +307,26 @@ public class GenerateSendBusTrans extends DepthFirstAnalysisCAdaptor
 			//LinkedList<SStmIR> s = ((ABlockStmIR) node.getBody()).getStatements();
 
 			
-//			AVarDeclIR args_list = new AVarDeclIR();
-//			
-//			AExternalTypeIR tyArgs = new AExternalTypeIR();
-//			tyPat.setName("va_list");
+			AVarDeclIR args_list = new AVarDeclIR();
+			
+			AExternalTypeIR tyArgs = new AExternalTypeIR();
+			tyArgs.setName("va_list");
 //			
 //			// set expression
 //			
 //			AIntLiteralExpIR ex = new AIntLiteralExpIR();
 //			//ex.setValue((long) 0);
-//			ex.setType(tyArgs);
-//			args_list.setExp(null);
+			args_list.setType(tyArgs);
+			args_list.setExp(null);
 //			
 //			args_list.setFinal(false);
 //			
-//			AIdentifierPatternIR idP = new AIdentifierPatternIR();
+			AIdentifierPatternIR idP = new AIdentifierPatternIR();
 //			
-//			idP.setName("args");
+			idP.setName("args");
 //			
-//			args_list.setPattern(idP);
-//			
-//			args_list.setType(tyArgs);
+			args_list.setPattern(idP);
+			args_list.setType(tyArgs.clone());
 			
 //			AIdentifierVarExpIR ar = new AIdentifierVarExpIR();
 //			ar.setIsLambda(false);
@@ -338,10 +338,17 @@ public class GenerateSendBusTrans extends DepthFirstAnalysisCAdaptor
 			
 //			body.getLocalDefs().add(args_list);
 			
+			ALocalVariableDeclarationStmIR loc = new ALocalVariableDeclarationStmIR();
+			
+			loc.setDecleration(args_list);
+			
 			//st.add(0, idVar);
 			
 //			body.setStatements(st);
 			
+			body.getStatements().add(0, loc);
+			
+			//body.getLocalDefs().add(args_list);
 			m.setBody(body);
 			cl.getMethods().add(m);
 			//System.out.println();
