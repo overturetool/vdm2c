@@ -125,9 +125,10 @@ public class CGenMain
 
 			List<File> filterFiles = filterFiles(GeneralUtils.getFilesRecursively(path));
 
-			if(filterFiles == null || filterFiles.isEmpty())
+			if (filterFiles == null || filterFiles.isEmpty())
 			{
-				usage(options, sourceOpt, "No VDM-RT source files found in " + path);
+				usage(options, sourceOpt, "No VDM-RT source files found in "
+						+ path);
 			}
 
 			files.addAll(filterFiles);
@@ -184,18 +185,19 @@ public class CGenMain
 
 			CGen cGen = new CGen();
 
-			if(formatter!=null)
+			if (formatter != null)
 			{
 				cGen.setSourceCodeFormatter(formatter);
 			}
 
 			List<INode> filter = CodeGenBase.getNodes(ast);
-
+			
 			GeneratedData data = cGen.generate(filter);
 
 			print("C code generated to folder: " + outputDir.getAbsolutePath());
 
-			if(distGen){
+			if (distGen)
+			{
 				try
 				{
 					emitDistCode(data, cGen, outputDir);
@@ -208,97 +210,118 @@ public class CGenMain
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-			}
+			} else
+			{
+				if (!data.getClasses().isEmpty())
+				{
+					for (GeneratedModule generatedClass : data.getClasses())
+					{
 
-			if (!data.getClasses().isEmpty()) {
-				for (GeneratedModule generatedClass : data.getClasses()) {
+						if (generatedClass.hasMergeErrors())
+						{
+							print(String.format("Class %s could not be merged. Following merge errors were found:", generatedClass.getName()));
 
-					if (generatedClass.hasMergeErrors()) {
-						print(String.format(
-								"Class %s could not be merged. Following merge errors were found:",
-								generatedClass.getName()));
+							GeneralCodeGenUtils.printMergeErrors(generatedClass.getMergeErrors());
+						} else if (!generatedClass.canBeGenerated())
+						{
+							print("Could not generate class: "
+									+ generatedClass.getName() + "\n");
 
-						GeneralCodeGenUtils.printMergeErrors(generatedClass.getMergeErrors());
-					} else if (!generatedClass.canBeGenerated()) {
-						print("Could not generate class: " + generatedClass.getName() + "\n");
-
-						if (generatedClass.hasUnsupportedIrNodes()) {
-							print("Following VDM constructs are not supported by the code generator:");
-							GeneralCodeGenUtils.printUnsupportedIrNodes(generatedClass.getUnsupportedInIr());
-						}
-
-						if (generatedClass.hasUnsupportedTargLangNodes()) {
-							print("Following constructs are not supported by the code generator:");
-							GeneralCodeGenUtils.printUnsupportedNodes(generatedClass.getUnsupportedInTargLang());
-						}
-
-					} else {
-
-						try {
-
-							cGen.writeFile(generatedClass, outputDir);
-
-							if(!quiet)
+							if (generatedClass.hasUnsupportedIrNodes())
 							{
-								String fileName = generatedClass.getName() + "."  + cGen.getFileExtension(generatedClass);
-								print("Generated file: " + new File(outputDir, fileName).getAbsolutePath());
+								print("Following VDM constructs are not supported by the code generator:");
+								GeneralCodeGenUtils.printUnsupportedIrNodes(generatedClass.getUnsupportedInIr());
 							}
 
-						}catch (Exception e) {
+							if (generatedClass.hasUnsupportedTargLangNodes())
+							{
+								print("Following constructs are not supported by the code generator:");
+								GeneralCodeGenUtils.printUnsupportedNodes(generatedClass.getUnsupportedInTargLang());
+							}
 
-							error("Problems writing " + generatedClass.getName() + " to file: " + e.getMessage());
-							e.printStackTrace();
+						} else
+						{
+
+							try
+							{
+
+								cGen.writeFile(generatedClass, outputDir);
+
+								if (!quiet)
+								{
+									String fileName = generatedClass.getName()
+											+ "."
+											+ cGen.getFileExtension(generatedClass);
+									print("Generated file: "
+											+ new File(outputDir, fileName).getAbsolutePath());
+								}
+
+							} catch (Exception e)
+							{
+
+								error("Problems writing "
+										+ generatedClass.getName()
+										+ " to file: " + e.getMessage());
+								e.printStackTrace();
+							}
 						}
 					}
+				} else
+				{
+					print("No classes were generated!");
 				}
-			}
-			else
-			{
-				print("No classes were generated!");
-			}
 
+			}
 		} catch (AnalysisException e)
 		{
-			error("Unexpected problems encountered during the code generation process: " + e.getMessage());
+			error("Unexpected problems encountered during the code generation process: "
+					+ e.getMessage());
 			e.printStackTrace();
 		}
 
 	}
 
-	private static void emitDistCode(GeneratedData data, CGen cGen, File outputDir) throws org.overture.codegen.ir.analysis.AnalysisException, IOException
+	private static void emitDistCode(GeneratedData data, CGen cGen,
+			File outputDir)
+					throws org.overture.codegen.ir.analysis.AnalysisException,
+					IOException
 	{
-		for (String cpuName : SystemArchitectureAnalysis.distributionMap.keySet()){
-			File outputD = new File(outputDir.getAbsolutePath() + "/" + cpuName);
+		for (String cpuName : SystemArchitectureAnalysis.distributionMap.keySet())
+		{
+			File outputD = new File(outputDir.getAbsolutePath() + "/"
+					+ cpuName);
 
-			for (GeneratedModule generatedClass : data.getClasses()) {
+			for (GeneratedModule generatedClass : data.getClasses())
+			{
 
 				org.overture.codegen.ir.INode node = generatedClass.getIrNode();
 
-				if(node instanceof ADefaultClassDeclIR){
+				if (node instanceof ADefaultClassDeclIR)
+				{
 					ADefaultClassDeclIR st = (ADefaultClassDeclIR) node;
 
 					Object tag = st.getTag();
 
-					if(tag != null)
-						if(st.getTag().equals(cpuName))
+					if (tag != null)
+						if (st.getTag().equals(cpuName))
 							cGen.writeFile(generatedClass, outputD, st.getName());
 
-					if(!(SystemArchitectureAnalysis.distributionMap.keySet().contains(st.toString())) && 
-							!(SystemArchitectureAnalysis.systemName.equals(st.toString())))
+					if (!(SystemArchitectureAnalysis.distributionMap.keySet().contains(st.toString()))
+							&& !(SystemArchitectureAnalysis.systemName.equals(st.toString())))
 						cGen.writeFile(generatedClass, outputD);
 
-				}
-				else {
-					AClassHeaderDeclIR st = (AClassHeaderDeclIR ) node;
+				} else
+				{
+					AClassHeaderDeclIR st = (AClassHeaderDeclIR) node;
 
 					Object tag = st.getTag();
 
-					if(tag != null)
-						if(st.getTag().equals(cpuName))
+					if (tag != null)
+						if (st.getTag().equals(cpuName))
 							cGen.writeFile(generatedClass, outputD, st.getName());
 
-					if(!(SystemArchitectureAnalysis.distributionMap.keySet().contains(st.toString())) && 
-							!(SystemArchitectureAnalysis.systemName.equals(st.toString())))
+					if (!(SystemArchitectureAnalysis.distributionMap.keySet().contains(st.toString()))
+							&& !(SystemArchitectureAnalysis.systemName.equals(st.toString())))
 						cGen.writeFile(generatedClass, outputD);
 				}
 			}
@@ -333,21 +356,21 @@ public class CGenMain
 
 	private static void usage(Options options, Option opt, String string)
 	{
-		error("Error in argument: " + opt.getOpt() + " - "
-				+ string);
+		error("Error in argument: " + opt.getOpt() + " - " + string);
 		showHelp(options);
 		System.exit(1);
 	}
 
 	private static void print(String msg)
 	{
-		if(!quiet)
+		if (!quiet)
 		{
 			MsgPrinter.getPrinter().println(msg);
 		}
 	}
 
-	private static void error(String msg) {
+	private static void error(String msg)
+	{
 		System.err.println(msg);
 	}
 
