@@ -90,6 +90,7 @@ struct TypedValue
 {
 	vdmtype type;
 	TypedValueType value;
+	int id;
 };
 
 #define TVP struct TypedValue*
