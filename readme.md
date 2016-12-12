@@ -193,7 +193,7 @@ cd <root>/c
 ## Generate the make file
 cmake .
 ## Build the google test binary
-make -j<no-of-cpu-cores-plus-one
+make -j<no-of-cpu-cores-plus-one>
 ## Go to the folder that contains the tests
 cd vdmclib/
 ## Run the generated google tests 
