@@ -11,6 +11,7 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
 
 import org.junit.Assert;
+import org.junit.Assume;
 import org.overture.codegen.vdm2c.CMakeUtil.CMakeGenerateException;
 import org.w3c.dom.Document;
 
@@ -21,10 +22,25 @@ public class MemoryManagementTestBase extends NativeTestBase {
 	public MemoryManagementTestBase() {
 		super();
 	}
+	
+	protected boolean isValgrindInstalled()
+	{
+		try
+		{
+			Process proc = Runtime.getRuntime().exec("valgrind --version");
+			return proc.waitFor() == 0;
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+			return false;
+		}
+	}
 
 	@Override
 	protected void runAdditionalTests(CMakeUtil cmakeUtil) throws IOException, InterruptedException, CMakeGenerateException {
 	
+		Assume.assumeTrue("Test requires that valgrind is installed", isValgrindInstalled());
+		
 		// Use valgrind to generate a memory analysis report. See CMakeList.txt
 		// for details.
 		ProcessBuilder pb = new ProcessBuilder("ctest", "-T", "memcheck");
