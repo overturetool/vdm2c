@@ -34,7 +34,7 @@ public class DistTestBase extends BaseGeneratorTest
 	private static final String VDMCLIB = "../../c/vdmclib/src/main/";
 
 	final static Logger logger = LoggerFactory.getLogger(DistTestBase.class);
-	
+
 	private static final String FORMATTER = "formatter";
 
 	final static String TEST_OUTPUT = System.getProperty("TEST_OUTPUT");
@@ -98,31 +98,37 @@ public class DistTestBase extends BaseGeneratorTest
 				Assert.fail("Input path does not exist: " + string);
 				return;
 			}
-			
+
 		}
 		List<String> args = new Vector<String>(Arrays.asList(new String[] {
 				"--quiet", "-dist" ,"-dest", root.getAbsolutePath() }));
 		args.addAll(Arrays.asList(paths));
-		
+
 		if(System.getProperty(FORMATTER)!=null)
 		{
 			args.add("-formatter");
 			args.add(System.getProperty(FORMATTER));
 		}
-		
+
 		CGenMain.main(args.toArray(new String[] {}));
 	}
 
 	protected void compileAndTest(File... tests) throws IOException,
-			InterruptedException, CMakeGenerateException
+	InterruptedException, CMakeGenerateException
 	{
 		CMakeUtil cmakeUtil = new CMakeUtil(new File(VDMCLIB), new File("src/test/resources/CMakeLists.txt"), false);
 
 		copyTestFiles(tests);
 
-		runTests(cmakeUtil);
-		
-		assertTestsExecuted(tests);
+		File root2 = new File("/Users/Miran/Documents/C_codegen/vdm2c/core/vdm2c/target/test-cgen/DistributionTests/Test1/cpu1");
+
+		//cmakeUtil.generate(root2);
+
+
+
+		//runTests(cmakeUtil);
+
+		//assertTestsExecuted(tests);
 	}
 
 	protected void runTests(CMakeUtil cmakeUtil) throws IOException, InterruptedException, CMakeGenerateException {
@@ -148,7 +154,7 @@ public class DistTestBase extends BaseGeneratorTest
 		if(tests.length > 0)
 		{
 			File testReport = new File(root, TEST_REPORT);
-			
+
 			Assert.assertTrue("Could not find test report", testReport.exists());
 			try
 			{
@@ -159,7 +165,7 @@ public class DistTestBase extends BaseGeneratorTest
 				XPath xpath = xPathfactory.newXPath();
 				XPathExpression expr = xpath.compile("//testsuites[@tests]");
 				NodeList nl = (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
-				
+
 				Assert.assertTrue("Test report does not mention any tests", nl != null && nl.getLength() > 0);
 
 				for (int i = 0; i < nl.getLength(); i++)
@@ -184,6 +190,27 @@ public class DistTestBase extends BaseGeneratorTest
 			try
 			{
 				FileUtils.copyFile(file, new File(root, file.getName()));
+			}
+			catch(IOException e)
+			{
+				if(e.getMessage().contains("are the same"))
+				{
+					logger.warn(e.getMessage());
+				}
+				else
+				{
+					throw e;
+				}
+			}
+		}
+	}
+
+	protected void copyTestFiles2(File r, File... tests) throws IOException {
+		for (File file : tests)
+		{
+			try
+			{
+				FileUtils.copyFile(file, new File(r, file.getName()));
 			}
 			catch(IOException e)
 			{
