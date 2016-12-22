@@ -21,6 +21,7 @@ import org.overture.codegen.trans.funcvalues.FuncValPrefixes;
 import org.overture.codegen.trans.patterns.PatternVarPrefixes;
 import org.overture.codegen.vdm2c.CGen;
 import org.overture.codegen.vdm2c.VarPrefixManager;
+import org.overture.codegen.vdm2c.distribution.transformations.AddIncludesTrans;
 import org.overture.codegen.vdm2c.distribution.transformations.CallFuncMacroExpTrans;
 import org.overture.codegen.vdm2c.distribution.transformations.DistTransTest;
 import org.overture.codegen.vdm2c.distribution.transformations.GenerateClassDispatchTrans;
@@ -85,6 +86,8 @@ public class CDistTransSeries
 		transformations.add(new GenerateDepObjId(transAssistant));
 		transformations.add(new GenerateDMTrans(transAssistant));
 		transformations.add(new GenerateClassDispatchTrans(transAssistant));
+		transformations.add(new AddIncludesTrans(transAssistant));
+
 		return transformations;
 	}
 
