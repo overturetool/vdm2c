@@ -3,7 +3,7 @@ class A is subclass of World
 operations
 
 public getTemp : () ==> int
-getTemp () == return 2;
+getTemp () == return 7;
 
 public getEmp : int ==> ()
 getEmp (o) == skip;

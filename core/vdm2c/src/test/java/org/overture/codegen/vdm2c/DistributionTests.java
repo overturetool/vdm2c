@@ -16,41 +16,60 @@ public class DistributionTests extends DistTestBase
 		
 		generate(getPath("dist/dG.vdmrt"));
 		
-		File root2 = new File("/Users/Miran/Documents/C_codegen/vdm2c/core/vdm2c/target/test-cgen/DistributionTests/Test1/cpu1");
-		copyTestFiles2(root2,new File("src/test/resources/distribution/test1/cpu1/distCall.h".replace('/', File.separatorChar)),
+		/** 1. Create the directory  **/
+		
+		// cpu1 directory
+		File cpu1Dir = new File("/Users/Miran/Documents/C_codegen/vdm2c/core/vdm2c/target/test-cgen/DistributionTests/Test1/cpu1");
+		copyTestFilesDist(cpu1Dir , new File("src/test/resources/distribution/test1/cpu1/distCall.h".replace('/', File.separatorChar)),
 				new File("src/test/resources/distribution/test1/cpu1/distCall.c".replace('/', File.separatorChar)),
 				new File("src/test/resources/distribution/test1/cpu1/CMakeLists.txt".replace('/', File.separatorChar)),
 				new File("src/test/resources/distribution/test1/cpu1/PrototypeCGMacro.c".replace('/', File.separatorChar)));
 		
+		// cpu2 directory
+		File cpu2Dir = new File("/Users/Miran/Documents/C_codegen/vdm2c/core/vdm2c/target/test-cgen/DistributionTests/Test1/cpu2");
+		copyTestFilesDist(cpu2Dir , new File("src/test/resources/distribution/test1/cpu2/distCall.h".replace('/', File.separatorChar)),
+				new File("src/test/resources/distribution/test1/cpu2/distCall.c".replace('/', File.separatorChar)),
+				new File("src/test/resources/distribution/test1/cpu2/CMakeLists.txt".replace('/', File.separatorChar)),
+				new File("src/test/resources/distribution/test1/cpu2/PrototypeCGMacro.c".replace('/', File.separatorChar)));
+
+		/** 2. Run cmake pr. CPU  **/
 		
-		// Run cmake for one CPU
 		String cmake = "cmake";
 		cmake = "/usr/local/bin/cmake";
 		ProcessBuilder pb = new ProcessBuilder(cmake,".");
-		pb.directory(root2);
 		CMakeUtil cmakeUtil = new CMakeUtil(new File("ss"), new File("src/test/resources/CMakeLists.txt"), false);
+		
+		// cpu1
+		pb.directory(cpu1Dir);
+		cmakeUtil.runProcess(pb, true);
+		// cpu2
+		pb.directory(cpu2Dir);
 		cmakeUtil.runProcess(pb, true);
 		
-		//async
-		String name = "cpu2Exe";
-
-		name = "./" + name;
-
-		ProcessBuilder pb3 = new ProcessBuilder(name);
-		pb3.directory(root2);
-		pb3.start();
+		/** 3. Run make pr. CPU **/
 		
-		// Run make
 		String make = "make";
 		ProcessBuilder pb2 = new ProcessBuilder(make);
 
-		pb2.directory(root2);
-
+		// cpu1
+		pb2.directory(cpu1Dir);
 		cmakeUtil.runProcess(pb2, false);
-
-		// Execute the process
 		
-		cmakeUtil.run(root2, "cpu1Exe", TEST_OUTPUT != null);
+		// cpu2
+		pb2.directory(cpu2Dir);
+		cmakeUtil.runProcess(pb2, false);
+		
+		/** 4. Run the exetutables **/
+		
+		// cpu2 -- async call
+		String name = "cpu2Exe";
+		name = "./" + name;
+		ProcessBuilder pb3 = new ProcessBuilder(name);
+		pb3.directory(cpu2Dir);
+		pb3.start();
+
+		// cpu1 -- sync call
+		cmakeUtil.run(cpu1Dir, "cpu1Exe", TEST_OUTPUT != null);
 	
 	}
 }

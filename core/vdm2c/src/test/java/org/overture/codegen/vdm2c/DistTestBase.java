@@ -205,7 +205,7 @@ public class DistTestBase extends BaseGeneratorTest
 		}
 	}
 
-	protected void copyTestFiles2(File r, File... tests) throws IOException {
+	protected void copyTestFilesDist(File r, File... tests) throws IOException {
 		for (File file : tests)
 		{
 			try
