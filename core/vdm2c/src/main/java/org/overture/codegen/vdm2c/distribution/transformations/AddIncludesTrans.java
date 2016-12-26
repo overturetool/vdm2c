@@ -41,52 +41,55 @@ public class AddIncludesTrans extends DepthFirstAnalysisCAdaptor
 	{
 	}
 
-	@Override
-	public void caseAClassHeaderDeclIR(AClassHeaderDeclIR node)
-			throws AnalysisException
-	{	
-		System.out.println();
-		
-		
-		List<CGenClonableString> includes = (List<CGenClonableString>) node.getIncludes();
-		
-		CGenClonableString std_arge = new CGenClonableString("distCall");
-		includes.add(std_arge);
-//		node.getIncludes().add(std_arge);
-		
-		
-		
-//		includes.add(std_arge);
-		
-//		node.setin
-		
-	}
-	
+	//	@Override
+	//	public void caseAClassHeaderDeclIR(AClassHeaderDeclIR node)
+	//			throws AnalysisException
+	//	{	
+	//		System.out.println();
+	//		
+	//		
+	//		List<CGenClonableString> includes = (List<CGenClonableString>) node.getIncludes();
+	//		
+	//		CGenClonableString std_arge = new CGenClonableString("distCall");
+	//		includes.add(std_arge);
+	////		node.getIncludes().add(std_arge);
+	//		
+	//		
+	//		
+	////		includes.add(std_arge);
+	//		
+	////		node.setin
+	//		
+	//	}
+
 	@Override
 	public void caseADefaultClassDeclIR(ADefaultClassDeclIR node)
 			throws AnalysisException
 	{
 		ADefaultClassDeclIR cl = node;
 
-		//		System.out.println("Dist transformation, method name: " + node.getName());
+		//if(node.getTag()!=null){
 
-		if(node.getTag()!=null){
+		//String cpu = cl.getTag().toString();
 
-			String cpu = cl.getTag().toString();
-			
-			AClassHeaderDeclIR header = node.getAncestor(AClassHeaderDeclIR.class);
-			
-			List<CGenClonableString> includes = (List<CGenClonableString>) header.getIncludes();
-			
-			CGenClonableString std_arge = new CGenClonableString("distCall");
-			includes.add(std_arge);
-			
-			header.setIncludes(includes);
-			
-			//header.getIncludes()
+		AClassHeaderDeclIR header = node.getAncestor(AClassHeaderDeclIR.class);
 
-			
+		List<CGenClonableString> includes = (List<CGenClonableString>) header.getIncludes();
+
+		CGenClonableString std_arge = new CGenClonableString("distCall");
+		includes.add(std_arge);
+
+		if(!cl.getName().equals(SystemArchitectureAnalysis.systemName)){
+			CGenClonableString sysName = new CGenClonableString(SystemArchitectureAnalysis.systemName);
+			includes.add(sysName);
 		}
+
+		header.setIncludes(includes);
+
+		//header.getIncludes()
+
+
+		//}
 	}
 
 
