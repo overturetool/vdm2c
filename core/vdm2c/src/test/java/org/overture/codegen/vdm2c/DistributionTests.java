@@ -8,10 +8,12 @@ import org.overture.codegen.vdm2c.CMakeUtil.CMakeGenerateException;
 
 public class DistributionTests extends DistTestBase
 {
+	
 	@Test
 	public void Test1() throws IOException, InterruptedException,
 			CMakeGenerateException
 	{
+		
 		generate(getPath("dist/dG.vdmrt"));
 		
 		File root2 = new File("/Users/Miran/Documents/C_codegen/vdm2c/core/vdm2c/target/test-cgen/DistributionTests/Test1/cpu1");
@@ -29,23 +31,14 @@ public class DistributionTests extends DistTestBase
 		CMakeUtil cmakeUtil = new CMakeUtil(new File("ss"), new File("src/test/resources/CMakeLists.txt"), false);
 		cmakeUtil.runProcess(pb, true);
 		
-		
-		
 		//async
-		
 		String name = "cpu2Exe";
 
 		name = "./" + name;
 
 		ProcessBuilder pb3 = new ProcessBuilder(name);
 		pb3.directory(root2);
-		
 		pb3.start();
-		
-		//ProcessBuilder cpu2 = new ProcessBuilder();
-		//cpu2.start();
-		
-		
 		
 		// Run make
 		String make = "make";
@@ -57,8 +50,7 @@ public class DistributionTests extends DistTestBase
 
 		// Execute the process
 		
-		//cmakeUtil.run(root2, "cpu2Exe", TEST_OUTPUT != null);
 		cmakeUtil.run(root2, "cpu1Exe", TEST_OUTPUT != null);
-		//compileAndTest();
+	
 	}
 }
