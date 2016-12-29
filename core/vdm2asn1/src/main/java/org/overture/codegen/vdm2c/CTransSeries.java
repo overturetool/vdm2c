@@ -32,6 +32,7 @@ import org.overture.codegen.trans.letexps.IfExpTrans;
 import org.overture.codegen.trans.patterns.PatternTrans;
 import org.overture.codegen.trans.patterns.PatternVarPrefixes;
 import org.overture.codegen.trans.quantifier.Exists1CounterData;
+import org.overture.codegen.vdm2c.transformations.TestTrans;
 
 
 public class CTransSeries
@@ -160,6 +161,8 @@ public class CTransSeries
 //		transformations.add(new RemoveCWrappersTrans(transAssistant));
 //		transformations.add(new MethodVisibilityTrans(transAssistant));
 
+		transformations.add(new TestTrans(transAssistant));
+		
 		return transformations;
 	}
 

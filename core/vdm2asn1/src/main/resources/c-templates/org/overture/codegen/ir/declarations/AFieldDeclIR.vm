@@ -1,1 +1,1 @@
-not used
+$node.getName() $CFormat.format(${node.getType()})

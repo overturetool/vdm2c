@@ -1,1 +1,5 @@
-$CFormat.formatName($node)
+##$CFormat.formatName($node)
+Rectangle ::= SEQUENCE {
+	height INTEGER,
+	width INTEGER
+}

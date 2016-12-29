@@ -57,7 +57,7 @@ public class CGen extends CodeGenBase
 	{
 		return emittedFiles;
 	}
-
+/*
 	public List<IRStatus<PIR>> makeRecsOuterClasses(List<IRStatus<PIR>> ast)
 	{
 		List<IRStatus<PIR>> extraClasses = new LinkedList<IRStatus<PIR>>();
@@ -131,7 +131,7 @@ public class CGen extends CodeGenBase
 
 		return extraClasses;
 	}
-
+*/
 	@Override
 	protected GeneratedData genVdmToTargetLang(List<IRStatus<PIR>> statuses)
 			throws AnalysisException
@@ -143,13 +143,13 @@ public class CGen extends CodeGenBase
 		statuses = replaceSystemClassWithClass(statuses);
 
 		statuses = ignoreVDMUnitTests(statuses);
-		List<IRStatus<PIR>> recClasses = makeRecsOuterClasses(statuses);
-		statuses.addAll(recClasses);
+		//List<IRStatus<PIR>> recClasses = makeRecsOuterClasses(statuses);
+		//statuses.addAll(recClasses);
 
-		for(IRStatus<ADefaultClassDeclIR> r : IRStatus.extract(recClasses, ADefaultClassDeclIR.class))
-		{
-			getInfo().getClasses().add(r.getIrNode());
-		}
+//		for(IRStatus<ADefaultClassDeclIR> r : IRStatus.extract(recClasses, ADefaultClassDeclIR.class))
+//		{
+//			getInfo().getClasses().add(r.getIrNode());
+//		}
 
 		List<IRStatus<PIR>> canBeGenerated = new LinkedList<>();
 

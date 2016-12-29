@@ -19,6 +19,7 @@ import org.overture.codegen.ir.PIR;
 import org.overture.codegen.ir.SExpIR;
 import org.overture.codegen.ir.STypeIR;
 import org.overture.codegen.ir.analysis.AnalysisException;
+import org.overture.codegen.ir.declarations.AFieldDeclIR;
 import org.overture.codegen.ir.declarations.AFormalParamLocalParamIR;
 import org.overture.codegen.ir.declarations.AMethodDeclIR;
 import org.overture.codegen.ir.declarations.SClassDeclIR;
@@ -35,7 +36,7 @@ import org.overture.codegen.vdm2c.extast.declarations.AClassHeaderDeclIR;
 public class CFormat
 {
 	protected static Logger log = Logger.getLogger(CFormat.class.getName());
-	
+
 	private MergeVisitor mergeVisitor;
 	private IRInfo info;
 
@@ -74,7 +75,7 @@ public class CFormat
 	public String format(INode node) throws AnalysisException
 	{
 		StringWriter writer = new StringWriter();
-		
+
 		node.apply(mergeVisitor, writer);
 		return writer.toString();
 	}
@@ -145,17 +146,40 @@ public class CFormat
 
 		return writer.toString();
 	}
-	
+
+	public String formatFields(List<AFieldDeclIR> exps)
+			throws AnalysisException
+	{
+		StringWriter writer = new StringWriter();
+
+		if (exps.size() <= 0)
+		{
+			return "";
+		}
+
+		AFieldDeclIR firstExp = exps.get(0);
+		writer.append(format(firstExp));
+		//writer.append(" \n ");
+		for (int i = 1; i < exps.size(); i++)
+		{
+			AFieldDeclIR exp = exps.get(i);
+			writer.append(", " + format(exp));
+			//writer.append(" \n ");
+		}
+
+		return writer.toString();
+	}
+
 	public String formatMapArgs(List<AMapletExpIR> exps) throws AnalysisException
 	{
 		List<SExpIR> flattened = new LinkedList<>();
-		
+
 		for(AMapletExpIR e : exps)
 		{
 			flattened.add(e.getLeft());
 			flattened.add(e.getRight());
 		}
-		
+
 		return formatArgs(flattened);
 	}
 
@@ -212,7 +236,7 @@ public class CFormat
 	{
 		return node instanceof ABlockStmIR;
 	}
-	
+
 	public String getVdmType(PIR node)
 	{
 		if(AssistantBase.getVdmNode(node) instanceof SClassDefinition)
@@ -222,7 +246,7 @@ public class CFormat
 
 		return "VDM_RECORD";
 	}
-	
+
 	/**
 	 * Call as $CFormat.findObjectName($node)
 	 * 
@@ -232,39 +256,39 @@ public class CFormat
 	public static String findObjectName(ASelfExpIR self)
 	{
 		AMethodDeclIR enclosingMethod = self.getAncestor(AMethodDeclIR.class);
-		
+
 		if(enclosingMethod == null)
 		{
 			log.error("Expected self to have an enclosing method");
 			return null;
 		}
-		
+
 		if(enclosingMethod.getFormalParams().isEmpty())
 		{
 			log.error("Expected method to have parametes");
 			return null;
 		}
-		
+
 		AFormalParamLocalParamIR firstParam = enclosingMethod.getFormalParams().getFirst();
-		
+
 		STypeIR type = firstParam.getType();
-		
+
 		if(!(type instanceof AExternalTypeIR))
 		{
 			log.error("Expected external type by now");
 			return null;
 		}
-		
+
 		AExternalTypeIR extType = (AExternalTypeIR) type;
-		
+
 		// We do it like this because the name is just constructed on the fly
 		// rather than being mangled
 		return extType.getName().replaceFirst("CLASS$", "");
 	}
-	
+
 	public boolean isMapType(SExpIR exp)
 	{
 		return info.getAssistantManager().getTypeAssistant().isMapType(exp);
 	}
-	
+
 }
