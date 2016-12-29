@@ -45,11 +45,10 @@ public class CallFuncMacroExpTrans extends DepthFirstAnalysisCAdaptor
 				
 				//supTy.set
 				
-				// Add number of function arguments to second last position
-				node.getArgs().add(node.getArgs().size() - 1, supTy);
+				node.getArgs().add(3, supTy);
 				
 				// Add number of function arguments to second last position
-				node.getArgs().add(node.getArgs().size() - 1, a);
+				node.getArgs().add(4, a);
 
 				// Transform name to distribution macro
 				id_exp.setName("DIST_CALL");
