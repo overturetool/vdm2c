@@ -1,1 +1,7 @@
-$CFormat.format(${node.getDecl()})
+#if ($CFormat.isNull($node.getInv()))
+	$CFormat.format(${node.getDecl()})
+#end
+
+#if (!$CFormat.isNull($node.getInv()))
+	$CFormat.formatTyDecl($node)
+#end

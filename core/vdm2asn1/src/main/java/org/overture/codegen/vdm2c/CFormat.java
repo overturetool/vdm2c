@@ -16,13 +16,20 @@ import org.overture.codegen.assistant.AssistantBase;
 import org.overture.codegen.ir.INode;
 import org.overture.codegen.ir.IRInfo;
 import org.overture.codegen.ir.PIR;
+import org.overture.codegen.ir.SDeclIR;
 import org.overture.codegen.ir.SExpIR;
 import org.overture.codegen.ir.STypeIR;
 import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.declarations.AFieldDeclIR;
 import org.overture.codegen.ir.declarations.AFormalParamLocalParamIR;
+import org.overture.codegen.ir.declarations.AFuncDeclIR;
 import org.overture.codegen.ir.declarations.AMethodDeclIR;
+import org.overture.codegen.ir.declarations.ANamedTypeDeclIR;
+import org.overture.codegen.ir.declarations.ATypeDeclIR;
 import org.overture.codegen.ir.declarations.SClassDeclIR;
+import org.overture.codegen.ir.expressions.AAndBoolBinaryExpIR;
+import org.overture.codegen.ir.expressions.AGreaterEqualNumericBinaryExpIR;
+import org.overture.codegen.ir.expressions.ALessEqualNumericBinaryExpIR;
 import org.overture.codegen.ir.expressions.AMapletExpIR;
 import org.overture.codegen.ir.expressions.ASelfExpIR;
 import org.overture.codegen.ir.statements.ABlockStmIR;
@@ -81,6 +88,42 @@ public class CFormat
 		return writer.toString();
 	}
 
+	public String formatTyDecl(ATypeDeclIR node) throws AnalysisException
+	{	
+		SDeclIR inv = node.getInv();
+		
+		String name = "";
+		
+		if(node.getDecl() instanceof ANamedTypeDeclIR){
+			ANamedTypeDeclIR decl = (ANamedTypeDeclIR) node.getDecl() ;
+			name =  decl.getName().toString() + " ::= INTEGER";
+		}
+
+		if(inv instanceof AFuncDeclIR){
+			AFuncDeclIR i = (AFuncDeclIR) inv;
+			
+			SExpIR body = i.getBody();
+			if(body instanceof AAndBoolBinaryExpIR){
+				AAndBoolBinaryExpIR b = (AAndBoolBinaryExpIR) body;
+				
+				// Format left side
+				SExpIR left = b.getLeft();
+				if(left instanceof AGreaterEqualNumericBinaryExpIR){
+					AGreaterEqualNumericBinaryExpIR l = (AGreaterEqualNumericBinaryExpIR) left;
+					name = name + " ( " + l.getRight().toString();
+				}
+				
+				// Format right side
+				SExpIR right = b.getRight();
+				if(right instanceof ALessEqualNumericBinaryExpIR){
+					ALessEqualNumericBinaryExpIR r = (ALessEqualNumericBinaryExpIR) right;
+					name = name + " .. " + r.getRight().toString() + " )";
+				}
+			}
+		}
+		return name;
+	}
+	
 	/**
 	 * This method is intended to be used for debugging. Changing the {@link #format(INode)} call in the template to
 	 * {@link #debug(INode)} make it possible to set a breakpoint here
