@@ -35,6 +35,7 @@ import org.overture.codegen.ir.expressions.ASelfExpIR;
 import org.overture.codegen.ir.statements.ABlockStmIR;
 import org.overture.codegen.ir.types.AExternalTypeIR;
 import org.overture.codegen.ir.types.AIntNumericBasicTypeIR;
+import org.overture.codegen.ir.types.ASeqSeqTypeIR;
 import org.overture.codegen.merging.MergeVisitor;
 import org.overture.codegen.merging.TemplateCallable;
 import org.overture.codegen.merging.TemplateManager;
@@ -91,28 +92,33 @@ public class CFormat
 	public String formatTyDecl(ATypeDeclIR node) throws AnalysisException
 	{	
 		SDeclIR inv = node.getInv();
-		
+
 		String name = "";
-		
+
 		if(node.getDecl() instanceof ANamedTypeDeclIR){
 			ANamedTypeDeclIR decl = (ANamedTypeDeclIR) node.getDecl() ;
-			name =  decl.getName().toString() + " ::= INTEGER";
+
+			if(decl.getType() instanceof AIntNumericBasicTypeIR)
+				name =  decl.getName().toString() + " ::= INTEGER";
+
+			if(decl.getType() instanceof ASeqSeqTypeIR)
+				name =  decl.getName().toString() + " ::= SEQUENCE SIZE (";
 		}
 
 		if(inv instanceof AFuncDeclIR){
 			AFuncDeclIR i = (AFuncDeclIR) inv;
-			
+
 			SExpIR body = i.getBody();
 			if(body instanceof AAndBoolBinaryExpIR){
 				AAndBoolBinaryExpIR b = (AAndBoolBinaryExpIR) body;
-				
+
 				// Format left side
 				SExpIR left = b.getLeft();
 				if(left instanceof AGreaterEqualNumericBinaryExpIR){
 					AGreaterEqualNumericBinaryExpIR l = (AGreaterEqualNumericBinaryExpIR) left;
-					name = name + " ( " + l.getRight().toString();
+					name = name + "( " + l.getRight().toString();
 				}
-				
+
 				// Format right side
 				SExpIR right = b.getRight();
 				if(right instanceof ALessEqualNumericBinaryExpIR){
@@ -121,9 +127,22 @@ public class CFormat
 				}
 			}
 		}
+
+		if(node.getDecl() instanceof ANamedTypeDeclIR){
+			ANamedTypeDeclIR decl = (ANamedTypeDeclIR) node.getDecl() ;	
+			STypeIR ty = decl.getType();
+			if(ty instanceof ASeqSeqTypeIR){
+				name = name + ") OF ";
+				ASeqSeqTypeIR seqTy = (ASeqSeqTypeIR) ty;
+				name = name + format(seqTy.getSeqOf());
+				//name = name + "INTEGER";
+			}
+
+		}
+
 		return name;
 	}
-	
+
 	/**
 	 * This method is intended to be used for debugging. Changing the {@link #format(INode)} call in the template to
 	 * {@link #debug(INode)} make it possible to set a breakpoint here
@@ -202,9 +221,9 @@ public class CFormat
 		}
 
 		AFieldDeclIR firstExp = exps.get(0);
-		
+
 		STypeIR ty = firstExp.getType();
-		
+
 		if(ty instanceof AIntNumericBasicTypeIR){
 			if(ty.getNamedInvType() != null){
 				writer.append(firstExp.getName() + " " + ty.getNamedInvType().getName().getName());
@@ -212,8 +231,8 @@ public class CFormat
 			else
 				writer.append(format(firstExp));
 		}
-		
-		
+
+
 		//writer.append(" \n ");
 		for (int i = 1; i < exps.size(); i++)
 		{
