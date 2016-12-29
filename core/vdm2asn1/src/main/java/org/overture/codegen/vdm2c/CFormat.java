@@ -27,6 +27,7 @@ import org.overture.codegen.ir.expressions.AMapletExpIR;
 import org.overture.codegen.ir.expressions.ASelfExpIR;
 import org.overture.codegen.ir.statements.ABlockStmIR;
 import org.overture.codegen.ir.types.AExternalTypeIR;
+import org.overture.codegen.ir.types.AIntNumericBasicTypeIR;
 import org.overture.codegen.merging.MergeVisitor;
 import org.overture.codegen.merging.TemplateCallable;
 import org.overture.codegen.merging.TemplateManager;
@@ -158,7 +159,18 @@ public class CFormat
 		}
 
 		AFieldDeclIR firstExp = exps.get(0);
-		writer.append(format(firstExp));
+		
+		STypeIR ty = firstExp.getType();
+		
+		if(ty instanceof AIntNumericBasicTypeIR){
+			if(ty.getNamedInvType() != null){
+				writer.append(firstExp.getName() + " " + ty.getNamedInvType().getName().getName());
+			}
+			else
+				writer.append(format(firstExp));
+		}
+		
+		
 		//writer.append(" \n ");
 		for (int i = 1; i < exps.size(); i++)
 		{
