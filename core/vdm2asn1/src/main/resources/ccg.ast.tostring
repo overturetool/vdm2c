@@ -1,0 +1,9 @@
+To String Extensions
+
+// import packages used by external $$ java code
+import org.overture.ast.util.Utils;
+import org.overture.ast.util.ToStringUtil;
+
+%IR->#decl->classHeader = [name]
+
+%IR->#exp->macroApply = [root] "( " + $Utils.listToString($[args]$)$ + " )"
