@@ -3,13 +3,11 @@ package org.overture.codegen.vdm2c.transformations;
 import org.overture.cgc.extast.analysis.DepthFirstAnalysisCAdaptor;
 import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.declarations.AVarDeclIR;
-import org.overture.codegen.ir.expressions.AApplyExpIR;
 import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
 import org.overture.codegen.ir.patterns.AIdentifierPatternIR;
 import org.overture.codegen.ir.statements.ABlockStmIR;
 import org.overture.codegen.ir.statements.AReturnStmIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
-import org.overture.codegen.vdm2c.utils.CTransUtil;
 
 //Extract return value to local variable and return that.
 public class ExtractRetValTrans extends DepthFirstAnalysisCAdaptor
@@ -44,8 +42,7 @@ public class ExtractRetValTrans extends DepthFirstAnalysisCAdaptor
 		retVar.setPattern(id);
 		retVar.setSourceNode(node.getExp().getSourceNode());
 		
-		AApplyExpIR applyexpr = CTransUtil.newApply("vdmClone", node.getExp());
-		retVar.setExp(applyexpr);
+		retVar.setExp(ValueSemantics.clone(node.getExp()));
 
 		AIdentifierVarExpIR retVarOcc = new AIdentifierVarExpIR();
 		retVarOcc.setType(retVar.getType().clone());
