@@ -185,6 +185,11 @@ public class GenerateSendBusTrans extends DepthFirstAnalysisCAdaptor
 						AOrBoolBinaryExpIR orb = new AOrBoolBinaryExpIR();
 						orBinList.add(orb);
 					}
+					
+					if(orBinList.isEmpty())
+						continue;
+						
+					
 					orBinList.remove();
 
 					int i = 0;
