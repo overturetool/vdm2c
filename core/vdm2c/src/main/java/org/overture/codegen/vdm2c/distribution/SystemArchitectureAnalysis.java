@@ -1,5 +1,9 @@
 package org.overture.codegen.vdm2c.distribution;
 
+import static org.overture.codegen.vdm2c.utils.CTransUtil.newAssignment;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.newIdentifier;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.newInternalMethod;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -11,15 +15,20 @@ import org.overture.codegen.ir.IRStatus;
 import org.overture.codegen.ir.PIR;
 import org.overture.codegen.ir.SExpIR;
 import org.overture.codegen.ir.SStmIR;
+import org.overture.codegen.ir.analysis.AnalysisException;
+import org.overture.codegen.ir.declarations.ADefaultClassDeclIR;
 import org.overture.codegen.ir.declarations.AFieldDeclIR;
 import org.overture.codegen.ir.declarations.AMethodDeclIR;
 import org.overture.codegen.ir.declarations.ASystemClassDeclIR;
 import org.overture.codegen.ir.expressions.AEnumSetExpIR;
 import org.overture.codegen.ir.expressions.AExplicitVarExpIR;
 import org.overture.codegen.ir.expressions.ANewExpIR;
+import org.overture.codegen.ir.name.ATokenNameIR;
 import org.overture.codegen.ir.statements.ABlockStmIR;
 import org.overture.codegen.ir.statements.ACallObjectStmIR;
+import org.overture.codegen.ir.statements.AReturnStmIR;
 import org.overture.codegen.ir.types.AClassTypeIR;
+import org.overture.codegen.ir.types.AVoidTypeIR;
 
 public class SystemArchitectureAnalysis
 {
@@ -36,7 +45,7 @@ public class SystemArchitectureAnalysis
 	public static HashMap<String, Set<String>> distributionMapStr = new HashMap<String, Set<String>>();
 
 	public static Set<String> systemClasses = new HashSet<String>();
-	
+
 	public void initDistributionMap(String cpuName)
 	{
 		HashSet<SExpIR> set = new HashSet<SExpIR>();
@@ -113,6 +122,9 @@ public class SystemArchitectureAnalysis
 							{
 								ACallObjectStmIR o = (ACallObjectStmIR) s;
 								String cpuName = o.getDesignator().toString();
+								if(!distributionMap.keySet().contains(cpuName))
+									continue;
+
 								Set<SExpIR> depSet = distributionMap.get(cpuName);
 								for (SExpIR arg : o.getArgs())
 								{
@@ -198,6 +210,67 @@ public class SystemArchitectureAnalysis
 		}
 		//for(bus : connectionMap.get(key))
 		//System.out.println();
+	}
+
+	static void createInitMethod(ADefaultClassDeclIR node) throws AnalysisException
+	{
+		ABlockStmIR body = new ABlockStmIR();
+
+		String cpuName = node.getTag().toString();
+
+		for (AFieldDeclIR field : node.getFields())
+		{
+			if (field.getFinal() && field.getInitial() != null)
+			{
+				body.getStatements().add(newAssignment(newIdentifier(field.getName(), null), field.getInitial()));
+			}
+		}
+		
+		//if(node.getMethods().get(0).getBody().clone() instanceof ABlockStmIR)
+		ABlockStmIR consMethodBody = (ABlockStmIR) node.getMethods().get(0).getBody().clone();
+
+		for(SStmIR s : consMethodBody.getStatements()){
+			if (s instanceof ACallObjectStmIR)
+			{
+				ACallObjectStmIR o = (ACallObjectStmIR) s;
+				String objName = o.getDesignator().toString();
+				
+				if(distributionMapStr.get(cpuName).contains(objName))
+					body.getStatements().add(s.clone());
+			}
+		}
+
+		//In case there is nothing to initialize, we still want the functions to have a body.  See comment below.
+		body.getStatements().add(new AReturnStmIR());
+
+		//Emit init function even if no value fields are present.  Simplifies FMU export.
+		AMethodDeclIR method = newInternalMethod(node.getTag().toString() + "_init", body, new AVoidTypeIR(), false);
+		method.setAccess("public");
+		node.getMethods().add(method);
+	}
+
+	public static void addCpuInitMethod(List<IRStatus<PIR>> statuses)
+	{
+
+		for (IRStatus<PIR> irStatus : statuses)
+		{
+
+			//First remove all VDMUnited.vdmrt-related classes.
+			if (irStatus.getIrNode() instanceof ADefaultClassDeclIR)
+			{
+				ADefaultClassDeclIR cl = (ADefaultClassDeclIR) irStatus.getIrNode();
+
+				if(cl.getTag() != null)
+					try
+				{
+						createInitMethod(cl);
+				} catch (AnalysisException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 
 

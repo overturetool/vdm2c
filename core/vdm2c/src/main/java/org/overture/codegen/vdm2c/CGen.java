@@ -200,6 +200,8 @@ public class CGen extends CodeGenBase
 			}
 		}
 
+		SystemArchitectureAnalysis.addCpuInitMethod(statuses);
+		
 		statuses = ignoreVDMUnitTests(statuses);
 		List<IRStatus<PIR>> recClasses = makeRecsOuterClasses(statuses);
 		statuses.addAll(recClasses);
