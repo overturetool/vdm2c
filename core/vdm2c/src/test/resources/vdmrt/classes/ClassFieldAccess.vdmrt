@@ -7,7 +7,7 @@ public field2 : int := 11;
 
 public static fieldStatic : bool := true;
 
-
+public x : int := 4;
 
 functions
 
@@ -49,6 +49,8 @@ instance variables
 
 public static v : ClassFieldAccess := new ClassFieldAccess();
 
+x : int := 5;
+
 end ClassFieldHolder
 
 
@@ -62,6 +64,8 @@ c : ClassFieldAccess = new ClassFieldAccess();
 instance variables
 
 cinst : ClassFieldAccess := new ClassFieldAccess();
+
+public static o: ClassFieldAccess := new ClassFieldAccess();
 
 operations
 
@@ -88,6 +92,9 @@ setField() ==
 (
 	cinst.field := 99;
 	return cinst.field = 99;
-)
+);
+
+public sameFieldName : () ==> bool
+sameFieldName () == return o.x = 4;
 
 end ClassFieldAccessAccessor
