@@ -14,7 +14,8 @@ Require-Bundle: org.eclipse.ui.console,
  org.slf4j.api;bundle-version="1.7.2"
 Bundle-Activator: org.overture.ide.plugins.cgen.Activator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Export-Package: org.overture.codegen.vdm2c,
+Export-Package: org.overture.codegen.utils,
+ org.overture.codegen.vdm2c,
  org.overture.ide.plugins.cgen.generator
 Bundle-ClassPath: .,
  jars/ir.jar,
