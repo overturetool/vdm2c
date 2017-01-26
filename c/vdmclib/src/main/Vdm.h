@@ -42,6 +42,7 @@
 #include <time.h>
 #include <string.h>
 #include <limits.h>
+#include <stdio.h>
 
 #include "TypedValue.h"
 

@@ -5,12 +5,8 @@
  *      Author: Victor Bandur
  */
 
-#include <stdio.h>
-
-#include "TypedValue.h"
-#include "Vdm.h"
 #include "CSVLib.h"
-#include "IOLib.h"
+
 
 
 
@@ -20,6 +16,8 @@ TVP vdm_CSV_flinecount(TVP f)
 	FILE *file = fopen(fileName, "r");
 	unsigned char c;
 	int lines = 0;
+	TVP resultProd[2];
+	TVP result;
 
 	while(!feof(file))
 	{
@@ -28,8 +26,14 @@ TVP vdm_CSV_flinecount(TVP f)
 			lines++;
 	}
 
-	fclose(fileName);
+	resultProd[0] = newBool(true);
+	resultProd[1] = newInt(lines);
+
+	fclose(file);
 	free(fileName);
+
+	result = newProductWithValues(2, resultProd);
+	return result;
 }
 
 
