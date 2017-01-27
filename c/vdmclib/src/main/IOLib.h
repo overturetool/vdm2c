@@ -39,6 +39,7 @@
  *      Author: Victor Bandur
  */
 
+char* unpackString(TVP charseq);
 
 TVP vdm_IO_freadval(TVP filename);
 TVP vdm_IO_fwriteval(TVP filename, TVP val, TVP fdir);

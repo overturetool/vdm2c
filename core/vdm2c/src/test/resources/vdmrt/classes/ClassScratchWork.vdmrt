@@ -1,13 +1,52 @@
-class Scratch
+class ClassCollectionUpdate
+
 instance variables
-field1 : int := 1 + 2 + 3;
+
+ivarSeq : seq of nat := [1];
 
 operations
-public op : () ==> int
-op() ==
-	return 1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10;
 
-public op2 : () ==> int
-op2() ==
-	return field1;
-end Scratch
+public updateSeqInstanceVar : () ==> bool
+updateSeqInstanceVar () ==
+(
+ ivarSeq(1) := 5;
+ return ivarSeq(1) = 5;
+);
+
+end ClassCollectionUpdate
+
+
+class Collatz
+instance variables
+	val : int;
+
+operations
+public run : () ==> ()
+run() ==
+	if val = 1 then
+		return
+	elseif val mod 2 = 0 then
+		val := val div 2
+	else
+		val := 3 * val + 1;
+end Collatz
+
+--class ScratchA
+--end ScratchA
+--
+--class ClassScratchWork
+--operations
+--op : () ==> ()
+--op() ==
+--(
+--	dcl a : ScratchA := new ScratchA();
+--	dcl b : ScratchA;
+--	dcl c : int := 0;
+--	dcl d: int;
+--	b := a;
+--	d := c;
+--	c := 3;
+--	)
+--end ClassScratchWork
+--  This test illustrates that assignment needs to be more sophisticated to achieve value semantics.
+--  Check generated code to observe aliasing.

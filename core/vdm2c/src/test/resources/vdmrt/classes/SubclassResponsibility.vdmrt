@@ -2,7 +2,7 @@ class AAAAA
 
 operations
 
-public op : () ==> bool
+protected op : () ==> bool
 op() == is subclass responsibility;
 
 functions

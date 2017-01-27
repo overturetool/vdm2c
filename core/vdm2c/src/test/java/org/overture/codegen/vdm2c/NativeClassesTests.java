@@ -2,6 +2,7 @@ package org.overture.codegen.vdm2c;
 
 import java.io.IOException;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.overture.codegen.vdm2c.CMakeUtil.CMakeGenerateException;
 
@@ -39,6 +40,13 @@ public class NativeClassesTests extends NativeTestBase
 	{
 		generate(getPath("classes/ClassInstanceVariableSeqAssign.vdmrt"));
 		compileAndTest(getTestCppFile("classes/ClassInstanceVariableSeqAssign_Tests.cpp"));
+	}
+	
+	@Test
+	public void ClassCollectionUpdate() throws IOException, InterruptedException, CMakeGenerateException 
+	{
+		generate(getPath("classes/ClassCollectionUpdate.vdmrt"));
+		compileAndTest(getTestCppFile("classes/ClassCollectionUpdate_Tests.cpp"));
 	}
 	
 	@Test
@@ -155,11 +163,11 @@ public class NativeClassesTests extends NativeTestBase
 	}
 	
 	@Test
-	public void ClassIfNotEq() throws IOException,
+	public void ClassIf() throws IOException,
 			InterruptedException, CMakeGenerateException
 	{
-		generate(getPath("classes/ClassIfNotEq.vdmrt"));
-		compileAndTest();
+		generate(getPath("classes/ClassIf.vdmrt"));
+		compileAndTest(getTestCppFile("classes/ClassIf_Tests.cpp"));
 	}
 	
 	@Test
@@ -188,6 +196,7 @@ public class NativeClassesTests extends NativeTestBase
 	}
 	
 	//Some "scratch work" tests.
+	@Ignore("This is only used internally for development debugging purposes.")
 	@Test
 	public void ClassScratchWork() throws IOException,
     InterruptedException, CMakeGenerateException

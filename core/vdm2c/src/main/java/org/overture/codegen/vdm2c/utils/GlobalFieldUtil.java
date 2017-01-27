@@ -7,13 +7,13 @@ import org.overture.codegen.ir.SExpIR;
 import org.overture.codegen.ir.STypeIR;
 import org.overture.codegen.ir.declarations.AFieldDeclIR;
 import org.overture.codegen.ir.declarations.SClassDeclIR;
-import org.overture.codegen.ir.expressions.AApplyExpIR;
 import org.overture.codegen.ir.expressions.AExplicitVarExpIR;
 import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
 import org.overture.codegen.ir.expressions.SVarExpIR;
 import org.overture.codegen.ir.name.ATokenNameIR;
 import org.overture.codegen.ir.types.AClassTypeIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
+import org.overture.codegen.vdm2c.transformations.ValueSemantics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,9 +85,9 @@ public class GlobalFieldUtil
 		AIdentifierVarExpIR newIdentifier = newIdentifier(NameConverter.getCName(field), node.getSourceNode());
 		newIdentifier.setType(node.getType().clone());
 		newIdentifier.setIsLocal(false);
-		AApplyExpIR vdmCloneApply = CTransUtil.newApply("vdmClone", newIdentifier);
-		vdmCloneApply.setType(node.getType().clone());
-		assist.replaceNodeWith(node, vdmCloneApply);
+		SExpIR cloneApply = ValueSemantics.clone(newIdentifier);
+		cloneApply.setType(node.getType().clone());
+		assist.replaceNodeWith(node, cloneApply);
 	}
 
 	public String lookupFieldClass(SClassDeclIR node, String name)

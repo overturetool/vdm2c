@@ -1,6 +1,5 @@
 package org.overture.codegen.vdm2c.transformations;
 
-import static org.overture.codegen.vdm2c.utils.CTransUtil.newApply;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newAssignment;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newIdentifier;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newInternalMethod;
@@ -58,7 +57,7 @@ public class CreateGlobalConstInitFunctionTrans extends
 		{
 			if (field.getFinal())
 			{
-				body.getStatements().add(toStm(newApply("vdmFree", newIdentifier(field.getName(), null))));
+				body.getStatements().add(toStm(ValueSemantics.free(field.getName(), field.getSourceNode())));
 			}
 		}
 		

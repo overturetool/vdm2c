@@ -27,6 +27,7 @@
  *      Author: kel
  */
 
+#include <stdarg.h>
 #include "VdmProduct.h"
 
 #define ASSERT_CHECK(s) assert(s->type == VDM_PRODUCT && "Value is not a product")
@@ -41,6 +42,26 @@ struct TypedValue* newProductWithValues(size_t size,TVP* elements)
 {
 	return newCollectionWithValues(size, VDM_PRODUCT, elements);
 }
+
+
+struct TypedValue* newProductVar(size_t size, ...)
+{
+	TVP elements[size];
+
+	va_list ap;
+	va_start(ap, size);
+
+	for (int i = 0; i < size; i++)
+	{
+		TVP arg = va_arg(ap, TVP);
+		elements[i]=arg;
+	}
+	va_end(ap);
+
+	return newCollectionWithValues(size, VDM_PRODUCT, elements);
+}
+
+
 
 TVP productGet(TVP product, int index)
 {

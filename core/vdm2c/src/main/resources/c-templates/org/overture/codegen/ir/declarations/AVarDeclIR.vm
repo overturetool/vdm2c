@@ -4,4 +4,8 @@
 ##
 ##$CFormat.formatMetaData($node.getMetaData())##
 ##
-$CFormat.format($node.getType()) $pattern = $CFormat.format($node.getExp())
+#set( $rhs = "" )
+#if ( !$CFormat.isNull($node.getExp()) )
+  #set( $rhs = "= $CFormat.format($node.getExp())" )
+#end
+$CFormat.format($node.getType()) $pattern $rhs

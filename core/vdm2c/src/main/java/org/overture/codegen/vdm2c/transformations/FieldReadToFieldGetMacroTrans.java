@@ -1,10 +1,12 @@
 package org.overture.codegen.vdm2c.transformations;
 
-import static org.overture.codegen.vdm2c.utils.CTransUtil.GET_FIELD_PTR;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.GET_FIELD;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.GET_FIELD_PTR;
+import static org.overture.codegen.vdm2c.utils.CTransUtil.GET_FIELD_PTR_BYREF;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.createIdentifier;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.newMacroApply;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
 
@@ -19,15 +21,19 @@ import org.overture.ast.definitions.SClassDefinitionBase;
 import org.overture.ast.expressions.AVariableExp;
 import org.overture.ast.node.INode;
 import org.overture.ast.statements.AIdentifierStateDesignator;
+import org.overture.ast.statements.AMapSeqStateDesignator;
 import org.overture.ast.types.AFunctionType;
 import org.overture.ast.types.AOperationType;
 import org.overture.cgc.extast.analysis.DepthFirstAnalysisCAdaptor;
+import org.overture.codegen.ir.STypeIR;
 import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.declarations.AFieldDeclIR;
 import org.overture.codegen.ir.declarations.SClassDeclIR;
 import org.overture.codegen.ir.expressions.AFieldExpIR;
 import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
 import org.overture.codegen.ir.statements.AAssignToExpStmIR;
+import org.overture.codegen.ir.types.AClassTypeIR;
+import org.overture.codegen.ir.types.AUnionTypeIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.extast.expressions.AMacroApplyExpIR;
 import org.overture.codegen.vdm2c.utils.CTransUtil;
@@ -95,16 +101,18 @@ public class FieldReadToFieldGetMacroTrans extends DepthFirstAnalysisCAdaptor
 				}
 			}
 		}
-
-		for(SClassDeclIR c : assist.getInfo().getClasses())
-		{
-			String fieldClass = fieldUtil.lookupFieldClass(c,  node.getMemberName());
-			if(fieldClass != null)
-			{
-				fieldClassName = fieldClass;
-			}
-		}
 		
+		AClassTypeIR classType = getClassTypeOfObject(node.getObject().getType());
+		
+		if (classType != null)
+		{
+			fieldClassName = classType.getName();
+		} else
+		{
+			logger.warn("Could not find class type of " + node.getObject());
+			return;
+		}
+			
 		AMacroApplyExpIR apply = newMacroApply(isThis ? GET_FIELD_PTR : GET_FIELD);
 		
 		assist.replaceNodeWith(node, apply);
@@ -120,6 +128,29 @@ public class FieldReadToFieldGetMacroTrans extends DepthFirstAnalysisCAdaptor
 		apply.setType(node.getType());
 	}
 	
+	private AClassTypeIR getClassTypeOfObject(STypeIR objType)
+	{
+		if(objType instanceof AClassTypeIR)
+		{
+			return (AClassTypeIR) objType;
+		}
+		if(objType instanceof AUnionTypeIR)
+		{
+			LinkedList<STypeIR> types = ((AUnionTypeIR) objType).getTypes();
+			
+			for(STypeIR t : types)
+			{
+				AClassTypeIR classType = getClassTypeOfObject(t);
+				
+				if(classType != null)
+				{
+					return classType;
+				}
+			}
+		}
+		
+		return null;
+	}
 
 	@Override
 	public void caseAIdentifierVarExpIR(AIdentifierVarExpIR node)
@@ -144,6 +175,9 @@ public class FieldReadToFieldGetMacroTrans extends DepthFirstAnalysisCAdaptor
 		String fieldClassName = null;
 
 		INode vdmNode = node.getSourceNode().getVdmNode();
+		
+		AMapSeqStateDesignator mapSeq = vdmNode.getAncestor(AMapSeqStateDesignator.class);
+		
 		if (vdmNode instanceof AVariableExp)
 		{
 			AVariableExp varExp = (AVariableExp) vdmNode;
@@ -234,7 +268,7 @@ public class FieldReadToFieldGetMacroTrans extends DepthFirstAnalysisCAdaptor
 
 		if (thisClassName != null && fieldClassName != null)
 		{
-			AMacroApplyExpIR apply = newMacroApply(GET_FIELD_PTR);
+			AMacroApplyExpIR apply = newMacroApply(findMacroName(mapSeq));
 			assist.replaceNodeWith(node, apply);
 
 			// add this type
@@ -246,6 +280,18 @@ public class FieldReadToFieldGetMacroTrans extends DepthFirstAnalysisCAdaptor
 			// add field name
 			apply.getArgs().add(node);
 			apply.setType(node.getType());
+		}
+	}
+	
+	public String findMacroName(AMapSeqStateDesignator designator)
+	{
+		if(designator != null && (designator.getMapType() != null || designator.getSeqType() != null))
+		{
+			return GET_FIELD_PTR_BYREF;
+		}
+		else
+		{
+			return GET_FIELD_PTR;
 		}
 	}
 }

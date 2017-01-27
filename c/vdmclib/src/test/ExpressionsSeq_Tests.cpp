@@ -311,3 +311,19 @@ TEST(Expression_Seq, seqInEqual)
 	vdmFree(t);
 	vdmFree(t2);
 }
+
+TEST(Expression_Seq, seqUpdate)
+{
+	int arr[] = {3};
+	TVP seq;
+	TVP res;
+
+	seq  = newSequence(1, arr);
+	vdmSeqUpdate(seq, newInt(1), newInt(4));
+	res = vdmSeqIndex(seq, newInt(1));
+	EXPECT_EQ(4, res->value.intVal);
+	EXPECT_NE(5, res->value.intVal);
+
+	vdmFree(seq);
+	vdmFree(res);
+}

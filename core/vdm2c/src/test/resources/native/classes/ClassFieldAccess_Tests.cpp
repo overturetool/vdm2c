@@ -22,9 +22,15 @@ vdmFree(res);\
 vdmFree(c)
 
 
-TEST(ClassInstanceVariableSeqAssign, call)
+TEST(ClassFieldAccessAccessor, call)
 {
 	CHECK(CLASS_ClassFieldAccessAccessor__Z8setFieldEV);
+}
+
+TEST(ClassFieldAccessAccessor, sameFieldName)
+{
+  ClassFieldAccessAccessor_static_init();
+	CHECK(CLASS_ClassFieldAccessAccessor__Z13sameFieldNameEV);
 }
 
 
