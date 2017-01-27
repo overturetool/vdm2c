@@ -4,7 +4,6 @@
 struct alloc_list_node
 {
 	TVP loc;
-	struct alloc_list_node *prev;
 	struct alloc_list_node *next;
 };
 
