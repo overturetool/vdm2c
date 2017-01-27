@@ -32,6 +32,7 @@
 #include "TypedValue.h"
 #include <assert.h>
 
+struct TypedValue* newProductVar(size_t size,...);
 struct TypedValue* newProduct(size_t size);
 struct TypedValue* newProductWithValues(size_t size,TVP* elements);
 
