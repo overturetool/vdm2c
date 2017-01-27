@@ -82,5 +82,39 @@ TEST(ClassCSV, linecount)
 
 TEST(ClassCSV, read_value)
 {
+	TVP CSVFileAsSeq;
+	TVP lineInFileAsSeq;
 
+	char *CSVContents[] =
+	{		"1,2,3,4",
+			"5,6,7,8",
+			"9,10,11,12",
+			"12.1,12.2,12.3,12.4",
+			"12.5,12.6,12.7,12.8"
+	};
+
+	FILE *CSVFile = fopen("CSVTestInput.csv", "w");
+	for(int i = 0; i < 5; i++)
+	{
+		fprintf(CSVFile, "%s\n", CSVContents[i]);
+	}
+	fclose(CSVFile);
+
+	CSVFileAsSeq = packString("CSVTestInput.csv");
+
+	lineInFileAsSeq = vdm_CSV_freadval(CSVFileAsSeq, newInt(4));
+
+
+
+	UNWRAP_PRODUCT(col, lineInFileAsSeq);
+	//lineAsSeq gets the sequence of chars.
+	UNWRAP_PRODUCT(lineAsSeq, col->value[1]);
+
+	EXPECT_EQ(12.1, lineAsSeq->value[0]->value.doubleVal);
+	EXPECT_EQ(12.2, lineAsSeq->value[1]->value.doubleVal);
+	EXPECT_EQ(12.3, lineAsSeq->value[2]->value.doubleVal);
+	EXPECT_EQ(12.4, lineAsSeq->value[3]->value.doubleVal);
+
+	vdmFree(CSVFileAsSeq);
+	vdmFree(lineInFileAsSeq);
 }

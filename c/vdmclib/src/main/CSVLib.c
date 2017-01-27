@@ -45,7 +45,7 @@ TVP vdm_CSV_freadval(TVP f, TVP index)
 	int lineSought = index->value.intVal;
 	int currLine = 1;
 	int i;
-	char *lineBuf, *tailPtr;
+	char *lineBuf, *tempLineBuf, *tailPtr;
 	size_t bytesToRead = 1000;
 	TVP *values;
 	TVP resultProd[2];
@@ -78,6 +78,8 @@ TVP vdm_CSV_freadval(TVP f, TVP index)
 
 	//Read line.
 	lineBuf = malloc(bytesToRead);
+	tempLineBuf = lineBuf;
+
 	c = 'a';
 	i = 0;
 	while(c != '\n')
@@ -105,7 +107,7 @@ TVP vdm_CSV_freadval(TVP f, TVP index)
 
 
 	//Clean up
-	free(lineBuf);
+	free(tempLineBuf);
 	free(fileName);
 	for(i = 0; i < numCols; i++)
 	{
