@@ -20,6 +20,7 @@ import org.overture.codegen.ir.SExpIR;
 import org.overture.codegen.ir.SPatternIR;
 import org.overture.codegen.ir.SStmIR;
 import org.overture.codegen.ir.analysis.AnalysisException;
+import org.overture.codegen.ir.expressions.AIntLiteralExpIR;
 import org.overture.codegen.ir.expressions.ALessEqualNumericBinaryExpIR;
 import org.overture.codegen.ir.expressions.ALessNumericBinaryExpIR;
 import org.overture.codegen.ir.expressions.APlusNumericBinaryExpIR;
@@ -80,7 +81,17 @@ public class ForLoopTrans extends DepthFirstAnalysisCAdaptor
 
 		APlusNumericBinaryExpIR pp = new APlusNumericBinaryExpIR();
 		pp.setLeft(createIdentifier(indexName, null));
-		pp.setRight(newApply("toInteger", node.getBy()));
+		
+		if (!(node.getBy() instanceof AIntLiteralExpIR))
+		{
+			// If the 'by' expression is a TVP convert it to an integer
+			pp.setRight(newApply("toInteger", node.getBy()));
+		} else
+		{
+			// If the 'by' expression is an integer literal at this
+			// point it means that the 'by' clause was omitted.
+			pp.setRight(node.getBy());
+		}
 
 		whileBlock.getStatements().add(newAssignment(createIdentifier(indexName, null), pp));
 
