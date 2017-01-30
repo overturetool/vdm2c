@@ -47,3 +47,8 @@ TEST(Class_StaticMethodAccess, localfn)
 {
 	CHECK_FALSE(CLASS_ClassFunCall__Z7localfnEV);
 }
+
+TEST(Class_StaticMethodAccess, funcInstantiation)
+{
+	CHECK(CLASS_ClassFunCall__Z17funcInstantiationEV);
+}
