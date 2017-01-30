@@ -27,6 +27,7 @@ import org.overture.codegen.ir.expressions.AApplyExpIR;
 import org.overture.codegen.ir.expressions.AExplicitVarExpIR;
 import org.overture.codegen.ir.expressions.AFieldExpIR;
 import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
+import org.overture.codegen.ir.expressions.AMethodInstantiationExpIR;
 import org.overture.codegen.ir.expressions.ANullExpIR;
 import org.overture.codegen.ir.statements.ABlockStmIR;
 import org.overture.codegen.ir.statements.ACallObjectExpStmIR;
@@ -209,6 +210,12 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 		
 		SExpIR rootNode = node.getRoot();
 
+		// TODO: Currently, VDM2C ignores the type arguments of function instantiations.
+		while (rootNode instanceof AMethodInstantiationExpIR)
+		{
+			rootNode = ((AMethodInstantiationExpIR) rootNode).getFunc();
+		}
+		
 		List<AMethodDeclIR> resolvedMethods;
 		
 		//Local map or sequence lookup.
