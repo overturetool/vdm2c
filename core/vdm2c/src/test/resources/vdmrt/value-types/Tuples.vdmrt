@@ -1,0 +1,15 @@
+class A
+
+operations
+
+public tupValCreation : () ==> bool
+tupValCreation () ==
+let t = mk_(1,2)
+in
+  return t = mk_(1,2);
+  
+public fieldRead : () ==> bool
+fieldRead () ==
+	return mk_('a', 'b').#2 = 'b';
+
+end A
