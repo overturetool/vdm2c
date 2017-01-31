@@ -36,3 +36,8 @@ TEST(Expression_Seq, forseq)
 {
 	CHECK(CLASS_ExpressionForLoop__Z6forseqEV);
 }
+
+TEST(Expression_Seq, testSumOneToFive)
+{
+	CHECK(CLASS_ExpressionForLoop__Z16testSumOneToFiveEV);
+}

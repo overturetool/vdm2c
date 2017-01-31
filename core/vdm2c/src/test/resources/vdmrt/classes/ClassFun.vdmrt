@@ -7,9 +7,11 @@ fn()== true;
 
 public nonstaticfn: () -> bool
 nonstaticfn() == true;
+
+public typeParamsFn[@T] :  () -> bool
+typeParamsFn () == true;
+
 end ClassFun
-
-
 
 class ClassFunCall
 
@@ -22,6 +24,9 @@ functions
 	
 	public localfn : () -> bool
 	localfn() == fn();
+	
+	public funcInstantiation :  () -> bool
+  funcInstantiation () == ClassFun`typeParamsFn[nat]();
 
 
 operations

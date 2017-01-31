@@ -45,8 +45,8 @@
             </goals>
             <configuration>
               <target>
-								<exec executable="make"><arg value="-j4" />
-								</exec>	<exec executable="make"><arg value="test" />
+								<exec executable="make" failonerror="true"><arg value="-j4" />
+								</exec>	<exec executable="make" failonerror="true"><arg value="test" />
 							</exec>
 							</target>
             </configuration>
