@@ -50,14 +50,13 @@ TEST(Expression_Numeric, minusExpGC)
 	assert(t->type == VDM_INT && "Value is not a integer");
 	TVP res = vdmMinusGC(t, &res);
 
-	vdm_gc();
 
 	EXPECT_EQ(-5,res->value.intVal);
 
 	vdm_gc();
 
-	vdmFree(t);
-	vdmFree(res);
+//	vdmFree(t);
+//	vdmFree(res);
 
 	vdm_gc_shutdown();
 }
