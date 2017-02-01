@@ -68,7 +68,7 @@ Before performing the release, the release version and the next development vers
 
 ```
 Release version = ${RELEASE_VER}
-New development version = ${RELEASE_VER}-SNAPSHOT
+New development version = ${NEW_DEV_VER}-SNAPSHOT
 ```
 
 Now, commit/push your `overture.release.properties` changes:

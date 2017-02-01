@@ -122,6 +122,16 @@ public class NativeTests extends NativeTestBase
 	}
 	
 	@Test
+	public void OtherCSVLib() throws IOException, InterruptedException,
+			CMakeGenerateException
+	{
+		generate(getPath("other/CSVLib.vdmrt"), getPath("lib/CSV.vdmrt"), getPath("lib/IO.vdmrt"));
+		
+		//Overloading getTestCppFile to copy the test CSV file as well.
+		compileAndTest(getTestCppFile("classes/ClassCSV_Tests.cpp"), getTestCppFile("classes/CSVTest.csv"));
+	}
+	
+	@Test
 	public void OtherIgnoreVDMUnit() throws IOException, InterruptedException,
 			CMakeGenerateException
 	{
