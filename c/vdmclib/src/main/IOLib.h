@@ -1,8 +1,4 @@
 //User has not provided their own IO library.
-#ifndef CUSTOM_IO
-
-#ifndef IO_H_
-#define IO_H_
 
 #include "TypedValue.h"
 #include "Vdm.h"
@@ -51,5 +47,3 @@ TVP vdm_IO_ferror();
 TVP vdm_IO_fecho(TVP filename, TVP text, TVP fdir);
 TVP vdm_IO_echo(TVP text);
 
-#endif /* IO_H_ */
-#endif /* CUSTOM_IO */
