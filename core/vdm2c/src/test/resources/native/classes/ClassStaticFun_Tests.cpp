@@ -52,3 +52,8 @@ TEST(Class_StaticMethodAccess, funcInstantiation)
 {
 	CHECK(CLASS_ClassFunCall__Z17funcInstantiationEV);
 }
+
+TEST(Class_StaticMethodAccess, twoParamFun)
+{
+	CHECK(CLASS_ClassFunCall__Z11twoParamFunEV);
+}
