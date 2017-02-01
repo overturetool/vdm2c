@@ -16,18 +16,23 @@ end ClassFun
 class ClassFunCall
 
 functions
-	public fn : () -> bool
-	fn() == false;
+  public fn : () -> bool
+  fn() == false;
 	
-	public externalfn : () -> bool
+  public externalfn : () -> bool
 	externalfn() == ClassFun`fn();
 	
-	public localfn : () -> bool
-	localfn() == fn();
+  public localfn : () -> bool
+  localfn() == fn();
 	
-	public funcInstantiation :  () -> bool
+  public funcInstantiation :  () -> bool
   funcInstantiation () == ClassFun`typeParamsFn[nat]();
-
+  
+  private condfun : int * int -> bool
+  condfun(a,b) == a + b = 3;
+  
+  public twoParamFun: () -> bool
+  twoParamFun() == condfun(1,2)
 
 operations
 	public op:  () ==> bool

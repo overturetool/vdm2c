@@ -148,8 +148,17 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 		
 		for(int i = 0; i < linkedList.size(); i++)
 		{
-			linkedList.get(i).apply(THIS);
-			apply.getArgs().add(linkedList.get(i));
+			SExpIR arg = linkedList.get(i);
+			
+			if(arg != null)
+			{
+				arg.apply(THIS);
+				apply.getArgs().add(arg.clone());
+			}
+			else
+			{
+				logger.error("Did not expect method argument to be null");
+			}
 		}
 		
 		return apply;
