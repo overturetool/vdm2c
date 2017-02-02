@@ -25,6 +25,16 @@ import org.overture.codegen.vdm2c.utils.IApplyAssistant;
 public class NumericTrans extends DepthFirstAnalysisCAdaptor implements
 		IApplyAssistant
 {
+	public static final String VDM_SUM = "vdmSum";
+	public static final String VDM_LESS_THAN = "vdmLessThan";
+	public static final String VDM_DIVISION = "vdmDivision";
+	public static final String VDM_GREATER_OR_EQUAL = "vdmGreaterOrEqual";
+	public static final String VDM_GREATER_THAN = "vdmGreaterThan";
+	public static final String VDM_LESS_OR_EQUAL = "vdmLessOrEqual";
+	public static final String VDM_MINUS = "vdmMinus";
+	public static final String VDM_MOD = "vdmMod";
+	public static final String VDM_PRODUCT = "vdmProduct";
+	
 	public TransAssistantIR assist;
 
 	public NumericTrans(TransAssistantIR assist)
@@ -48,62 +58,62 @@ public class NumericTrans extends DepthFirstAnalysisCAdaptor implements
 	public void caseAPlusNumericBinaryExpIR(APlusNumericBinaryExpIR node)
 			throws AnalysisException
 	{
-		rewriteToApply(this, node, "vdmSum", node.getLeft(), node.getRight());
+		rewriteToApply(this, node, VDM_SUM, node.getLeft(), node.getRight());
 	}
 
 	@Override
 	public void caseALessNumericBinaryExpIR(ALessNumericBinaryExpIR node)
 			throws AnalysisException
 	{
-		rewriteToApply(this, node, "vdmLessThan", node.getLeft(), node.getRight());
+		rewriteToApply(this, node, VDM_LESS_THAN, node.getLeft(), node.getRight());
 	}
 
 	@Override
 	public void caseADivideNumericBinaryExpIR(ADivideNumericBinaryExpIR node)
 			throws AnalysisException
 	{
-		rewriteToApply(this, node, "vdmDivision", node.getLeft(), node.getRight());
+		rewriteToApply(this, node, VDM_DIVISION, node.getLeft(), node.getRight());
 	}
 
 	@Override
 	public void caseAGreaterEqualNumericBinaryExpIR(
 			AGreaterEqualNumericBinaryExpIR node) throws AnalysisException
 	{
-		rewriteToApply(this, node, "vdmGreaterOrEqual", node.getLeft(), node.getRight());
+		rewriteToApply(this, node, VDM_GREATER_OR_EQUAL, node.getLeft(), node.getRight());
 	}
 
 	@Override
 	public void caseAGreaterNumericBinaryExpIR(AGreaterNumericBinaryExpIR node)
 			throws AnalysisException
 	{
-		rewriteToApply(this, node, "vdmGreaterThan", node.getLeft(), node.getRight());
+		rewriteToApply(this, node, VDM_GREATER_THAN, node.getLeft(), node.getRight());
 	}
 
 	@Override
 	public void caseALessEqualNumericBinaryExpIR(
 			ALessEqualNumericBinaryExpIR node) throws AnalysisException
 	{
-		rewriteToApply(this, node, "vdmLessOrEqual", node.getLeft(), node.getRight());
+		rewriteToApply(this, node, VDM_LESS_OR_EQUAL, node.getLeft(), node.getRight());
 	}
 
 	@Override
 	public void caseAMinusUnaryExpIR(AMinusUnaryExpIR node)
 			throws AnalysisException
 	{
-		rewriteToApply(this, node, "vdmMinus", node.getExp());
+		rewriteToApply(this, node, VDM_MINUS, node.getExp());
 	}
 
 	@Override
 	public void caseAModNumericBinaryExpIR(AModNumericBinaryExpIR node)
 			throws AnalysisException
 	{
-		rewriteToApply(this, node, "vdmMod", node.getLeft(), node.getRight());
+		rewriteToApply(this, node, VDM_MOD, node.getLeft(), node.getRight());
 	}
 
 	public void caseATimesNumericBinaryExpIR(ATimesNumericBinaryExpIR node)
 			throws AnalysisException
 	{
-		rewriteToApply(this, node, "vdmProduct", node.getLeft(), node.getRight());
+		rewriteToApply(this, node, VDM_PRODUCT, node.getLeft(), node.getRight());
 	};
 
 }
