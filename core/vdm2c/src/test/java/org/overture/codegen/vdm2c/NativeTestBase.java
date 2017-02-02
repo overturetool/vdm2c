@@ -100,6 +100,14 @@ public class NativeTestBase extends BaseGeneratorTest
 			}
 			
 		}
+		
+		List<String> args = buildArgs(paths);
+		
+		CGenMain.main(args.toArray(new String[] {}));
+	}
+
+	protected List<String> buildArgs(String... paths)
+	{
 		List<String> args = new Vector<String>(Arrays.asList(new String[] {
 				"--quiet", "-dest", root.getAbsolutePath() }));
 		args.addAll(Arrays.asList(paths));
@@ -109,8 +117,7 @@ public class NativeTestBase extends BaseGeneratorTest
 			args.add("-formatter");
 			args.add(System.getProperty(FORMATTER));
 		}
-		
-		CGenMain.main(args.toArray(new String[] {}));
+		return args;
 	}
 
 	protected void compileAndTest(File... tests) throws IOException,
