@@ -7,6 +7,8 @@
 
 
 #include "gtest/gtest.h"
+#include "TestFlowFunctions.h"
+
 
 extern "C"
 {
@@ -21,7 +23,7 @@ EXPECT_EQ (true,res->value.boolVal);\
 vdmFree(res);\
 vdmFree(c)
 
-TEST(Other_IOLib, usePrint)
+TEST_F(TestFlowFunctions, usePrint)
 {
 	CHECK(CLASS_IOLib__Z8usePrintEV);
 }

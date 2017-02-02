@@ -7,6 +7,8 @@
 
 
 #include "gtest/gtest.h"
+#include "TestFlowFunctions.h"
+
 
 extern "C"
 {
@@ -22,7 +24,7 @@ vdmFree(res);\
 vdmFree(c)
 
 
-TEST(ClassOp2, affect)
+TEST_F(TestFlowFunctions, affect)
 {
 	CHECK(CLASS_ClassOp2__Z6affectEIB, newInt(1), newBool(true));
 }

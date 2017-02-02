@@ -1,6 +1,8 @@
 
 
 #include "gtest/gtest.h"
+#include "TestFlowFunctions.h"
+
 
 extern "C"
 {
@@ -16,22 +18,22 @@ vdmFree(res);\
 vdmFree(c)
 
 
-TEST(ClassIf, checkEq)
+TEST_F(TestFlowFunctions, checkEq)
 {
  CHECK(CLASS_ClassIf__Z7checkEqEV);
 }
 
-TEST(ClassIf, checkNe)
+TEST_F(TestFlowFunctions, checkNe)
 {
  CHECK(CLASS_ClassIf__Z7checkNeEV);
 }
 
-TEST(ClassIfNotEq, opCallInIfTestTrue)
+TEST_F(TestFlowFunctions, opCallInIfTestTrue)
 {
  CHECK(CLASS_ClassIf__Z18opCallInIfTestTrueEV);
 }
 
-TEST(ClassIfNotEq, opCallInIfTestFalse)
+TEST_F(TestFlowFunctions, opCallInIfTestFalse)
 {
  CHECK(CLASS_ClassIf__Z19opCallInIfTestFalseEV);
 }

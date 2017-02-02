@@ -7,6 +7,8 @@
 
 
 #include "gtest/gtest.h"
+#include "TestFlowFunctions.h"
+
 
 extern "C"
 {
@@ -35,22 +37,22 @@ vdmFree(c)
 
 
 
-TEST(ClassConstructors, defaultConstruction)
+TEST_F(TestFlowFunctions, defaultConstruction)
 {
 	CHECK(CLASS_Constructors__Z23TestDefaultConstructionEV);
 }
 
-TEST(ClassConstructors, custom1Construction)
+TEST_F(TestFlowFunctions, custom1Construction)
 {
 	CHECK(CLASS_Constructors__Z23TestCustom1ConstructionEV);
 }
 
-TEST(ClassConstructors, custom2Construction)
+TEST_F(TestFlowFunctions, custom2Construction)
 {
 	CHECK_CUSTOM2(CLASS_Constructors__Z23TestCustom2ConstructionEV, newInt(12));
 }
 
-TEST(ClassConstructors, custom3Construction)
+TEST_F(TestFlowFunctions, custom3Construction)
 {
 	CHECK_CUSTOM3(CLASS_Constructors__Z23TestCustom3ConstructionEV, newInt(13), newInt(14));
 }

@@ -7,6 +7,8 @@
 
 
 #include "gtest/gtest.h"
+#include "TestFlowFunctions.h"
+
 
 extern "C"
 {
@@ -21,12 +23,12 @@ EXPECT_EQ (true,res->value.boolVal);\
 vdmFree(res);\
 vdmFree(c)
 
-TEST(Other_CSVLib, lineCount)
+TEST_F(TestFlowFunctions, lineCount)
 {
 	CHECK(CLASS_CSVLib__Z9lineCountEV);
 }
 
-TEST(Other_CSVLib, readLine)
+TEST_F(TestFlowFunctions, readLine)
 {
 	CHECK(CLASS_CSVLib__Z8readLineEV);
 }

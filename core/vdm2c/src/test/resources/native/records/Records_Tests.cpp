@@ -1,5 +1,7 @@
 
 #include "gtest/gtest.h"
+#include "TestFlowFunctions.h"
+
 
 extern "C"
 {
@@ -15,12 +17,12 @@ EXPECT_EQ (true,res->value.boolVal);\
 vdmFree(res);\
 vdmFree(a)
 
-TEST(Records, readField)
+TEST_F(TestFlowFunctions, readField)
 {
 	CHECK(CLASS_A__Z9readFieldEV);
 }
 
-TEST(Records, updateField)
+TEST_F(TestFlowFunctions, updateField)
 {
 	CHECK(CLASS_A__Z11updateFieldEV);
 }

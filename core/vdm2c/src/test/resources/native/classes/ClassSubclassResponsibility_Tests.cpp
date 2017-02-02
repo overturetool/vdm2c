@@ -7,6 +7,8 @@
 
 
 #include "gtest/gtest.h"
+#include "TestFlowFunctions.h"
+
 
 extern "C"
 {
@@ -23,13 +25,13 @@ vdmFree(res);\
 vdmFree(b)
 
 
-TEST(SubclassResponsibility, operation)
+TEST_F(TestFlowFunctions, operation)
 {
 	CHECK(CLASS_BBBBB__Z2opEV);
 }
 
 
-TEST(SubclassResponsibility, function)
+TEST_F(TestFlowFunctions, function)
 {
 	CHECK(CLASS_BBBBB__Z1fEV);
 }

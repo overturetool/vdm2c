@@ -7,6 +7,8 @@
 
 
 #include "gtest/gtest.h"
+#include "TestFlowFunctions.h"
+
 
 extern "C"
 {
@@ -22,7 +24,7 @@ EXPECT_EQ (true,res->value.boolVal);\
 vdmFree(res);\
 vdmFree(c)
 
-TEST(Expression_Self, self)
+TEST_F(TestFlowFunctions, self)
 {
 	CHECK(CLASS_SelfTest__Z2opEV);
 }
