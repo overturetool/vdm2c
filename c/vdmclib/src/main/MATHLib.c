@@ -227,7 +227,17 @@ TVP vdm_MATH_tan(TVP a)
 
 TVP vdm_MATH_cos(TVP v)
 {
-	//not yet implemented.
+	if(v->type == VDM_NAT || v->type == VDM_NAT1 || v->type == VDM_INT)
+	{
+		return newReal(cos((double)(v->value.intVal)));
+	}
+
+
+	if(v->type == VDM_REAL)
+	{
+		return newReal(cos(v->value.doubleVal));
+	}
+
 	return NULL;
 }
 

@@ -368,10 +368,15 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 		} else if (applyType instanceof ASeqSeqTypeIR)
 		{
 			// sequence index
-			AApplyExpIR seqIndexApply = newApply("vdmSeqIndex", originalApply.getRoot());
-			seqIndexApply.getArgs().addAll(originalApply.getArgs());
+			AApplyExpIR seqIndexApply = newApply("vdmSeqIndex", originalApply.getRoot().clone());
+			
+			for(SExpIR a : originalApply.getArgs())
+			{
+				seqIndexApply.getArgs().add(a.clone());
+			}
+			
 			seqIndexApply.setSourceNode(originalApply.getSourceNode());
-			seqIndexApply.setType(originalApply.getType());
+			seqIndexApply.setType(originalApply.getType().clone());
 
 			assist.replaceNodeWith(originalApply, seqIndexApply);
 			seqIndexApply.apply(THIS);
