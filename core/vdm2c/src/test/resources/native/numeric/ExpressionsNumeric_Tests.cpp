@@ -6,6 +6,8 @@
  */
 
 #include "gtest/gtest.h"
+#include "TestFlowFunctions.h"
+
 
 extern "C"
 {
@@ -21,83 +23,83 @@ EXPECT_EQ (true,res->value.boolVal);\
 vdmFree(res);\
 vdmFree(c)
 
-TEST(ExpressionNumeric, abs)
+TEST_F(TestFlowFunctions, abs)
 {
 	CHECK(CLASS_ExpressionNumeric__Z6absExpEV);
 }
 
-TEST(ExpressionNumeric, floor)
+TEST_F(TestFlowFunctions, floor)
 {
 	CHECK(CLASS_ExpressionNumeric__Z8floorExpEV);
 }
 
-TEST(ExpressionNumeric, sum)
+TEST_F(TestFlowFunctions, sum)
 {
 	CHECK(CLASS_ExpressionNumeric__Z6sumExpEV);
 }
 
-TEST(ExpressionNumeric, difference)
+TEST_F(TestFlowFunctions, difference)
 {
 	CHECK(CLASS_ExpressionNumeric__Z13differenceExpEV);
 }
 
-TEST(ExpressionNumeric, product)
+TEST_F(TestFlowFunctions, product)
 {
 	CHECK(CLASS_ExpressionNumeric__Z10productExpEV);
 }
 
-TEST(ExpressionNumeric, division)
+TEST_F(TestFlowFunctions, division)
 {
 	CHECK(CLASS_ExpressionNumeric__Z11divisionExpEV);
 }
 
-TEST(ExpressionNumeric,intDivision )
+TEST_F(TestFlowFunctions,intDivision )
 {
 	CHECK(CLASS_ExpressionNumeric__Z14intDivisionExpEV);
 }
-TEST(ExpressionNumeric, remainder)
+TEST_F(TestFlowFunctions, remainder)
 {
 	CHECK(CLASS_ExpressionNumeric__Z12remainderExpEV);
 }
-TEST(ExpressionNumeric, mod)
+TEST_F(TestFlowFunctions, mod)
 {
 	CHECK(CLASS_ExpressionNumeric__Z6modExpEV);
 }
-TEST(ExpressionNumeric, power)
+TEST_F(TestFlowFunctions, power)
 {
 	CHECK(CLASS_ExpressionNumeric__Z8powerExpEV);
 }
-TEST(ExpressionNumeric,lessthan )
+TEST_F(TestFlowFunctions,lessthan )
 {
 	CHECK(CLASS_ExpressionNumeric__Z11lessthanExpEV);
 }
-TEST(ExpressionNumeric,greaterThan )
+TEST_F(TestFlowFunctions,greaterThan )
 {
 	CHECK(CLASS_ExpressionNumeric__Z14greaterThanExpEV);
 }
-TEST(ExpressionNumeric, lessEqual)
+TEST_F(TestFlowFunctions, lessEqual)
 {
 	CHECK(CLASS_ExpressionNumeric__Z13lessEqualExp1EV);
 }
-TEST(ExpressionNumeric,greaterEqual )
+TEST_F(TestFlowFunctions,greaterEqual )
 {
 	CHECK(CLASS_ExpressionNumeric__Z16greaterEqualExp1EV);
 }
-TEST(ExpressionNumeric, equal)
+TEST_F(TestFlowFunctions, equal)
 {
 	CHECK(CLASS_ExpressionNumeric__Z8equalExpEV);
 }
-TEST(ExpressionNumeric,notEqual )
+TEST_F(TestFlowFunctions,notEqual )
 {
 	CHECK(CLASS_ExpressionNumeric__Z11notEqualExpEV);
 }
 
-TEST(ExpressionNumeric,unaryPlus )
+TEST_F(TestFlowFunctions,unaryPlus )
 {
 	CHECK(CLASS_ExpressionNumeric__Z9unaryPlusEV);
 }
 
-TEST(ExpressionNumeric,unaryMinus )
+TEST_F(TestFlowFunctions,unaryMinus )
 {
 	CHECK(CLASS_ExpressionNumeric__Z10unaryMinusEV);
 }

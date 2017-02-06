@@ -7,6 +7,8 @@
 
 
 #include "gtest/gtest.h"
+#include "TestFlowFunctions.h"
+
 
 extern "C"
 {
@@ -28,12 +30,12 @@ vdmFree(res);\
 vdmFree(c)
 
 
-TEST(Class_StaticMethodAccess, getStaticOperation)
+TEST_F(TestFlowFunctions, getStaticOperation)
 {
 	CHECK(CLASS_ClassStaticUser__Z18getStaticOperationEV);
 }
 
-TEST(Class_StaticMethodAccess, getOverriddenStaticOperation)
+TEST_F(TestFlowFunctions, getOverriddenStaticOperation)
 {
 	CHECK_FALSE(CLASS_ClassStaticUser__Z28getOverriddenStaticOperationEV);
 }

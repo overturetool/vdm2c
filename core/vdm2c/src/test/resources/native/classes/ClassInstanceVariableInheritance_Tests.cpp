@@ -7,6 +7,8 @@
 
 
 #include "gtest/gtest.h"
+#include "TestFlowFunctions.h"
+
 
 extern "C"
 {
@@ -23,12 +25,12 @@ vdmFree(c)
 
 
 
-TEST(ClassDepth0, testSumFields)
+TEST_F(TestFlowFunctions, testSumFields)
 {
 	CHECK(CLASS_ClassDepth0__Z8checkSumEV);
 }
 
-TEST(ClassDepth0, testSetInheritedField)
+TEST_F(TestFlowFunctions, testSetInheritedField)
 {
 	CHECK(CLASS_ClassDepth0__Z17checkSetInheritedEV);
 }

@@ -7,6 +7,8 @@
 
 
 #include "gtest/gtest.h"
+#include "TestFlowFunctions.h"
+
 
 extern "C"
 {
@@ -23,7 +25,7 @@ vdmFree(res);\
 vdmFree(c)
 
 
-TEST(ClassValueInheritance, check)
+TEST_F(TestFlowFunctions, check)
 {
 	CHECK(CLASS_ClassValueInheritance__Z5checkEV);
 }

@@ -7,6 +7,8 @@
 
 
 #include "gtest/gtest.h"
+#include "TestFlowFunctions.h"
+
 
 extern "C"
 {
@@ -23,7 +25,7 @@ vdmFree(res);\
 vdmFree(c)
 
 
-TEST(ExpressionCases, casesLitMatch)
+TEST_F(TestFlowFunctions, casesLitMatch)
 {
 	CHECK(CLASS_ExpressionCases__Z13casesLitMatchEV);
 }

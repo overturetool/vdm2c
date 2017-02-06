@@ -7,6 +7,8 @@
 
 
 #include "gtest/gtest.h"
+#include "TestFlowFunctions.h"
+
 #include <stdio.h>
 
 extern "C"
@@ -15,7 +17,7 @@ extern "C"
 
 }
 
-TEST(Other_IgnoreVDMUnit, fileNotGenerated)
+TEST_F(TestFlowFunctions, fileNotGenerated)
 {
 	FILE *i = NULL;
 	i = fopen("VDMUnitTest.c", "r");

@@ -186,6 +186,10 @@ public class NativeTestBase extends BaseGeneratorTest
 	}
 
 	protected void copyTestFiles(File... tests) throws IOException {
+		
+		File fixture = getFixtureFile();
+		FileUtils.copyFile(fixture, new File(root, fixture.getName()));
+		
 		for (File file : tests)
 		{
 			try
@@ -204,6 +208,11 @@ public class NativeTestBase extends BaseGeneratorTest
 				}
 			}
 		}
+	}
+
+	protected File getFixtureFile()
+	{
+		return new File("src/test/resources/TestFlowFunctions.h");
 	}
 
 	protected String getPath(String rpath)

@@ -7,6 +7,8 @@
 
 
 #include "gtest/gtest.h"
+#include "TestFlowFunctions.h"
+
 
 extern "C"
 {
@@ -22,32 +24,32 @@ EXPECT_EQ (true,res->value.boolVal);\
 vdmFree(res);\
 vdmFree(c)
 
-TEST(Expression_Boolean, notExp)
+TEST_F(TestFlowFunctions, notExp)
 {
 	CHECK(CLASS_ExpressionBoolean__Z6notExpEV);
 }
 
-TEST(Expression_Boolean, andExp)
+TEST_F(TestFlowFunctions, andExp)
 {
 	CHECK(CLASS_ExpressionBoolean__Z6andExpEV);
 }
 
-TEST(Expression_Boolean, orExp)
+TEST_F(TestFlowFunctions, orExp)
 {
 	CHECK(CLASS_ExpressionBoolean__Z5orExpEV);
 }
 
-TEST(Expression_Boolean, implicationExp)
+TEST_F(TestFlowFunctions, implicationExp)
 {
 	CHECK(CLASS_ExpressionBoolean__Z14implicationExpEV);
 }
 
-TEST(Expression_Boolean, biimplicationExp)
+TEST_F(TestFlowFunctions, biimplicationExp)
 {
 	CHECK(CLASS_ExpressionBoolean__Z16biimplicationExpEV);
 }
 
-TEST(Expression_Boolean, equalityExp)
+TEST_F(TestFlowFunctions, equalityExp)
 {
 	CHECK(CLASS_ExpressionBoolean__Z11equalityExpEV);
 }

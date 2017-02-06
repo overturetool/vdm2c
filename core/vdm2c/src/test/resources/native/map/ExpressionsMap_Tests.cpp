@@ -1,5 +1,7 @@
 
 #include "gtest/gtest.h"
+#include "TestFlowFunctions.h"
+
 
 extern "C"
 {
@@ -16,37 +18,37 @@ vdmFree(res);\
 vdmFree(c)
 
 
-TEST(ExpressionMap, mapDom)
+TEST_F(TestFlowFunctions, mapDom)
 {
 	CHECK(CLASS_ExpressionMap__Z6mapDomEV);
 }
 
-TEST(ExpressionMap, mapRng)
+TEST_F(TestFlowFunctions, mapRng)
 {
 	CHECK(CLASS_ExpressionMap__Z6mapRngEV);
 }
 
-TEST(ExpressionMap, mapAccessSimple)
+TEST_F(TestFlowFunctions, mapAccessSimple)
 {
 	CHECK(CLASS_ExpressionMap__Z15mapAccessSimpleEV);
 }
 
-TEST(ExpressionMap, mapEq)
+TEST_F(TestFlowFunctions, mapEq)
 {
 	CHECK(CLASS_ExpressionMap__Z5mapEqEV);
 }
 
-TEST(ExpressionMap, mapNeq)
+TEST_F(TestFlowFunctions, mapNeq)
 {
 	CHECK(CLASS_ExpressionMap__Z6mapNeqEV);
 }
 
-TEST(ExpressionMap, mapInv)
+TEST_F(TestFlowFunctions, mapInv)
 {
 	CHECK(CLASS_ExpressionMap__Z6mapInvEV);
 }
 
-TEST(ExpressionMap, mapUnion)
+TEST_F(TestFlowFunctions, mapUnion)
 {
 	CHECK(CLASS_ExpressionMap__Z8mapUnionEV);
 }

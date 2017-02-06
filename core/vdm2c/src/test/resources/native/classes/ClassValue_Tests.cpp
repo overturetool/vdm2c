@@ -7,6 +7,8 @@
 
 
 #include "gtest/gtest.h"
+#include "TestFlowFunctions.h"
+
 
 extern "C"
 {
@@ -23,7 +25,7 @@ vdmFree(res);\
 vdmFree(c)
 
 
-TEST(ClassValue, op1)
+TEST_F(TestFlowFunctions, op1)
 {
 	ClassValue_const_init();
 	ClassValue0_const_init();
@@ -33,7 +35,7 @@ TEST(ClassValue, op1)
 	ClassValue_const_shutdown();
 }
 
-TEST(ClassValue, opOtherValue)
+TEST_F(TestFlowFunctions, opOtherValue)
 {
 	ClassValue_const_init();
 	ClassValue0_const_init();
