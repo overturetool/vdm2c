@@ -4,7 +4,7 @@ struct alloc_list_node *allocd_mem_head, *allocd_mem_tail;
 
 void vdm_gc_init()
 {
-	allocd_mem_head = malloc(sizeof (struct alloc_list_node));
+	allocd_mem_head = (struct alloc_list_node*)malloc(sizeof (struct alloc_list_node));
 	allocd_mem_tail = allocd_mem_head;
 
 	allocd_mem_head->loc = NULL;
@@ -16,7 +16,7 @@ void add_allocd_mem_node(TVP l, TVP *from)
 	allocd_mem_tail->loc = l;
 	allocd_mem_tail->loc->ref_from = from;
 
-	allocd_mem_tail->next = malloc(sizeof(struct alloc_list_node));
+	allocd_mem_tail->next = (struct alloc_list_node*)malloc(sizeof(struct alloc_list_node));
 	allocd_mem_tail = allocd_mem_tail->next;
 	allocd_mem_tail->next = NULL;
 }
@@ -74,7 +74,7 @@ void vdm_gc_shutdown()
 
 void vdm_gc()
 {
-	struct alloc_list_node *current;
+	struct alloc_list_node *current, *tmp;
 
 	current = allocd_mem_head;
 
@@ -84,6 +84,8 @@ void vdm_gc()
 
 	while(current != allocd_mem_tail)
 	{
+		tmp = current->next;
+
 		//No information was passed about where the reference was assigned.
 		//This is the case when the value is created in-place (or when vdmFreed???)
 		if(current->loc->ref_from == NULL)
@@ -95,9 +97,8 @@ void vdm_gc()
 		{
 			vdmFree(current->loc);
 			remove_allocd_mem_node(current);
-
 		}
 
-		current = current->next;
+		current = tmp;
 	}
 }
