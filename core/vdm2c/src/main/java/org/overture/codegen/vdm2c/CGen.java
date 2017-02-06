@@ -44,8 +44,16 @@ public class CGen extends CodeGenBase
 	
 	public static Map<String, Boolean> hasTimeMap = null;
 
+	private CGenSettings cGenSettings;
+	
 	public CGen()
 	{
+		this.cGenSettings = new CGenSettings();
+	}
+	
+	public CGenSettings getCGenSettings()
+	{
+		return cGenSettings;
 	}
 
 	@Override
