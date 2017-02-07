@@ -13,6 +13,7 @@ void vdm_gc();
 void vdm_gc_shutdown();
 void add_allocd_mem_node(TVP l, TVP *from);
 void remove_allocd_mem_node(struct alloc_list_node *node);
+void remove_allocd_mem_node_by_location(TVP loc);
 
 extern struct alloc_list_node *allocd_mem_head;
 extern struct alloc_list_node *allocd_mem_current;

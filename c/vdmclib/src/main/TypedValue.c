@@ -48,6 +48,7 @@ struct TypedValue* newTypeValue(vdmtype type, TypedValueType value)
 	struct TypedValue* ptr = (struct TypedValue*) malloc(sizeof(struct TypedValue));
 	ptr->type = type;
 	ptr->value = value;
+	ptr->ref_from = NULL;
 
 	return ptr;
 }
@@ -570,8 +571,96 @@ bool collectionEqual(TVP col1,TVP col2)
 	return match;
 }
 
+
+void vdmFree_GCInternal(struct TypedValue* ptr)
+{
+	TVP *tmp;
+
+	if (ptr == NULL)
+		return;
+
+	switch (ptr->type)
+	{
+	case VDM_BOOL:
+	case VDM_CHAR:
+	case VDM_INT:
+	case VDM_NAT:
+	case VDM_NAT1:
+	case VDM_REAL:
+	case VDM_RAT:
+	case VDM_QUOTE:
+	{
+		break;
+	}
+	case VDM_MAP:
+		//TODO:
+		break;
+	case VDM_PRODUCT:
+	case VDM_SEQ:
+	case VDM_SET:
+	{
+		UNWRAP_COLLECTION(cptr, ptr);
+		for (int i = 0; i < cptr->size; i++)
+		{
+			if (cptr->value[i] != NULL)
+			{
+				vdmFree_GCInternal(cptr->value[i]);
+			}
+		}
+		free(cptr->value);
+		free(cptr);
+		ptr->value.ptr = NULL;
+		break;
+	}
+	//	case VDM_OPTIONAL:
+	//		//TODO
+	//		break;
+	case VDM_RECORD:
+		ASSERT_CHECK_RECORD(ptr);
+
+		int i;
+		int numFields;
+
+		numFields = (*((struct TypedValue**)((char*)(((struct ClassType*)ptr->value.ptr)->value) + \
+				sizeof(struct VTable*) + \
+				sizeof(int) + \
+				sizeof(unsigned int))))->value.intVal;
+
+		//We include the numFields field here, since it is just a TVP.
+		for(i = 0; i <= numFields; i++)
+		{
+			vdmFree_GCInternal(*((struct TypedValue**)((char*)(((struct ClassType*)ptr->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(struct TypedValue*) * i)));
+		}
+
+		//Free the virtual function table.
+		free(((struct ClassType*)ptr->value.ptr)->value);
+
+		break;
+	case VDM_CLASS:
+	{
+		//handle smart pointer
+		struct ClassType* classTptr = (struct ClassType*) ptr->value.ptr;
+		classTptr->freeClass(classTptr->value);
+		classTptr->value = NULL;
+		classTptr->freeClass = NULL;
+
+		//free classtype
+		free(classTptr);
+		ptr->value.ptr = NULL;
+		break;
+	}
+	}
+
+	//free typedvalue
+	free(ptr);
+}
+
+
+
 void vdmFree(struct TypedValue* ptr)
 {
+	TVP *tmp;
+
 	if (ptr == NULL)
 		return;
 
@@ -648,7 +737,13 @@ void vdmFree(struct TypedValue* ptr)
 	}
 
 	//free typedvalue
+	remove_allocd_mem_node_by_location(ptr);
+	tmp = ptr->ref_from;
 	free(ptr);
+	if(tmp != NULL)
+	{
+		*tmp = NULL;
+	}
 }
 
 TVP vdmEquals(struct TypedValue* a, struct TypedValue* b)
@@ -659,3 +754,4 @@ TVP vdmEqualsGC(struct TypedValue* a, struct TypedValue* b, TVP *from)
 
 TVP vdmInEquals(struct TypedValue* a, struct TypedValue* b)
 {	return newBool(!equals(a,b));}
+
