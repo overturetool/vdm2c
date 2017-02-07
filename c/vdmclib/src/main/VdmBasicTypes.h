@@ -39,11 +39,17 @@
  */
 
 TVP vdmNot(TVP arg);
+TVP vdmNotGC(TVP arg, TVP *from);
 TVP vdmAnd(TVP a,TVP b);
+TVP vdmAndGC(TVP a, TVP b, TVP *from);
 TVP vdmOr(TVP a,TVP b);
+TVP vdmOrGC(TVP a, TVP b, TVP *from);
 TVP vdmXor(TVP a,TVP b);
+TVP vdmXorGC(TVP a, TVP b, TVP *from);
 TVP vdmImplies(TVP a,TVP b);
+TVP vdmImpliesGC(TVP a, TVP b, TVP *from);
 TVP vdmBiimplication(TVP a,TVP b);
+TVP vdmBiimplicationGC(TVP a, TVP b, TVP *from);
 
 /*
  * Numeric
