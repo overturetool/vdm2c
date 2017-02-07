@@ -60,7 +60,6 @@ TVP vdmRem(TVP a,TVP b);
 TVP vdmMod(TVP a,TVP b);
 TVP vdmPower(TVP a,TVP b);
 TVP vdmNumericEqual(TVP a,TVP b);
-TVP vdmNotEqual(TVP a,TVP b);
 TVP vdmGreaterThan(TVP a,TVP b);
 TVP vdmGreaterOrEqual(TVP a,TVP b);
 TVP vdmLessThan(TVP a,TVP b);
