@@ -71,20 +71,6 @@ struct TypedValue* newInt(int x)
 			{ .intVal = x });
 }
 
-struct TypedValue* newNat1(int x)
-{
-	return newTypeValue(VDM_NAT1, (TypedValueType
-	)
-			{ .intVal = x });
-}
-
-struct TypedValue* newNat(int x)
-{
-	return newTypeValue(VDM_NAT, (TypedValueType
-	)
-			{ .intVal = x });
-}
-
 struct TypedValue* newBool(bool x)
 {
 	return newTypeValue(VDM_BOOL, (TypedValueType
@@ -139,20 +125,6 @@ struct TypedValue* newCollectionWithValues(size_t size, vdmtype type, TVP* eleme
 struct TypedValue* newIntGC(int x, TVP *from)
 {
 	return newTypeValueGC(VDM_INT, (TypedValueType
-	)
-			{ .intVal = x }, from);
-}
-
-struct TypedValue* newNat1GC(int x, TVP *from)
-{
-	return newTypeValueGC(VDM_NAT1, (TypedValueType
-	)
-			{ .intVal = x }, from);
-}
-
-struct TypedValue* newNatGC(int x, TVP *from)
-{
-	return newTypeValueGC(VDM_NAT, (TypedValueType
 	)
 			{ .intVal = x }, from);
 }

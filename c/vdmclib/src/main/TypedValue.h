@@ -121,9 +121,6 @@ struct TypedValue* newTypeValueGC(vdmtype type, TypedValueType value, TVP *ref_f
 
 // Basic - these should inline
 struct TypedValue* newInt(int x);
-struct TypedValue* newInt1(int x);
-struct TypedValue* newNat(int x);
-struct TypedValue* newNat1(int x);
 struct TypedValue* newBool(bool x);
 struct TypedValue* newReal(double x);
 struct TypedValue* newChar(char x);
@@ -131,9 +128,6 @@ struct TypedValue* newQuote(unsigned int x);
 
 //====  Gargabe collected versions ======
 struct TypedValue* newIntGC(int x, TVP *from);
-struct TypedValue* newInt1GC(int x, TVP *from);
-struct TypedValue* newNatGC(int x, TVP *from);
-struct TypedValue* newNat1GC(int x, TVP *from);
 struct TypedValue* newBoolGC(bool x, TVP *from);
 struct TypedValue* newRealGC(double x, TVP *from);
 struct TypedValue* newCharGC(char x, TVP *from);
