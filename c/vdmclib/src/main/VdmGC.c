@@ -3,7 +3,8 @@
 extern void vdmFree_GCInternal(struct TypedValue* ptr);
 
 
-struct alloc_list_node *allocd_mem_head, *allocd_mem_tail;
+struct alloc_list_node *allocd_mem_head = NULL;
+struct alloc_list_node *allocd_mem_tail = NULL;
 
 void vdm_gc_init()
 {
@@ -136,6 +137,7 @@ void vdm_gc_shutdown()
 		tmp = tmp->next;
 	}
 	free(allocd_mem_head);
+	allocd_mem_head = NULL;
 }
 
 void vdm_gc()

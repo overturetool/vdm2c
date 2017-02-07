@@ -28,7 +28,7 @@ extern "C"
 #include <stdio.h>
 }
 
-/*
+
 TEST(GC, test1)
 {
 	TVP a;
@@ -41,6 +41,7 @@ TEST(GC, test1)
 
 	vdm_gc_shutdown();
 }
+
 
 TEST(GC, test2)
 {
@@ -56,6 +57,7 @@ TEST(GC, test2)
 }
 
 
+
 TEST(GC, test3)
 {
 	TVP a;
@@ -69,6 +71,7 @@ TEST(GC, test3)
 
 	vdm_gc_shutdown();
 }
+
 
 
 TEST(GC, test4)
@@ -151,4 +154,4 @@ TEST(GC, test8)
 
 	vdm_gc_shutdown();
 }
-*/
+
