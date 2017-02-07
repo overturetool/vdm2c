@@ -48,6 +48,12 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 		gcNames.put(NumericTrans.VDM_MOD, "vdmModGC");
 		gcNames.put(NumericTrans.VDM_POW, "vdmPowerGC");
 		
+		// Numeric comparison
+		gcNames.put(NumericTrans.VDM_GREATER_THAN, "vdmGreaterThanGC");
+		gcNames.put(NumericTrans.VDM_GREATER_OR_EQUAL, "vdmGreaterOrEqualGC");
+		gcNames.put(NumericTrans.VDM_LESS_THAN, "vdmLessThanGC");
+		gcNames.put(NumericTrans.VDM_LESS_OR_EQUAL, "vdmLessOrEqualGC");
+		
 		// Value constructors
 		gcNames.put(LiteralInstantiationRewriteTrans.NEW_INT, "newIntGC");
 		gcNames.put(LiteralInstantiationRewriteTrans.NEW_BOOL, "newBoolGC");
