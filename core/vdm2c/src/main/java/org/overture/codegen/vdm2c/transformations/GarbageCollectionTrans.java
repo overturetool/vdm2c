@@ -63,6 +63,9 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 		gcNames.put(LiteralInstantiationRewriteTrans.NEW_REAL, "newRealGC");
 		gcNames.put(LiteralInstantiationRewriteTrans.NEW_CHAR, "newCharGC");
 		gcNames.put(LiteralInstantiationRewriteTrans.NEW_QUOTE, "newQuoteGC");
+		
+		// Copying
+		gcNames.put(ValueSemantics.VDM_CLONE, "vdmCloneGC");
 	}
 
 	@Override
