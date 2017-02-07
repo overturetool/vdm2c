@@ -1,6 +1,7 @@
 package org.overture.codegen.vdm2c.transformations;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 
 import org.overture.cgc.extast.analysis.DepthFirstAnalysisCAdaptor;
 import org.overture.codegen.ir.INode;
@@ -13,6 +14,8 @@ import org.overture.codegen.ir.expressions.AExternalExpIR;
 import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
 import org.overture.codegen.ir.patterns.AIdentifierPatternIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
+import org.overture.codegen.vdm2c.extast.expressions.AMacroApplyExpIR;
+import org.overture.codegen.vdm2c.utils.CTransUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,23 +69,39 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 		
 		// Copying
 		gcNames.put(ValueSemantics.VDM_CLONE, "vdmCloneGC");
+		
+		// Accessors
+		gcNames.put(CTransUtil.GET_FIELD, "GET_FIELD_GC");
 	}
 
+	@Override
+	public void caseAMacroApplyExpIR(AMacroApplyExpIR node)
+			throws AnalysisException
+	{
+		super.caseAMacroApplyExpIR(node);
+		changeToGcCall(node, node.getArgs(), node.getRoot());
+	}
+	
 	@Override
 	public void caseAApplyExpIR(AApplyExpIR node) throws AnalysisException
 	{
 		super.caseAApplyExpIR(node);
+		changeToGcCall(node, node.getArgs(), node.getRoot());
+	}
 
-		if (node.getRoot() instanceof AIdentifierVarExpIR)
+	private void changeToGcCall(SExpIR node, LinkedList<SExpIR> args,
+			SExpIR root)
+	{
+		if (root instanceof AIdentifierVarExpIR)
 		{
-			AIdentifierVarExpIR id = (AIdentifierVarExpIR) node.getRoot();
+			AIdentifierVarExpIR id = (AIdentifierVarExpIR) root;
 
 			String val = gcNames.get(id.getName());
 
 			if (val != null)
 			{
 				id.setName(val);
-				node.getArgs().add(consAddr(node));
+				args.add(consAddr(node));
 			}
 		}
 	}
