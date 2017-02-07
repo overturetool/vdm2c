@@ -72,8 +72,6 @@ TVP vdmPower(TVP a,TVP b);
 TVP vdmPowerGC(TVP a, TVP b, TVP *from);
 TVP vdmNumericEqual(TVP a,TVP b);
 TVP vdmNumericEqualGC(TVP a, TVP b, TVP *from);
-TVP vdmNotEqual(TVP a,TVP b);
-TVP vdmNotEqualGC(TVP a, TVP b, TVP *from);
 TVP vdmGreaterThan(TVP a,TVP b);
 TVP vdmGreaterThanGC(TVP a, TVP b, TVP *from);
 TVP vdmGreaterOrEqual(TVP a,TVP b);

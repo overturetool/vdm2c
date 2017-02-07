@@ -665,28 +665,6 @@ TVP vdmNumericEqualGC(TVP a, TVP b, TVP *from)
 	return newBoolGC(av==bv, from);
 }
 
-TVP vdmNotEqual(TVP a, TVP b)
-{
-	ASSERT_CHECK_NUMERIC(a);
-	ASSERT_CHECK_NUMERIC(b);
-
-	double av = toDouble(a);
-	double bv = toDouble(b);
-
-	return newBool(av != bv);
-}
-
-TVP vdmNotEqualGC(TVP a, TVP b, TVP *from)
-{
-	ASSERT_CHECK_NUMERIC(a);
-	ASSERT_CHECK_NUMERIC(b);
-
-	double av = toDouble(a);
-	double bv = toDouble(b);
-
-	return newBoolGC(av != bv, from);
-}
-
 TVP vdmGreaterThan(TVP a,TVP b)
 {
 	ASSERT_CHECK_NUMERIC(a);
