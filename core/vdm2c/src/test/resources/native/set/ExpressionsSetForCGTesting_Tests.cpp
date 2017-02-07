@@ -6,6 +6,8 @@
  */
 
 #include "gtest/gtest.h"
+#include "TestFlowFunctions.h"
+
 
 extern "C"
 {
@@ -31,72 +33,72 @@ vdmFree(c)
 //#define CLASS_ExpressionSetForCGTesting__Z9setDinterEV 11
 //#define CLASS_ExpressionSetForCGTesting__Z8setPowerEV 12
 
-TEST(ExpressionSetForCGTesting, setRange)
+TEST_F(TestFlowFunctions, setRange)
 {
 CHECK(CLASS_ExpressionSetForCGTesting__Z8setRangeEV);
 }
 
-TEST(ExpressionSetForCGTesting, inset)
+TEST_F(TestFlowFunctions, inset)
 {
 CHECK(CLASS_ExpressionSetForCGTesting__Z8setInsetEV);
 }
 
-TEST(ExpressionSetForCGTesting, notinset)
+TEST_F(TestFlowFunctions, notinset)
 {
     CHECK(CLASS_ExpressionSetForCGTesting__Z11setNotInSetEV);
 }
 
-TEST(ExpressionSetForCGTesting, setunion)
+TEST_F(TestFlowFunctions, setunion)
 {
     CHECK(CLASS_ExpressionSetForCGTesting__Z8setUnionEV);
 }
 
-TEST(ExpressionSetForCGTesting, setintersection)
+TEST_F(TestFlowFunctions, setintersection)
 {
 	CHECK(CLASS_ExpressionSetForCGTesting__Z15setIntersectionEV);
 }
 
-TEST(ExpressionSetForCGTesting, setdifference)
+TEST_F(TestFlowFunctions, setdifference)
 {
 	CHECK(CLASS_ExpressionSetForCGTesting__Z13setDifferenceEV);
 }
 
-TEST(ExpressionSetForCGTesting, subset)
+TEST_F(TestFlowFunctions, subset)
 {
 	CHECK(CLASS_ExpressionSetForCGTesting__Z9setSubsetEV);
 }
 
-TEST(ExpressionSetForCGTesting,propersubset )
+TEST_F(TestFlowFunctions,propersubset )
 {
 	CHECK(CLASS_ExpressionSetForCGTesting__Z15setProperSubsetEV);
 }
 
-TEST(ExpressionSetForCGTesting, setequality)
+TEST_F(TestFlowFunctions, setequality)
 {
 	CHECK(CLASS_ExpressionSetForCGTesting__Z11setEqualityEV);
 }
 
-TEST(ExpressionSetForCGTesting,setinequality )
+TEST_F(TestFlowFunctions,setinequality )
 {
 	CHECK(CLASS_ExpressionSetForCGTesting__Z13setInequalityEV);
 }
 
-TEST(ExpressionSetForCGTesting,card )
+TEST_F(TestFlowFunctions,card )
 {
 	CHECK(CLASS_ExpressionSetForCGTesting__Z7setCardEV);
 }
 
-TEST(ExpressionSetForCGTesting,dunion )
+TEST_F(TestFlowFunctions,dunion )
 {
 	CHECK(CLASS_ExpressionSetForCGTesting__Z9setDunionEV);
 }
 
-TEST(ExpressionSetForCGTesting,dinter )
+TEST_F(TestFlowFunctions,dinter )
 {
 	CHECK(CLASS_ExpressionSetForCGTesting__Z9setDinterEV);
 }
 
-TEST(ExpressionSetForCGTesting, powerset)
+TEST_F(TestFlowFunctions, powerset)
 {
 	CHECK(CLASS_ExpressionSetForCGTesting__Z8setPowerEV);
 }

@@ -1,6 +1,8 @@
 
 
 #include "gtest/gtest.h"
+#include "TestFlowFunctions.h"
+
 
 extern "C"
 {
@@ -16,22 +18,22 @@ vdmFree(res);\
 vdmFree(c)
 
 
-TEST(ClassCollectionUpdate, updateSeqLocal)
+TEST_F(TestFlowFunctions, updateSeqLocal)
 {
  CHECK(CLASS_ClassCollectionUpdate__Z14updateSeqLocalEV);
 }
 
-TEST(ClassCollectionUpdate, updateMapLocal)
+TEST_F(TestFlowFunctions, updateMapLocal)
 {
  CHECK(CLASS_ClassCollectionUpdate__Z14updateMapLocalEV);
 }
 
-TEST(ClassCollectionUpdate, updateSeqInstanceVar)
+TEST_F(TestFlowFunctions, updateSeqInstanceVar)
 {
  CHECK(CLASS_ClassCollectionUpdate__Z20updateSeqInstanceVarEV);
 }
 
-TEST(ClassCollectionUpdate, updateMapInstanceVar)
+TEST_F(TestFlowFunctions, updateMapInstanceVar)
 {
  CHECK(CLASS_ClassCollectionUpdate__Z20updateMapInstanceVarEV);
 }

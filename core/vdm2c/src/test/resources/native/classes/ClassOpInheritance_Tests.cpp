@@ -7,6 +7,8 @@
 
 
 #include "gtest/gtest.h"
+#include "TestFlowFunctions.h"
+
 
 extern "C"
 {
@@ -22,7 +24,7 @@ vdmFree(res);\
 vdmFree(c)
 
 
-TEST(ClassOpDepth0, op)
+TEST_F(TestFlowFunctions, op)
 {
 	/* not really sure what to do here. We cast to a base class which has the op and then call it */
 	CHECK(CLASS_ClassOpInheritanceDepth2__Z2opEV);

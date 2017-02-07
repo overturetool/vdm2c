@@ -46,6 +46,7 @@ import org.overture.codegen.vdm2c.transformations.FieldExpRewriteTrans;
 import org.overture.codegen.vdm2c.transformations.FieldInitializerExtractorTrans;
 import org.overture.codegen.vdm2c.transformations.FieldReadToFieldGetMacroTrans;
 import org.overture.codegen.vdm2c.transformations.ForLoopTrans;
+import org.overture.codegen.vdm2c.transformations.GarbageCollectionTrans;
 import org.overture.codegen.vdm2c.transformations.IfTrans;
 import org.overture.codegen.vdm2c.transformations.IgnoreRenamingTrans;
 import org.overture.codegen.vdm2c.transformations.IsNotYetSpecifiedTrans;
@@ -192,6 +193,11 @@ public class CTransSeries
 		 */
 		transformations.add(new RemoveCWrappersTrans(transAssistant));
 		transformations.add(new MethodVisibilityTrans(transAssistant));
+
+		if(codeGen.getCGenSettings().usesGarbageCollection())
+		{
+			transformations.add(new GarbageCollectionTrans(transAssistant));
+		}
 
 		return transformations;
 	}

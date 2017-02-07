@@ -7,6 +7,8 @@
 
 
 #include "gtest/gtest.h"
+#include "TestFlowFunctions.h"
+
 
 extern "C"
 {
@@ -23,22 +25,22 @@ vdmFree(res);\
 vdmFree(c)
 
 
-TEST(ExpressionLetBeSt, expPred)
+TEST_F(TestFlowFunctions, expPred)
 {
 	CHECK(CLASS_ExpressionLetBeSt__Z7expPredEV);
 }
 
-TEST(ExpressionLetBeSt, expNoPred)
+TEST_F(TestFlowFunctions, expNoPred)
 {
 	CHECK(CLASS_ExpressionLetBeSt__Z9expNoPredEV);
 }
 
-TEST(ExpressionLetBeSt, stmPredReturn)
+TEST_F(TestFlowFunctions, stmPredReturn)
 {
 	CHECK(CLASS_ExpressionLetBeSt__Z13stmPredReturnEV);
 }
 
-TEST(ExpressionLetBeSt, tmNoPredNestedLet)
+TEST_F(TestFlowFunctions, tmNoPredNestedLet)
 {
 	CHECK(CLASS_ExpressionLetBeSt__Z18stmNoPredNestedLetEV);
 }

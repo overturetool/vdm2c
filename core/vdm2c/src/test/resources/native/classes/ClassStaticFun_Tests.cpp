@@ -7,6 +7,8 @@
 
 
 #include "gtest/gtest.h"
+#include "TestFlowFunctions.h"
+
 
 extern "C"
 {
@@ -28,32 +30,32 @@ vdmFree(res);\
 vdmFree(c)
 
 
-TEST(Class_StaticMethodAccess, op)
+TEST_F(TestFlowFunctions, op)
 {
 	CHECK(CLASS_ClassFunCall__Z2opEV);
 }
 
-TEST(Class_StaticMethodAccess, op2)
+TEST_F(TestFlowFunctions, op2)
 {
 	CHECK(CLASS_ClassFunCall__Z3op2EV);
 }
 
-TEST(Class_StaticMethodAccess, externalfn)
+TEST_F(TestFlowFunctions, externalfn)
 {
 	CHECK(CLASS_ClassFunCall__Z10externalfnEV);
 }
 
-TEST(Class_StaticMethodAccess, localfn)
+TEST_F(TestFlowFunctions, localfn)
 {
 	CHECK_FALSE(CLASS_ClassFunCall__Z7localfnEV);
 }
 
-TEST(Class_StaticMethodAccess, funcInstantiation)
+TEST_F(TestFlowFunctions, funcInstantiation)
 {
 	CHECK(CLASS_ClassFunCall__Z17funcInstantiationEV);
 }
 
-TEST(Class_StaticMethodAccess, twoParamFun)
+TEST_F(TestFlowFunctions, twoParamFun)
 {
 	CHECK(CLASS_ClassFunCall__Z11twoParamFunEV);
 }

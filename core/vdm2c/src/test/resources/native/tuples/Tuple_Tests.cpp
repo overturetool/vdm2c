@@ -1,5 +1,7 @@
 
 #include "gtest/gtest.h"
+#include "TestFlowFunctions.h"
+
 
 extern "C"
 {
@@ -14,12 +16,12 @@ EXPECT_EQ (true,res->value.boolVal);\
 vdmFree(res);\
 vdmFree(a)
 
-TEST(Tuples, tupValCreation)
+TEST_F(TestFlowFunctions, tupValCreation)
 {
 	CHECK(CLASS_A__Z14tupValCreationEV);
 }
 
-TEST(Tuples, fieldRead)
+TEST_F(TestFlowFunctions, fieldRead)
 {
 	CHECK(CLASS_A__Z9fieldReadEV);
 }

@@ -75,7 +75,7 @@ public class ForLoopTrans extends DepthFirstAnalysisCAdaptor
 		ABlockStmIR whileBlock = new ABlockStmIR();
 		whileBlock.setScoped(true);
 		loop.setBody(whileBlock);
-		whileBlock.getLocalDefs().add(newDeclarationAssignment(bindName, newTvpType(), newApply("newInt", createIdentifier(indexName, null)), null));
+		whileBlock.getLocalDefs().add(newDeclarationAssignment(bindName, newTvpType(), newApply(LiteralInstantiationRewriteTrans.NEW_INT, createIdentifier(indexName, null)), null));
 		whileBlock.getStatements().add(node.getBody());
 		whileBlock.getStatements().add(toStm(ValueSemantics.free(bindName, node.getSourceNode())));
 

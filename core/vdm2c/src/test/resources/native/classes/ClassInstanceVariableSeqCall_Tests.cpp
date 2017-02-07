@@ -7,6 +7,8 @@
 
 
 #include "gtest/gtest.h"
+#include "TestFlowFunctions.h"
+
 
 extern "C"
 {
@@ -22,7 +24,7 @@ vdmFree(res);\
 vdmFree(c)
 
 
-TEST(ClassInstanceVariableSeqCaller, call)
+TEST_F(TestFlowFunctions, call)
 {
 	CHECK(CLASS_ClassInstanceVariableSeqCaller__Z4callEV);
 }
