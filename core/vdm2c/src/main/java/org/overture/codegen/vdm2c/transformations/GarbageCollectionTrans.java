@@ -72,6 +72,7 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 		
 		// Accessors
 		gcNames.put(CTransUtil.GET_FIELD, "GET_FIELD_GC");
+		gcNames.put(CTransUtil.GET_FIELD_PTR, "GET_FIELD_PTR_GC");
 	}
 
 	@Override
