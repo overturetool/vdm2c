@@ -58,19 +58,6 @@ struct TypedValue* newInt(int x)
 	)
 			{ .intVal = x });
 }
-struct TypedValue* newNat1(int x)
-{
-	return newTypeValue(VDM_NAT1, (TypedValueType
-	)
-			{ .intVal = x });
-}
-
-struct TypedValue* newNat(int x)
-{
-	return newTypeValue(VDM_NAT, (TypedValueType
-	)
-			{ .intVal = x });
-}
 
 struct TypedValue* newBool(bool x)
 {
