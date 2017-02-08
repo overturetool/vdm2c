@@ -162,6 +162,11 @@ struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction
 	vdmFree(*((fieldtype*)(((unsigned char*)ptr) + offsetof(struct tname, fieldname))));\
 	(*((fieldtype*)(((unsigned char*)ptr) + offsetof(struct tname, fieldname))) = vdmClone(newValue))
 
+#define SET_STRUCT_FIELD_GC(tname,ptr,fieldtype,fieldname,newValue)\
+	vdmFree(*((fieldtype*)(((unsigned char*)ptr) + offsetof(struct tname, fieldname))));\
+	(*((fieldtype*)(((unsigned char*)ptr) + offsetof(struct tname, fieldname))) = vdmCloneGC(newValue,\
+			((fieldtype*)(((unsigned char*)ptr) + offsetof(struct tname, fieldname)))))
+
 /*
  * Macro to obtain the (sub-)class specific VTable from a class struct
  */
@@ -183,6 +188,12 @@ struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction
  * Macro to set a field from a (sub-)class specific class struct. We clone to preserve value semantics and the rule of freeing
  */
 #define SET_FIELD(thisTypeName, fieldTypeName, classValue, fieldName, newValue) SET_FIELD_PTR(thisTypeName,\
+																							fieldTypeName,\
+																							 TO_CLASS_PTR(classValue,thisTypeName),\
+																							 fieldName,\
+																							 newValue)
+
+#define SET_FIELD_GC(thisTypeName, fieldTypeName, classValue, fieldName, newValue) SET_FIELD_PTR_GC(thisTypeName,\
 																							fieldTypeName,\
 																							 TO_CLASS_PTR(classValue,thisTypeName),\
 																							 fieldName,\
@@ -211,6 +222,12 @@ struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction
  * Macro to set a field from a (sub-)class specific class struct.
  */
 #define SET_FIELD_PTR(thisTypeName, fieldTypeName, ptr, fieldName, newValue) SET_STRUCT_FIELD(fieldTypeName,\
+																							 CLASS_CAST(ptr,thisTypeName,fieldTypeName) ,\
+																							 struct TypedValue*,\
+																							 m_##fieldTypeName##_##fieldName,\
+																							 newValue)
+
+#define SET_FIELD_PTR_GC(thisTypeName, fieldTypeName, ptr, fieldName, newValue) SET_STRUCT_FIELD_GC(fieldTypeName,\
 																							 CLASS_CAST(ptr,thisTypeName,fieldTypeName) ,\
 																							 struct TypedValue*,\
 																							 m_##fieldTypeName##_##fieldName,\
