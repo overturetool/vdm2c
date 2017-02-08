@@ -11,6 +11,7 @@ import org.overture.codegen.ir.expressions.AEqualsBinaryExpIR;
 import org.overture.codegen.ir.expressions.ANotEqualsBinaryExpIR;
 import org.overture.codegen.ir.expressions.ANotUnaryExpIR;
 import org.overture.codegen.ir.expressions.AOrBoolBinaryExpIR;
+import org.overture.codegen.ir.expressions.AXorBoolBinaryExpIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.utils.IApplyAssistant;
 
@@ -26,6 +27,7 @@ public class LogicTrans extends DepthFirstAnalysisCAdaptor implements
 	public static final String VDM_NOT = "vdmNot";
 	public static final String VDM_EQUALS = "vdmEquals";
 	public static final String VDM_AND = "vdmAnd";
+	public static final String VDM_XOR = "vdmXor";
 	
 	private TransAssistantIR assist;
 
@@ -82,5 +84,11 @@ public class LogicTrans extends DepthFirstAnalysisCAdaptor implements
 	{
 		rewriteToApply(this, node, VDM_OR, node.getLeft(), node.getRight());
 	}
-
+	
+	@Override
+	public void caseAXorBoolBinaryExpIR(AXorBoolBinaryExpIR node)
+			throws AnalysisException
+	{
+		rewriteToApply(this, node, VDM_XOR, node.getLeft(), node.getRight());
+	}
 }
