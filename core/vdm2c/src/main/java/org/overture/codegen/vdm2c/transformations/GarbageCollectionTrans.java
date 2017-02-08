@@ -79,6 +79,10 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 		// Accessors
 		gcNames.put(CTransUtil.GET_FIELD, "GET_FIELD_GC");
 		gcNames.put(CTransUtil.GET_FIELD_PTR, "GET_FIELD_PTR_GC");
+		
+		// Setters
+		gcNames.put(CTransUtil.SET_FIELD, "SET_FIELD_GC");
+		gcNames.put(CTransUtil.SET_FIELD_PTR, "SET_FIELD_PTR_GC");
 	}
 
 	@Override
@@ -110,7 +114,7 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 			if (val != null)
 			{
 				id.setName(val);
-				if(!isFieldAccessor(oldName))
+				if(!(isFieldAccessor(oldName) || isSetter(oldName)))
 				{
 					args.add(consAddr(node));
 				}
@@ -147,6 +151,11 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 	private boolean isFieldAccessor(String name)
 	{
 		return name.equals(CTransUtil.GET_FIELD) || name.equals(CTransUtil.GET_FIELD_PTR); 
+	}
+	
+	private boolean isSetter(String name)
+	{
+		return name.equals(CTransUtil.SET_FIELD) || name.equals(CTransUtil.SET_FIELD_PTR);
 	}
 
 }
