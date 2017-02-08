@@ -103,12 +103,17 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 		{
 			AIdentifierVarExpIR id = (AIdentifierVarExpIR) root;
 
-			String val = gcNames.get(id.getName());
+			String oldName = id.getName();
+			
+			String val = gcNames.get(oldName);
 
 			if (val != null)
 			{
 				id.setName(val);
-				args.add(consAddr(node));
+				if(!isFieldAccessor(oldName))
+				{
+					args.add(consAddr(node));
+				}
 			}
 		}
 	}
@@ -138,4 +143,10 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 		// Expression is not associated with a memory address
 		return assist.getInfo().getExpAssistant().consNullExp();
 	}
+	
+	private boolean isFieldAccessor(String name)
+	{
+		return name.equals(CTransUtil.GET_FIELD) || name.equals(CTransUtil.GET_FIELD_PTR); 
+	}
+
 }
