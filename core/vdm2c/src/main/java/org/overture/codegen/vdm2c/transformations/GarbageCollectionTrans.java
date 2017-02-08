@@ -8,12 +8,15 @@ import org.overture.codegen.ir.INode;
 import org.overture.codegen.ir.SExpIR;
 import org.overture.codegen.ir.SPatternIR;
 import org.overture.codegen.ir.analysis.AnalysisException;
+import org.overture.codegen.ir.declarations.AMethodDeclIR;
 import org.overture.codegen.ir.declarations.AVarDeclIR;
 import org.overture.codegen.ir.expressions.AApplyExpIR;
 import org.overture.codegen.ir.expressions.AExternalExpIR;
 import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
 import org.overture.codegen.ir.patterns.AIdentifierPatternIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
+import org.overture.codegen.vdm2c.Vdm2cTag;
+import org.overture.codegen.vdm2c.Vdm2cTag.MethodTag;
 import org.overture.codegen.vdm2c.extast.expressions.AMacroApplyExpIR;
 import org.overture.codegen.vdm2c.utils.CTransUtil;
 import org.slf4j.Logger;
@@ -89,6 +92,7 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 	public void caseAMacroApplyExpIR(AMacroApplyExpIR node)
 			throws AnalysisException
 	{
+		// Used to handle GET and SET macros
 		super.caseAMacroApplyExpIR(node);
 		changeToGcCall(node, node.getArgs(), node.getRoot());
 	}
@@ -97,6 +101,12 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 	public void caseAApplyExpIR(AApplyExpIR node) throws AnalysisException
 	{
 		super.caseAApplyExpIR(node);
+
+		if(insideFieldInitializer(node))
+		{
+			return;
+		}
+		
 		changeToGcCall(node, node.getArgs(), node.getRoot());
 	}
 
@@ -156,6 +166,23 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 	private boolean isSetter(String name)
 	{
 		return name.equals(CTransUtil.SET_FIELD) || name.equals(CTransUtil.SET_FIELD_PTR);
+	}
+	
+	private boolean insideFieldInitializer(SExpIR exp)
+	{
+		AMethodDeclIR encMethod = exp.getAncestor(AMethodDeclIR.class);
+
+		if (encMethod != null)
+		{
+			Object tag = encMethod.getTag();
+			
+			if(tag instanceof Vdm2cTag)
+			{
+				Vdm2cTag t = (Vdm2cTag) tag;
+				return t.methodTags.contains(MethodTag.FieldInitializer);
+			}
+		}
+		return false;
 	}
 
 }
