@@ -40,6 +40,12 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 		gcNames.put(NumericTrans.VDM_MINUS, "vdmMinusGC");
 		gcNames.put(NumericTrans.VDM_ABS, "vdmAbsGC");
 		gcNames.put(NumericTrans.VDM_FLOOR, "vdmFloorGC");
+	
+		// Boolean binary expressions
+		gcNames.put(LogicTrans.VDM_NOT, "vdmNotGC");
+		gcNames.put(LogicTrans.VDM_OR, "vdmOrGC");
+		gcNames.put(LogicTrans.VDM_AND, "vdmAndGC");
+		gcNames.put(LogicTrans.VDM_XOR, "vdmXorGC");
 		
 		// Numeric binary expressions
 		gcNames.put(NumericTrans.VDM_SUM, "vdmSumGC");
