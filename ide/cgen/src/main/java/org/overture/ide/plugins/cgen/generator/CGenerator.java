@@ -313,7 +313,7 @@ public class CGenerator
 			//Write the main constant and static init and shutdown functions.
 			fileWriter.write("void systemConstStaticInit()\n{\n" + constInitCalls + "\n" + staticInitCalls + "}\n\n");
 			fileWriter.write("void systemConstStaticShutdown()\n{\n" + constShutdownCalls + "\n" + staticShutdownCalls + "}\n\n");
-			fileWriter.write("int main()\n{\n\treturn 0;\n}\n");
+			fileWriter.write("int main()\n{\n\tvdm_gc_init();\n\tvdm_gc_shutdown();\n\treturn 0;\n}\n");
 			fileWriter.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
