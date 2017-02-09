@@ -2,7 +2,7 @@
 <feature
       id="org.overturetool.vdm2c.ide.features.cgen"
       label="VDM 2 C Code Generator"
-      version="0.0.20">
+      version="0.0.21.qualifier">
 
    <description>
       %description
