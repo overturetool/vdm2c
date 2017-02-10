@@ -233,21 +233,6 @@ TEST(Expression_Numeric, equalExp)
 	vdmFree(res);
 }
 
-TEST(Expression_Numeric, notEqualExp)
-{
-	TVP t1 = newReal(8);
-	TVP t2 = newReal(9);
-
-	assert(t1->type == VDM_REAL && "Value is not a real");
-	assert(t2->type == VDM_REAL && "Value is not a real");
-	TVP res = vdmNotEqual(t1,t2);
-	EXPECT_EQ(true,res->value.boolVal);
-
-	vdmFree(t1);
-	vdmFree(t2);
-	vdmFree(res);
-}
-
 TEST(Expression_Numeric, greaterExp)
 {
 	TVP t1 = newReal(12);

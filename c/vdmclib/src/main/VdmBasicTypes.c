@@ -322,118 +322,118 @@ static long divi(double lv, double rv)
 }
 
 TVP vdmDiv(TVP a,TVP b)
-{	ASSERT_CHECK_NUMERIC(a);
-ASSERT_CHECK_NUMERIC(b);
+{
+	ASSERT_CHECK_NUMERIC(a);
+	ASSERT_CHECK_NUMERIC(b);
 
-//See https://github.com/overturetool/overture/blob/development/core/interpreter/src/main/java/org/overture/interpreter/eval/BinaryExpressionEvaluator.java#L444
+	//See https://github.com/overturetool/overture/blob/development/core/interpreter/src/main/java/org/overture/interpreter/eval/BinaryExpressionEvaluator.java#L444
 
-ASSERT_CHECK_INT(a);
-ASSERT_CHECK_INT(b);
+	ASSERT_CHECK_INT(a);
+	ASSERT_CHECK_INT(b);
 
-int av = toDouble(a);
-int bv = toDouble(b);
+	int av = toDouble(a);
+	int bv = toDouble(b);
 
-return newInt(divi(av,bv));
+	return newInt(divi(av,bv));
 }
 
 TVP vdmRem(TVP a,TVP b)
-{	ASSERT_CHECK_NUMERIC(a);
-ASSERT_CHECK_NUMERIC(b);
+{
+	ASSERT_CHECK_NUMERIC(a);
+	ASSERT_CHECK_NUMERIC(b);
 
-//See https://github.com/overturetool/overture/blob/development/core/interpreter/src/main/java/org/overture/interpreter/eval/BinaryExpressionEvaluator.java#L628
-ASSERT_CHECK_INT(a);
-ASSERT_CHECK_INT(b);
+	//See https://github.com/overturetool/overture/blob/development/core/interpreter/src/main/java/org/overture/interpreter/eval/BinaryExpressionEvaluator.java#L628
+	ASSERT_CHECK_INT(a);
+	ASSERT_CHECK_INT(b);
 
-int av = toDouble(a);
-int bv = toDouble(b);
+	int av = toDouble(a);
+	int bv = toDouble(b);
 
-return newInt(av-bv*divi(av,bv));
+	return newInt(av-bv*divi(av,bv));
 }
 
 TVP vdmMod(TVP a,TVP b)
-{	ASSERT_CHECK_NUMERIC(a);
-ASSERT_CHECK_NUMERIC(b);
+{
+	ASSERT_CHECK_NUMERIC(a);
+	ASSERT_CHECK_NUMERIC(b);
 
-//See https://github.com/overturetool/overture/blob/development/core/interpreter/src/main/java/org/overture/interpreter/eval/BinaryExpressionEvaluator.java#L575
-ASSERT_CHECK_INT(a);
-ASSERT_CHECK_INT(b);
+	//See https://github.com/overturetool/overture/blob/development/core/interpreter/src/main/java/org/overture/interpreter/eval/BinaryExpressionEvaluator.java#L575
+	ASSERT_CHECK_INT(a);
+	ASSERT_CHECK_INT(b);
 
-double lv =(int) toDouble(a);
-double rv = (int)toDouble(b);
+	double lv =(int) toDouble(a);
+	double rv = (int)toDouble(b);
 
-if((a->type == VDM_INT || a->type == VDM_NAT || a->type == VDM_NAT1) &&
+	if((a->type == VDM_INT || a->type == VDM_NAT || a->type == VDM_NAT1) &&
 			(b->type == VDM_INT || b->type == VDM_NAT || b->type == VDM_NAT1))
 		return newInt((int)(lv-rv*(long) floor(lv/rv)));
 
-return newReal(lv-rv*(long) floor(lv/rv));
+	return newReal(lv-rv*(long) floor(lv/rv));
 }
 
 TVP vdmPower(TVP a,TVP b)
-{	ASSERT_CHECK_NUMERIC(a);
-ASSERT_CHECK_NUMERIC(b);
+{
+	ASSERT_CHECK_NUMERIC(a);
+	ASSERT_CHECK_NUMERIC(b);
 
-double av = toDouble(a);
-double bv = toDouble(b);
+	double av = toDouble(a);
+	double bv = toDouble(b);
 
-return newReal(pow(av,bv));
+	return newReal(pow(av,bv));
 }
 
 TVP vdmNumericEqual(TVP a,TVP b)
-{	ASSERT_CHECK_NUMERIC(a);
-ASSERT_CHECK_NUMERIC(b);
+{
+	ASSERT_CHECK_NUMERIC(a);
+	ASSERT_CHECK_NUMERIC(b);
 
-double av = toDouble(a);
-double bv = toDouble(b);
+	double av = toDouble(a);
+	double bv = toDouble(b);
 
-return newBool(av==bv);
+	return newBool(av==bv);
 }
 
-TVP vdmNotEqual(TVP a,TVP b)
-{	ASSERT_CHECK_NUMERIC(a);
-ASSERT_CHECK_NUMERIC(b);
-
-double av = toDouble(a);
-double bv = toDouble(b);
-
-return newBool(av!=bv);
-}
 
 TVP vdmGreaterThan(TVP a,TVP b)
-{	ASSERT_CHECK_NUMERIC(a);
-ASSERT_CHECK_NUMERIC(b);
+{
+	ASSERT_CHECK_NUMERIC(a);
+	ASSERT_CHECK_NUMERIC(b);
 
-double av = toDouble(a);
-double bv = toDouble(b);
+	double av = toDouble(a);
+	double bv = toDouble(b);
 
-return newBool(av>bv);
+	return newBool(av>bv);
 }
 
 TVP vdmGreaterOrEqual(TVP a,TVP b)
-{	ASSERT_CHECK_NUMERIC(a);
-ASSERT_CHECK_NUMERIC(b);
+{
+	ASSERT_CHECK_NUMERIC(a);
+	ASSERT_CHECK_NUMERIC(b);
 
-double av = toDouble(a);
-double bv = toDouble(b);
+	double av = toDouble(a);
+	double bv = toDouble(b);
 
-return newBool(av>=bv);
+	return newBool(av>=bv);
 }
 
 TVP vdmLessThan(TVP a,TVP b)
-{	ASSERT_CHECK_NUMERIC(a);
-ASSERT_CHECK_NUMERIC(b);
+{
+	ASSERT_CHECK_NUMERIC(a);
+	ASSERT_CHECK_NUMERIC(b);
 
-double av = toDouble(a);
-double bv = toDouble(b);
+	double av = toDouble(a);
+	double bv = toDouble(b);
 
-return newBool(av<bv);
+	return newBool(av<bv);
 }
 
 TVP vdmLessOrEqual(TVP a,TVP b)
-{	ASSERT_CHECK_NUMERIC(a);
-ASSERT_CHECK_NUMERIC(b);
+{
+	ASSERT_CHECK_NUMERIC(a);
+	ASSERT_CHECK_NUMERIC(b);
 
-double av = toDouble(a);
-double bv = toDouble(b);
+	double av = toDouble(a);
+	double bv = toDouble(b);
 
-return newBool(av<=bv);
+	return newBool(av<=bv);
 }

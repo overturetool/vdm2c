@@ -120,9 +120,6 @@ struct TypedValue* newTypeValue(vdmtype type, TypedValueType value);
 
 // Basic - these should inline
 struct TypedValue* newInt(int x);
-struct TypedValue* newInt1(int x);
-struct TypedValue* newNat(int x);
-struct TypedValue* newNat1(int x);
 struct TypedValue* newBool(bool x);
 struct TypedValue* newReal(double x);
 struct TypedValue* newChar(char x);
