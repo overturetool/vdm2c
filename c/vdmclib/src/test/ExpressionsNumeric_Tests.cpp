@@ -275,7 +275,6 @@ TEST(Expression_Numeric, equalExp)
 	vdmFree(res);
 }
 
-
 TEST(Expression_Numeric, greaterExp)
 {
 	TVP t1 = newReal(12);
