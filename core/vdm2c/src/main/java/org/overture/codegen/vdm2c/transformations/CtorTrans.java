@@ -97,8 +97,7 @@ public class CtorTrans extends DepthFirstAnalysisCAdaptor
 						{
 							for (AMethodDeclIR m : def.getMethods())
 							{
-								if (m.getIsConstructor()
-										&& m.getFormalParams().size() == 1)
+								if (m.getIsConstructor() && m.getFormalParams().isEmpty())
 								{
 									replBlock.getStatements().add(exp2Stm(newApply(NameMangler.mangle(m), newCast(def.getName()
 											+ "CLASS", newApply("CLASS_CAST", createIdentifier("this", null), createIdentifier(cDef.getName(), null), createIdentifier(def.getName(), null))))));
