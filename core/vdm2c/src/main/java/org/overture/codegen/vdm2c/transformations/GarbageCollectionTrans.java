@@ -94,6 +94,12 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 	{
 		// Used to handle GET and SET macros
 		super.caseAMacroApplyExpIR(node);
+		
+		if(insideFieldInitializer(node))
+		{
+			return;
+		}
+		
 		changeToGcCall(node, node.getArgs(), node.getRoot());
 	}
 	
