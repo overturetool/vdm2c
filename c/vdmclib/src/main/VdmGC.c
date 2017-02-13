@@ -157,7 +157,7 @@ void vdm_gc()
 		tmp_loc = current->loc;
 
 		//No information was passed about where the reference was assigned.
-		//This is the case when the value is created in-place (or when vdmFreed???)
+		//This is the case when the value is created in-place or when freed using vdmFree().
 		if(current->loc->ref_from == NULL)
 		{
 			remove_allocd_mem_node(current);
@@ -165,11 +165,17 @@ void vdm_gc()
 		}
 		else if(*(current->loc->ref_from) != current->loc)
 		{
-			//For compatibility with vdmFree().
-			*(current->loc->ref_from) = NULL;
+			//Check that there is no interference between this call's stack
+			//variables and the reference to the memory we are freeing.
+			//If there is, then postpone reclamation to a later pass.
+			if(!((current->loc->ref_from == &tmp) || (current->loc->ref_from == &current) || (current->loc->ref_from == &tmp_loc)))
+			{
+				//For compatibility with vdmFree().
+				*(current->loc->ref_from) = NULL;
 
-			vdmFree_GCInternal(current->loc);
-			remove_allocd_mem_node(current);
+				vdmFree_GCInternal(current->loc);
+				remove_allocd_mem_node(current);
+			}
 		}
 
 		current = tmp;
