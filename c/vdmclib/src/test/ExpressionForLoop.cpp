@@ -12,6 +12,7 @@
 extern "C"
 {
 #include "Vdm.h"
+#include "VdmSet.h"
 #include <stdio.h>
 }
 

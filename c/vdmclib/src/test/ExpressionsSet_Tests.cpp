@@ -25,6 +25,7 @@
 extern "C"
 {
 #include "Vdm.h"
+#include "VdmSet.h"
 #include <stdio.h>
 #include <math.h>
 //Maximum values have more recognizable hex representations.

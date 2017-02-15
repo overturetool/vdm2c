@@ -5,9 +5,9 @@
 #define VDM_CG
 
 #include "Vdm.h"
+#include "VdmClass.h"
 
 //include types used in the class
-#include "MyRec.h"
 
 
 /* -------------------------------

@@ -30,6 +30,8 @@
 #ifndef MATHLIB_H_
 #define MATHLIB_H_
 
+#include "Vdm.h"
+
 TVP vdm_MATH_fac(TVP a);
 TVP vdm_MATH_log(TVP a);
 TVP vdm_MATH_ln(TVP a);

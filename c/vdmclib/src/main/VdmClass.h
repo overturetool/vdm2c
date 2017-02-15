@@ -30,8 +30,9 @@
 #ifndef LIB_VDMCLASS_H_
 #define LIB_VDMCLASS_H_
 
-#include "TypedValue.h"
 #include<stddef.h>
+
+#include "Vdm.h"
 
 typedef void (*freeVdmClassFunction)(void*);
 

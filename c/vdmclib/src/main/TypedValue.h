@@ -33,6 +33,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+#include "VdmDefines.h"
 
 //Eclipse hack
 #if !defined(va_arg)
@@ -116,7 +117,6 @@ struct OptionalType
 };
 
 struct TypedValue* newTypeValue(vdmtype type, TypedValueType value);
-struct TypedValue* newTypeValueGC(vdmtype type, TypedValueType value, TVP *ref_from);
 
 
 // Basic - these should inline
@@ -126,17 +126,9 @@ struct TypedValue* newReal(double x);
 struct TypedValue* newChar(char x);
 struct TypedValue* newQuote(unsigned int x);
 
-//====  Gargabe collected versions ======
-struct TypedValue* newIntGC(int x, TVP *from);
-struct TypedValue* newBoolGC(bool x, TVP *from);
-struct TypedValue* newRealGC(double x, TVP *from);
-struct TypedValue* newCharGC(char x, TVP *from);
-struct TypedValue* newQuoteGC(unsigned int x, TVP *from);
-struct TypedValue* vdmEqualsGC(struct TypedValue* a, struct TypedValue* b, TVP *from);
 
 
 // Complex
-
 
 
 //utils
@@ -144,7 +136,7 @@ struct TypedValue* newCollectionWithValues(size_t size, vdmtype type, TVP* eleme
 struct TypedValue* newCollection(size_t size, vdmtype type);
 
 struct TypedValue* vdmClone(struct TypedValue* x);
-struct TypedValue* vdmCloneGC(TVP x, TVP *from);
+
 bool equals(struct TypedValue* a, struct TypedValue* b);
 TVP vdmEquals(struct TypedValue* a, struct TypedValue* b);
 TVP vdmInEquals(struct TypedValue* a, struct TypedValue* b);
@@ -152,6 +144,10 @@ bool collectionEqual(TVP col1,TVP col2);
 
 void vdmFree(struct TypedValue* ptr);
 
+extern struct TypedValue* newSetVar(size_t size,...);
+extern TVP vdmMapEquals(TVP map1, TVP map2);
+extern TVP vdmSetEquals(TVP set1, TVP set2);
+extern void remove_allocd_mem_node_by_location(TVP loc);
 
 
 #endif /* TYPEDVALUE_H_ */

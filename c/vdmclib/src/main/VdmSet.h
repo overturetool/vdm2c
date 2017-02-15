@@ -30,7 +30,7 @@
 #ifndef LIB_VDMSET_H_
 #define LIB_VDMSET_H_
 
-#include "TypedValue.h"
+#include "Vdm.h"
 
 #include <stdio.h>
 
