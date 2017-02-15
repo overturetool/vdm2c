@@ -62,15 +62,20 @@ public class NativeTestBase extends BaseGeneratorTest
 	protected String[] getFilePaths(File root, FilenameFilter filter)
 	{
 		List<String> paths = new Vector<String>();
-		for (File f : root.listFiles(filter))
+		File[] fileList = root.listFiles(filter);
+		
+		if (fileList != null)
 		{
-			if (f.isDirectory())
+			for (File f : fileList)
 			{
-				paths.addAll(Arrays.asList(getFilePaths(f, filter)));
+				if (f.isDirectory())
+				{
+					paths.addAll(Arrays.asList(getFilePaths(f, filter)));
 
-			} else
-			{
-				paths.add(f.getPath());
+				} else
+				{
+					paths.add(f.getPath());
+				}
 			}
 		}
 
