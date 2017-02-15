@@ -48,15 +48,9 @@
 
 #include "TypedValue.h"
 #include "VdmBasicTypes.h"
-//#include "VdmClass.h"
-//#include "VdmRecord.h"
-//#include "VdmProduct.h"
-
-//#include "VdmGC.h"
-//#include "VdmSet.h"
-//#include "VdmSeq.h"
-//#include "VdmMap.h"
-//#include "PatternBindMatch.h"
-//#include "IOLib.h"
+#include "VdmSet.h"
+#include "VdmSeq.h"
+#include "VdmMap.h"
+#include "VdmClass.h"
 
 #endif /* LIB_VDM_H_ */
