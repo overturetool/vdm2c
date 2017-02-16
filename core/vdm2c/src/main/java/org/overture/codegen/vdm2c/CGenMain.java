@@ -235,11 +235,11 @@ public class CGenMain
 					}
 				}
 				
-				String featureFileName = "VdmModelFeatures.h";
-				cGen.emitFeatureFile(outputDir, featureFileName);
+				
+				cGen.emitFeatureFile(outputDir, CGen.FEATURE_FILE_NAME);
 				if(!quiet)
 				{
-					print("Generated feature file: " + new File(outputDir, featureFileName).getAbsolutePath());
+					print("Generated feature file: " + new File(outputDir, CGen.FEATURE_FILE_NAME).getAbsolutePath());
 				}
 			}
 			else

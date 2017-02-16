@@ -49,6 +49,8 @@ public class CGen extends CodeGenBase
 	
 	private FeatureAnalysisResult featureAnalysis;
 	
+	public static final String FEATURE_FILE_NAME = "VdmModelFeatures.h";
+	
 	public CGen()
 	{
 		this.cGenSettings = new CGenSettings();
