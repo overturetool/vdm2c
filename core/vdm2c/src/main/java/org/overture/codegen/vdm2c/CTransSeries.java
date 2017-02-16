@@ -64,6 +64,7 @@ import org.overture.codegen.vdm2c.transformations.RemoveCWrappersTrans;
 import org.overture.codegen.vdm2c.transformations.RemoveRTConstructs;
 import org.overture.codegen.vdm2c.transformations.RenameFieldsDeclsTrans;
 import org.overture.codegen.vdm2c.transformations.ScopeCleanerTrans;
+import org.overture.codegen.vdm2c.transformations.SelfTrans;
 import org.overture.codegen.vdm2c.transformations.StaticFieldAccessRenameTrans;
 import org.overture.codegen.vdm2c.transformations.SubClassResponsibilityMethodsTrans;
 import org.overture.codegen.vdm2c.transformations.ValueAccessRenameTrans;
@@ -186,7 +187,7 @@ public class CTransSeries
 //		ExtractEmbeddedCreationsTrans requires that blocks doesn't have any local decelerations but that all is statements
 		transformations.add(new ExtractEmbeddedCreationsTrans(transAssistant));
 
-		
+		transformations.add(new SelfTrans(transAssistant));
 		
 		/**
 		 * Phase #X - Remove any temporary nodes
