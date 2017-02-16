@@ -7,7 +7,7 @@
 #include "Vdm.h"
 
 //include types used in the class
-#include "MyRec2.h"
+#include "VdmClass.h"
 
 
 /* -------------------------------

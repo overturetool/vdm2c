@@ -44,19 +44,13 @@
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
 
 #include "TypedValue.h"
-
-
-#include "VdmGC.h"
 #include "VdmBasicTypes.h"
-#include "VdmClass.h"
 #include "VdmSet.h"
 #include "VdmSeq.h"
 #include "VdmMap.h"
-#include "VdmProduct.h"
-#include "VdmRecord.h"
-#include "PatternBindMatch.h"
-#include "IOLib.h"
+#include "VdmClass.h"
 
 #endif /* LIB_VDM_H_ */

@@ -30,7 +30,6 @@
 #ifndef LIB_VDMRECORD_H_
 #define LIB_VDMRECORD_H_
 
-#include "TypedValue.h"
 
 typedef bool (*vdmRecordEqualityFunction)(TVP a, TVP b);
 

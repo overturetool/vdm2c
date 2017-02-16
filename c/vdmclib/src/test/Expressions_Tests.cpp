@@ -27,6 +27,8 @@
 extern "C"
 {
 #include "Vdm.h"
+#include "VdmProduct.h"
+#include "PatternBindMatch.h"
 #include <stdio.h>
 }
 

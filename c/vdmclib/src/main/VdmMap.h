@@ -30,7 +30,7 @@
 #ifndef LIB_VDMMAP_H_
 #define LIB_VDMMAP_H_
 
-#include "TypedValue.h"
+#include "Vdm.h"
 #include "VdmSet.h"
 
 #ifdef WITH_GLIB_HASH

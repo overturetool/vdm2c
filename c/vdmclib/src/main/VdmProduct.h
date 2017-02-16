@@ -29,7 +29,7 @@
 
 #ifndef LIB_VDMPRODUCT_H_
 #define LIB_VDMPRODUCT_H_
-#include "TypedValue.h"
+#include "Vdm.h"
 #include <assert.h>
 
 struct TypedValue* newProductVar(size_t size,...);

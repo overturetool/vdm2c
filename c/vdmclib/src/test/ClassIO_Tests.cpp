@@ -26,6 +26,8 @@ extern "C"
 {
 #include "Vdm.h"
 #include "IOLib.h"
+#include "VdmSeq.h"
+#include "VdmSet.h"
 #include <stdio.h>
 #include <math.h>
 }

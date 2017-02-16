@@ -31,6 +31,7 @@
 #define CLASSES_A_H_
 
 #include "Vdm.h"
+#include "VdmClass.h"
 
 #define CLASS_ID_A_ID 124
 

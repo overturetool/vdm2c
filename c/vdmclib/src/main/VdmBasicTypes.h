@@ -31,6 +31,7 @@
 #define LIB_VDMBASICTYPES_H_
 
 #include "Vdm.h"
+#include "VdmGC.h"
 
 #define ASSERT_CHECK_CHAR(s) assert((s->type ==  VDM_CHAR) && "Value is not a character")
 

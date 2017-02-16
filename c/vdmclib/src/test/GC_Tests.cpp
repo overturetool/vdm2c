@@ -25,6 +25,7 @@
 extern "C"
 {
 #include "Vdm.h"
+#include "VdmGC.h"
 #include <stdio.h>
 }
 

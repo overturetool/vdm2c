@@ -25,6 +25,7 @@
 extern "C"
 {
 #include "Vdm.h"
+#include "VdmMap.h"
 #include <stdio.h>
 }
 

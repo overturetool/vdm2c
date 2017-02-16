@@ -6,8 +6,6 @@
  */
 
 
-#include "TypedValue.h"
-#include "Vdm.h"
 #include "MATHLib.h"
 #include <math.h>
 
