@@ -36,6 +36,7 @@ public class FeatureAnalysisTest
 		Assert.assertFalse(anRes.usesMaps());
 		Assert.assertFalse(anRes.usesPatterns());
 		Assert.assertFalse(anRes.usesProducts());
+		Assert.assertFalse(anRes.usesRecords());
 		assertNoLibs(anRes);
 	}
 
@@ -49,6 +50,7 @@ public class FeatureAnalysisTest
 		Assert.assertFalse(anRes.usesMaps());
 		Assert.assertFalse(anRes.usesPatterns());
 		Assert.assertFalse(anRes.usesProducts());
+		Assert.assertFalse(anRes.usesRecords());
 		assertNoLibs(anRes);
 	}
 
@@ -62,6 +64,7 @@ public class FeatureAnalysisTest
 		Assert.assertFalse(anRes.usesMaps());
 		Assert.assertFalse(anRes.usesPatterns());
 		Assert.assertFalse(anRes.usesProducts());
+		Assert.assertFalse(anRes.usesRecords());
 		assertNoLibs(anRes);
 	}
 
@@ -79,6 +82,7 @@ public class FeatureAnalysisTest
 		Assert.assertFalse(anRes.usesMaps());
 		Assert.assertFalse(anRes.usesPatterns());
 		Assert.assertFalse(anRes.usesProducts());
+		Assert.assertFalse(anRes.usesRecords());
 		assertNoLibs(anRes);
 	}
 
@@ -92,6 +96,7 @@ public class FeatureAnalysisTest
 		Assert.assertFalse(anRes.usesMaps());
 		Assert.assertFalse(anRes.usesPatterns());
 		Assert.assertFalse(anRes.usesProducts());
+		Assert.assertFalse(anRes.usesRecords());
 		assertNoLibs(anRes);
 	}
 
@@ -105,6 +110,7 @@ public class FeatureAnalysisTest
 		Assert.assertFalse(anRes.usesMaps());
 		Assert.assertFalse(anRes.usesPatterns());
 		Assert.assertFalse(anRes.usesProducts());
+		Assert.assertFalse(anRes.usesRecords());
 		assertNoLibs(anRes);
 	}
 
@@ -122,6 +128,7 @@ public class FeatureAnalysisTest
 		Assert.assertTrue(anRes.usesMaps());
 		Assert.assertFalse(anRes.usesPatterns());
 		Assert.assertFalse(anRes.usesProducts());
+		Assert.assertFalse(anRes.usesRecords());
 		assertNoLibs(anRes);
 	}
 
@@ -135,6 +142,7 @@ public class FeatureAnalysisTest
 		Assert.assertTrue(anRes.usesMaps());
 		Assert.assertFalse(anRes.usesPatterns());
 		Assert.assertFalse(anRes.usesProducts());
+		Assert.assertFalse(anRes.usesRecords());
 		assertNoLibs(anRes);
 	}
 
@@ -148,6 +156,7 @@ public class FeatureAnalysisTest
 		Assert.assertFalse(anRes.usesMaps());
 		Assert.assertFalse(anRes.usesPatterns());
 		Assert.assertFalse(anRes.usesProducts());
+		Assert.assertFalse(anRes.usesRecords());
 		assertNoLibs(anRes);
 	}
 
@@ -165,6 +174,7 @@ public class FeatureAnalysisTest
 		Assert.assertFalse(anRes.usesMaps());
 		Assert.assertFalse(anRes.usesPatterns());
 		Assert.assertFalse(anRes.usesProducts());
+		Assert.assertFalse(anRes.usesRecords());
 		assertNoLibs(anRes);
 	}
 	
@@ -178,6 +188,7 @@ public class FeatureAnalysisTest
 		Assert.assertFalse(anRes.usesMaps());
 		Assert.assertTrue(anRes.usesPatterns());
 		Assert.assertFalse(anRes.usesProducts());
+		Assert.assertFalse(anRes.usesRecords());
 		assertNoLibs(anRes);
 	}
 	
@@ -191,6 +202,7 @@ public class FeatureAnalysisTest
 		Assert.assertFalse(anRes.usesMaps());
 		Assert.assertTrue(anRes.usesPatterns());
 		Assert.assertTrue(anRes.usesProducts());
+		Assert.assertFalse(anRes.usesRecords());
 		assertNoLibs(anRes);
 	}
 	
@@ -207,6 +219,7 @@ public class FeatureAnalysisTest
 		Assert.assertFalse(anRes.usesMaps());
 		Assert.assertFalse(anRes.usesPatterns());
 		Assert.assertTrue(anRes.usesProducts());
+		Assert.assertFalse(anRes.usesRecords());
 		assertNoLibs(anRes);
 	}
 	
@@ -220,6 +233,25 @@ public class FeatureAnalysisTest
 		Assert.assertFalse(anRes.usesMaps());
 		Assert.assertFalse(anRes.usesPatterns());
 		Assert.assertTrue(anRes.usesProducts());
+		Assert.assertFalse(anRes.usesRecords());
+		assertNoLibs(anRes);
+	}
+	
+	/*
+	 * Records 
+	 */
+	@Test
+	public void usesRecords()
+	{
+		// Empty record that is instantiated
+		List<SClassDefinition> ast = buildAst("class A types R :: ; values r = mk_R() end A");
+		FeatureAnalysisResult anRes = FeatureAnalysisResult.runAnalysis(ast);
+		Assert.assertFalse(anRes.usesSets());
+		Assert.assertFalse(anRes.usesSeqs());
+		Assert.assertFalse(anRes.usesMaps());
+		Assert.assertFalse(anRes.usesPatterns());
+		Assert.assertFalse(anRes.usesProducts());
+		Assert.assertTrue(anRes.usesRecords());
 		assertNoLibs(anRes);
 	}
 	
