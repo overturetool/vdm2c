@@ -247,4 +247,9 @@ struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction
  */
 #define SAME_ARGS(x, y) #x==#y
 
+#define SELF(objName) newTypeValue(VDM_CLASS, (TypedValueType){.ptr=newClassValue(this->_##objName##_id, &this->_##objName##_refs, (freeVdmClassFunction)&objName##_free, this)});
+
+
+#define SELF_GC(objName, varName) newTypeValue(VDM_CLASS, (TypedValueType){.ptr=newClassValue(this->_##objName##_id, &this->_##objName##_refs, (freeVdmClassFunction)&objName##_free, this)}, &varName);
+
 #endif /* LIB_VDMCLASS_H_ */
