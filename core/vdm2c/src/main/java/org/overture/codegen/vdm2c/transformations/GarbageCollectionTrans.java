@@ -30,6 +30,8 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 
 	private TransAssistantIR assist;
 
+	public static final String SELF_GC = "SELF_GC";
+	
 	public GarbageCollectionTrans(TransAssistantIR assist)
 	{
 		this.gcNames = new HashMap<>();
@@ -86,6 +88,9 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 		// Setters
 		gcNames.put(CTransUtil.SET_FIELD, "SET_FIELD_GC");
 		gcNames.put(CTransUtil.SET_FIELD_PTR, "SET_FIELD_PTR_GC");
+		
+		// Others
+		gcNames.put(SelfTrans.SELF, SELF_GC);
 	}
 
 	@Override
@@ -132,13 +137,13 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 				id.setName(val);
 				if(!(isFieldAccessor(oldName) || isSetter(oldName)))
 				{
-					args.add(consAddr(node));
+					args.add(consReference(node));
 				}
 			}
 		}
 	}
 
-	private SExpIR consAddr(SExpIR exp)
+	private SExpIR consReference(SExpIR exp)
 	{
 		INode parent = exp.parent();
 		
@@ -149,10 +154,12 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 			if (pat instanceof AIdentifierPatternIR)
 			{
 				String name = ((AIdentifierPatternIR) pat).getName();
-				AExternalExpIR addrOf = new AExternalExpIR();
-				addrOf.setSourceNode(pat.getSourceNode());
-				addrOf.setTargetLangExp("&" + name);
-				return addrOf;
+				AExternalExpIR reference = new AExternalExpIR();
+				reference.setSourceNode(pat.getSourceNode());
+				String referencePrefix = findReferencePrefix(exp);
+				reference.setTargetLangExp(referencePrefix + name);
+				
+				return reference;
 			}
 			else
 			{
@@ -164,6 +171,27 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 		return assist.getInfo().getExpAssistant().consNullExp();
 	}
 	
+	private String findReferencePrefix(SExpIR exp)
+	{
+		if(exp instanceof AMacroApplyExpIR)
+		{
+			AMacroApplyExpIR macro = (AMacroApplyExpIR) exp;
+			
+			SExpIR root = macro.getRoot();
+			if(root instanceof AIdentifierVarExpIR)
+			{
+				if(((AIdentifierVarExpIR) root).getName().equals(SELF_GC))
+				{
+					// No prefix needed - the SELF macro only needs the name
+					return "";
+				}
+			}
+		}
+
+		// The 'address-of' operator
+		return "&";
+	}
+
 	private boolean isFieldAccessor(String name)
 	{
 		return name.equals(CTransUtil.GET_FIELD) || name.equals(CTransUtil.GET_FIELD_PTR); 
