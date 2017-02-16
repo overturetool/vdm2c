@@ -7,6 +7,8 @@
 
 
 #include "gtest/gtest.h"
+#include "TestFlowFunctions.h"
+
 
 extern "C"
 {
@@ -25,12 +27,12 @@ vdmFree(c)
 CALL_FUNC(ClassIsNotYetSpecified,ClassIsNotYetSpecified,c,methodId);\
 vdmFree(c)
 
-TEST(ClassIsNotYetSpecified, opNotSpecified)
+TEST_F(TestFlowFunctions, opNotSpecified)
 {
 	CHECKVOID(CLASS_ClassIsNotYetSpecified__Z14opNotSpecifiedEV);
 }
 
-TEST(ClassIsNotYetSpecified, funNotSpecified)
+TEST_F(TestFlowFunctions, funNotSpecified)
 {
 	CHECK(CLASS_ClassIsNotYetSpecified__Z15funNotSpecifiedEV);
 }

@@ -17,4 +17,11 @@ public class ValueTypesTests extends NativeTestBase
 		generate(getPath("value-types/RecordsValueSemanticsTest.vdmrt"));
 		compileAndTest(getTestCppFile("records/RecordsValueSemanticsTest_Tests.cpp"));		
 	}
+	
+	@Test
+	public void Tuples() throws Exception
+	{
+		generate(getPath("value-types/Tuples.vdmrt"));
+		compileAndTest(getTestCppFile("tuples/Tuple_Tests.cpp"));
+	}
 }

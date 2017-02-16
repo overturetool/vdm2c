@@ -66,6 +66,44 @@ TVP productExp()
 	return res;
 }
 
+TVP productExp2()
+{
+	TVP tmp1 = newProduct(2);
+
+	TVP tmp1_1 = newInt(1);
+	productSet(tmp1,1,tmp1_1);
+	vdmFree(tmp1_1);
+
+	TVP tmp1_2 = newInt(2);
+	productSet(tmp1,2,tmp1_2);
+	vdmFree(tmp1_2);
+
+
+	TVP tmp2_1 = newInt(1);
+	TVP tmp2_2 = newInt(2);
+
+	TVP tmp2 = newProductVar(2,tmp2_1, tmp2_2);
+	vdmFree(tmp2_1);
+	vdmFree(tmp2_2);
+
+//
+//	TVP tmp2_1 = newInt(1);
+//	productSet(tmp2,1,tmp2_1);
+//	vdmFree(tmp2_1);
+//
+//	TVP tmp2_2 = newInt(2);
+//	productSet(tmp2,2,tmp2_2);
+//	vdmFree(tmp2_2);
+
+	TVP res =newBool(equals(tmp1,tmp2));
+
+	//scope cleanup
+	vdmFree(tmp1);
+	vdmFree(tmp2);
+
+	return res;
+}
+
 TEST(ExpressionProduct, productExp)
 {
 	TVP TEST_TRUE = newBool(true);
@@ -79,3 +117,17 @@ TEST(ExpressionProduct, productExp)
 	vdmFree (TEST_TRUE);
 }
 
+
+
+TEST(ExpressionProduct, productVariadic)
+{
+	TVP TEST_TRUE = newBool(true);
+
+	TVP result = productExp2();
+
+	EXPECT_EQ (true,equals(TEST_TRUE,result));
+
+	vdmFree(result);
+
+	vdmFree (TEST_TRUE);
+}

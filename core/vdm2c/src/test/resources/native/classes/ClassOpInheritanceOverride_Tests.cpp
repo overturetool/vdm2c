@@ -7,6 +7,8 @@
 
 
 #include "gtest/gtest.h"
+#include "TestFlowFunctions.h"
+
 
 extern "C"
 {
@@ -28,14 +30,14 @@ vdmFree(res);\
 vdmFree(c)
 
 
-TEST(ClassOpInheritanceOverrideDepth0, op)
+TEST_F(TestFlowFunctions, op)
 {
 	/* ok this has the method, so do the super but it should not matter. Do not cast and call with our id */
 	CHECK(CLASS_ClassOpInheritanceOverrideDepth0__Z2opEV);
 }
 
 
-TEST(ClassOpInheritanceOverrideDepth0, opAsBase)
+TEST_F(TestFlowFunctions, opAsBase)
 {
 	/* ok in case this was cast to the base and called with the base method id it should still work since we redirect and downcast */
 	CHECK_AS_BASE(CLASS_ClassOpInheritanceOverrideDepth1__Z2opEV);

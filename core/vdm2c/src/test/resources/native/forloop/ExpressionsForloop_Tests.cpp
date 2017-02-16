@@ -7,6 +7,8 @@
 
 
 #include "gtest/gtest.h"
+#include "TestFlowFunctions.h"
+
 
 extern "C"
 {
@@ -22,17 +24,22 @@ EXPECT_EQ (true,res->value.boolVal);\
 vdmFree(res);\
 vdmFree(c)
 
-TEST(Expression_Seq, forindex)
+TEST_F(TestFlowFunctions, forindex)
 {
 	CHECK(CLASS_ExpressionForLoop__Z8forindexEV);
 }
 
-TEST(Expression_Seq, forset)
+TEST_F(TestFlowFunctions, forset)
 {
 	CHECK(CLASS_ExpressionForLoop__Z6forsetEV);
 }
 
-TEST(Expression_Seq, forseq)
+TEST_F(TestFlowFunctions, forseq)
 {
 	CHECK(CLASS_ExpressionForLoop__Z6forseqEV);
+}
+
+TEST_F(TestFlowFunctions, testSumOneToFive)
+{
+	CHECK(CLASS_ExpressionForLoop__Z16testSumOneToFiveEV);
 }

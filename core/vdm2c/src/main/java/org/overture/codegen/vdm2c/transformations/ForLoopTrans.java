@@ -20,6 +20,7 @@ import org.overture.codegen.ir.SExpIR;
 import org.overture.codegen.ir.SPatternIR;
 import org.overture.codegen.ir.SStmIR;
 import org.overture.codegen.ir.analysis.AnalysisException;
+import org.overture.codegen.ir.expressions.AIntLiteralExpIR;
 import org.overture.codegen.ir.expressions.ALessEqualNumericBinaryExpIR;
 import org.overture.codegen.ir.expressions.ALessNumericBinaryExpIR;
 import org.overture.codegen.ir.expressions.APlusNumericBinaryExpIR;
@@ -74,13 +75,23 @@ public class ForLoopTrans extends DepthFirstAnalysisCAdaptor
 		ABlockStmIR whileBlock = new ABlockStmIR();
 		whileBlock.setScoped(true);
 		loop.setBody(whileBlock);
-		whileBlock.getLocalDefs().add(newDeclarationAssignment(bindName, newTvpType(), newApply("newInt", createIdentifier(indexName, null)), null));
+		whileBlock.getLocalDefs().add(newDeclarationAssignment(bindName, newTvpType(), newApply(LiteralInstantiationRewriteTrans.NEW_INT, createIdentifier(indexName, null)), null));
 		whileBlock.getStatements().add(node.getBody());
 		whileBlock.getStatements().add(toStm(ValueSemantics.free(bindName, node.getSourceNode())));
 
 		APlusNumericBinaryExpIR pp = new APlusNumericBinaryExpIR();
 		pp.setLeft(createIdentifier(indexName, null));
-		pp.setRight(newApply("toInteger", node.getBy()));
+		
+		if (!(node.getBy() instanceof AIntLiteralExpIR))
+		{
+			// If the 'by' expression is a TVP convert it to an integer
+			pp.setRight(newApply("toInteger", node.getBy()));
+		} else
+		{
+			// If the 'by' expression is an integer literal at this
+			// point it means that the 'by' clause was omitted.
+			pp.setRight(node.getBy());
+		}
 
 		whileBlock.getStatements().add(newAssignment(createIdentifier(indexName, null), pp));
 

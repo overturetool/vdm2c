@@ -7,6 +7,8 @@
 
 
 #include "gtest/gtest.h"
+#include "TestFlowFunctions.h"
+
 
 extern "C"
 {
@@ -22,12 +24,12 @@ vdmFree(res);\
 vdmFree(c)
 
 
-TEST(ClassOpOpCall, op)
+TEST_F(TestFlowFunctions, op)
 {
 	CHECK(CLASS_ClassOpOpCall__Z2opEV);
 }
 
-TEST(ClassOpOpCall, callcall)
+TEST_F(TestFlowFunctions, callcall)
 {
 	CHECK(CLASS_ClassOpOpCall__Z8callcallEV);
 }

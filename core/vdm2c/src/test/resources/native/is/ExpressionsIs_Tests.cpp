@@ -7,6 +7,8 @@
 
 
 #include "gtest/gtest.h"
+#include "TestFlowFunctions.h"
+
 
 extern "C"
 {
@@ -22,22 +24,22 @@ EXPECT_EQ (true,res->value.boolVal);\
 vdmFree(res);\
 vdmFree(c)
 
-TEST(Expression_Is, isInt)
+TEST_F(TestFlowFunctions, isInt)
 {
 	CHECK(CLASS_IsTest__Z9TestIsIntEV);
 }
 
-TEST(Expression_Is, isBool)
+TEST_F(TestFlowFunctions, isBool)
 {
 	CHECK(CLASS_IsTest__Z10TestIsBoolEV);
 }
 
-TEST(Expression_Is, isReal)
+TEST_F(TestFlowFunctions, isReal)
 {
 	CHECK(CLASS_IsTest__Z10TestIsRealEV);
 }
 
-TEST(Expression_Is, isNotInt)
+TEST_F(TestFlowFunctions, isNotInt)
 {
 	CHECK(CLASS_IsTest__Z12TestIsNotIntEV);
 }

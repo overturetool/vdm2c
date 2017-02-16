@@ -7,6 +7,8 @@
 
 
 #include "gtest/gtest.h"
+#include "TestFlowFunctions.h"
+
 
 extern "C"
 {
@@ -23,17 +25,17 @@ vdmFree(res);\
 vdmFree(c)
 
 
-TEST(RTConstructs, rtDurationRemove)
+TEST_F(TestFlowFunctions, rtDurationRemove)
 {
 	CHECK(CLASS_RTConstructs__Z12testdurationEV);
 }
 
-TEST(RTConstructs, rtCyclesRemove)
+TEST_F(TestFlowFunctions, rtCyclesRemove)
 {
 	CHECK(CLASS_RTConstructs__Z10testcyclesEV);
 }
 
-TEST(RTConstructs, startStm)
+TEST_F(TestFlowFunctions, startStm)
 {
 	CHECK(CLASS_RTConstructs__Z8startStmEV);
 }

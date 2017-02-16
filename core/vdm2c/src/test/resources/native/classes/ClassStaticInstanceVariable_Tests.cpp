@@ -7,6 +7,8 @@
 
 
 #include "gtest/gtest.h"
+#include "TestFlowFunctions.h"
+
 
 extern "C"
 {
@@ -23,19 +25,19 @@ vdmFree(res);\
 vdmFree(obj)
 
 
-TEST(ClassStaticInstanceVariable, testInitialisedField)
+TEST_F(TestFlowFunctions, testInitialisedField)
 {
 	AAA_static_init();
 	CHECK(CLASS_CCC__Z20testInitialisedFieldEV, _Z3CCCEV(NULL), CCC);
 }
 
-TEST(ClassStaticInstanceVariable, testUpdatedField)
+TEST_F(TestFlowFunctions, testUpdatedField)
 {
 	AAA_static_init();
 	CHECK(CLASS_CCC__Z16testUpdatedFieldEV, _Z3CCCEV(NULL), CCC);
 }
 
-TEST(ClassStaticInstanceVariable, testInitialisedFieldSubClass)
+TEST_F(TestFlowFunctions, testInitialisedFieldSubClass)
 {
 	AAA_static_init();
 	CHECK(CLASS_BBB__Z28testInitialisedFieldSubClassEV, _Z3BBBEV(NULL), BBB);

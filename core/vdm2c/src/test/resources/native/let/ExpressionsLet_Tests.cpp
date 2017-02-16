@@ -7,6 +7,8 @@
 
 
 #include "gtest/gtest.h"
+#include "TestFlowFunctions.h"
+
 
 extern "C"
 {
@@ -23,17 +25,17 @@ vdmFree(res);\
 vdmFree(c)
 
 
-TEST(ExpressionLet, letBlockScope)
+TEST_F(TestFlowFunctions, letBlockScope)
 {
 	CHECK(CLASS_ExpressionLet__Z13letBlockScopeEV);
 }
 
-TEST(ExpressionLet, letPatternIdentifier)
+TEST_F(TestFlowFunctions, letPatternIdentifier)
 {
 	CHECK(CLASS_ExpressionLet__Z20letPatternIdentifierEV);
 }
 
-TEST(ExpressionLet, letPatternDontCare)
+TEST_F(TestFlowFunctions, letPatternDontCare)
 {
 	CHECK(CLASS_ExpressionLet__Z18letPatternDontCareEV);
 }

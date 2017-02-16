@@ -27,6 +27,7 @@ import org.overture.codegen.ir.expressions.AApplyExpIR;
 import org.overture.codegen.ir.expressions.AExplicitVarExpIR;
 import org.overture.codegen.ir.expressions.AFieldExpIR;
 import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
+import org.overture.codegen.ir.expressions.AMethodInstantiationExpIR;
 import org.overture.codegen.ir.expressions.ANullExpIR;
 import org.overture.codegen.ir.statements.ABlockStmIR;
 import org.overture.codegen.ir.statements.ACallObjectExpStmIR;
@@ -147,8 +148,17 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 		
 		for(int i = 0; i < linkedList.size(); i++)
 		{
-			linkedList.get(i).apply(THIS);
-			apply.getArgs().add(linkedList.get(i));
+			SExpIR arg = linkedList.get(i);
+			
+			if(arg != null)
+			{
+				arg.apply(THIS);
+				apply.getArgs().add(arg.clone());
+			}
+			else
+			{
+				logger.error("Did not expect method argument to be null");
+			}
 		}
 		
 		return apply;
@@ -209,6 +219,12 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 		
 		SExpIR rootNode = node.getRoot();
 
+		// TODO: Currently, VDM2C ignores the type arguments of function instantiations.
+		while (rootNode instanceof AMethodInstantiationExpIR)
+		{
+			rootNode = ((AMethodInstantiationExpIR) rootNode).getFunc();
+		}
+		
 		List<AMethodDeclIR> resolvedMethods;
 		
 		//Local map or sequence lookup.
@@ -352,10 +368,15 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 		} else if (applyType instanceof ASeqSeqTypeIR)
 		{
 			// sequence index
-			AApplyExpIR seqIndexApply = newApply("vdmSeqIndex", originalApply.getRoot());
-			seqIndexApply.getArgs().addAll(originalApply.getArgs());
+			AApplyExpIR seqIndexApply = newApply("vdmSeqIndex", originalApply.getRoot().clone());
+			
+			for(SExpIR a : originalApply.getArgs())
+			{
+				seqIndexApply.getArgs().add(a.clone());
+			}
+			
 			seqIndexApply.setSourceNode(originalApply.getSourceNode());
-			seqIndexApply.setType(originalApply.getType());
+			seqIndexApply.setType(originalApply.getType().clone());
 
 			assist.replaceNodeWith(originalApply, seqIndexApply);
 			seqIndexApply.apply(THIS);

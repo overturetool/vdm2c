@@ -7,6 +7,8 @@
 
 
 #include "gtest/gtest.h"
+#include "TestFlowFunctions.h"
+
 
 extern "C"
 {
@@ -23,7 +25,7 @@ vdmFree(expected);\
 vdmFree(c)
 
 
-TEST(ClassInstanceVariableSeqAssign, call)
+TEST_F(TestFlowFunctions, call)
 {
 	TVP expected = newSeqVar(1, newInt(9));
 	CHECK(CLASS_ClassInstanceVariableSeqAssign__Z9getField0EV,expected);

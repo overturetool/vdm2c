@@ -1,4 +1,6 @@
 #include "gtest/gtest.h"
+#include "TestFlowFunctions.h"
+
 
 extern "C"
 {
@@ -15,7 +17,7 @@ vdmFree(c)
 
 
 
-TEST(ClassScratchWork, op)
+TEST_F(TestFlowFunctions, op)
 {	
 	CHECK_TRUE(CLASS_ClassCollectionUpdate__Z20updateSeqInstanceVarEV);
 }

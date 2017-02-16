@@ -7,6 +7,8 @@
 
 
 #include "gtest/gtest.h"
+#include "TestFlowFunctions.h"
+
 
 extern "C"
 {
@@ -25,56 +27,56 @@ EXPECT_EQ (true,res->value.boolVal);\
 vdmFree(res);\
 vdmFree(c)
 
-TEST(Expression_Seq, seqHd)
+TEST_F(TestFlowFunctions, seqHd)
 {
 	CHECK(CLASS_ExpressionSeq_seqHd);
 }
 
-TEST(Expression_Seq, seqTl)
+TEST_F(TestFlowFunctions, seqTl)
 {
 	CHECK(CLASS_ExpressionSeq_seqTl);
 }
 
-TEST(Expression_Seq, seqLen)
+TEST_F(TestFlowFunctions, seqLen)
 {
 	CHECK(CLASS_ExpressionSeq_seqLen);
 }
 
-TEST(Expression_Seq, seqElems)
+TEST_F(TestFlowFunctions, seqElems)
 {
 	CHECK(CLASS_ExpressionSeq_seqElems);
 }
 
-TEST(Expression_Seq, seqInds)
+TEST_F(TestFlowFunctions, seqInds)
 {
 	CHECK(CLASS_ExpressionSeq_seqInds);
 }
 
-TEST(Expression_Seq, seqConc)
+TEST_F(TestFlowFunctions, seqConc)
 {
 	CHECK(CLASS_ExpressionSeq_seqConc);
 }
 
-TEST(Expression_Seq, seqReverse)
+TEST_F(TestFlowFunctions, seqReverse)
 {
 	CHECK(CLASS_ExpressionSeq_seqReverse);
 }
 
-//TEST(Expression_Seq, seqMod)
+//TEST_F(TestFlowFunctions, seqMod)
 //{
 //}
 
-TEST(Expression_Seq, seqIndex)
+TEST_F(TestFlowFunctions, seqIndex)
 {
 	CHECK(CLASS_ExpressionSeq_seqIndex);
 }
 
-TEST(Expression_Seq, seqEqual)
+TEST_F(TestFlowFunctions, seqEqual)
 {
 	CHECK(CLASS_ExpressionSeq_seqEqual);
 }
 
-TEST(Expression_Seq, seqInEqual)
+TEST_F(TestFlowFunctions, seqInEqual)
 {
 	CHECK(CLASS_ExpressionSeq_seqInEqual);
 }

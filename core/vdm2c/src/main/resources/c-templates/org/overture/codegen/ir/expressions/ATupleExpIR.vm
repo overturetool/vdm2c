@@ -1,1 +1,3 @@
-Tuple.mk_($CFormat.formatArgs($node.getArgs()))
+#set( $args = $node.getArgs() )
+#set( $size = $args.size() )
+newProductVar($size, $CFormat.formatArgs($args))
