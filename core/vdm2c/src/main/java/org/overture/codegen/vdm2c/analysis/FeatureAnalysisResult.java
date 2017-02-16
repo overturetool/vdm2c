@@ -12,6 +12,7 @@ public class FeatureAnalysisResult
 	private boolean usesSeqs;
 	private boolean usesMaps;
 	private boolean usesPatterns;
+	private boolean usesProducts;
 	
 	// Libraries being used
 	private boolean usesMathLib;
@@ -44,6 +45,7 @@ public class FeatureAnalysisResult
 		an.usesSeqs = new UsesSeqsAnalysis().hasFeature(ast);
 		an.usesMaps = new UsesMapsAnalysis().hasFeature(ast);
 		an.usesPatterns = new UsesPatternsAnalysis().hasFeature(ast);
+		an.usesProducts = new UsesProductsAnalysis().hasFeature(ast);
 		
 		for(SClassDefinition c : ast)
 		{
@@ -94,6 +96,11 @@ public class FeatureAnalysisResult
 	public boolean usesPatterns()
 	{
 		return usesPatterns;
+	}
+	
+	public boolean usesProducts()
+	{
+		return usesProducts;
 	}
 	
 	public boolean usesMathLib()
