@@ -61,6 +61,7 @@ public class CGenerator
 		GeneralUtils.deleteFolderContents(eclipseProjectFolder, true);
 
 		final CGen vdm2c = new CGen();
+		vdm2c.getCGenSettings().setUseGarbageCollection(true);
 
 		final IVdmModel model = vdmProject.getModel();
 
