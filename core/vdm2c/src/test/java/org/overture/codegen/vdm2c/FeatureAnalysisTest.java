@@ -35,6 +35,7 @@ public class FeatureAnalysisTest
 		Assert.assertFalse(anRes.usesSeqs());
 		Assert.assertFalse(anRes.usesMaps());
 		Assert.assertFalse(anRes.usesPatterns());
+		Assert.assertFalse(anRes.usesProducts());
 		assertNoLibs(anRes);
 	}
 
@@ -47,6 +48,7 @@ public class FeatureAnalysisTest
 		Assert.assertFalse(anRes.usesSeqs());
 		Assert.assertFalse(anRes.usesMaps());
 		Assert.assertFalse(anRes.usesPatterns());
+		Assert.assertFalse(anRes.usesProducts());
 		assertNoLibs(anRes);
 	}
 
@@ -59,6 +61,7 @@ public class FeatureAnalysisTest
 		Assert.assertFalse(anRes.usesSeqs());
 		Assert.assertFalse(anRes.usesMaps());
 		Assert.assertFalse(anRes.usesPatterns());
+		Assert.assertFalse(anRes.usesProducts());
 		assertNoLibs(anRes);
 	}
 
@@ -75,6 +78,7 @@ public class FeatureAnalysisTest
 		Assert.assertTrue(anRes.usesSeqs());
 		Assert.assertFalse(anRes.usesMaps());
 		Assert.assertFalse(anRes.usesPatterns());
+		Assert.assertFalse(anRes.usesProducts());
 		assertNoLibs(anRes);
 	}
 
@@ -87,6 +91,7 @@ public class FeatureAnalysisTest
 		Assert.assertTrue(anRes.usesSeqs());
 		Assert.assertFalse(anRes.usesMaps());
 		Assert.assertFalse(anRes.usesPatterns());
+		Assert.assertFalse(anRes.usesProducts());
 		assertNoLibs(anRes);
 	}
 
@@ -99,6 +104,7 @@ public class FeatureAnalysisTest
 		Assert.assertFalse(anRes.usesSeqs());
 		Assert.assertFalse(anRes.usesMaps());
 		Assert.assertFalse(anRes.usesPatterns());
+		Assert.assertFalse(anRes.usesProducts());
 		assertNoLibs(anRes);
 	}
 
@@ -115,6 +121,7 @@ public class FeatureAnalysisTest
 		Assert.assertFalse(anRes.usesSeqs());
 		Assert.assertTrue(anRes.usesMaps());
 		Assert.assertFalse(anRes.usesPatterns());
+		Assert.assertFalse(anRes.usesProducts());
 		assertNoLibs(anRes);
 	}
 
@@ -127,6 +134,7 @@ public class FeatureAnalysisTest
 		Assert.assertFalse(anRes.usesSeqs());
 		Assert.assertTrue(anRes.usesMaps());
 		Assert.assertFalse(anRes.usesPatterns());
+		Assert.assertFalse(anRes.usesProducts());
 		assertNoLibs(anRes);
 	}
 
@@ -139,6 +147,7 @@ public class FeatureAnalysisTest
 		Assert.assertFalse(anRes.usesSeqs());
 		Assert.assertFalse(anRes.usesMaps());
 		Assert.assertFalse(anRes.usesPatterns());
+		Assert.assertFalse(anRes.usesProducts());
 		assertNoLibs(anRes);
 	}
 
@@ -155,6 +164,7 @@ public class FeatureAnalysisTest
 		Assert.assertFalse(anRes.usesSeqs());
 		Assert.assertFalse(anRes.usesMaps());
 		Assert.assertFalse(anRes.usesPatterns());
+		Assert.assertFalse(anRes.usesProducts());
 		assertNoLibs(anRes);
 	}
 	
@@ -167,6 +177,7 @@ public class FeatureAnalysisTest
 		Assert.assertFalse(anRes.usesSeqs());
 		Assert.assertFalse(anRes.usesMaps());
 		Assert.assertTrue(anRes.usesPatterns());
+		Assert.assertFalse(anRes.usesProducts());
 		assertNoLibs(anRes);
 	}
 	
@@ -179,6 +190,36 @@ public class FeatureAnalysisTest
 		Assert.assertFalse(anRes.usesSeqs());
 		Assert.assertFalse(anRes.usesMaps());
 		Assert.assertTrue(anRes.usesPatterns());
+		Assert.assertTrue(anRes.usesProducts());
+		assertNoLibs(anRes);
+	}
+	
+	/*
+	 * Products
+	 */
+	@Test
+	public void usesProductConstructor()
+	{
+		List<SClassDefinition> ast = buildAst("class A values a = mk_(1,2) end A");
+		FeatureAnalysisResult anRes = FeatureAnalysisResult.runAnalysis(ast);
+		Assert.assertFalse(anRes.usesSets());
+		Assert.assertFalse(anRes.usesSeqs());
+		Assert.assertFalse(anRes.usesMaps());
+		Assert.assertFalse(anRes.usesPatterns());
+		Assert.assertTrue(anRes.usesProducts());
+		assertNoLibs(anRes);
+	}
+	
+	@Test
+	public void usesProductType()
+	{
+		List<SClassDefinition> ast = buildAst("class A values a : [nat * nat] = nil end A");
+		FeatureAnalysisResult anRes = FeatureAnalysisResult.runAnalysis(ast);
+		Assert.assertFalse(anRes.usesSets());
+		Assert.assertFalse(anRes.usesSeqs());
+		Assert.assertFalse(anRes.usesMaps());
+		Assert.assertFalse(anRes.usesPatterns());
+		Assert.assertTrue(anRes.usesProducts());
 		assertNoLibs(anRes);
 	}
 	
