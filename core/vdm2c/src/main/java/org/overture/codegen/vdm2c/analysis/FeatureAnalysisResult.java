@@ -113,4 +113,30 @@ public class FeatureAnalysisResult
 	{
 		return usesVdmUnit;
 	}
+	
+	@Override
+	public String toString()
+	{
+		StringBuilder sb = new StringBuilder();
+		
+		appendDef(sb, usesSets, "#define NO_SETS");
+		appendDef(sb, usesSeqs, "#define NO_SEQS");
+		appendDef(sb, usesMaps, "#define NO_MAPS");
+		appendDef(sb, usesMathLib, "#define NO_MATH");
+		appendDef(sb, usesIoLib, "#define NO_CSV");
+		appendDef(sb, usesIoLib, "#define NO_IO");
+		appendDef(sb, usesVdmUtil, "#define NO_VDMUTIL");
+		appendDef(sb, usesVdmUnit, "#define NO_VDMUNIT");
+		
+		return sb.toString();
+	}
+
+	private void appendDef(StringBuilder sb, boolean usesFeature, String defStr)
+	{
+		if(!usesFeature)
+		{
+			sb.append(defStr);
+			sb.append('\n');
+		}
+	}
 }
