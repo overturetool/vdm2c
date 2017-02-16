@@ -13,7 +13,6 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
-import org.overture.ast.analysis.AnalysisException;
 import org.overture.ast.definitions.SClassDefinition;
 import org.overture.ast.lex.Dialect;
 import org.overture.ast.node.INode;
@@ -235,13 +234,20 @@ public class CGenMain
 						}
 					}
 				}
+				
+				String featureFileName = "VdmModelFeatures.h";
+				cGen.emitFeatureFile(outputDir, featureFileName);
+				if(!quiet)
+				{
+					print("Generated feature file: " + new File(outputDir, featureFileName).getAbsolutePath());
+				}
 			}
 			else
 			{
 				print("No classes were generated!");
 			}
 
-		} catch (AnalysisException e)
+		} catch (Exception e)
 		{
 			error("Unexpected problems encountered during the code generation process: " + e.getMessage());
 			e.printStackTrace();
