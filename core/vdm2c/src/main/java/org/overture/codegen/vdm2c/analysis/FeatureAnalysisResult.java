@@ -137,6 +137,7 @@ public class FeatureAnalysisResult
 		appendDef(sb, usesSeqs, "#define NO_SEQS");
 		appendDef(sb, usesMaps, "#define NO_MAPS");
 		appendDef(sb, usesPatterns, "#define NO_PATTERNS");
+		appendDef(sb, usesProducts, "#define NO_PRODUCTS");
 		appendDef(sb, usesMathLib, "#define NO_MATH");
 		appendDef(sb, usesIoLib, "#define NO_CSV");
 		appendDef(sb, usesIoLib, "#define NO_IO");
