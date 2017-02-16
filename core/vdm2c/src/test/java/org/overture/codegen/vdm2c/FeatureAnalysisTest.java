@@ -34,6 +34,7 @@ public class FeatureAnalysisTest
 		Assert.assertTrue(anRes.usesSets());
 		Assert.assertFalse(anRes.usesSeqs());
 		Assert.assertFalse(anRes.usesMaps());
+		Assert.assertFalse(anRes.usesPatterns());
 		assertNoLibs(anRes);
 	}
 
@@ -45,6 +46,7 @@ public class FeatureAnalysisTest
 		Assert.assertTrue(anRes.usesSets());
 		Assert.assertFalse(anRes.usesSeqs());
 		Assert.assertFalse(anRes.usesMaps());
+		Assert.assertFalse(anRes.usesPatterns());
 		assertNoLibs(anRes);
 	}
 
@@ -56,6 +58,7 @@ public class FeatureAnalysisTest
 		Assert.assertFalse(anRes.usesSets());
 		Assert.assertFalse(anRes.usesSeqs());
 		Assert.assertFalse(anRes.usesMaps());
+		Assert.assertFalse(anRes.usesPatterns());
 		assertNoLibs(anRes);
 	}
 
@@ -71,6 +74,7 @@ public class FeatureAnalysisTest
 		Assert.assertFalse(anRes.usesSets());
 		Assert.assertTrue(anRes.usesSeqs());
 		Assert.assertFalse(anRes.usesMaps());
+		Assert.assertFalse(anRes.usesPatterns());
 		assertNoLibs(anRes);
 	}
 
@@ -82,6 +86,7 @@ public class FeatureAnalysisTest
 		Assert.assertFalse(anRes.usesSets());
 		Assert.assertTrue(anRes.usesSeqs());
 		Assert.assertFalse(anRes.usesMaps());
+		Assert.assertFalse(anRes.usesPatterns());
 		assertNoLibs(anRes);
 	}
 
@@ -93,6 +98,7 @@ public class FeatureAnalysisTest
 		Assert.assertFalse(anRes.usesSets());
 		Assert.assertFalse(anRes.usesSeqs());
 		Assert.assertFalse(anRes.usesMaps());
+		Assert.assertFalse(anRes.usesPatterns());
 		assertNoLibs(anRes);
 	}
 
@@ -108,6 +114,7 @@ public class FeatureAnalysisTest
 		Assert.assertFalse(anRes.usesSets());
 		Assert.assertFalse(anRes.usesSeqs());
 		Assert.assertTrue(anRes.usesMaps());
+		Assert.assertFalse(anRes.usesPatterns());
 		assertNoLibs(anRes);
 	}
 
@@ -119,6 +126,7 @@ public class FeatureAnalysisTest
 		Assert.assertFalse(anRes.usesSets());
 		Assert.assertFalse(anRes.usesSeqs());
 		Assert.assertTrue(anRes.usesMaps());
+		Assert.assertFalse(anRes.usesPatterns());
 		assertNoLibs(anRes);
 	}
 
@@ -130,9 +138,50 @@ public class FeatureAnalysisTest
 		Assert.assertFalse(anRes.usesSets());
 		Assert.assertFalse(anRes.usesSeqs());
 		Assert.assertFalse(anRes.usesMaps());
+		Assert.assertFalse(anRes.usesPatterns());
 		assertNoLibs(anRes);
 	}
 
+	/*
+	 * Patterns
+	 */
+	@Test
+	public void noPatterns()
+	{
+		// From the perspective of VDM2C we don't consider the identifier pattern a pattern
+		List<SClassDefinition> ast = buildAst("class A values a = 1 end A");
+		FeatureAnalysisResult anRes = FeatureAnalysisResult.runAnalysis(ast);
+		Assert.assertFalse(anRes.usesSets());
+		Assert.assertFalse(anRes.usesSeqs());
+		Assert.assertFalse(anRes.usesMaps());
+		Assert.assertFalse(anRes.usesPatterns());
+		assertNoLibs(anRes);
+	}
+	
+	@Test
+	public void ignorePattern()
+	{
+		List<SClassDefinition> ast = buildAst("class A values - = 1 end A");
+		FeatureAnalysisResult anRes = FeatureAnalysisResult.runAnalysis(ast);
+		Assert.assertFalse(anRes.usesSets());
+		Assert.assertFalse(anRes.usesSeqs());
+		Assert.assertFalse(anRes.usesMaps());
+		Assert.assertTrue(anRes.usesPatterns());
+		assertNoLibs(anRes);
+	}
+	
+	@Test
+	public void usesTuplePattern()
+	{
+		List<SClassDefinition> ast = buildAst("class A values mk_(a,b) = mk_(1,2) end A");
+		FeatureAnalysisResult anRes = FeatureAnalysisResult.runAnalysis(ast);
+		Assert.assertFalse(anRes.usesSets());
+		Assert.assertFalse(anRes.usesSeqs());
+		Assert.assertFalse(anRes.usesMaps());
+		Assert.assertTrue(anRes.usesPatterns());
+		assertNoLibs(anRes);
+	}
+	
 	/*
 	 * Libraries
 	 */
