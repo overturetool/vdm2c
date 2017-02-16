@@ -65,7 +65,7 @@ public class CGen extends CodeGenBase
 	{
 		super.preProcessAst(ast);
 		hasTimeMap = TimeFinder.computeTimeMap(getClasses(ast));
-		featureAnalysis = FeatureAnalysisResult.runAnalysis(getClasses(ast));
+		featureAnalysis = FeatureAnalysisResult.runAnalysis(getClasses(ast), cGenSettings.usesGarbageCollection());
 	}
 	
 	public List<File> getEmittedFiles()

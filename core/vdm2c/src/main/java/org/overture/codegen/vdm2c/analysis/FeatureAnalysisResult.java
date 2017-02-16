@@ -15,6 +15,9 @@ public class FeatureAnalysisResult
 	private boolean usesProducts;
 	private boolean usesRecords;
 	
+	// Whether the code-generator uses garbage collection
+	private boolean usesGarbageCollection;
+	
 	// Libraries being used
 	private boolean usesMathLib;
 	private boolean usesCsvLib;
@@ -35,13 +38,14 @@ public class FeatureAnalysisResult
 	/**
 	 * Prevent others from instantiating this class
 	 */
-	private FeatureAnalysisResult()
+	private FeatureAnalysisResult(boolean usesGarbageCollection)
 	{
+		this.usesGarbageCollection = usesGarbageCollection;
 	}
 	
-	public static FeatureAnalysisResult runAnalysis(List<SClassDefinition> ast)
+	public static FeatureAnalysisResult runAnalysis(List<SClassDefinition> ast, boolean usesGarbageCollection)
 	{
-		FeatureAnalysisResult an = new FeatureAnalysisResult();
+		FeatureAnalysisResult an = new FeatureAnalysisResult(usesGarbageCollection);
 		an.usesSets = new UsesSetsAnalysis().hasFeature(ast);
 		an.usesSeqs = new UsesSeqsAnalysis().hasFeature(ast);
 		an.usesMaps = new UsesMapsAnalysis().hasFeature(ast);
@@ -110,6 +114,11 @@ public class FeatureAnalysisResult
 		return usesRecords;
 	}
 	
+	public boolean usesGarbageCollection()
+	{
+		return usesGarbageCollection;
+	}
+	
 	public boolean usesMathLib()
 	{
 		return usesMathLib;
@@ -146,6 +155,7 @@ public class FeatureAnalysisResult
 		appendDef(sb, usesPatterns, "#define NO_PATTERNS");
 		appendDef(sb, usesProducts, "#define NO_PRODUCTS");
 		appendDef(sb, usesRecords, "#define NO_RECORDS");
+		appendDef(sb, usesGarbageCollection, "#define NO_GC");
 		appendDef(sb, usesMathLib, "#define NO_MATH");
 		appendDef(sb, usesIoLib, "#define NO_CSV");
 		appendDef(sb, usesIoLib, "#define NO_IO");

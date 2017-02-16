@@ -30,13 +30,14 @@ public class FeatureAnalysisTest
 	public void usesSetEnum()
 	{
 		List<SClassDefinition> ast = buildAst("class A values s = {} end A");
-		FeatureAnalysisResult anRes = FeatureAnalysisResult.runAnalysis(ast);
+		FeatureAnalysisResult anRes = FeatureAnalysisResult.runAnalysis(ast, false);
 		Assert.assertTrue(anRes.usesSets());
 		Assert.assertFalse(anRes.usesSeqs());
 		Assert.assertFalse(anRes.usesMaps());
 		Assert.assertFalse(anRes.usesPatterns());
 		Assert.assertFalse(anRes.usesProducts());
 		Assert.assertFalse(anRes.usesRecords());
+		Assert.assertFalse(anRes.usesGarbageCollection());
 		assertNoLibs(anRes);
 	}
 
@@ -44,7 +45,7 @@ public class FeatureAnalysisTest
 	public void usesSet1Type()
 	{
 		List<SClassDefinition> ast = buildAst("class A instance variables xs : set1 of nat; end A");
-		FeatureAnalysisResult anRes = FeatureAnalysisResult.runAnalysis(ast);
+		FeatureAnalysisResult anRes = FeatureAnalysisResult.runAnalysis(ast, false);
 		Assert.assertTrue(anRes.usesSets());
 		Assert.assertFalse(anRes.usesSeqs());
 		Assert.assertFalse(anRes.usesMaps());
@@ -58,13 +59,14 @@ public class FeatureAnalysisTest
 	public void noSets()
 	{
 		List<SClassDefinition> ast = buildAst("class A end A");
-		FeatureAnalysisResult anRes = FeatureAnalysisResult.runAnalysis(ast);
+		FeatureAnalysisResult anRes = FeatureAnalysisResult.runAnalysis(ast, false);
 		Assert.assertFalse(anRes.usesSets());
 		Assert.assertFalse(anRes.usesSeqs());
 		Assert.assertFalse(anRes.usesMaps());
 		Assert.assertFalse(anRes.usesPatterns());
 		Assert.assertFalse(anRes.usesProducts());
 		Assert.assertFalse(anRes.usesRecords());
+		Assert.assertFalse(anRes.usesGarbageCollection());
 		assertNoLibs(anRes);
 	}
 
@@ -76,13 +78,14 @@ public class FeatureAnalysisTest
 	public void usesSeqEnum()
 	{
 		List<SClassDefinition> ast = buildAst("class A values s = [] end A");
-		FeatureAnalysisResult anRes = FeatureAnalysisResult.runAnalysis(ast);
+		FeatureAnalysisResult anRes = FeatureAnalysisResult.runAnalysis(ast, false);
 		Assert.assertFalse(anRes.usesSets());
 		Assert.assertTrue(anRes.usesSeqs());
 		Assert.assertFalse(anRes.usesMaps());
 		Assert.assertFalse(anRes.usesPatterns());
 		Assert.assertFalse(anRes.usesProducts());
 		Assert.assertFalse(anRes.usesRecords());
+		Assert.assertFalse(anRes.usesGarbageCollection());
 		assertNoLibs(anRes);
 	}
 
@@ -90,13 +93,14 @@ public class FeatureAnalysisTest
 	public void usesSeq1Type()
 	{
 		List<SClassDefinition> ast = buildAst("class A instance variables xs : seq1 of nat; end A");
-		FeatureAnalysisResult anRes = FeatureAnalysisResult.runAnalysis(ast);
+		FeatureAnalysisResult anRes = FeatureAnalysisResult.runAnalysis(ast, false);
 		Assert.assertFalse(anRes.usesSets());
 		Assert.assertTrue(anRes.usesSeqs());
 		Assert.assertFalse(anRes.usesMaps());
 		Assert.assertFalse(anRes.usesPatterns());
 		Assert.assertFalse(anRes.usesProducts());
 		Assert.assertFalse(anRes.usesRecords());
+		Assert.assertFalse(anRes.usesGarbageCollection());
 		assertNoLibs(anRes);
 	}
 
@@ -104,13 +108,14 @@ public class FeatureAnalysisTest
 	public void noSeqs()
 	{
 		List<SClassDefinition> ast = buildAst("class A end A");
-		FeatureAnalysisResult anRes = FeatureAnalysisResult.runAnalysis(ast);
+		FeatureAnalysisResult anRes = FeatureAnalysisResult.runAnalysis(ast, false);
 		Assert.assertFalse(anRes.usesSets());
 		Assert.assertFalse(anRes.usesSeqs());
 		Assert.assertFalse(anRes.usesMaps());
 		Assert.assertFalse(anRes.usesPatterns());
 		Assert.assertFalse(anRes.usesProducts());
 		Assert.assertFalse(anRes.usesRecords());
+		Assert.assertFalse(anRes.usesGarbageCollection());
 		assertNoLibs(anRes);
 	}
 
@@ -122,13 +127,14 @@ public class FeatureAnalysisTest
 	public void usesMapEnum()
 	{
 		List<SClassDefinition> ast = buildAst("class A values s = {|->} end A");
-		FeatureAnalysisResult anRes = FeatureAnalysisResult.runAnalysis(ast);
+		FeatureAnalysisResult anRes = FeatureAnalysisResult.runAnalysis(ast, false);
 		Assert.assertFalse(anRes.usesSets());
 		Assert.assertFalse(anRes.usesSeqs());
 		Assert.assertTrue(anRes.usesMaps());
 		Assert.assertFalse(anRes.usesPatterns());
 		Assert.assertFalse(anRes.usesProducts());
 		Assert.assertFalse(anRes.usesRecords());
+		Assert.assertFalse(anRes.usesGarbageCollection());
 		assertNoLibs(anRes);
 	}
 
@@ -136,13 +142,14 @@ public class FeatureAnalysisTest
 	public void usesInjectiveMaps()
 	{
 		List<SClassDefinition> ast = buildAst("class A values xs : [inmap nat to nat] = nil; end A");
-		FeatureAnalysisResult anRes = FeatureAnalysisResult.runAnalysis(ast);
+		FeatureAnalysisResult anRes = FeatureAnalysisResult.runAnalysis(ast, false);
 		Assert.assertFalse(anRes.usesSets());
 		Assert.assertFalse(anRes.usesSeqs());
 		Assert.assertTrue(anRes.usesMaps());
 		Assert.assertFalse(anRes.usesPatterns());
 		Assert.assertFalse(anRes.usesProducts());
 		Assert.assertFalse(anRes.usesRecords());
+		Assert.assertFalse(anRes.usesGarbageCollection());
 		assertNoLibs(anRes);
 	}
 
@@ -150,13 +157,14 @@ public class FeatureAnalysisTest
 	public void noMaps()
 	{
 		List<SClassDefinition> ast = buildAst("class A end A");
-		FeatureAnalysisResult anRes = FeatureAnalysisResult.runAnalysis(ast);
+		FeatureAnalysisResult anRes = FeatureAnalysisResult.runAnalysis(ast, false);
 		Assert.assertFalse(anRes.usesSets());
 		Assert.assertFalse(anRes.usesSeqs());
 		Assert.assertFalse(anRes.usesMaps());
 		Assert.assertFalse(anRes.usesPatterns());
 		Assert.assertFalse(anRes.usesProducts());
 		Assert.assertFalse(anRes.usesRecords());
+		Assert.assertFalse(anRes.usesGarbageCollection());
 		assertNoLibs(anRes);
 	}
 
@@ -168,13 +176,14 @@ public class FeatureAnalysisTest
 	{
 		// From the perspective of VDM2C we don't consider the identifier pattern a pattern
 		List<SClassDefinition> ast = buildAst("class A values a = 1 end A");
-		FeatureAnalysisResult anRes = FeatureAnalysisResult.runAnalysis(ast);
+		FeatureAnalysisResult anRes = FeatureAnalysisResult.runAnalysis(ast, false);
 		Assert.assertFalse(anRes.usesSets());
 		Assert.assertFalse(anRes.usesSeqs());
 		Assert.assertFalse(anRes.usesMaps());
 		Assert.assertFalse(anRes.usesPatterns());
 		Assert.assertFalse(anRes.usesProducts());
 		Assert.assertFalse(anRes.usesRecords());
+		Assert.assertFalse(anRes.usesGarbageCollection());
 		assertNoLibs(anRes);
 	}
 	
@@ -182,13 +191,14 @@ public class FeatureAnalysisTest
 	public void ignorePattern()
 	{
 		List<SClassDefinition> ast = buildAst("class A values - = 1 end A");
-		FeatureAnalysisResult anRes = FeatureAnalysisResult.runAnalysis(ast);
+		FeatureAnalysisResult anRes = FeatureAnalysisResult.runAnalysis(ast, false);
 		Assert.assertFalse(anRes.usesSets());
 		Assert.assertFalse(anRes.usesSeqs());
 		Assert.assertFalse(anRes.usesMaps());
 		Assert.assertTrue(anRes.usesPatterns());
 		Assert.assertFalse(anRes.usesProducts());
 		Assert.assertFalse(anRes.usesRecords());
+		Assert.assertFalse(anRes.usesGarbageCollection());
 		assertNoLibs(anRes);
 	}
 	
@@ -196,13 +206,14 @@ public class FeatureAnalysisTest
 	public void usesTuplePattern()
 	{
 		List<SClassDefinition> ast = buildAst("class A values mk_(a,b) = mk_(1,2) end A");
-		FeatureAnalysisResult anRes = FeatureAnalysisResult.runAnalysis(ast);
+		FeatureAnalysisResult anRes = FeatureAnalysisResult.runAnalysis(ast, false);
 		Assert.assertFalse(anRes.usesSets());
 		Assert.assertFalse(anRes.usesSeqs());
 		Assert.assertFalse(anRes.usesMaps());
 		Assert.assertTrue(anRes.usesPatterns());
 		Assert.assertTrue(anRes.usesProducts());
 		Assert.assertFalse(anRes.usesRecords());
+		Assert.assertFalse(anRes.usesGarbageCollection());
 		assertNoLibs(anRes);
 	}
 	
@@ -213,13 +224,14 @@ public class FeatureAnalysisTest
 	public void usesProductConstructor()
 	{
 		List<SClassDefinition> ast = buildAst("class A values a = mk_(1,2) end A");
-		FeatureAnalysisResult anRes = FeatureAnalysisResult.runAnalysis(ast);
+		FeatureAnalysisResult anRes = FeatureAnalysisResult.runAnalysis(ast, false);
 		Assert.assertFalse(anRes.usesSets());
 		Assert.assertFalse(anRes.usesSeqs());
 		Assert.assertFalse(anRes.usesMaps());
 		Assert.assertFalse(anRes.usesPatterns());
 		Assert.assertTrue(anRes.usesProducts());
 		Assert.assertFalse(anRes.usesRecords());
+		Assert.assertFalse(anRes.usesGarbageCollection());
 		assertNoLibs(anRes);
 	}
 	
@@ -227,13 +239,14 @@ public class FeatureAnalysisTest
 	public void usesProductType()
 	{
 		List<SClassDefinition> ast = buildAst("class A values a : [nat * nat] = nil end A");
-		FeatureAnalysisResult anRes = FeatureAnalysisResult.runAnalysis(ast);
+		FeatureAnalysisResult anRes = FeatureAnalysisResult.runAnalysis(ast, false);
 		Assert.assertFalse(anRes.usesSets());
 		Assert.assertFalse(anRes.usesSeqs());
 		Assert.assertFalse(anRes.usesMaps());
 		Assert.assertFalse(anRes.usesPatterns());
 		Assert.assertTrue(anRes.usesProducts());
 		Assert.assertFalse(anRes.usesRecords());
+		Assert.assertFalse(anRes.usesGarbageCollection());
 		assertNoLibs(anRes);
 	}
 	
@@ -245,13 +258,14 @@ public class FeatureAnalysisTest
 	{
 		// Empty record that is instantiated
 		List<SClassDefinition> ast = buildAst("class A types R :: ; values r = mk_R() end A");
-		FeatureAnalysisResult anRes = FeatureAnalysisResult.runAnalysis(ast);
+		FeatureAnalysisResult anRes = FeatureAnalysisResult.runAnalysis(ast, false);
 		Assert.assertFalse(anRes.usesSets());
 		Assert.assertFalse(anRes.usesSeqs());
 		Assert.assertFalse(anRes.usesMaps());
 		Assert.assertFalse(anRes.usesPatterns());
 		Assert.assertFalse(anRes.usesProducts());
 		Assert.assertTrue(anRes.usesRecords());
+		Assert.assertFalse(anRes.usesGarbageCollection());
 		assertNoLibs(anRes);
 	}
 	
@@ -266,7 +280,7 @@ public class FeatureAnalysisTest
 		List<SClassDefinition> ast = buildAst("class CSV end CSV"
 				+ " class MATH end MATH " + "class VDMUnit end VDMUnit "
 				+ "class VDMUtil end VDMUtil");
-		FeatureAnalysisResult anRes = FeatureAnalysisResult.runAnalysis(ast);
+		FeatureAnalysisResult anRes = FeatureAnalysisResult.runAnalysis(ast, false);
 		Assert.assertFalse(anRes.usesSets());
 		Assert.assertFalse(anRes.usesSeqs());
 		Assert.assertFalse(anRes.usesMaps());
@@ -276,6 +290,7 @@ public class FeatureAnalysisTest
 		Assert.assertTrue(anRes.usesMathLib());
 		Assert.assertTrue(anRes.usesVdmUnit());
 		Assert.assertTrue(anRes.usesVdmUtil());
+		Assert.assertFalse(anRes.usesGarbageCollection());
 	}
 
 	/*
