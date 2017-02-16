@@ -13,6 +13,7 @@ public class FeatureAnalysisResult
 	private boolean usesMaps;
 	private boolean usesPatterns;
 	private boolean usesProducts;
+	private boolean usesRecords;
 	
 	// Libraries being used
 	private boolean usesMathLib;
@@ -46,6 +47,7 @@ public class FeatureAnalysisResult
 		an.usesMaps = new UsesMapsAnalysis().hasFeature(ast);
 		an.usesPatterns = new UsesPatternsAnalysis().hasFeature(ast);
 		an.usesProducts = new UsesProductsAnalysis().hasFeature(ast);
+		an.usesRecords = new UsesRecordsAnalysis().hasFeature(ast);
 		
 		for(SClassDefinition c : ast)
 		{
@@ -103,6 +105,11 @@ public class FeatureAnalysisResult
 		return usesProducts;
 	}
 	
+	public boolean usesRecords()
+	{
+		return usesRecords;
+	}
+	
 	public boolean usesMathLib()
 	{
 		return usesMathLib;
@@ -138,6 +145,7 @@ public class FeatureAnalysisResult
 		appendDef(sb, usesMaps, "#define NO_MAPS");
 		appendDef(sb, usesPatterns, "#define NO_PATTERNS");
 		appendDef(sb, usesProducts, "#define NO_PRODUCTS");
+		appendDef(sb, usesRecords, "#define NO_RECORDS");
 		appendDef(sb, usesMathLib, "#define NO_MATH");
 		appendDef(sb, usesIoLib, "#define NO_CSV");
 		appendDef(sb, usesIoLib, "#define NO_IO");
