@@ -2,6 +2,7 @@ node {
   // Mark the code checkout 'stage'....
   stage 'Checkout'
   checkout scm
+  sh 'git submodule update --init'
 
   step([$class: 'GitHubSetCommitStatusBuilder'])
 
@@ -42,8 +43,8 @@ node {
 
       step([$class: 'TasksPublisher', canComputeNew: false, defaultEncoding: '', excludePattern: '', healthy: '', high: 'FIXME', ignoreCase: true, low: '', normal: 'TODO', pattern: '', unHealthy: ''])
     }}
-
-	stage('Reporting'){
+  
+  stage('Reporting'){
 
     step([$class: 'GitHubCommitStatusSetter'])
     step([$class: 'Mailer', notifyEveryUnstableBuild: true, recipients: '', sendToIndividuals: true])
