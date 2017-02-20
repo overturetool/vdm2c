@@ -7,6 +7,7 @@
 
 #include "CSVLib.h"
 
+#ifndef NO_CSV
 
 TVP vdm_CSV_flinecount(TVP f)
 {
@@ -127,3 +128,5 @@ TVP vdm_CSV_fwriteval(TVP filename, TVP val, TVP fdir)
 
 TVP vdm_CSV_ferror()
 {}
+
+#endif /* NO_CSV */

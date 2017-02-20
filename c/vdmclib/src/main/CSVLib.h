@@ -37,6 +37,7 @@
  *      Author: Victor Bandur
  */
 
+#ifndef NO_CSV
 
 TVP vdm_CSV_flinecount(TVP f);
 TVP vdm_CSV_freadval(TVP f, TVP index);
@@ -44,3 +45,4 @@ TVP vdm_CSV_fwriteval(TVP filename, TVP val, TVP fdir);
 TVP vdm_CSV_ferror();
 
 #endif /* CSVLIB_H_ */
+#endif /* NO_CSV */

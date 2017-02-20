@@ -30,6 +30,8 @@
 #include <stdarg.h>
 #include "VdmProduct.h"
 
+#ifndef NO_PRODUCTS
+
 #define ASSERT_CHECK(s) assert(s->type == VDM_PRODUCT && "Value is not a product")
 
 
@@ -97,3 +99,5 @@ void productSet(TVP product, int index, TVP val)
 //
 //	return newBool(collectionEqual(product,product2));
 //}
+
+#endif /* NO_PRODUCTS */

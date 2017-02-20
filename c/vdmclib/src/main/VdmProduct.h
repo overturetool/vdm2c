@@ -32,6 +32,8 @@
 #include "Vdm.h"
 #include <assert.h>
 
+#ifndef NO_PRODUCTS
+
 struct TypedValue* newProductVar(size_t size,...);
 struct TypedValue* newProduct(size_t size);
 struct TypedValue* newProductWithValues(size_t size,TVP* elements);
@@ -41,3 +43,4 @@ void productSet(TVP product, int index, TVP val);
 //bool productEqual(TVP product,TVP product2);
 
 #endif /* LIB_VDMPRODUCT_H_ */
+#endif /* NO_PRODUCTS */
