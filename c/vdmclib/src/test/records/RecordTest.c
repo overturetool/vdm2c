@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#ifndef NO_RECORDS
+#if !defined(NO_RECORDS) && !defined(NO_SETS)
 
 /* -------------------------------
  *

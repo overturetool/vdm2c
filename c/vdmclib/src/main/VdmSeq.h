@@ -33,6 +33,8 @@
 
 #include "VdmSet.h"
 
+#ifndef NO_SEQS
+
 #define SET_SEQ(seq,index,val) {struct Collection* col =(struct Collection*) seq->value.ptr;col->value[index-1] =vdmClone(val);}
 
 /*
@@ -65,4 +67,5 @@ TVP vdmSeqInEqual(TVP seq,TVP seq2);
 
 void vdmSeqUpdate(TVP seq, TVP index, TVP newValue);
 
+#endif /* NO_SEQS */
 #endif /* LIB_VDMSEQ_H_ */

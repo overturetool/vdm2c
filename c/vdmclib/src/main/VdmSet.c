@@ -32,6 +32,8 @@
 #include <assert.h>
 #include "VdmSet.h"
 
+#ifndef NO_SETS
+
 #define ASSERT_CHECK(s) assert(s->type == VDM_SET && "Value is not a set")
 #define DEFAULT_SET_COMP_BUFFER 2
 #define DEFAULT_SET_COMP_BUFFER_STEPSIZE 10
@@ -607,3 +609,4 @@ TVP vdmSetPower(TVP set)
 	return powerset;
 }
 
+#endif /* NO_SETS */

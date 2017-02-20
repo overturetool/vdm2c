@@ -30,6 +30,8 @@
 #include "VdmSeq.h"
 #include <assert.h>
 
+#ifndef NO_SEQS
+
 #define ASSERT_CHECK(s) assert(s->type == VDM_SEQ && "Value is not a sequence")
 
 #define DEFAULT_SEQ_COMP_BUFFER 2
@@ -273,3 +275,5 @@ void vdmSeqUpdate(TVP seq, TVP indexVal, TVP newValue)
 	assert(index - 1 >= 0 && index - 1 < col->size && "invalid index");
 	col->value[index - 1] = vdmClone(newValue);
 }
+
+#endif /* NO_SEQS */

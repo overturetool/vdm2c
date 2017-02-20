@@ -31,7 +31,7 @@ extern "C"
 #include <stdio.h>
 }
 
-#ifndef NO_RECORDS
+#if !defined(NO_RECORDS) && !defined(NO_SETS)
 
 #define CHECK(methodId) TVP a = _Z10RecordTestEV(NULL);\
 TVP res=CALL_FUNC(RecordTest, RecordTest, a, methodId);\
