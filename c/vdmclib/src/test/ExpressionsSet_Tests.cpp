@@ -20,6 +20,7 @@
  * #~%
  */
 
+
 #include "gtest/gtest.h"
 
 extern "C"
@@ -33,6 +34,7 @@ extern "C"
 }
 
 
+#ifndef NO_SETS //Sets not suppressed.
 
 //Utility functions
 //------------------------------------------------
@@ -1067,3 +1069,5 @@ TEST(Expression_SetRandom, setMemTest)
 	}
 }
  */
+
+#endif /*  NO_SETS */

@@ -46,6 +46,7 @@
 #include <stdlib.h>
 #include <assert.h>
 
+#include "VdmModelFeatures.h"
 #include "TypedValue.h"
 #include "VdmBasicTypes.h"
 #include "VdmSet.h"

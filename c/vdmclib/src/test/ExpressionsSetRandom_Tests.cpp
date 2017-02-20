@@ -20,6 +20,8 @@
  * #~%
  */
 
+
+
 #include "gtest/gtest.h"
 
 extern "C"
@@ -32,6 +34,7 @@ extern "C"
 #include <limits.h>
 }
 
+#ifndef NO_SETS
 
 
 //Utility functions
@@ -887,3 +890,5 @@ TEST(Expression_SetRandom, setMemTest)
 	}
 }
 */
+
+#endif /* NO_SETS */

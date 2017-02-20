@@ -29,6 +29,7 @@ extern "C"
 #include <stdio.h>
 }
 
+#ifndef NO_GC
 
 TEST(GC, test1)
 {
@@ -156,3 +157,4 @@ TEST(GC, test8)
 	vdm_gc_shutdown();
 }
 
+#endif /* NO_GC */

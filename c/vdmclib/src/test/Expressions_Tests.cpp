@@ -65,6 +65,7 @@ TVP letIdentifierDontExp()
 
 }
 
+
 TVP letPatternMatch1()
 {
 	//let 1 = 1 in true
@@ -125,6 +126,7 @@ TVP letPatternMatch3()
 
 }
 
+
 /*let b = 2 in
  let 1 = b in true;*/
 TVP letFilter1Exp()
@@ -156,6 +158,8 @@ TVP letFilter1Exp()
 		}
 	}
 }
+
+
 
 TVP ifExp()
 {
@@ -221,6 +225,8 @@ TEST(Expression, letIdentifierDontExp)
 	vdmFree (TEST_TRUE);
 }
 
+#ifndef NO_PATTERNS
+
 TEST(Expression, letPatternMatch1)
 {
 	TVP TEST_TRUE = newBool(true);
@@ -246,6 +252,8 @@ TEST(Expression, letPatternMatch3)
 
 	vdmFree (TEST_TRUE);
 }
+
+#endif /*  NO_PATTERNS */
 
 TEST(Expression, letFilter1Exp)
 {

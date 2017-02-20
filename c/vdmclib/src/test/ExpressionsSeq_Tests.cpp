@@ -29,6 +29,8 @@ extern "C"
 #include <stdio.h>
 }
 
+#ifndef NO_SEQS
+
 #define DEFAULT_SEQ_COMP_BUFFER 1
 #define DEFAULT_SEQ_COMP_BUFFER_STEPSIZE 10
 
@@ -328,3 +330,5 @@ TEST(Expression_Seq, seqUpdate)
 	vdmFree(seq);
 	vdmFree(res);
 }
+
+#endif /* NO_SEQS */

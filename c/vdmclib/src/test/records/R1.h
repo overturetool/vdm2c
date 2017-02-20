@@ -34,6 +34,8 @@
 #include "VdmClass.h"
 #include "VdmRecord.h"
 
+#ifndef NO_RECORDS
+
 //#define UNWRAP_R(var,map) struct Map* var = (struct Map*)map->value.ptr
 
 #define RECORD_ID_R1 1
@@ -54,3 +56,5 @@ struct R1
 TVP mk_R1();
 
 #endif /* RECORDS_R1_H_ */
+
+#endif /* NO_RECORDS */

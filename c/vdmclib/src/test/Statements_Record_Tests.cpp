@@ -31,6 +31,7 @@ extern "C"
 #include <stdio.h>
 }
 
+#ifndef NO_RECORDS
 
 #define CHECK(methodId) TVP a = _Z10RecordTestEV(NULL);\
 TVP res=CALL_FUNC(RecordTest, RecordTest, a, methodId);\
@@ -63,3 +64,5 @@ TEST(Statements_Records, test5)
 {
 	CHECK(CLASS_RecordTest__Z5test5EV);
 }
+
+#endif /* NO_RECORDS */

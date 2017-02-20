@@ -30,6 +30,7 @@ extern "C"
 
 }
 
+#ifndef NO_CSV
 
 TVP packString(char *charseq)
 {
@@ -118,3 +119,5 @@ TEST(ClassCSV, read_value)
 	vdmFree(CSVFileAsSeq);
 	vdmFree(lineInFileAsSeq);
 }
+
+#endif /* NO_CSV */

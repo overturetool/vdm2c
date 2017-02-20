@@ -10,6 +10,8 @@
 #include "VdmClass.h"
 
 
+#ifndef NO_RECORDS
+
 /* -------------------------------
  *
  * Quotes
@@ -88,3 +90,5 @@ MyRec2CLASS MyRec2_Constructor(MyRec2CLASS);
 
 
 #endif /* CLASSES_MyRec2_H_ */
+
+#endif /* NO_RECORDS */

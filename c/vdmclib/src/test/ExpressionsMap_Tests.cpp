@@ -30,6 +30,9 @@ extern "C"
 }
 
 
+#ifndef NO_MAPS
+
+
 TVP createMap1()
 {
 	//{}
@@ -488,3 +491,5 @@ TEST(Expression_Map, vdmMapGrow)
 
 	vdmFree(theMap);
 }
+
+#endif /* NO_MAPS */

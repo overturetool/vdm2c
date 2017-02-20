@@ -29,6 +29,9 @@ extern "C"
 #include <stdio.h>
 }
 
+
+#ifndef NO_PRODUCTS
+
 TVP productExp()
 {
 	TVP tmp1 = newProduct(2);
@@ -132,3 +135,5 @@ TEST(ExpressionProduct, productVariadic)
 
 	vdmFree (TEST_TRUE);
 }
+
+#endif /*  NO_PRODUCTS */

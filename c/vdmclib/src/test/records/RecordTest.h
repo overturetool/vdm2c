@@ -12,6 +12,8 @@
 #include "RecordTest.h"
 
 
+#ifndef NO_RECORDS
+
 /* -------------------------------
  *
  * Quotes
@@ -94,3 +96,4 @@ RecordTestCLASS RecordTest_Constructor(RecordTestCLASS);
 
 
 #endif /* CLASSES_RecordTest_H_ */
+#endif /* NO_RECORDS */
