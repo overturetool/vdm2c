@@ -59,6 +59,7 @@ bool patternMatchBind(TVP patternBind, TVP value)
 		break;
 		case VDM_MAP:
 		break;
+#ifndef NO_PRODUCTS
 		case VDM_PRODUCT:
 		{ //this is a tuple pattern
 			if(!SAMETYPE(patternBind,value))
@@ -85,6 +86,7 @@ bool patternMatchBind(TVP patternBind, TVP value)
 
 			return match;
 		}
+#endif /* NO_PRODUCTS */
 		case VDM_RECORD:
 		break;
 		case VDM_CLASS:

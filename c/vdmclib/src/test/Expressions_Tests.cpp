@@ -85,7 +85,7 @@ TVP letPatternMatch1()
 	}
 }
 
-#ifndef NO_PATTERNS
+#if !defined(NO_PATTERNS) && !defined(NO_PRODUCTS)
 
 TVP letPatternMatch3()
 {
@@ -160,7 +160,7 @@ TVP letFilter1Exp()
 	}
 }
 
-#endif /* NO_PATTERNS */
+#endif /* NO_PATTERNS and NO_PRODUCTS*/
 
 TVP ifExp()
 {
@@ -226,7 +226,7 @@ TEST(Expression, letIdentifierDontExp)
 	vdmFree (TEST_TRUE);
 }
 
-#ifndef NO_PATTERNS
+#if !defined(NO_PATTERNS) && !defined(NO_PRODUCTS)
 
 TEST(Expression, letPatternMatch1)
 {
@@ -277,7 +277,7 @@ TEST(Expression, letFilter1Exp)
 	vdmFree (TEST_TRUE);
 }
 
-#endif /*  NO_PATTERNS */
+#endif /*  NO_PATTERNS & NO_PRODUCTS */
 
 
 TEST(Expression, ifExp)

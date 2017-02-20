@@ -160,7 +160,9 @@ TVP vdmClone(TVP x)
 		//todo
 		break;
 #endif
+#ifndef NO_PRODUCTS
 	case VDM_PRODUCT:
+#endif
 	case VDM_SEQ:
 	case VDM_SET:
 	{
@@ -282,7 +284,9 @@ bool equals(struct TypedValue* a, struct TypedValue* b)
 		return r;
 	}
 #endif
+#ifndef NO_PRODUCTS
 	case VDM_PRODUCT:
+#endif
 	case VDM_SEQ:
 	{
 		return collectionEqual(a, b);
@@ -398,7 +402,9 @@ void vdmFree_GCInternal(struct TypedValue* ptr)
 		//TODO:
 		break;
 #endif
+#ifndef NO_PRODUCTS
 	case VDM_PRODUCT:
+#endif
 	case VDM_SEQ:
 	case VDM_SET:
 	{
@@ -485,7 +491,9 @@ void vdmFree(struct TypedValue* ptr)
 		//TODO:
 		break;
 #endif
+#ifndef NO_PRODUCTS
 	case VDM_PRODUCT:
+#endif
 	case VDM_SEQ:
 	case VDM_SET:
 	{
