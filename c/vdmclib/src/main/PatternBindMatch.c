@@ -29,6 +29,8 @@
  */
 #include "PatternBindMatch.h"
 
+#ifndef NO_PATTERNS
+
 #define SAMETYPE(a,b) a->type ==b->type
 
 //this is for match or bind and not for pattern identifier, this should be generated as p= value instead
@@ -90,3 +92,5 @@ bool patternMatchBind(TVP patternBind, TVP value)
 	}
 	return false;
 }
+
+#endif /* NO_PATTERNS */

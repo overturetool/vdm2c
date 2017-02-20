@@ -85,6 +85,8 @@ TVP letPatternMatch1()
 	}
 }
 
+#ifndef NO_PATTERNS
+
 TVP letPatternMatch3()
 {
 	//let mk_(a,2) = mk_(1,2) in true
@@ -126,7 +128,6 @@ TVP letPatternMatch3()
 
 }
 
-
 /*let b = 2 in
  let 1 = b in true;*/
 TVP letFilter1Exp()
@@ -159,7 +160,7 @@ TVP letFilter1Exp()
 	}
 }
 
-
+#endif /* NO_PATTERNS */
 
 TVP ifExp()
 {
@@ -253,7 +254,6 @@ TEST(Expression, letPatternMatch3)
 	vdmFree (TEST_TRUE);
 }
 
-#endif /*  NO_PATTERNS */
 
 TEST(Expression, letFilter1Exp)
 {
@@ -276,6 +276,8 @@ TEST(Expression, letFilter1Exp)
 	FAIL();
 	vdmFree (TEST_TRUE);
 }
+
+#endif /*  NO_PATTERNS */
 
 
 TEST(Expression, ifExp)
