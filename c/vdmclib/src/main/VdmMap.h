@@ -42,6 +42,8 @@
 
 #include <assert.h>
 
+#ifndef NO_MAPS
+
 #define UNWRAP_MAP(var,map) struct Map* var = (struct Map*)map->value.ptr
 
 
@@ -104,4 +106,6 @@ gboolean vdm_typedvalue_equal(gconstpointer v1, gconstpointer v2);
 void vdm_g_free(gpointer mem);
 #endif
 
+
+#endif /* NO_MAPS */
 #endif /* LIB_VDMMAP_H_ */

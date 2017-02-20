@@ -145,7 +145,11 @@ bool collectionEqual(TVP col1,TVP col2);
 void vdmFree(struct TypedValue* ptr);
 
 extern struct TypedValue* newSetVar(size_t size,...);
+
+#ifndef NO_MAPS
 extern TVP vdmMapEquals(TVP map1, TVP map2);
+#endif
+
 extern TVP vdmSetEquals(TVP set1, TVP set2);
 extern void remove_allocd_mem_node_by_location(TVP loc);
 

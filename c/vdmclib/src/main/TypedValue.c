@@ -155,9 +155,11 @@ TVP vdmClone(TVP x)
 		//encoded as values so the initial copy line handles these
 		break;
 	}
+#ifndef NO_MAPS
 	case VDM_MAP:
 		//todo
 		break;
+#endif
 	case VDM_PRODUCT:
 	case VDM_SEQ:
 	case VDM_SET:
@@ -271,6 +273,7 @@ bool equals(struct TypedValue* a, struct TypedValue* b)
 	{
 		return a->value.quoteVal == b->value.quoteVal;
 	}
+#ifndef NO_MAPS
 	case VDM_MAP:
 	{
 		TVP r0 = vdmMapEquals(a, b);
@@ -278,6 +281,7 @@ bool equals(struct TypedValue* a, struct TypedValue* b)
 		vdmFree(r0);
 		return r;
 	}
+#endif
 	case VDM_PRODUCT:
 	case VDM_SEQ:
 	{
@@ -389,9 +393,11 @@ void vdmFree_GCInternal(struct TypedValue* ptr)
 	{
 		break;
 	}
+#ifndef NO_MAPS
 	case VDM_MAP:
 		//TODO:
 		break;
+#endif
 	case VDM_PRODUCT:
 	case VDM_SEQ:
 	case VDM_SET:
@@ -474,9 +480,11 @@ void vdmFree(struct TypedValue* ptr)
 	{
 		break;
 	}
+#ifndef NO_MAPS
 	case VDM_MAP:
 		//TODO:
 		break;
+#endif
 	case VDM_PRODUCT:
 	case VDM_SEQ:
 	case VDM_SET:

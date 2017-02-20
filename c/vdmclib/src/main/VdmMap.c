@@ -34,7 +34,7 @@
 
 #define ASSERT_CHECK(s) assert(s->type == VDM_MAP && "Value is not a map")
 
-
+#ifndef NO_MAPS
 
 #ifdef WITH_GLIB_HASH
 
@@ -900,3 +900,5 @@ bool vdmMapInEquals(TVP map1, TVP map2){
 	return not_eq;
 
 }
+
+#endif /* NO_MAPS */
