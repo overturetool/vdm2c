@@ -57,8 +57,10 @@ bool patternMatchBind(TVP patternBind, TVP value)
 		break;
 		case VDM_SEQ:
 		break;
+#ifndef NO_MAPS
 		case VDM_MAP:
 		break;
+#endif
 #ifndef NO_PRODUCTS
 		case VDM_PRODUCT:
 		{ //this is a tuple pattern
