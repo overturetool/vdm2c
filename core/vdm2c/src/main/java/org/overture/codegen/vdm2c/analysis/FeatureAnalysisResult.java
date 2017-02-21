@@ -157,7 +157,7 @@ public class FeatureAnalysisResult
 		appendDef(sb, usesRecords, "#define NO_RECORDS");
 		appendDef(sb, usesGarbageCollection, "#define NO_GC");
 		appendDef(sb, usesMathLib, "#define NO_MATH");
-		appendDef(sb, usesIoLib, "#define NO_CSV");
+		appendDef(sb, usesCsvLib, "#define NO_CSV");
 		appendDef(sb, usesIoLib, "#define NO_IO");
 		appendDef(sb, usesVdmUtil, "#define NO_VDMUTIL");
 		appendDef(sb, usesVdmUnit, "#define NO_VDMUNIT");
