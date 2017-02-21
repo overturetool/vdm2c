@@ -8,7 +8,7 @@
 
 #include "IOLib.h"
 
-
+#if !defined(NO_IO) || !defined(NO_CSV)
 
 char* unpackString(TVP charseq)
 {
@@ -180,4 +180,5 @@ TVP vdm_IO_echo(TVP text)
 
 	return NULL;
 }
-#endif
+#endif /* NO_IO or NO_CSV */
+#endif /* CUSTOM_IO */
