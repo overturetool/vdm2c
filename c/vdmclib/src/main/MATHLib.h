@@ -32,6 +32,8 @@
 
 #include "Vdm.h"
 
+#ifndef NO_MATH
+
 TVP vdm_MATH_fac(TVP a);
 TVP vdm_MATH_log(TVP a);
 TVP vdm_MATH_ln(TVP a);
@@ -50,4 +52,5 @@ TVP vdm_MATH_srand2(TVP a);
 TVP vdm_MATH_rand(TVP a);
 void vdm_MATH_srand(TVP a);
 
+#endif /* NO_MATH */
 #endif /* MATHLIB_H_ */

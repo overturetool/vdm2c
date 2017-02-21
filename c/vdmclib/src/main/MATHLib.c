@@ -10,6 +10,7 @@
 #include <math.h>
 
 #ifndef CUSTOM_MATH
+#ifndef NO_MATH
 
 TVP vdm_MATH_fac(TVP a)
 {
@@ -281,5 +282,5 @@ void vdm_MATH_srand(TVP a)
 }
 
 
-
-#endif
+#endif /* NO_MATH */
+#endif /* CUSTOM_MATH */
