@@ -149,8 +149,8 @@ public class FeatureAnalysisResult
 	{
 		StringBuilder sb = new StringBuilder();
 		
-		appendDef(sb, usesSets, "#define NO_SETS");
-		appendDef(sb, usesSeqs, "#define NO_SEQS");
+		appendDef(sb, usesMaps || usesSeqs || usesSets, "#define NO_SETS");
+		appendDef(sb, usesMaps || usesSeqs, "#define NO_SEQS");
 		appendDef(sb, usesMaps, "#define NO_MAPS");
 		appendDef(sb, usesPatterns, "#define NO_PATTERNS");
 		appendDef(sb, usesProducts, "#define NO_PRODUCTS");
