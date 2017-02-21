@@ -9,6 +9,7 @@ enable_testing()
 set(CMAKE_VERBOSE_MAKEFILE ON)
 set(CMAKE_COLOR_MAKEFILE   ON)
 
+include_directories(vdmclib/src/test/resources)
 
 add_subdirectory(third_party/googletest/googletest)
 add_subdirectory(vdmclib)
