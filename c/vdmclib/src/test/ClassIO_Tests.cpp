@@ -33,8 +33,7 @@ extern "C"
 }
 
 #ifndef NO_IO
-
-
+#ifndef NO_SEQS
 TEST(ClassIO, print)
 {
 	vdm_IO_echo(newSeqVar(3, newChar('a'), newChar('b'), newChar('c')));
@@ -59,5 +58,5 @@ TEST(ClassIO, print)
 	vdm_IO_println(newSetVar(2, newSetVar(2, newInt(3), newInt(4)), newSetVar(2, newChar('b'), newChar('z'))));
 	vdm_IO_println(newSeqVar(2, newSetVar(2, newInt(3), newInt(4)), newSeqVar(2, newChar('b'), newChar('z'))));
 }
-
+#endif /* NO_SEQS */
 #endif /* NO_IO */
