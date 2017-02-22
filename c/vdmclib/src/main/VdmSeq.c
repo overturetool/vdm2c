@@ -165,6 +165,8 @@ TVP vdmSeqLen(TVP seq)
 	UNWRAP_COLLECTION(col,seq);
 	return newInt(col->size);
 }
+
+#ifndef NO_SETS
 TVP vdmSeqElems(TVP seq)
 {
 	ASSERT_CHECK(seq);
@@ -174,6 +176,7 @@ TVP vdmSeqElems(TVP seq)
 
 	return elemsVal;
 }
+
 TVP vdmSeqInds(TVP seq)
 {
 	ASSERT_CHECK(seq);
@@ -191,6 +194,8 @@ TVP vdmSeqInds(TVP seq)
 
 	return indsVal;
 }
+#endif
+
 TVP vdmSeqConc(TVP seq,TVP seq2)
 {
 	ASSERT_CHECK(seq);

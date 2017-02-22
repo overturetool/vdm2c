@@ -162,6 +162,7 @@ TEST(Expression_Seq, seqLen)
 	vdmFree(t);
 }
 
+#ifndef NO_SETS
 TEST(Expression_Seq, seqElems)
 {
 	int arr[] =
@@ -205,6 +206,7 @@ TEST(Expression_Seq, seqInds)
 //
 	vdmFree(t);
 }
+#endif /* NO_SETS */
 
 TEST(Expression_Seq, seqConc)
 {

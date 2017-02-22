@@ -56,8 +56,12 @@ void vdmSeqFit(TVP seq);
 TVP vdmSeqHd(TVP seq);
 TVP vdmSeqTl(TVP seq);
 TVP vdmSeqLen(TVP seq);
+
+#ifndef NO_SETS
 TVP vdmSeqElems(TVP seq);
 TVP vdmSeqInds(TVP seq);
+#endif
+
 TVP vdmSeqConc(TVP seq,TVP seq2);
 TVP vdmSeqReverse(TVP seq);
 //TVP seqMod(TVP seq,TVP seq);
