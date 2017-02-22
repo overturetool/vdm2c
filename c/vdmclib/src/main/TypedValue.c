@@ -162,9 +162,43 @@ TVP vdmClone(TVP x)
 #endif
 #ifndef NO_PRODUCTS
 	case VDM_PRODUCT:
+	{
+		UNWRAP_COLLECTION(cptr, tmp);
+
+		struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
+
+		//copy (size)
+		*ptr = *cptr;
+		ptr->value = (struct TypedValue**) malloc(sizeof(struct TypedValue) * ptr->size);
+
+		for (int i = 0; i < cptr->size; i++)
+		{
+			ptr->value[i] = vdmClone(cptr->value[i]);
+		}
+
+		tmp->value.ptr = ptr;
+		break;
+	}
 #endif
 #ifndef NO_SEQS
 	case VDM_SEQ:
+	{
+		UNWRAP_COLLECTION(cptr, tmp);
+
+		struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
+
+		//copy (size)
+		*ptr = *cptr;
+		ptr->value = (struct TypedValue**) malloc(sizeof(struct TypedValue) * ptr->size);
+
+		for (int i = 0; i < cptr->size; i++)
+		{
+			ptr->value[i] = vdmClone(cptr->value[i]);
+		}
+
+		tmp->value.ptr = ptr;
+		break;
+	}
 #endif
 #ifndef NO_SETS
 	case VDM_SET:
@@ -189,6 +223,7 @@ TVP vdmClone(TVP x)
 	//	case VDM_OPTIONAL:
 	//		//TODO
 	//		break;
+#ifndef NO_RECORDS
 	case VDM_RECORD:
 	{
 		ASSERT_CHECK_RECORD(x);
@@ -227,6 +262,7 @@ TVP vdmClone(TVP x)
 
 		break;
 	}
+#endif /* NO_RECORDS */
 	case VDM_CLASS:
 	{
 		//handle smart pointer
@@ -290,6 +326,9 @@ bool equals(struct TypedValue* a, struct TypedValue* b)
 #endif
 #ifndef NO_PRODUCTS
 	case VDM_PRODUCT:
+	{
+		return collectionEqual(a, b);
+	}
 #endif
 #ifndef NO_SEQS
 	case VDM_SEQ:
@@ -310,6 +349,7 @@ bool equals(struct TypedValue* a, struct TypedValue* b)
 	//	{
 	//		break;
 	//	}
+#ifndef NO_RECORDS
 	case VDM_RECORD:
 	{
 		ASSERT_CHECK_RECORD(a);
@@ -349,6 +389,7 @@ bool equals(struct TypedValue* a, struct TypedValue* b)
 		return true;
 
 	}
+#endif /* NO_RECORDS */
 	case VDM_CLASS:
 	{
 		struct ClassType* ac = a->value.ptr;
@@ -412,9 +453,37 @@ void vdmFree_GCInternal(struct TypedValue* ptr)
 #endif
 #ifndef NO_PRODUCTS
 	case VDM_PRODUCT:
+	{
+		UNWRAP_COLLECTION(cptr, ptr);
+		for (int i = 0; i < cptr->size; i++)
+		{
+			if (cptr->value[i] != NULL)
+			{
+				vdmFree_GCInternal(cptr->value[i]);
+			}
+		}
+		free(cptr->value);
+		free(cptr);
+		ptr->value.ptr = NULL;
+		break;
+	}
 #endif
 #ifndef NO_SEQS
 	case VDM_SEQ:
+	{
+		UNWRAP_COLLECTION(cptr, ptr);
+		for (int i = 0; i < cptr->size; i++)
+		{
+			if (cptr->value[i] != NULL)
+			{
+				vdmFree_GCInternal(cptr->value[i]);
+			}
+		}
+		free(cptr->value);
+		free(cptr);
+		ptr->value.ptr = NULL;
+		break;
+	}
 #endif
 #ifndef NO_SETS
 	case VDM_SET:
@@ -436,6 +505,7 @@ void vdmFree_GCInternal(struct TypedValue* ptr)
 	//	case VDM_OPTIONAL:
 	//		//TODO
 	//		break;
+#ifndef NO_RECORDS
 	case VDM_RECORD:
 		ASSERT_CHECK_RECORD(ptr);
 
@@ -457,6 +527,7 @@ void vdmFree_GCInternal(struct TypedValue* ptr)
 		free(((struct ClassType*)ptr->value.ptr)->value);
 
 		break;
+#endif /* NO_RECORDS */
 	case VDM_CLASS:
 	{
 		//handle smart pointer
@@ -505,9 +576,37 @@ void vdmFree(struct TypedValue* ptr)
 #endif
 #ifndef NO_PRODUCTS
 	case VDM_PRODUCT:
+	{
+			UNWRAP_COLLECTION(cptr, ptr);
+			for (int i = 0; i < cptr->size; i++)
+			{
+				if (cptr->value[i] != NULL)
+				{
+					vdmFree(cptr->value[i]);
+				}
+			}
+			free(cptr->value);
+			free(cptr);
+			ptr->value.ptr = NULL;
+			break;
+		}
 #endif
 #ifndef NO_SEQS
 	case VDM_SEQ:
+	{
+			UNWRAP_COLLECTION(cptr, ptr);
+			for (int i = 0; i < cptr->size; i++)
+			{
+				if (cptr->value[i] != NULL)
+				{
+					vdmFree(cptr->value[i]);
+				}
+			}
+			free(cptr->value);
+			free(cptr);
+			ptr->value.ptr = NULL;
+			break;
+		}
 #endif
 #ifndef NO_SETS
 	case VDM_SET:
@@ -529,6 +628,7 @@ void vdmFree(struct TypedValue* ptr)
 	//	case VDM_OPTIONAL:
 	//		//TODO
 	//		break;
+#ifndef NO_RECORDS
 	case VDM_RECORD:
 		ASSERT_CHECK_RECORD(ptr);
 
@@ -550,6 +650,7 @@ void vdmFree(struct TypedValue* ptr)
 		free(((struct ClassType*)ptr->value.ptr)->value);
 
 		break;
+#endif /* NO_RECORDS */
 	case VDM_CLASS:
 	{
 		//handle smart pointer

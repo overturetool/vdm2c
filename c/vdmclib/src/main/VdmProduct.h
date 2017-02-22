@@ -42,5 +42,5 @@ TVP productGet(TVP product, int index);
 void productSet(TVP product, int index, TVP val);
 //bool productEqual(TVP product,TVP product2);
 
-#endif /* LIB_VDMPRODUCT_H_ */
 #endif /* NO_PRODUCTS */
+#endif /* LIB_VDMPRODUCT_H_ */

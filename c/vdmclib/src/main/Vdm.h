@@ -53,5 +53,6 @@
 #include "VdmSeq.h"
 #include "VdmMap.h"
 #include "VdmClass.h"
+#include "VdmProduct.h"
 
 #endif /* LIB_VDM_H_ */
