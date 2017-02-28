@@ -5,8 +5,6 @@
 
 extern void vdmFree_GCInternal(struct TypedValue* ptr);
 
-static int list_length;
-
 #define ASSERT_CHECK_RECORD(s) assert(s->type == VDM_RECORD && "Value is not a record")
 
 struct alloc_list_node *allocd_mem_head = NULL;
@@ -14,8 +12,6 @@ struct alloc_list_node *allocd_mem_tail = NULL;
 
 void vdm_gc_init()
 {
-	list_length = 0;
-
 	allocd_mem_head = (struct alloc_list_node*)malloc(sizeof (struct alloc_list_node));
 	allocd_mem_tail = allocd_mem_head;
 
@@ -25,19 +21,12 @@ void vdm_gc_init()
 
 void add_allocd_mem_node(TVP l, TVP *from)
 {
-	if(list_length >= MAX_LIST_LENGTH)
-	{
-		vdm_gc();
-	}
-
 	allocd_mem_tail->loc = l;
 	allocd_mem_tail->loc->ref_from = from;
 
 	allocd_mem_tail->next = (struct alloc_list_node*)malloc(sizeof(struct alloc_list_node));
 	allocd_mem_tail = allocd_mem_tail->next;
 	allocd_mem_tail->next = NULL;
-
-	list_length++;
 }
 
 
@@ -79,14 +68,12 @@ void remove_allocd_mem_node_by_location(TVP loc)
 		}
 
 		free(tmp);
-		list_length--;
 		return;
 	}
 	else
 	{
 		prev->next = tmp->next;
 		free(tmp);
-		list_length--;
 		return;
 	}
 	return;
@@ -126,14 +113,12 @@ void remove_allocd_mem_node(struct alloc_list_node *node)
 		}
 
 		free(node);
-		list_length--;
 		return;
 	}
 	else
 	{
 		prev->next = tmp->next;
 		free(tmp);
-		list_length--;
 		return;
 	}
 	return;

@@ -1,8 +1,6 @@
 #ifndef VDMGC_H_
 #define VDMGC_H_
 
-#define MAX_LIST_LENGTH 100
-
 #include "Vdm.h"
 
 struct alloc_list_node
