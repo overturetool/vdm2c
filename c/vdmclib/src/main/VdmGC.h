@@ -1,7 +1,7 @@
 #ifndef VDMGC_H_
 #define VDMGC_H_
 
-#define MAX_LIST_LENGTH 100
+//#define MAX_LIST_LENGTH 100
 
 #include "Vdm.h"
 
