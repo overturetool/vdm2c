@@ -31,7 +31,10 @@
 #define RECORDS_R1_H_
 
 #include "Vdm.h"
-#include "TypedValue.h"
+#include "VdmClass.h"
+#include "VdmRecord.h"
+
+#ifndef NO_RECORDS
 
 //#define UNWRAP_R(var,map) struct Map* var = (struct Map*)map->value.ptr
 
@@ -53,3 +56,5 @@ struct R1
 TVP mk_R1();
 
 #endif /* RECORDS_R1_H_ */
+
+#endif /* NO_RECORDS */

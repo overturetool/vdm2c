@@ -29,6 +29,8 @@
 #include "R1.h"
 #include <assert.h>
 
+#ifndef NO_RECORDS
+
 #define UNWRAP_R1(var,record) struct R1* var = (struct R1*)record;
 
 void freeR1(void* ptr)
@@ -97,3 +99,4 @@ TVP mk_R1()
 			{	.ptr = ptr});
 }
 
+#endif /* NO_RECORDS */

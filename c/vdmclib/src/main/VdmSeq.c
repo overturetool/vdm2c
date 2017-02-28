@@ -30,6 +30,8 @@
 #include "VdmSeq.h"
 #include <assert.h>
 
+#ifndef NO_SEQS
+
 #define ASSERT_CHECK(s) assert(s->type == VDM_SEQ && "Value is not a sequence")
 
 #define DEFAULT_SEQ_COMP_BUFFER 2
@@ -163,6 +165,8 @@ TVP vdmSeqLen(TVP seq)
 	UNWRAP_COLLECTION(col,seq);
 	return newInt(col->size);
 }
+
+#ifndef NO_SETS
 TVP vdmSeqElems(TVP seq)
 {
 	ASSERT_CHECK(seq);
@@ -172,6 +176,7 @@ TVP vdmSeqElems(TVP seq)
 
 	return elemsVal;
 }
+
 TVP vdmSeqInds(TVP seq)
 {
 	ASSERT_CHECK(seq);
@@ -189,6 +194,8 @@ TVP vdmSeqInds(TVP seq)
 
 	return indsVal;
 }
+#endif
+
 TVP vdmSeqConc(TVP seq,TVP seq2)
 {
 	ASSERT_CHECK(seq);
@@ -273,3 +280,5 @@ void vdmSeqUpdate(TVP seq, TVP indexVal, TVP newValue)
 	assert(index - 1 >= 0 && index - 1 < col->size && "invalid index");
 	col->value[index - 1] = vdmClone(newValue);
 }
+
+#endif /* NO_SEQS */

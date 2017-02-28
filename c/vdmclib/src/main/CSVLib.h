@@ -1,8 +1,10 @@
-#ifndef CSV_H_
-#define CSV_H_
+#ifndef CSVLIB_H_
+#define CSVLIB_H_
 
 #include "Vdm.h"
 #include "IOLib.h"
+#include "VdmProduct.h"
+#include "VdmSeq.h"
 
 
 /*
@@ -35,10 +37,12 @@
  *      Author: Victor Bandur
  */
 
+#ifndef NO_CSV
 
 TVP vdm_CSV_flinecount(TVP f);
 TVP vdm_CSV_freadval(TVP f, TVP index);
 TVP vdm_CSV_fwriteval(TVP filename, TVP val, TVP fdir);
 TVP vdm_CSV_ferror();
 
-#endif /* CSV_H_ */
+#endif /* CSVLIB_H_ */
+#endif /* NO_CSV */

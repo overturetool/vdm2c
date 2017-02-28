@@ -29,6 +29,8 @@
  */
 #include "PatternBindMatch.h"
 
+#ifndef NO_PATTERNS
+
 #define SAMETYPE(a,b) a->type ==b->type
 
 //this is for match or bind and not for pattern identifier, this should be generated as p= value instead
@@ -55,8 +57,11 @@ bool patternMatchBind(TVP patternBind, TVP value)
 		break;
 		case VDM_SEQ:
 		break;
+#ifndef NO_MAPS
 		case VDM_MAP:
 		break;
+#endif
+#ifndef NO_PRODUCTS
 		case VDM_PRODUCT:
 		{ //this is a tuple pattern
 			if(!SAMETYPE(patternBind,value))
@@ -83,6 +88,7 @@ bool patternMatchBind(TVP patternBind, TVP value)
 
 			return match;
 		}
+#endif /* NO_PRODUCTS */
 		case VDM_RECORD:
 		break;
 		case VDM_CLASS:
@@ -90,3 +96,5 @@ bool patternMatchBind(TVP patternBind, TVP value)
 	}
 	return false;
 }
+
+#endif /* NO_PATTERNS */

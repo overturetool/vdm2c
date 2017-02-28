@@ -13,7 +13,6 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
-import org.overture.ast.analysis.AnalysisException;
 import org.overture.ast.definitions.SClassDefinition;
 import org.overture.ast.lex.Dialect;
 import org.overture.ast.node.INode;
@@ -47,6 +46,7 @@ public class CGenMain
 		Option formatOpt = Option.builder("fm").longOpt("formatter").desc("Name of the formatter which should be loaded from the class path").hasArg().build();
 		Option destOpt = Option.builder("dest").longOpt("destination").desc("Output directory").required().hasArg().build();
 		Option helpOpt = Option.builder("h").longOpt("help").desc("Show this description").build();
+		Option gcOpt = Option.builder("gc").longOpt("garbagecollection").desc("Use garbage collection").build();
 		Option defaultArg = Option.builder("").desc("A VDM-RT file to code generate").hasArg().build();
 		
 		options.addOption(quietOpt);
@@ -54,10 +54,14 @@ public class CGenMain
 		options.addOption(destOpt);
 		options.addOption(helpOpt);
 		options.addOption(formatOpt);
+		options.addOption(gcOpt);
 		options.addOption(defaultArg);
 
 		CommandLineParser parser = new DefaultParser();
 		CommandLine cmd = null;
+		
+		CGen cGen = new CGen();
+		
 		try
 		{
 			cmd = parser.parse(options, args);
@@ -103,6 +107,11 @@ public class CGenMain
 				error(String.format("Formatter '%s' not found in class path", formatterClassName));
 				return;
 			}
+		}
+		
+		if(cmd.hasOption(gcOpt.getOpt()))
+		{
+			cGen.getCGenSettings().setUseGarbageCollection(true);
 		}
 
 		if (cmd.hasOption(sourceOpt.getOpt()))
@@ -173,8 +182,6 @@ public class CGenMain
 
 			List<SClassDefinition> ast = res.result;
 
-			CGen cGen = new CGen();
-			
 			if(formatter!=null)
 			{
 				cGen.setSourceCodeFormatter(formatter);
@@ -227,13 +234,20 @@ public class CGenMain
 						}
 					}
 				}
+				
+				
+				cGen.emitFeatureFile(outputDir, CGen.FEATURE_FILE_NAME);
+				if(!quiet)
+				{
+					print("Generated feature file: " + new File(outputDir, CGen.FEATURE_FILE_NAME).getAbsolutePath());
+				}
 			}
 			else
 			{
 				print("No classes were generated!");
 			}
 
-		} catch (AnalysisException e)
+		} catch (Exception e)
 		{
 			error("Unexpected problems encountered during the code generation process: " + e.getMessage());
 			e.printStackTrace();

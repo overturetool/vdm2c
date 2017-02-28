@@ -6,12 +6,11 @@
  */
 #ifndef CUSTOM_IO
 
-#include "TypedValue.h"
-#include "Vdm.h"
 #include "IOLib.h"
 
+#if !defined(NO_IO) || !defined(NO_CSV)
 
-
+#ifndef NO_SEQS
 char* unpackString(TVP charseq)
 {
 	int i;
@@ -32,44 +31,6 @@ char* unpackString(TVP charseq)
 
 	return str;
 }
-
-
-
-TVP vdm_IO_freadval(TVP filename)
-{
-	//TODO.
-
-	return NULL;
-}
-
-
-
-TVP vdm_IO_fwriteval(TVP filename, TVP val, TVP fdir)
-{
-	//TODO.
-
-	return NULL;
-}
-
-
-
-TVP vdm_IO_writeval(TVP val)
-{
-	//TODO.
-
-	return NULL;
-}
-
-
-
-void vdm_IO_printf(TVP format, TVP args)
-{
-	//TODO.
-
-	return;
-}
-
-
 
 void vdm_IO_println(TVP arg)
 {
@@ -110,8 +71,6 @@ void vdm_IO_println(TVP arg)
 
 	return;
 }
-
-
 
 void vdm_IO_print(TVP arg)
 {
@@ -154,6 +113,52 @@ void vdm_IO_print(TVP arg)
 	return;
 }
 
+TVP vdm_IO_echo(TVP text)
+{
+	//TODO:  Ensure a string is passed.
+	char *str = unpackString(text);
+
+	printf("%s", str);
+
+	free(str);
+
+	return NULL;
+}
+
+#endif /* NO_SEQS */
+
+TVP vdm_IO_freadval(TVP filename)
+{
+	//TODO.
+
+	return NULL;
+}
+
+
+
+TVP vdm_IO_fwriteval(TVP filename, TVP val, TVP fdir)
+{
+	//TODO.
+
+	return NULL;
+}
+
+
+
+TVP vdm_IO_writeval(TVP val)
+{
+	//TODO.
+
+	return NULL;
+}
+
+
+void vdm_IO_printf(TVP format, TVP args)
+{
+	//TODO.
+
+	return;
+}
 
 
 TVP vdm_IO_ferror()
@@ -171,17 +176,6 @@ TVP vdm_IO_fecho(TVP filename, TVP text, TVP fdir)
 
 	return NULL;
 }
-TVP vdm_IO_echo(TVP text)
-{
-	int a;
 
-	//TODO:  Ensure a string is passed.
-	char *str = unpackString(text);
-
-	printf("%s", str);
-
-	free(str);
-
-	return NULL;
-}
-#endif
+#endif /* NO_IO or NO_CSV */
+#endif /* CUSTOM_IO */

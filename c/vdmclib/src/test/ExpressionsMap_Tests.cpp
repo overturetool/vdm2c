@@ -25,8 +25,12 @@
 extern "C"
 {
 #include "Vdm.h"
+#include "VdmMap.h"
 #include <stdio.h>
 }
+
+
+#ifndef NO_MAPS
 
 
 TVP createMap1()
@@ -487,3 +491,5 @@ TEST(Expression_Map, vdmMapGrow)
 
 	vdmFree(theMap);
 }
+
+#endif /* NO_MAPS */

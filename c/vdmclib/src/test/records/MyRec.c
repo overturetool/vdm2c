@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#ifndef NO_RECORDS
+
 
 /* -------------------------------
  *
@@ -168,3 +170,4 @@ TVP _Z5MyRecEIC(MyRecCLASS this, TVP param_field1, TVP param_field2)	{
 
 // initialize globals - this is done last since they are declared in the header but uses init functions which are printet in any order
 
+#endif /* NO_RECORDS */

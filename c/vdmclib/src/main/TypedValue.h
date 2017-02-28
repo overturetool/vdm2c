@@ -33,6 +33,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+#include "VdmDefines.h"
 
 //Eclipse hack
 #if !defined(va_arg)
@@ -89,6 +90,7 @@ typedef union TypedValueType
 struct TypedValue
 {
 	vdmtype type;
+	struct TypedValue **ref_from;
 	TypedValueType value;
 };
 
@@ -103,6 +105,7 @@ struct Collection
 int vdmCollectionSize(TVP collection);
 TVP vdmCollectionIndex(TVP collection,int index);
 
+
 #define ASSERT_CHECK_COLLECTION(s) assert((s->type == VDM_SEQ || s->type == VDM_SET || s->type == VDM_PRODUCT) &&"Value is not a collection")
 #define UNWRAP_COLLECTION(var,collection) struct Collection* var = (struct Collection*)collection->value.ptr
 #define UNWRAP_PRODUCT(var,product) struct Collection* var = (struct Collection*)product->value.ptr
@@ -112,8 +115,6 @@ struct OptionalType
 	bool hasValue;
 	struct TypedValue value;
 };
-
-
 
 struct TypedValue* newTypeValue(vdmtype type, TypedValueType value);
 
@@ -126,8 +127,8 @@ struct TypedValue* newChar(char x);
 struct TypedValue* newQuote(unsigned int x);
 
 
-// Complex
 
+// Complex
 
 
 //utils
@@ -135,6 +136,7 @@ struct TypedValue* newCollectionWithValues(size_t size, vdmtype type, TVP* eleme
 struct TypedValue* newCollection(size_t size, vdmtype type);
 
 struct TypedValue* vdmClone(struct TypedValue* x);
+
 bool equals(struct TypedValue* a, struct TypedValue* b);
 TVP vdmEquals(struct TypedValue* a, struct TypedValue* b);
 TVP vdmInEquals(struct TypedValue* a, struct TypedValue* b);
@@ -142,6 +144,14 @@ bool collectionEqual(TVP col1,TVP col2);
 
 void vdmFree(struct TypedValue* ptr);
 
+extern struct TypedValue* newSetVar(size_t size,...);
+
+#ifndef NO_MAPS
+extern TVP vdmMapEquals(TVP map1, TVP map2);
+#endif
+
+extern TVP vdmSetEquals(TVP set1, TVP set2);
+extern void remove_allocd_mem_node_by_location(TVP loc);
 
 
 #endif /* TYPEDVALUE_H_ */

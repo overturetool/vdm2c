@@ -61,6 +61,7 @@ public class CGenerator
 		GeneralUtils.deleteFolderContents(eclipseProjectFolder, true);
 
 		final CGen vdm2c = new CGen();
+		vdm2c.getCGenSettings().setUseGarbageCollection(true);
 
 		final IVdmModel model = vdmProject.getModel();
 
@@ -79,6 +80,7 @@ public class CGenerator
 
 		try {
 			vdm2c.genCSourceFiles(cCodeOutputFolder, data.getClasses());
+			vdm2c.emitFeatureFile(cCodeOutputFolder, CGen.FEATURE_FILE_NAME);
 		} catch (Exception e) {
 
 			CodeGenConsole.GetInstance().printErrorln("Problems encountered while generating C sources: " + e.getMessage());
@@ -313,7 +315,7 @@ public class CGenerator
 			//Write the main constant and static init and shutdown functions.
 			fileWriter.write("void systemConstStaticInit()\n{\n" + constInitCalls + "\n" + staticInitCalls + "}\n\n");
 			fileWriter.write("void systemConstStaticShutdown()\n{\n" + constShutdownCalls + "\n" + staticShutdownCalls + "}\n\n");
-			fileWriter.write("int main()\n{\n\treturn 0;\n}\n");
+			fileWriter.write("int main()\n{\n\tvdm_gc_init();\n\tvdm_gc_shutdown();\n\treturn 0;\n}\n");
 			fileWriter.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

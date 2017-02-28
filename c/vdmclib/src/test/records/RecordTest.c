@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#if !defined(NO_RECORDS) && !defined(NO_SETS)
 
 /* -------------------------------
  *
@@ -229,4 +230,6 @@ TVP _Z10RecordTestEV(RecordTestCLASS this)	{
  --------------------------------- */
 
 // initialize globals - this is done last since they are declared in the header but uses init functions which are printet in any order
+
+#endif /* NO_RECORDS */
 
