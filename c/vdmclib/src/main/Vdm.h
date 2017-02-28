@@ -39,7 +39,6 @@
 #define FATAL_ERROR(message) exit(EXIT_FAILURE)
 #endif
 
-#include <time.h>
 #include <string.h>
 #include <limits.h>
 #include <stdio.h>
