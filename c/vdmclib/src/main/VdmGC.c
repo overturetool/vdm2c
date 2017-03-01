@@ -35,6 +35,7 @@ void remove_allocd_mem_node_by_location(TVP loc)
 {
 	struct alloc_list_node *tmp, *prev;
 
+	prev = NULL;
 	tmp = allocd_mem_head;
 
 	if(tmp == NULL)
@@ -86,6 +87,7 @@ void remove_allocd_mem_node(struct alloc_list_node *node)
 	struct alloc_list_node *tmp, *prev;
 
 	tmp = allocd_mem_head;
+	prev = NULL;
 
 	if(tmp == NULL)
 	{
@@ -172,7 +174,7 @@ void vdm_gc()
 			//Check that there is no interference between this call's stack
 			//variables and the reference to the memory we are freeing.
 			//If there is, then postpone reclamation to a later pass.
-			if(!((current->loc->ref_from == &tmp) || (current->loc->ref_from == &current) || (current->loc->ref_from == &tmp_loc)))
+			if(!((current->loc->ref_from == (TVP *)(&tmp)) || ((void *)(current->loc->ref_from) == (void *)&current) || (current->loc->ref_from == (TVP *)&tmp_loc)))
 			{
 				//For compatibility with vdmFree().
 				*(current->loc->ref_from) = NULL;
@@ -279,11 +281,52 @@ TVP vdmCloneGC(TVP x, TVP *from)
 		//encoded as values so the initial copy line handles these
 		break;
 	}
+#ifndef NO_MAPS
 	case VDM_MAP:
 		//todo
 		break;
+#endif
+#ifndef NO_PRODUCTS
 	case VDM_PRODUCT:
+	{
+		UNWRAP_COLLECTION(cptr, tmp);
+
+		struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
+
+		//copy (size)
+		*ptr = *cptr;
+		ptr->value = (struct TypedValue**) malloc(sizeof(struct TypedValue) * ptr->size);
+
+		for (int i = 0; i < cptr->size; i++)
+		{
+			ptr->value[i] = vdmClone(cptr->value[i]);
+		}
+
+		tmp->value.ptr = ptr;
+		break;
+	}
+#endif
+#ifndef NO_SEQS
 	case VDM_SEQ:
+	{
+		UNWRAP_COLLECTION(cptr, tmp);
+
+		struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
+
+		//copy (size)
+		*ptr = *cptr;
+		ptr->value = (struct TypedValue**) malloc(sizeof(struct TypedValue) * ptr->size);
+
+		for (int i = 0; i < cptr->size; i++)
+		{
+			ptr->value[i] = vdmClone(cptr->value[i]);
+		}
+
+		tmp->value.ptr = ptr;
+		break;
+	}
+#endif
+#ifndef NO_SETS
 	case VDM_SET:
 	{
 		UNWRAP_COLLECTION(cptr, tmp);
@@ -302,9 +345,11 @@ TVP vdmCloneGC(TVP x, TVP *from)
 		tmp->value.ptr = ptr;
 		break;
 	}
+#endif
 	//	case VDM_OPTIONAL:
 	//		//TODO
 	//		break;
+#ifndef NO_RECORDS
 	case VDM_RECORD:
 	{
 		ASSERT_CHECK_RECORD(x);
@@ -343,6 +388,7 @@ TVP vdmCloneGC(TVP x, TVP *from)
 
 		break;
 	}
+#endif
 	case VDM_CLASS:
 	{
 		//handle smart pointer
