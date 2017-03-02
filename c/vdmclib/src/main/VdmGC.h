@@ -1,3 +1,5 @@
+/* This file is part of the VDM2C runtime library version 0.0.21-SNAPSHOT */
+
 #ifndef VDMGC_H_
 #define VDMGC_H_
 

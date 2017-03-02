@@ -125,7 +125,37 @@
 
     </profile>
 
+    <profile>
+      <id>vdmclib-version</id>
 
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.google.code.maven-replacer-plugin</groupId>
+            <artifactId>replacer</artifactId>
+            <version>1.5.3</version>
+            <executions>
+              <execution>
+                <phase>prepare-package</phase>
+                <goals>
+                  <goal>replace</goal>
+                </goals> 
+              </execution>
+            </executions>
+            <configuration>
+              <filesToInclude>${project.basedir}/c/vdmclib/src/main/</filesToInclude>
+              <replacements>
+                <replacement>
+                  <token>/\* This file is part of the VDM2C runtime library version (.*) \*/</token>
+                  <value>/\* This file is part of the VDM2C runtime library version ${project.version} \*/</value>
+                </replacement> 
+              </replacements>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+      
+    </profile>
 		
 	</profiles>
 
@@ -352,7 +382,7 @@ http://mojo.codehaus.org/versions-maven-plugin/
 					<artifactId>maven-release-plugin</artifactId>
 					<version>2.5</version>
 					<configuration>
-						<releaseProfiles>release,With-IDE,all-platforms,codesigning</releaseProfiles>
+						<releaseProfiles>release,With-IDE,all-platforms,codesigning,vdmclib-version</releaseProfiles>
 						<tagNameFormat>Release/@{project.version}</tagNameFormat>
 					</configuration>
 				</plugin>

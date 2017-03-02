@@ -1,3 +1,5 @@
+/* This file is part of the VDM2C runtime library version 0.0.21-SNAPSHOT */
+
 //User has not provided their own IO library.
 
 #ifndef IOLIB_H_
