@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.overture.ast.definitions.SClassDefinition;
+import org.overture.codegen.vdm2c.CFormat;
 
 public class FeatureAnalysisResult
 {
@@ -148,7 +149,7 @@ public class FeatureAnalysisResult
 	public String toString()
 	{
 		StringBuilder sb = new StringBuilder();
-		
+		sb.append(CFormat.getGeneratedFileComment());
 		appendDef(sb, usesMaps || usesSeqs || usesSets, "#define NO_SETS");
 		appendDef(sb, usesMaps || usesSeqs, "#define NO_SEQS");
 		appendDef(sb, usesMaps, "#define NO_MAPS");

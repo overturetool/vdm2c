@@ -27,6 +27,7 @@ import org.overture.codegen.ir.VdmNodeInfo;
 import org.overture.codegen.utils.GeneralUtils;
 import org.overture.codegen.utils.GeneratedData;
 import org.overture.codegen.utils.GeneratedModule;
+import org.overture.codegen.vdm2c.CFormat;
 import org.overture.codegen.vdm2c.CGen;
 import org.overture.codegen.vdm2c.extast.declarations.AClassHeaderDeclIR;
 import org.overture.codegen.vdm2c.utils.CGenUtil;
@@ -272,6 +273,7 @@ public class CGenerator
 
 		try {
 			fileWriter = new BufferedWriter(new FileWriter(outfile, true));
+			fileWriter.append(CFormat.getGeneratedFileComment());
 
 			for(Map.Entry<String, String> entry : NameMangler.mangledNames.entrySet())
 			{
@@ -310,6 +312,8 @@ public class CGenerator
 
 		try {
 			BufferedWriter fileWriter = new BufferedWriter(new FileWriter(outfile));
+			// Add comment
+			fileWriter.write(CFormat.getGeneratedFileComment());
 			//Write header include directives.
 			fileWriter.write(includes + "\n");
 			//Write the main constant and static init and shutdown functions.
