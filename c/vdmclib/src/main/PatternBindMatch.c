@@ -52,11 +52,14 @@ bool patternMatchBind(TVP patternBind, TVP value)
 //		case VDM_OPTIONAL:
 //		//TODO not sure what should happen here
 //		break;
-
+#ifndef NO_SETS
 		case VDM_SET:
 		break;
+#endif
+#ifndef NO_SEQS
 		case VDM_SEQ:
 		break;
+#endif
 #ifndef NO_MAPS
 		case VDM_MAP:
 		break;
@@ -89,8 +92,10 @@ bool patternMatchBind(TVP patternBind, TVP value)
 			return match;
 		}
 #endif /* NO_PRODUCTS */
+#ifndef NO_RECORDS
 		case VDM_RECORD:
 		break;
+#endif
 		case VDM_CLASS:
 		break;
 	}

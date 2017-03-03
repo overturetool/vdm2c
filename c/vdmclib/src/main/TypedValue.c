@@ -428,8 +428,6 @@ bool collectionEqual(TVP col1,TVP col2)
 
 void vdmFree_GCInternal(struct TypedValue* ptr)
 {
-	TVP *tmp;
-
 	if (ptr == NULL)
 		return;
 

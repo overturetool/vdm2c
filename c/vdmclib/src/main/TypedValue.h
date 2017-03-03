@@ -54,13 +54,23 @@ typedef enum
 	VDM_REAL,
 	VDM_RAT,
 	VDM_CHAR,
+#ifndef NO_SETS
 	VDM_SET,
+#endif
+#ifndef NO_SEQS
 	VDM_SEQ,
+#endif
+#ifndef NO_MAPS
 	VDM_MAP,
+#endif
+#ifndef NO_PRODUCTS
 	VDM_PRODUCT,
+#endif
 	VDM_QUOTE,
 	//	VDM_OPTIONAL, think we will handle this with a TVP == NULL
+#ifndef NO_RECORDS
 	VDM_RECORD,
+#endif
 	VDM_CLASS
 } vdmtype;
 
@@ -106,7 +116,32 @@ int vdmCollectionSize(TVP collection);
 TVP vdmCollectionIndex(TVP collection,int index);
 
 
+#if defined(NO_SEQS) && defined(NO_SETS) && defined(NO_PRODUCTS)
+#define ASSERT_CHECK_COLLECTION(s) assert(true)
+
+#elif defined(NO_SEQS) && defined(NO_SETS) && !defined(NO_PRODUCTS)
+#define ASSERT_CHECK_COLLECTION(s) assert((s->type == VDM_PRODUCT) &&"Value is not a collection")
+
+#elif defined(NO_SEQS) && !defined(NO_SETS) && defined(NO_PRODUCTS)
+#define ASSERT_CHECK_COLLECTION(s) assert((s->type == VDM_SET) &&"Value is not a collection")
+
+#elif defined(NO_SEQS) && !defined(NO_SETS) && !defined(NO_PRODUCTS)
+#define ASSERT_CHECK_COLLECTION(s) assert((s->type == VDM_SET || s->type == VDM_PRODUCT) &&"Value is not a collection")
+
+#elif !defined(NO_SEQS) && defined(NO_SETS) && defined(NO_PRODUCTS)
+#define ASSERT_CHECK_COLLECTION(s) assert((s->type == VDM_SEQ) &&"Value is not a collection")
+
+#elif !defined(NO_SEQS) && defined(NO_SETS) && !defined(NO_PRODUCTS)
+#define ASSERT_CHECK_COLLECTION(s) assert((s->type == VDM_SEQ || s->type == VDM_PRODUCT) &&"Value is not a collection")
+
+#elif !defined(NO_SEQS) && !defined(NO_SETS) && defined(NO_PRODUCTS)
+#define ASSERT_CHECK_COLLECTION(s) assert((s->type == VDM_SEQ || s->type == VDM_SET) &&"Value is not a collection")
+
+#elif !defined(NO_SEQS) && !defined(NO_SETS) && !defined(NO_PRODUCTS)
 #define ASSERT_CHECK_COLLECTION(s) assert((s->type == VDM_SEQ || s->type == VDM_SET || s->type == VDM_PRODUCT) &&"Value is not a collection")
+
+#endif
+
 #define UNWRAP_COLLECTION(var,collection) struct Collection* var = (struct Collection*)collection->value.ptr
 #define UNWRAP_PRODUCT(var,product) struct Collection* var = (struct Collection*)product->value.ptr
 
