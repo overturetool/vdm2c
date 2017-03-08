@@ -7,9 +7,10 @@
 
 #include "CSVLib.h"
 
-#ifndef NO_CSV
-
+//This must not be protected by NO_CSV for source code FMU export to work properly.
 char* resourcesLocation = NULL;
+
+#ifndef NO_CSV
 
 const char* URIToNativePath(const char* uri)
 {
