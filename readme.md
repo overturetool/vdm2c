@@ -1,5 +1,7 @@
 # VDM2C
 
+[![Build Status](https://build.overture.au.dk/jenkins/job/vdm2c/badge/icon)](https://build.overture.au.dk/jenkins/job/vdm2c/)
+
 The VDM2C project aims to develop a VDM-to-C translation that allows generated VDM specifications to be executed on smaller devices which has a C or C++ compiler available.
 
 ## Installation
