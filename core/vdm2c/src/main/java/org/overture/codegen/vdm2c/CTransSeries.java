@@ -46,6 +46,7 @@ import org.overture.codegen.vdm2c.transformations.FieldExpRewriteTrans;
 import org.overture.codegen.vdm2c.transformations.FieldInitializerExtractorTrans;
 import org.overture.codegen.vdm2c.transformations.FieldReadToFieldGetMacroTrans;
 import org.overture.codegen.vdm2c.transformations.ForLoopTrans;
+import org.overture.codegen.vdm2c.transformations.GarbageCollectionTrans;
 import org.overture.codegen.vdm2c.transformations.IfTrans;
 import org.overture.codegen.vdm2c.transformations.IgnoreRenamingTrans;
 import org.overture.codegen.vdm2c.transformations.IsNotYetSpecifiedTrans;
@@ -63,6 +64,7 @@ import org.overture.codegen.vdm2c.transformations.RemoveCWrappersTrans;
 import org.overture.codegen.vdm2c.transformations.RemoveRTConstructs;
 import org.overture.codegen.vdm2c.transformations.RenameFieldsDeclsTrans;
 import org.overture.codegen.vdm2c.transformations.ScopeCleanerTrans;
+import org.overture.codegen.vdm2c.transformations.SelfTrans;
 import org.overture.codegen.vdm2c.transformations.StaticFieldAccessRenameTrans;
 import org.overture.codegen.vdm2c.transformations.SubClassResponsibilityMethodsTrans;
 import org.overture.codegen.vdm2c.transformations.ValueAccessRenameTrans;
@@ -185,13 +187,18 @@ public class CTransSeries
 //		ExtractEmbeddedCreationsTrans requires that blocks doesn't have any local decelerations but that all is statements
 		transformations.add(new ExtractEmbeddedCreationsTrans(transAssistant));
 
-		
+		transformations.add(new SelfTrans(transAssistant));
 		
 		/**
 		 * Phase #X - Remove any temporary nodes
 		 */
 		transformations.add(new RemoveCWrappersTrans(transAssistant));
 		transformations.add(new MethodVisibilityTrans(transAssistant));
+
+		if(codeGen.getCGenSettings().usesGarbageCollection())
+		{
+			transformations.add(new GarbageCollectionTrans(transAssistant));
+		}
 
 		return transformations;
 	}

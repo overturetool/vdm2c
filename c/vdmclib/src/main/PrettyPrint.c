@@ -106,17 +106,25 @@ char* printVdmBasicValue(TVP val)
 	int i;
 	int totallen;
 
+	//For compiler warnings.
+	ldelim = 'a';
+	rdelim = 'a';
+
 	//Set up delimiters in case of collections.
 	switch(val->type)
 	{
+#ifndef NO_SETS
 	case VDM_SET:
 		ldelim = '{';
 		rdelim = '}';
 		break;
+#endif
+#ifndef NO_SEQS
 	case VDM_SEQ:
 		ldelim = '[';
 		rdelim = ']';
 		break;
+#endif
 	default:
 		break;
 	}
@@ -139,7 +147,43 @@ char* printVdmBasicValue(TVP val)
 	case VDM_REAL:
 		str = printDouble(val);
 		break;
+#ifndef NO_SETS
 	case VDM_SET:
+		//Can not use UNWRAP_COLLECTION here because it includes a declaration.
+		col = (struct Collection*)val->value.ptr;
+		strcol = (char**)malloc(col->size * sizeof(char*));
+		totallen = 0;
+
+		//Get pretty printed representations of contents recursively.
+		for(i = 0; i < col->size; i++)
+		{
+			strcol[i] = printVdmBasicValue((col->value)[i]);
+			totallen += strlen(strcol[i]);
+		}
+
+		//Compose full string.
+		str = (char*)malloc((2 + 1 + col->size * 2 + totallen));
+		strtmp = str;
+		sprintf(str, "%c", ldelim);
+		str += sizeof(char);
+		for(i = 0; i < col->size - 1; i++)
+		{
+			sprintf(str, "%s, ", strcol[i]);
+			str += (strlen(strcol[i]) + 2) * sizeof(char);
+		}
+		sprintf(str, "%s%c", strcol[i], rdelim);
+		str = strtmp;
+
+		//Clean up.
+		for(i = 0; i < col->size; i++)
+		{
+			free(strcol[i]);
+		}
+		free(strcol);
+
+		break;
+#endif
+#ifndef NO_SEQS
 	case VDM_SEQ:
 		//Can not use UNWRAP_COLLECTION here because it includes a declaration.
 		col = (struct Collection*)val->value.ptr;
@@ -179,6 +223,7 @@ char* printVdmBasicValue(TVP val)
 		str = (char*)malloc(1);
 		str[0] = 0;
 		break;
+#endif
 	}
 
 	return str;

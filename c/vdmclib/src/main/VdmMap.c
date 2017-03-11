@@ -34,7 +34,7 @@
 
 #define ASSERT_CHECK(s) assert(s->type == VDM_MAP && "Value is not a map")
 
-
+#ifndef NO_MAPS
 
 #ifdef WITH_GLIB_HASH
 
@@ -244,8 +244,6 @@ hashtable_t *ht_create( int size ) {
 /* Hash a string for a particular hash table. */
 int ht_hash( hashtable_t *hashtable, TVP key ) {
 
-	unsigned long int hashval;
-	int i = 0;
 
 	/*
 	 * Create hash
@@ -902,3 +900,5 @@ bool vdmMapInEquals(TVP map1, TVP map2){
 	return not_eq;
 
 }
+
+#endif /* NO_MAPS */

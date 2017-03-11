@@ -33,7 +33,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#include "TypedValue.h"
+#include "Vdm.h"
 
 //Eclipse hack
 #if !defined(va_arg)

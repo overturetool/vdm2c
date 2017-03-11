@@ -25,8 +25,11 @@
 extern "C"
 {
 #include "Vdm.h"
+#include "VdmSeq.h"
 #include <stdio.h>
 }
+
+#ifndef NO_SEQS
 
 #define DEFAULT_SEQ_COMP_BUFFER 1
 #define DEFAULT_SEQ_COMP_BUFFER_STEPSIZE 10
@@ -159,6 +162,7 @@ TEST(Expression_Seq, seqLen)
 	vdmFree(t);
 }
 
+#ifndef NO_SETS
 TEST(Expression_Seq, seqElems)
 {
 	int arr[] =
@@ -202,6 +206,7 @@ TEST(Expression_Seq, seqInds)
 //
 	vdmFree(t);
 }
+#endif /* NO_SETS */
 
 TEST(Expression_Seq, seqConc)
 {
@@ -327,3 +332,5 @@ TEST(Expression_Seq, seqUpdate)
 	vdmFree(seq);
 	vdmFree(res);
 }
+
+#endif /* NO_SEQS */

@@ -34,6 +34,7 @@ import org.overture.codegen.utils.GeneratedData;
 import org.overture.codegen.utils.GeneratedModule;
 import org.overture.codegen.vdm2c.distribution.CDistTransSeries;
 import org.overture.codegen.vdm2c.distribution.SystemArchitectureAnalysis;
+import org.overture.codegen.vdm2c.analysis.FeatureAnalysisResult;
 import org.overture.codegen.vdm2c.extast.declarations.AClassHeaderDeclIR;
 import org.overture.codegen.vdm2c.sourceformat.ISourceFileFormatter;
 import org.overture.codegen.vdm2c.transformations.AddFieldTrans;
@@ -46,8 +47,20 @@ public class CGen extends CodeGenBase
 
 	public static Map<String, Boolean> hasTimeMap = null;
 
+	private CGenSettings cGenSettings;
+	
+	private FeatureAnalysisResult featureAnalysis;
+	
+	public static final String FEATURE_FILE_NAME = "VdmModelFeatures.h";
+	
 	public CGen()
 	{
+		this.cGenSettings = new CGenSettings();
+	}
+	
+	public CGenSettings getCGenSettings()
+	{
+		return cGenSettings;
 	}
 
 	@Override
@@ -56,13 +69,19 @@ public class CGen extends CodeGenBase
 	{
 		super.preProcessAst(ast);
 		hasTimeMap = TimeFinder.computeTimeMap(getClasses(ast));
+		featureAnalysis = FeatureAnalysisResult.runAnalysis(getClasses(ast), cGenSettings.usesGarbageCollection());
 	}
 
 	public List<File> getEmittedFiles()
 	{
 		return emittedFiles;
 	}
-
+	
+	public FeatureAnalysisResult getFeatureAnalysisResult()
+	{
+		return featureAnalysis;
+	}
+	
 	public List<IRStatus<PIR>> makeRecsOuterClasses(List<IRStatus<PIR>> ast)
 	{
 		List<IRStatus<PIR>> extraClasses = new LinkedList<IRStatus<PIR>>();
@@ -472,16 +491,37 @@ public class CGen extends CodeGenBase
 
 		String fileName = name + "."  + getFileExtension(module);
 
+		String content = module.getContent();
+
+		writeFile(output_dir, fileName, content);
+	}
+
+	private void writeFile(File output_dir, String fileName, String content)
+			throws IOException
+	{
 		File file = new File(output_dir, fileName);
 		BufferedWriter output = new BufferedWriter(new FileWriter(file));
 
 		emittedFiles.add(new File(fileName));
-		output.write(module.getContent());
+		output.write(content);
 		output.close();
 
 		if(formatter!=null)
 		{
 			formatter.format(file);
+		}
+	}
+	
+	
+	public void emitFeatureFile(File outputDir, String featureFileName) throws Exception
+	{
+		if(featureAnalysis != null)
+		{
+			writeFile(outputDir, featureFileName, featureAnalysis.toString());
+		}
+		else
+		{
+			throw new Exception("No feature analysis result found! Did you run the code generator?");
 		}
 	}
 

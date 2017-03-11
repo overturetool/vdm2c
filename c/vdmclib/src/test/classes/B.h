@@ -31,7 +31,8 @@
 #ifndef CLASSES_B_H_
 #define CLASSES_B_H_
 
-#include "TypedValue.h"
+#include "Vdm.h"
+#include "VdmClass.h"
 #include "A.h"
 #include "C.h"
 

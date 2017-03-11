@@ -27,19 +27,17 @@
  *      Author: kel
  */
 
+#include "Vdm.h"
 #include "TypedValue.h"
-#include "VdmMap.h"
 #include "VdmClass.h"
-#include "VdmRecord.h"
-#include "VdmBasicTypes.h"
-
-
 
 #define ASSERT_CHECK_BOOL(s) assert(s->type == VDM_BOOL && "Value is not a boolean")
 #define ASSERT_CHECK_NUMERIC(s) assert((s->type == VDM_INT||s->type == VDM_NAT||s->type == VDM_NAT1||s->type == VDM_REAL||s->type == VDM_RAT) && "Value is not numeric")
 #define ASSERT_CHECK_REAL(s) assert((s->type ==  VDM_REAL) && "Value is not real")
 #define ASSERT_CHECK_INT(s) assert((s->type ==  VDM_INT) && "Value is not integer")
 #define ASSERT_CHECK_CHAR(s) assert((s->type ==  VDM_CHAR) && "Value is not a character")
+#define ASSERT_CHECK_RECORD(s) assert(s->type == VDM_RECORD && "Value is not a record")
+
 
 
 
@@ -49,9 +47,11 @@ struct TypedValue* newTypeValue(vdmtype type, TypedValueType value)
 	ptr->type = type;
 	ptr->value = value;
 	ptr->id = 0;
+	ptr->ref_from = NULL;
 	return ptr;
 }
 
+//#ifndef WITH_GC
 /// Basic
 struct TypedValue* newInt(int x)
 {
@@ -85,8 +85,6 @@ struct TypedValue* newQuote(unsigned int x)
 			{ .quoteVal = x });
 }
 
-
-
 struct TypedValue* newCollection(size_t size, vdmtype type)
 {
 	struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
@@ -108,6 +106,7 @@ struct TypedValue* newCollectionWithValues(size_t size, vdmtype type, TVP* eleme
 	}
 	return product;
 }
+//#endif /* ifndef WITH_GC */
 
 
 
@@ -159,11 +158,52 @@ TVP vdmClone(TVP x)
 		//encoded as values so the initial copy line handles these
 		break;
 	}
+#ifndef NO_MAPS
 	case VDM_MAP:
 		//todo
 		break;
+#endif
+#ifndef NO_PRODUCTS
 	case VDM_PRODUCT:
+	{
+		UNWRAP_COLLECTION(cptr, tmp);
+
+		struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
+
+		//copy (size)
+		*ptr = *cptr;
+		ptr->value = (struct TypedValue**) malloc(sizeof(struct TypedValue) * ptr->size);
+
+		for (int i = 0; i < cptr->size; i++)
+		{
+			ptr->value[i] = vdmClone(cptr->value[i]);
+		}
+
+		tmp->value.ptr = ptr;
+		break;
+	}
+#endif
+#ifndef NO_SEQS
 	case VDM_SEQ:
+	{
+		UNWRAP_COLLECTION(cptr, tmp);
+
+		struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
+
+		//copy (size)
+		*ptr = *cptr;
+		ptr->value = (struct TypedValue**) malloc(sizeof(struct TypedValue) * ptr->size);
+
+		for (int i = 0; i < cptr->size; i++)
+		{
+			ptr->value[i] = vdmClone(cptr->value[i]);
+		}
+
+		tmp->value.ptr = ptr;
+		break;
+	}
+#endif
+#ifndef NO_SETS
 	case VDM_SET:
 	{
 		UNWRAP_COLLECTION(cptr, tmp);
@@ -182,9 +222,11 @@ TVP vdmClone(TVP x)
 		tmp->value.ptr = ptr;
 		break;
 	}
+#endif
 	//	case VDM_OPTIONAL:
 	//		//TODO
 	//		break;
+#ifndef NO_RECORDS
 	case VDM_RECORD:
 	{
 		ASSERT_CHECK_RECORD(x);
@@ -223,6 +265,7 @@ TVP vdmClone(TVP x)
 
 		break;
 	}
+#endif /* NO_RECORDS */
 	case VDM_CLASS:
 	{
 		//handle smart pointer
@@ -236,6 +279,8 @@ TVP vdmClone(TVP x)
 
 	return tmp;
 }
+
+
 
 bool equals(struct TypedValue* a, struct TypedValue* b)
 {
@@ -273,6 +318,7 @@ bool equals(struct TypedValue* a, struct TypedValue* b)
 	{
 		return a->value.quoteVal == b->value.quoteVal;
 	}
+#ifndef NO_MAPS
 	case VDM_MAP:
 	{
 		TVP r0 = vdmMapEquals(a, b);
@@ -280,11 +326,20 @@ bool equals(struct TypedValue* a, struct TypedValue* b)
 		vdmFree(r0);
 		return r;
 	}
+#endif
+#ifndef NO_PRODUCTS
 	case VDM_PRODUCT:
+	{
+		return collectionEqual(a, b);
+	}
+#endif
+#ifndef NO_SEQS
 	case VDM_SEQ:
 	{
 		return collectionEqual(a, b);
 	}
+#endif
+#ifndef NO_SETS
 	case VDM_SET:
 	{
 		TVP r0 = vdmSetEquals(a, b);
@@ -292,17 +347,18 @@ bool equals(struct TypedValue* a, struct TypedValue* b)
 		vdmFree(r0);
 		return r;
 	}
+#endif
 	//	case VDM_OPTIONAL:
 	//	{
 	//		break;
 	//	}
+#ifndef NO_RECORDS
 	case VDM_RECORD:
 	{
 		ASSERT_CHECK_RECORD(a);
 		ASSERT_CHECK_RECORD(b);
 
 		int i;
-		TVP tmpField;
 		TVP res;
 		int numFields_a, numFields_b;
 
@@ -336,6 +392,7 @@ bool equals(struct TypedValue* a, struct TypedValue* b)
 		return true;
 
 	}
+#endif /* NO_RECORDS */
 	case VDM_CLASS:
 	{
 		struct ClassType* ac = a->value.ptr;
@@ -371,7 +428,8 @@ bool collectionEqual(TVP col1,TVP col2)
 	return match;
 }
 
-void vdmFree(struct TypedValue* ptr)
+
+void vdmFree_GCInternal(struct TypedValue* ptr)
 {
 	if (ptr == NULL)
 		return;
@@ -389,11 +447,169 @@ void vdmFree(struct TypedValue* ptr)
 	{
 		break;
 	}
+#ifndef NO_MAPS
 	case VDM_MAP:
 		//TODO:
 		break;
+#endif
+#ifndef NO_PRODUCTS
 	case VDM_PRODUCT:
+	{
+		UNWRAP_COLLECTION(cptr, ptr);
+		for (int i = 0; i < cptr->size; i++)
+		{
+			if (cptr->value[i] != NULL)
+			{
+				vdmFree_GCInternal(cptr->value[i]);
+			}
+		}
+		free(cptr->value);
+		free(cptr);
+		ptr->value.ptr = NULL;
+		break;
+	}
+#endif
+#ifndef NO_SEQS
 	case VDM_SEQ:
+	{
+		UNWRAP_COLLECTION(cptr, ptr);
+		for (int i = 0; i < cptr->size; i++)
+		{
+			if (cptr->value[i] != NULL)
+			{
+				vdmFree_GCInternal(cptr->value[i]);
+			}
+		}
+		free(cptr->value);
+		free(cptr);
+		ptr->value.ptr = NULL;
+		break;
+	}
+#endif
+#ifndef NO_SETS
+	case VDM_SET:
+	{
+		UNWRAP_COLLECTION(cptr, ptr);
+		for (int i = 0; i < cptr->size; i++)
+		{
+			if (cptr->value[i] != NULL)
+			{
+				vdmFree_GCInternal(cptr->value[i]);
+			}
+		}
+		free(cptr->value);
+		free(cptr);
+		ptr->value.ptr = NULL;
+		break;
+	}
+#endif
+	//	case VDM_OPTIONAL:
+	//		//TODO
+	//		break;
+#ifndef NO_RECORDS
+	case VDM_RECORD:
+		ASSERT_CHECK_RECORD(ptr);
+
+		int i;
+		int numFields;
+
+		numFields = (*((struct TypedValue**)((char*)(((struct ClassType*)ptr->value.ptr)->value) + \
+				sizeof(struct VTable*) + \
+				sizeof(int) + \
+				sizeof(unsigned int))))->value.intVal;
+
+		//We include the numFields field here, since it is just a TVP.
+		for(i = 0; i <= numFields; i++)
+		{
+			vdmFree_GCInternal(*((struct TypedValue**)((char*)(((struct ClassType*)ptr->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(struct TypedValue*) * i)));
+		}
+
+		//Free the virtual function table.
+		free(((struct ClassType*)ptr->value.ptr)->value);
+
+		break;
+#endif /* NO_RECORDS */
+	case VDM_CLASS:
+	{
+		//handle smart pointer
+		struct ClassType* classTptr = (struct ClassType*) ptr->value.ptr;
+		classTptr->freeClass(classTptr->value);
+		classTptr->value = NULL;
+		classTptr->freeClass = NULL;
+
+		//free classtype
+		free(classTptr);
+		ptr->value.ptr = NULL;
+		break;
+	}
+	}
+
+	//free typedvalue
+	free(ptr);
+}
+
+
+
+void vdmFree(struct TypedValue* ptr)
+{
+	TVP *tmp;
+
+	if (ptr == NULL)
+		return;
+
+	switch (ptr->type)
+	{
+	case VDM_BOOL:
+	case VDM_CHAR:
+	case VDM_INT:
+	case VDM_NAT:
+	case VDM_NAT1:
+	case VDM_REAL:
+	case VDM_RAT:
+	case VDM_QUOTE:
+	{
+		break;
+	}
+#ifndef NO_MAPS
+	case VDM_MAP:
+		//TODO:
+		break;
+#endif
+#ifndef NO_PRODUCTS
+	case VDM_PRODUCT:
+	{
+			UNWRAP_COLLECTION(cptr, ptr);
+			for (int i = 0; i < cptr->size; i++)
+			{
+				if (cptr->value[i] != NULL)
+				{
+					vdmFree(cptr->value[i]);
+				}
+			}
+			free(cptr->value);
+			free(cptr);
+			ptr->value.ptr = NULL;
+			break;
+		}
+#endif
+#ifndef NO_SEQS
+	case VDM_SEQ:
+	{
+			UNWRAP_COLLECTION(cptr, ptr);
+			for (int i = 0; i < cptr->size; i++)
+			{
+				if (cptr->value[i] != NULL)
+				{
+					vdmFree(cptr->value[i]);
+				}
+			}
+			free(cptr->value);
+			free(cptr);
+			ptr->value.ptr = NULL;
+			break;
+		}
+#endif
+#ifndef NO_SETS
 	case VDM_SET:
 	{
 		UNWRAP_COLLECTION(cptr, ptr);
@@ -409,9 +625,11 @@ void vdmFree(struct TypedValue* ptr)
 		ptr->value.ptr = NULL;
 		break;
 	}
+#endif
 	//	case VDM_OPTIONAL:
 	//		//TODO
 	//		break;
+#ifndef NO_RECORDS
 	case VDM_RECORD:
 		ASSERT_CHECK_RECORD(ptr);
 
@@ -433,6 +651,7 @@ void vdmFree(struct TypedValue* ptr)
 		free(((struct ClassType*)ptr->value.ptr)->value);
 
 		break;
+#endif /* NO_RECORDS */
 	case VDM_CLASS:
 	{
 		//handle smart pointer
@@ -449,11 +668,21 @@ void vdmFree(struct TypedValue* ptr)
 	}
 
 	//free typedvalue
+	remove_allocd_mem_node_by_location(ptr);
+	tmp = ptr->ref_from;
 	free(ptr);
+	if(tmp != NULL)
+	{
+		*tmp = NULL;
+	}
 }
 
 TVP vdmEquals(struct TypedValue* a, struct TypedValue* b)
 {	return newBool(equals(a,b));}
 
+TVP vdmEqualsGC(struct TypedValue* a, struct TypedValue* b, TVP *from)
+{	return newBoolGC(equals(a,b), from);}
+
 TVP vdmInEquals(struct TypedValue* a, struct TypedValue* b)
 {	return newBool(!equals(a,b));}
+

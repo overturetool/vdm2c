@@ -25,8 +25,12 @@
 extern "C"
 {
 #include "Vdm.h"
+#include "VdmProduct.h"
 #include <stdio.h>
 }
+
+
+#ifndef NO_PRODUCTS
 
 TVP productExp()
 {
@@ -131,3 +135,5 @@ TEST(ExpressionProduct, productVariadic)
 
 	vdmFree (TEST_TRUE);
 }
+
+#endif /*  NO_PRODUCTS */

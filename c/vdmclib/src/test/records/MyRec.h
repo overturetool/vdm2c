@@ -5,9 +5,11 @@
 #define VDM_CG
 
 #include "Vdm.h"
+#include "VdmClass.h"
+
+#ifndef NO_RECORDS
 
 //include types used in the class
-#include "MyRec.h"
 
 
 /* -------------------------------
@@ -88,3 +90,5 @@ MyRecCLASS MyRec_Constructor(MyRecCLASS);
 
 
 #endif /* CLASSES_MyRec_H_ */
+
+#endif /* NO_RECORDS */

@@ -53,6 +53,16 @@ TVP vdmNot(TVP arg)
 	return newBool(!arg->value.boolVal);
 }
 
+TVP vdmNotGC(TVP arg, TVP *from)
+{
+	if(arg == NULL)
+		return NULL;
+
+	ASSERT_CHECK_BOOL(arg);
+
+	return newBoolGC(!arg->value.boolVal, from);
+}
+
 TVP vdmAnd(TVP a,TVP b)
 {
 	if(a == NULL)
@@ -68,6 +78,23 @@ TVP vdmAnd(TVP a,TVP b)
 	ASSERT_CHECK_BOOL(b);
 	return newBool(b->value.boolVal);
 }
+
+TVP vdmAndGC(TVP a, TVP b, TVP *from)
+{
+	if(a == NULL)
+		return NULL;
+
+	ASSERT_CHECK_BOOL(a);
+	if(!a->value.boolVal)
+		return newBoolGC(false, from);
+
+	if(b == NULL)
+		return NULL;
+
+	ASSERT_CHECK_BOOL(b);
+	return newBoolGC(b->value.boolVal, from);
+}
+
 TVP vdmOr(TVP a,TVP b)
 {
 	if(a == NULL)
@@ -84,6 +111,22 @@ TVP vdmOr(TVP a,TVP b)
 	return newBool(b->value.boolVal);
 }
 
+TVP vdmOrGC(TVP a, TVP b, TVP *from)
+{
+	if(a == NULL)
+		return NULL;
+
+	ASSERT_CHECK_BOOL(a);
+	if(a->value.boolVal)
+		return newBoolGC(true, from);
+
+	if(b == NULL)
+		return NULL;
+
+	ASSERT_CHECK_BOOL(b);
+	return newBoolGC(b->value.boolVal, from);
+}
+
 TVP vdmXor(TVP a,TVP b)
 {
 	if(a == NULL || b == NULL)
@@ -92,6 +135,16 @@ TVP vdmXor(TVP a,TVP b)
 	ASSERT_CHECK_BOOL(a);
 	ASSERT_CHECK_BOOL(b);
 	return newBool((!(a->value.boolVal) && b->value.boolVal) || ((a->value.boolVal) && !(b->value.boolVal)));
+}
+
+TVP vdmXorGC(TVP a, TVP b, TVP *from)
+{
+	if(a == NULL || b == NULL)
+		return NULL;
+
+	ASSERT_CHECK_BOOL(a);
+	ASSERT_CHECK_BOOL(b);
+	return newBoolGC((!(a->value.boolVal) && b->value.boolVal) || ((a->value.boolVal) && !(b->value.boolVal)), from);
 }
 
 TVP vdmImplies(TVP a,TVP b)
@@ -110,6 +163,22 @@ TVP vdmImplies(TVP a,TVP b)
 	return newBool(b->value.boolVal);
 }
 
+TVP vdmImpliesGC(TVP a, TVP b, TVP *from)
+{
+	if(a == NULL)
+		return NULL;
+
+	ASSERT_CHECK_BOOL(a);
+	if(!a->value.boolVal)
+		return newBoolGC(true, from);
+
+	if(b == NULL)
+		return NULL;
+
+	ASSERT_CHECK_BOOL(b);
+	return newBoolGC(b->value.boolVal, from);
+}
+
 TVP vdmBiimplication(TVP a,TVP b)
 {
 	if(a == NULL || b == NULL)
@@ -118,6 +187,16 @@ TVP vdmBiimplication(TVP a,TVP b)
 	ASSERT_CHECK_BOOL(a);
 	ASSERT_CHECK_BOOL(b);
 	return newBool((!a->value.boolVal || b->value.boolVal) && (!b->value.boolVal || a->value.boolVal));
+}
+
+TVP vdmBiimplicationGC(TVP a, TVP b, TVP *from)
+{
+	if(a == NULL || b == NULL)
+		return NULL;
+
+	ASSERT_CHECK_BOOL(a);
+	ASSERT_CHECK_BOOL(b);
+	return newBoolGC((!a->value.boolVal || b->value.boolVal) && (!b->value.boolVal || a->value.boolVal), from);
 }
 
 bool isNumber(TVP val)
@@ -142,6 +221,13 @@ TVP isInt(TVP v)
 	return newBool(false);
 }
 
+TVP isIntGC(TVP v, TVP *from)
+{
+	if(v->type == VDM_INT)
+		return newBoolGC(true, from);
+	return newBoolGC(false, from);
+}
+
 TVP isReal(TVP v)
 {
 	if(v->type == VDM_REAL)
@@ -149,11 +235,25 @@ TVP isReal(TVP v)
 	return newBool(false);
 }
 
+TVP isRealGC(TVP v, TVP *from)
+{
+	if(v->type == VDM_REAL)
+		return newBoolGC(true, from);
+	return newBoolGC(false, from);
+}
+
 TVP isBool(TVP v)
 {
 	if(v->type == VDM_BOOL)
 		return newBool(true);
 	return newBool(false);
+}
+
+TVP isBoolGC(TVP v, TVP *from)
+{
+	if(v->type == VDM_BOOL)
+		return newBoolGC(true, from);
+	return newBoolGC(false, from);
 }
 
 /*
@@ -219,6 +319,24 @@ TVP vdmMinus(TVP arg)
 	}
 }
 
+TVP vdmMinusGC(TVP arg, TVP *from)
+{
+	ASSERT_CHECK_NUMERIC(arg);
+
+	switch(arg->type)
+	{
+	case VDM_INT:
+	case VDM_NAT:
+	case VDM_NAT1:
+		return newIntGC(-arg->value.intVal, from);
+	case VDM_REAL:
+		return newRealGC(-arg->value.doubleVal, from);
+	default:
+		FATAL_ERROR("Invalid type");
+		return NULL;
+	}
+}
+
 TVP vdmAbs(TVP arg)
 {
 	ASSERT_CHECK_NUMERIC(arg);
@@ -237,11 +355,37 @@ TVP vdmAbs(TVP arg)
 	}
 }
 
+TVP vdmAbsGC(TVP arg, TVP *from)
+{
+	ASSERT_CHECK_NUMERIC(arg);
+
+	switch(arg->type)
+	{
+	case VDM_INT:
+	case VDM_NAT:
+	case VDM_NAT1:
+		return newIntGC(abs(arg->value.intVal), from);
+	case VDM_REAL:
+		return newRealGC(fabs(arg->value.doubleVal), from);
+	default:
+		FATAL_ERROR("Invalid type");
+		return NULL;
+	}
+}
+
 TVP vdmFloor(TVP arg)
 {
 	ASSERT_CHECK_REAL(arg);
 
 	return newInt(floor(arg->value.doubleVal));
+}
+
+TVP vdmFloorGC(TVP arg, TVP *from)
+{
+	ASSERT_CHECK_REAL(arg);
+
+	//TODO: Why do we return a Real, when floor is int in VDM?
+	return newIntGC(floor(arg->value.doubleVal), from);
 }
 
 TVP vdmSum(TVP a,TVP b)
@@ -259,6 +403,21 @@ TVP vdmSum(TVP a,TVP b)
 	return newReal(av+bv);
 }
 
+TVP vdmSumGC(TVP a,TVP b, TVP *from)
+{
+	ASSERT_CHECK_NUMERIC(a);
+	ASSERT_CHECK_NUMERIC(b);
+
+	double av = toDouble(a);
+	double bv=toDouble(b);
+
+	if((a->type == VDM_INT || a->type == VDM_NAT || a->type == VDM_NAT1) &&
+				(b->type == VDM_INT || b->type == VDM_NAT || b->type == VDM_NAT1))
+			return newIntGC((int)(av + bv), from);
+
+		return newRealGC(av+bv, from);
+}
+
 TVP vdmDifference(TVP a,TVP b)
 {
 	ASSERT_CHECK_NUMERIC(a);
@@ -274,19 +433,49 @@ TVP vdmDifference(TVP a,TVP b)
 	return newReal(av - bv);
 }
 
+TVP vdmDifferenceGC(TVP a,TVP b, TVP *from)
+{
+	ASSERT_CHECK_NUMERIC(a);
+	ASSERT_CHECK_NUMERIC(b);
+
+	double av = toDouble(a);
+	double bv=toDouble(b);
+
+	if((a->type == VDM_INT || a->type == VDM_NAT || a->type == VDM_NAT1) &&
+				(b->type == VDM_INT || b->type == VDM_NAT || b->type == VDM_NAT1))
+			return newIntGC((int)(av - bv), from);
+
+		return newRealGC(av - bv, from);
+}
+
 TVP vdmProduct(TVP a,TVP b)
 {
 	ASSERT_CHECK_NUMERIC(a);
 	ASSERT_CHECK_NUMERIC(b);
 
 	double av = toDouble(a);
-	double bv = toDouble(b);
+	double bv=toDouble(b);
 
 	if((a->type == VDM_INT || a->type == VDM_NAT || a->type == VDM_NAT1) &&
 			(b->type == VDM_INT || b->type == VDM_NAT || b->type == VDM_NAT1))
 		return newInt((int)(av * bv));
 
 	return newReal(av * bv);
+}
+
+TVP vdmProductGC(TVP a, TVP b, TVP *from)
+{
+	ASSERT_CHECK_NUMERIC(a);
+	ASSERT_CHECK_NUMERIC(b);
+
+	double av = toDouble(a);
+	double bv=toDouble(b);
+
+	if((a->type == VDM_INT || a->type == VDM_NAT || a->type == VDM_NAT1) &&
+				(b->type == VDM_INT || b->type == VDM_NAT || b->type == VDM_NAT1))
+			return newIntGC((int)(av * bv), from);
+
+		return newRealGC(av * bv, from);
 }
 
 TVP vdmDivision(TVP a,TVP b)
@@ -298,6 +487,17 @@ TVP vdmDivision(TVP a,TVP b)
 	double bv = toDouble(b);
 
 	return newReal(av/bv);
+}
+
+TVP vdmDivisionGC(TVP a,TVP b, TVP *from)
+{
+	ASSERT_CHECK_NUMERIC(a);
+	ASSERT_CHECK_NUMERIC(b);
+
+	double av = toDouble(a);
+	double bv = toDouble(b);
+
+	return newRealGC(av/bv, from);
 }
 
 static long divi(double lv, double rv)
@@ -321,7 +521,7 @@ static long divi(double lv, double rv)
 	}
 }
 
-TVP vdmDiv(TVP a,TVP b)
+TVP vdmDiv(TVP a, TVP b)
 {
 	ASSERT_CHECK_NUMERIC(a);
 	ASSERT_CHECK_NUMERIC(b);
@@ -337,6 +537,22 @@ TVP vdmDiv(TVP a,TVP b)
 	return newInt(divi(av,bv));
 }
 
+TVP vdmDivGC(TVP a, TVP b, TVP *from)
+{
+	ASSERT_CHECK_NUMERIC(a);
+	ASSERT_CHECK_NUMERIC(b);
+
+	//See https://github.com/overturetool/overture/blob/development/core/interpreter/src/main/java/org/overture/interpreter/eval/BinaryExpressionEvaluator.java#L444
+
+	ASSERT_CHECK_INT(a);
+	ASSERT_CHECK_INT(b);
+
+	int av = toDouble(a);
+	int bv = toDouble(b);
+
+	return newIntGC(divi(av,bv), from);
+}
+
 TVP vdmRem(TVP a,TVP b)
 {
 	ASSERT_CHECK_NUMERIC(a);
@@ -350,6 +566,21 @@ TVP vdmRem(TVP a,TVP b)
 	int bv = toDouble(b);
 
 	return newInt(av-bv*divi(av,bv));
+}
+
+TVP vdmRemGC(TVP a, TVP b, TVP *from)
+{
+	ASSERT_CHECK_NUMERIC(a);
+	ASSERT_CHECK_NUMERIC(b);
+
+	//See https://github.com/overturetool/overture/blob/development/core/interpreter/src/main/java/org/overture/interpreter/eval/BinaryExpressionEvaluator.java#L628
+	ASSERT_CHECK_INT(a);
+	ASSERT_CHECK_INT(b);
+
+	int av = toDouble(a);
+	int bv = toDouble(b);
+
+	return newIntGC(av-bv*divi(av,bv), from);
 }
 
 TVP vdmMod(TVP a,TVP b)
@@ -371,6 +602,25 @@ TVP vdmMod(TVP a,TVP b)
 	return newReal(lv-rv*(long) floor(lv/rv));
 }
 
+TVP vdmModGC(TVP a, TVP b, TVP *from)
+{
+	ASSERT_CHECK_NUMERIC(a);
+	ASSERT_CHECK_NUMERIC(b);
+
+	//See https://github.com/overturetool/overture/blob/development/core/interpreter/src/main/java/org/overture/interpreter/eval/BinaryExpressionEvaluator.java#L575
+	ASSERT_CHECK_INT(a);
+	ASSERT_CHECK_INT(b);
+
+	double lv =(int) toDouble(a);
+	double rv = (int)toDouble(b);
+
+	if((a->type == VDM_INT || a->type == VDM_NAT || a->type == VDM_NAT1) &&
+				(b->type == VDM_INT || b->type == VDM_NAT || b->type == VDM_NAT1))
+			return newIntGC((int)(lv-rv*(long) floor(lv/rv)), from);
+
+		return newRealGC(lv-rv*(long) floor(lv/rv), from);
+}
+
 TVP vdmPower(TVP a,TVP b)
 {
 	ASSERT_CHECK_NUMERIC(a);
@@ -380,6 +630,17 @@ TVP vdmPower(TVP a,TVP b)
 	double bv = toDouble(b);
 
 	return newReal(pow(av,bv));
+}
+
+TVP vdmPowerGC(TVP a, TVP b, TVP *from)
+{
+	ASSERT_CHECK_NUMERIC(a);
+	ASSERT_CHECK_NUMERIC(b);
+
+	double av = toDouble(a);
+	double bv = toDouble(b);
+
+	return newRealGC(pow(av,bv), from);
 }
 
 TVP vdmNumericEqual(TVP a,TVP b)
@@ -393,6 +654,16 @@ TVP vdmNumericEqual(TVP a,TVP b)
 	return newBool(av==bv);
 }
 
+TVP vdmNumericEqualGC(TVP a, TVP b, TVP *from)
+{
+	ASSERT_CHECK_NUMERIC(a);
+	ASSERT_CHECK_NUMERIC(b);
+
+	double av = toDouble(a);
+	double bv = toDouble(b);
+
+	return newBoolGC(av==bv, from);
+}
 
 TVP vdmGreaterThan(TVP a,TVP b)
 {
@@ -403,6 +674,17 @@ TVP vdmGreaterThan(TVP a,TVP b)
 	double bv = toDouble(b);
 
 	return newBool(av>bv);
+}
+
+TVP vdmGreaterThanGC(TVP a,TVP b, TVP *from)
+{
+	ASSERT_CHECK_NUMERIC(a);
+	ASSERT_CHECK_NUMERIC(b);
+
+	double av = toDouble(a);
+	double bv = toDouble(b);
+
+	return newBoolGC(av>bv, from);
 }
 
 TVP vdmGreaterOrEqual(TVP a,TVP b)
@@ -416,6 +698,17 @@ TVP vdmGreaterOrEqual(TVP a,TVP b)
 	return newBool(av>=bv);
 }
 
+TVP vdmGreaterOrEqualGC(TVP a, TVP b, TVP *from)
+{
+	ASSERT_CHECK_NUMERIC(a);
+	ASSERT_CHECK_NUMERIC(b);
+
+	double av = toDouble(a);
+	double bv = toDouble(b);
+
+	return newBoolGC(av>=bv, from);
+}
+
 TVP vdmLessThan(TVP a,TVP b)
 {
 	ASSERT_CHECK_NUMERIC(a);
@@ -427,6 +720,17 @@ TVP vdmLessThan(TVP a,TVP b)
 	return newBool(av<bv);
 }
 
+TVP vdmLessThanGC(TVP a, TVP b, TVP *from)
+{
+	ASSERT_CHECK_NUMERIC(a);
+	ASSERT_CHECK_NUMERIC(b);
+
+	double av = toDouble(a);
+	double bv = toDouble(b);
+
+	return newBoolGC(av<bv, from);
+}
+
 TVP vdmLessOrEqual(TVP a,TVP b)
 {
 	ASSERT_CHECK_NUMERIC(a);
@@ -436,4 +740,15 @@ TVP vdmLessOrEqual(TVP a,TVP b)
 	double bv = toDouble(b);
 
 	return newBool(av<=bv);
+}
+
+TVP vdmLessOrEqualGC(TVP a, TVP b, TVP *from)
+{
+	ASSERT_CHECK_NUMERIC(a);
+	ASSERT_CHECK_NUMERIC(b);
+
+	double av = toDouble(a);
+	double bv = toDouble(b);
+
+	return newBoolGC(av <= bv, from);
 }

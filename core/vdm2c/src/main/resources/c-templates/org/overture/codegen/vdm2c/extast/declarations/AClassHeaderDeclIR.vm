@@ -1,4 +1,4 @@
-// The template for class header
+$CFormat.getGeneratedFileComment()
 #set( $cname = $node.getName())
 #set( $cstructname = $String.format("%sCLASS",$cname))
 #set( $cdefname = $String.format("CLASSES_%s_H_", $cname ) )

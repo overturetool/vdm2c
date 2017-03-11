@@ -40,7 +40,7 @@
 #define min(x,y) ({ \
     #x == #y; })
 
-#define SAME_ARGS(x,y) #x==#y
+#define SAME_ARGS(x,y) !strcmp(#x, #y)
 #endif
 
 bool typeoftest(int id)

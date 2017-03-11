@@ -14,7 +14,6 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
-import org.overture.ast.analysis.AnalysisException;
 import org.overture.ast.definitions.SClassDefinition;
 import org.overture.ast.lex.Dialect;
 import org.overture.ast.node.INode;
@@ -53,6 +52,7 @@ public class CGenMain
 		Option formatOpt = Option.builder("fm").longOpt("formatter").desc("Name of the formatter which should be loaded from the class path").hasArg().build();
 		Option destOpt = Option.builder("dest").longOpt("destination").desc("Output directory").required().hasArg().build();
 		Option helpOpt = Option.builder("h").longOpt("help").desc("Show this description").build();
+		Option gcOpt = Option.builder("gc").longOpt("garbagecollection").desc("Use garbage collection").build();
 		Option defaultArg = Option.builder("").desc("A VDM-RT file to code generate").hasArg().build();
 
 		options.addOption(distGenOpt);
@@ -61,10 +61,14 @@ public class CGenMain
 		options.addOption(destOpt);
 		options.addOption(helpOpt);
 		options.addOption(formatOpt);
+		options.addOption(gcOpt);
 		options.addOption(defaultArg);
 
 		CommandLineParser parser = new DefaultParser();
 		CommandLine cmd = null;
+		
+		CGen cGen = new CGen();
+		
 		try
 		{
 			cmd = parser.parse(options, args);
@@ -112,6 +116,11 @@ public class CGenMain
 				error(String.format("Formatter '%s' not found in class path", formatterClassName));
 				return;
 			}
+		}
+		
+		if(cmd.hasOption(gcOpt.getOpt()))
+		{
+			cGen.getCGenSettings().setUseGarbageCollection(true);
 		}
 
 		if (cmd.hasOption(sourceOpt.getOpt()))
@@ -183,9 +192,7 @@ public class CGenMain
 
 			List<SClassDefinition> ast = res.result;
 
-			CGen cGen = new CGen();
-
-			if (formatter != null)
+			if(formatter!=null)
 			{
 				cGen.setSourceCodeFormatter(formatter);
 			}
@@ -212,67 +219,62 @@ public class CGenMain
 				}
 			} else
 			{
-				if (!data.getClasses().isEmpty())
-				{
-					for (GeneratedModule generatedClass : data.getClasses())
-					{
+				if (!data.getClasses().isEmpty()) {
+					for (GeneratedModule generatedClass : data.getClasses()) {
 
-						if (generatedClass.hasMergeErrors())
-						{
-							print(String.format("Class %s could not be merged. Following merge errors were found:", generatedClass.getName()));
+						if (generatedClass.hasMergeErrors()) {
+							print(String.format(
+											"Class %s could not be merged. Following merge errors were found:",
+											generatedClass.getName()));
 
 							GeneralCodeGenUtils.printMergeErrors(generatedClass.getMergeErrors());
-						} else if (!generatedClass.canBeGenerated())
-						{
-							print("Could not generate class: "
-									+ generatedClass.getName() + "\n");
+						} else if (!generatedClass.canBeGenerated()) {
+							print("Could not generate class: " + generatedClass.getName() + "\n");
 
-							if (generatedClass.hasUnsupportedIrNodes())
-							{
+							if (generatedClass.hasUnsupportedIrNodes()) {
 								print("Following VDM constructs are not supported by the code generator:");
 								GeneralCodeGenUtils.printUnsupportedIrNodes(generatedClass.getUnsupportedInIr());
 							}
 
-							if (generatedClass.hasUnsupportedTargLangNodes())
-							{
+							if (generatedClass.hasUnsupportedTargLangNodes()) {
 								print("Following constructs are not supported by the code generator:");
 								GeneralCodeGenUtils.printUnsupportedNodes(generatedClass.getUnsupportedInTargLang());
 							}
 
-						} else
-						{
-
-							try
-							{
+						} else {
+							
+							try {
 
 								cGen.writeFile(generatedClass, outputDir);
-
-								if (!quiet)
+								
+								if(!quiet)
 								{
-									String fileName = generatedClass.getName()
-											+ "."
-											+ cGen.getFileExtension(generatedClass);
-									print("Generated file: "
-											+ new File(outputDir, fileName).getAbsolutePath());
+									String fileName = generatedClass.getName() + "."  + cGen.getFileExtension(generatedClass);
+									print("Generated file: " + new File(outputDir, fileName).getAbsolutePath());
 								}
-
-							} catch (Exception e)
-							{
-
-								error("Problems writing "
-										+ generatedClass.getName()
-										+ " to file: " + e.getMessage());
+								
+							}catch (Exception e) {
+								
+								error("Problems writing " + generatedClass.getName() + " to file: " + e.getMessage());
 								e.printStackTrace();
 							}
 						}
 					}
-				} else
+					
+					
+					cGen.emitFeatureFile(outputDir, CGen.FEATURE_FILE_NAME);
+					if(!quiet)
+					{
+						print("Generated feature file: " + new File(outputDir, CGen.FEATURE_FILE_NAME).getAbsolutePath());
+					}
+				}
+				else
 				{
 					print("No classes were generated!");
 				}
 
 			}
-		} catch (AnalysisException e)
+		} catch (Exception e)
 		{
 			error("Unexpected problems encountered during the code generation process: "
 					+ e.getMessage());
@@ -283,14 +285,15 @@ public class CGenMain
 
 	private static void emitDistCode(GeneratedData data, CGen cGen,
 			File outputDir)
-					throws org.overture.codegen.ir.analysis.AnalysisException,
-					IOException
+					throws Exception
 	{
 		for (String cpuName : SystemArchitectureAnalysis.distributionMap.keySet())
 		{
 			File outputD = new File(outputDir.getAbsolutePath() + "/"
 					+ cpuName);
 
+			cGen.emitFeatureFile(outputD, CGen.FEATURE_FILE_NAME);
+			
 			for (GeneratedModule generatedClass : data.getClasses())
 			{
 

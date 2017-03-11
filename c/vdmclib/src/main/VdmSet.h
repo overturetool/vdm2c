@@ -30,9 +30,11 @@
 #ifndef LIB_VDMSET_H_
 #define LIB_VDMSET_H_
 
-#include "TypedValue.h"
+#include "Vdm.h"
 
 #include <stdio.h>
+
+#ifndef NO_SETS
 
 /*
  * Create new empty set
@@ -66,4 +68,5 @@ TVP vdmSetDunion(TVP set);
 TVP vdmSetDinter(TVP set);
 TVP vdmSetPower(TVP set);
 
+#endif /* NO_SETS */
 #endif /* LIB_VDMSET_H_ */

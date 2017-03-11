@@ -13,6 +13,8 @@ import org.overture.codegen.ir.declarations.AFieldDeclIR;
 import org.overture.codegen.ir.declarations.AMethodDeclIR;
 import org.overture.codegen.ir.declarations.SClassDeclIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
+import org.overture.codegen.vdm2c.Vdm2cTag;
+import org.overture.codegen.vdm2c.Vdm2cTag.MethodTag;
 import org.overture.codegen.vdm2c.utils.NameMangler;
 
 public class FieldInitializerExtractorTrans extends DepthFirstAnalysisCAdaptor
@@ -40,6 +42,7 @@ public class FieldInitializerExtractorTrans extends DepthFirstAnalysisCAdaptor
 			SStmIR body = newReturnStm(initial);
 
 			AMethodDeclIR method = newInternalMethod(assist.getInfo().getTempVarNameGen().nextVarName(FIELD_INITIALIZER), body, type,true);
+			Vdm2cTag.addMethodTag(method, MethodTag.FieldInitializer);
 
 			node.setInitial(newApply(NameMangler.mangle(method)));
 

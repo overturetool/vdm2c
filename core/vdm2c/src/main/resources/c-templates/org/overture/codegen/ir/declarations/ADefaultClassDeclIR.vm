@@ -1,4 +1,4 @@
-// The template for class
+$CFormat.getGeneratedFileComment()
 #set( $cname = $node.getName())
 #set($header = $CFormat.getHeader($node))
 #set( $vtable = $header.getVtable())
