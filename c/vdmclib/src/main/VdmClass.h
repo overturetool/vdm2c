@@ -177,9 +177,9 @@ struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction
  * Macro to obtain a function from a (sub-)class specific VTable from a class struct
  */
 
-//#define CALL_FUNC(thisTypeName,funcTname,classValue,id, ... )     (CREATE_CALL_VARG_CAST(struct thisTypeName*, ## __VA_ARGS__ )GET_VTABLE_FUNC( thisTypeName,funcTname,TO_CLASS_PTR(classValue,thisTypeName),id))(CLASS_CAST(TO_CLASS_PTR(classValue,thisTypeName),thisTypeName,funcTname), ##  __VA_ARGS__)
+#define CALL_FUNC(thisTypeName,funcTname,classValue,id, ... )     (CREATE_CALL_VARG_CAST(struct thisTypeName*, ## __VA_ARGS__ )GET_VTABLE_FUNC( thisTypeName,funcTname,TO_CLASS_PTR(classValue,thisTypeName),id))(CLASS_CAST(TO_CLASS_PTR(classValue,thisTypeName),thisTypeName,funcTname), ##  __VA_ARGS__)
 
-#define CALL_FUNC(thisTypeName,funcTname,classValue,id, args... )     GET_VTABLE_FUNC( thisTypeName,funcTname,TO_CLASS_PTR(classValue,thisTypeName),id)(CLASS_CAST(TO_CLASS_PTR(classValue,thisTypeName),thisTypeName,funcTname), ## args)
+//#define CALL_FUNC(thisTypeName,funcTname,classValue,id, args... )     GET_VTABLE_FUNC( thisTypeName,funcTname,TO_CLASS_PTR(classValue,thisTypeName),id)(CLASS_CAST(TO_CLASS_PTR(classValue,thisTypeName),thisTypeName,funcTname), ## args)
 
 
 /*
