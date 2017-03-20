@@ -46,7 +46,7 @@ struct TypedValue* newTypeValue(vdmtype type, TypedValueType value)
 	struct TypedValue* ptr = (struct TypedValue*) malloc(sizeof(struct TypedValue));
 	ptr->type = type;
 	ptr->value = value;
-	ptr->id = 0;
+	//ptr->id = 0;
 	ptr->ref_from = NULL;
 	return ptr;
 }
@@ -141,7 +141,7 @@ TVP vdmClone(TVP x)
 	tmp = newTypeValue(x->type, x->value);
 
 	// TODO: Distribution
-	tmp->id = x->id;
+	//tmp->id = x->id;
 
 	//FIXME vdmClone any pointers
 	switch (tmp->type)

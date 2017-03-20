@@ -186,7 +186,7 @@ struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction
  * Macro used for distribution support
  */
 
-#define DIST_CALL(sTy, bTy, obj, supID ,nrArgs ,funID, args...) ((DM[obj->id]) ? CALL_FUNC(sTy, bTy, obj, funID, ## args) : send_bus(obj->id, funID, supID, nrArgs, ## args))
+#define DIST_CALL(sTy, bTy, obj, supID ,nrArgs ,funID, args...) ((obj->type==VDM_CLASS) ? CALL_FUNC(sTy, bTy, obj, funID, ## args) : send_bus(obj->value.intVal, funID, supID, nrArgs, ## args))
 
 /*
  * Macro to obtain a field from a (sub-)class specific class struct. We clone to preserve value semantics and the rule of freeing
