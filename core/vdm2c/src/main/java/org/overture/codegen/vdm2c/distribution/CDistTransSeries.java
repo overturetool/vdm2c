@@ -29,6 +29,7 @@ import org.overture.codegen.vdm2c.distribution.transformations.GenerateDMTrans;
 import org.overture.codegen.vdm2c.distribution.transformations.GenerateDepObjId;
 import org.overture.codegen.vdm2c.distribution.transformations.GenerateGetResTrans;
 import org.overture.codegen.vdm2c.distribution.transformations.GenerateSendBusTrans;
+import org.overture.codegen.vdm2c.distribution.transformations.TransformRemoteObject;
 
 public class CDistTransSeries
 {
@@ -83,8 +84,9 @@ public class CDistTransSeries
 		transformations.add(new GenerateSendBusTrans(transAssistant));
 		transformations.add(new GenerateGetResTrans(transAssistant));
 		transformations.add(new CallFuncMacroExpTrans(transAssistant));
-		transformations.add(new GenerateDepObjId(transAssistant));
-		transformations.add(new GenerateDMTrans(transAssistant));
+		transformations.add(new TransformRemoteObject(transAssistant));
+		//transformations.add(new GenerateDepObjId(transAssistant));
+		//transformations.add(new GenerateDMTrans(transAssistant));
 		transformations.add(new GenerateClassDispatchTrans(transAssistant));
 		transformations.add(new AddIncludesTrans(transAssistant));
 
