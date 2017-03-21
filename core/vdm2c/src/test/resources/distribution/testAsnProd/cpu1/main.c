@@ -43,6 +43,7 @@ int main(void) {
 	printf("decoded value is %d \n", args[0]->value.intVal);
 */
 
+vdm_gc_init();
 
 	// Receive flag, becomes true when remote invocation need to be handled
 	bool rec_flag = false;

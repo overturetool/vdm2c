@@ -27,6 +27,7 @@ int main(void) {
 	// Receive flag, becomes true when remote invocation need to be handled
 	bool rec_flag = false;
 
+	vdm_gc_init();
 	// 1. System initialization
 	TVP w = _Z5WorldEV(NULL); // gets ID 0, due to being local
 	D_static_init();
