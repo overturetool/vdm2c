@@ -16,6 +16,7 @@ import org.overture.codegen.ir.expressions.ACompSeqExpIR;
 import org.overture.codegen.ir.expressions.ACompSetExpIR;
 import org.overture.codegen.ir.expressions.AEnumSeqExpIR;
 import org.overture.codegen.ir.expressions.AEnumSetExpIR;
+import org.overture.codegen.ir.expressions.AExistsQuantifierExpIR;
 import org.overture.codegen.ir.expressions.AForAllQuantifierExpIR;
 import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
 import org.overture.codegen.ir.expressions.ALetBeStExpIR;
@@ -82,6 +83,38 @@ public class CompToBlockTrans extends Exp2StmTrans
 			forAllResult.setName(var);
 
 			transform(enclosingStm, block, forAllResult, node);
+			block.apply(this);
+		}
+	}
+	
+	@Override
+	public void caseAExistsQuantifierExpIR(AExistsQuantifierExpIR node)
+			throws AnalysisException
+	{
+		SStmIR enclosingStm = transAssistant.getEnclosingStm(node, "exists expression");
+
+		SExpIR predicate = node.getPredicate();
+		ITempVarGen tempVarNameGen = transAssistant.getInfo().getTempVarNameGen();
+		String var = tempVarNameGen.nextVarName(prefixes.exists());
+
+		OrdinaryQuantifierStrategy strategy = new COrdinaryQuantifierStrategy(transAssistant, predicate, var, OrdinaryQuantifier.EXISTS, langIterator, tempVarNameGen, iteVarPrefixes);
+
+		List<SMultipleBindIR> multipleSetBinds = filterBindList(node, node.getBindList());
+
+		ABlockStmIR block = transAssistant.consComplexCompIterationBlock(multipleSetBinds, tempVarNameGen, strategy, iteVarPrefixes);
+
+		if (multipleSetBinds.isEmpty())
+		{
+			ABoolLiteralExpIR existsResult = transAssistant.getInfo().getExpAssistant().consBoolLiteral(false);
+			transAssistant.replaceNodeWith(node, existsResult);
+		} else
+		{
+			AIdentifierVarExpIR existsResult = new AIdentifierVarExpIR();
+			existsResult.setIsLocal(true);
+			existsResult.setType(new ABoolBasicTypeIR());
+			existsResult.setName(var);
+
+			transform(enclosingStm, block, existsResult, node);
 			block.apply(this);
 		}
 	}

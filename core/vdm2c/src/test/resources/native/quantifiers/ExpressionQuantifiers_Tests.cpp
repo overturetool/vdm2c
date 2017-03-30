@@ -21,4 +21,9 @@ TEST_F(TestFlowFunctions, forAllSimple)
 	CHECK(CLASS_ExpressionQuantifiers__Z12forAllSimpleEV);
 }
 
+TEST_F(TestFlowFunctions, existsSimple)
+{
+	CHECK(CLASS_ExpressionQuantifiers__Z12existsSimpleEV);
+}
+
 
