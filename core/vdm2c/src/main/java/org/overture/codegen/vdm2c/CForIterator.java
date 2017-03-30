@@ -61,7 +61,7 @@ public class CForIterator extends AbstractLanguageIterator
 			List<SPatternIR> patterns, SPatternIR pattern)
 			throws AnalysisException
 	{
-		return newApply("toBool", newApply("vdmLessThan", newIdentifier(iteratorName, null), newApply("vdmSetCard", newIdentifier(setName, null))));
+		return newApply("vdmLessThan", newIdentifier(iteratorName, null), newApply("vdmSetCard", newIdentifier(setName, null)));
 	}
 
 	@Override

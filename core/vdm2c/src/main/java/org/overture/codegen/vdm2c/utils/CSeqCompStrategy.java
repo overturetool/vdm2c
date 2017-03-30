@@ -11,6 +11,7 @@ import org.overture.codegen.ir.SExpIR;
 import org.overture.codegen.ir.SPatternIR;
 import org.overture.codegen.ir.SStmIR;
 import org.overture.codegen.ir.STypeIR;
+import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
 import org.overture.codegen.trans.IterationVarPrefixes;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
@@ -37,6 +38,13 @@ public class CSeqCompStrategy extends SeqCompStrategy {
 		// useful estimate can
 		// be made of the size
 		return CTransUtil.newApply("newSeqVarToGrow", CTransUtil.consCInt("0"), CTransUtil.consCInt("5"));
+	}
+	
+	@Override
+	public SExpIR getForLoopCond(AIdentifierVarExpIR setVar, List<SPatternIR> patterns, SPatternIR pattern)
+			throws AnalysisException {
+		
+		return CTransUtil.newApply("toBool", super.getForLoopCond(setVar, patterns, pattern));
 	}
 	
 	@Override
