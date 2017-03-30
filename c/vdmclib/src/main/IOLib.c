@@ -11,26 +11,6 @@
 #if !defined(NO_IO) || !defined(NO_CSV)
 
 #ifndef NO_SEQS
-char* unpackString(TVP charseq)
-{
-	int i;
-	char* str;
-
-
-
-	UNWRAP_COLLECTION(col, charseq);
-
-	str = (char*)malloc(col->size * sizeof(char) + 1);
-	str[col->size] = 0;
-
-	for(i = 0; i < col->size; i++)
-	{
-		ASSERT_CHECK_CHAR((col->value[i]));
-		str[i] = ((col->value[i])->value).charVal;
-	}
-
-	return str;
-}
 
 void vdm_IO_println(TVP arg)
 {

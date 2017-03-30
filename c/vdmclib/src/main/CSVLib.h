@@ -5,6 +5,7 @@
 #include "IOLib.h"
 #include "VdmProduct.h"
 #include "VdmSeq.h"
+#include "VdmUnpackString.h"
 
 
 /*
