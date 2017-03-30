@@ -295,7 +295,7 @@ TVP vdmCloneGC(TVP x, TVP *from)
 
 		//copy (size)
 		*ptr = *cptr;
-		ptr->value = (TVP*) malloc(sizeof(struct TypedValue) * ptr->size);
+		ptr->value = (TVP*) malloc(sizeof(TVP) * ptr->size);
 
 		for (int i = 0; i < cptr->size; i++)
 		{
@@ -315,7 +315,7 @@ TVP vdmCloneGC(TVP x, TVP *from)
 
 		//copy (size)
 		*ptr = *cptr;
-		ptr->value = (TVP*) malloc(sizeof(struct TypedValue) * ptr->size);
+		ptr->value = (TVP*) malloc(sizeof(TVP) * ptr->size);
 
 		for (int i = 0; i < cptr->size; i++)
 		{
@@ -335,7 +335,7 @@ TVP vdmCloneGC(TVP x, TVP *from)
 
 		//copy (size)
 		*ptr = *cptr;
-		ptr->value = (TVP*) malloc(sizeof(struct TypedValue) * ptr->size);
+		ptr->value = (TVP*) malloc(sizeof(TVP) * ptr->size);
 
 		for (int i = 0; i < cptr->size; i++)
 		{

@@ -43,7 +43,7 @@
 
 TVP newTypeValue(vdmtype type, TypedValueType value)
 {
-	TVP ptr = (TVP) malloc(sizeof(struct TypedValue));
+	TVP ptr = malloc(sizeof(struct TypedValue));
 	ptr->type = type;
 	ptr->value = value;
 	ptr->ref_from = NULL;
@@ -169,7 +169,7 @@ TVP vdmClone(TVP x)
 
 		//copy (size)
 		*ptr = *cptr;
-		ptr->value = (TVP*) malloc(sizeof(struct TypedValue) * ptr->size);
+		ptr->value = (TVP*) malloc(sizeof(TVP) * ptr->size);
 
 		for (int i = 0; i < cptr->size; i++)
 		{
@@ -189,7 +189,7 @@ TVP vdmClone(TVP x)
 
 		//copy (size)
 		*ptr = *cptr;
-		ptr->value = (TVP*) malloc(sizeof(struct TypedValue) * ptr->size);
+		ptr->value = (TVP*) malloc(sizeof(TVP) * ptr->size);
 
 		for (int i = 0; i < cptr->size; i++)
 		{
@@ -209,7 +209,7 @@ TVP vdmClone(TVP x)
 
 		//copy (size)
 		*ptr = *cptr;
-		ptr->value = (TVP*) malloc(sizeof(struct TypedValue) * ptr->size);
+		ptr->value = (TVP*) malloc(sizeof(TVP) * ptr->size);
 
 		for (int i = 0; i < cptr->size; i++)
 		{
