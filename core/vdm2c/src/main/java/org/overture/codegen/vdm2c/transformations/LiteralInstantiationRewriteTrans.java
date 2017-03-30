@@ -102,6 +102,8 @@ public class LiteralInstantiationRewriteTrans extends
 		AApplyExpIR apply = rewriteToApply(this,  node, NEW_TOKEN);
 		
 		apply.getArgs().add(arg.clone());
+		
+		apply.getArgs().getFirst().apply(this);
 	}
 	
 }
