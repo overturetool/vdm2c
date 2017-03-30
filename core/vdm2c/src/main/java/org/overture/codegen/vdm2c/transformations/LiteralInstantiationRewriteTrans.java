@@ -3,11 +3,14 @@ package org.overture.codegen.vdm2c.transformations;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.rewriteToApply;
 
 import org.overture.cgc.extast.analysis.DepthFirstAnalysisCAdaptor;
+import org.overture.codegen.ir.SExpIR;
 import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.analysis.intf.IAnalysis;
+import org.overture.codegen.ir.expressions.AApplyExpIR;
 import org.overture.codegen.ir.expressions.ABoolLiteralExpIR;
 import org.overture.codegen.ir.expressions.ACharLiteralExpIR;
 import org.overture.codegen.ir.expressions.AIntLiteralExpIR;
+import org.overture.codegen.ir.expressions.AMkBasicExpIR;
 import org.overture.codegen.ir.expressions.AQuoteLiteralExpIR;
 import org.overture.codegen.ir.expressions.AStringLiteralExpIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
@@ -27,6 +30,8 @@ public class LiteralInstantiationRewriteTrans extends
 	public static final String NEW_INT = "newInt";
 	public static final String NEW_CHAR = "newChar";
 	public static final String NEW_BOOL = "newBool";
+	public static final String NEW_TOKEN = "newToken";
+	
 	public TransAssistantIR assist;
 
 	public LiteralInstantiationRewriteTrans(TransAssistantIR assist)
@@ -79,8 +84,8 @@ public class LiteralInstantiationRewriteTrans extends
 			throws AnalysisException
 	{
 		rewriteToApply(this, node, NEW_REAL, node);
-	};
-
+	}
+	
 	@Override
 	public void caseAStringLiteralExpIR(AStringLiteralExpIR node)
 			throws AnalysisException
@@ -89,4 +94,14 @@ public class LiteralInstantiationRewriteTrans extends
 		rewriteToApply(this, node, NEW_STRING);
 	}
 
+	@Override
+	public void caseAMkBasicExpIR(AMkBasicExpIR node) throws AnalysisException {
+		
+		SExpIR arg = node.getArg();
+		
+		AApplyExpIR apply = rewriteToApply(this,  node, NEW_TOKEN);
+		
+		apply.getArgs().add(arg.clone());
+	}
+	
 }
