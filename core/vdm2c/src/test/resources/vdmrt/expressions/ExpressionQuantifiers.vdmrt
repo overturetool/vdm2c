@@ -1,0 +1,9 @@
+class ExpressionQuantifiers
+
+functions
+
+public forAllSimple	 :  () -> bool
+forAllSimple () ==
+forall x in set {1,2,3} & x > 0;
+
+end ExpressionQuantifiers

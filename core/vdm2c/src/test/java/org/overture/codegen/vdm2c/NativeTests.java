@@ -106,6 +106,14 @@ public class NativeTests extends NativeTestBase
 	}
 
 	@Test
+	public void ExpressionQuantifiers() throws IOException, InterruptedException,
+			CMakeGenerateException
+	{
+		generate(getPath("expressions/ExpressionQuantifiers.vdmrt"));
+		compileAndTest(getTestCppFile("quantifiers/ExpressionQuantifiers_Tests.cpp"));
+	}
+	
+	@Test
 	public void SubclassResponsibility() throws IOException, InterruptedException,
 			CMakeGenerateException
 	{
