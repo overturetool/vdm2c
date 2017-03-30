@@ -11,15 +11,18 @@ import org.overture.codegen.ir.SStmIR;
 import org.overture.codegen.ir.STypeIR;
 import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.declarations.AVarDeclIR;
+import org.overture.codegen.ir.expressions.ABoolLiteralExpIR;
 import org.overture.codegen.ir.expressions.ACompSeqExpIR;
 import org.overture.codegen.ir.expressions.ACompSetExpIR;
 import org.overture.codegen.ir.expressions.AEnumSeqExpIR;
 import org.overture.codegen.ir.expressions.AEnumSetExpIR;
+import org.overture.codegen.ir.expressions.AForAllQuantifierExpIR;
 import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
 import org.overture.codegen.ir.expressions.ALetBeStExpIR;
 import org.overture.codegen.ir.patterns.ASetMultipleBindIR;
 import org.overture.codegen.ir.statements.AAssignToExpStmIR;
 import org.overture.codegen.ir.statements.ABlockStmIR;
+import org.overture.codegen.ir.types.ABoolBasicTypeIR;
 import org.overture.codegen.ir.types.SSetTypeIR;
 import org.overture.codegen.ir.utils.AHeaderLetBeStIR;
 import org.overture.codegen.trans.Exp2StmTrans;
@@ -30,7 +33,10 @@ import org.overture.codegen.trans.comp.ComplexCompStrategy;
 import org.overture.codegen.trans.comp.SeqCompStrategy;
 import org.overture.codegen.trans.iterator.ILanguageIterator;
 import org.overture.codegen.trans.quantifier.Exists1CounterData;
+import org.overture.codegen.trans.quantifier.OrdinaryQuantifier;
+import org.overture.codegen.trans.quantifier.OrdinaryQuantifierStrategy;
 import org.overture.codegen.vdm2c.utils.CLetBeStStrategy;
+import org.overture.codegen.vdm2c.utils.COrdinaryQuantifierStrategy;
 import org.overture.codegen.vdm2c.utils.CSeqCompStrategy;
 import org.overture.codegen.vdm2c.utils.CSetCompStrategy;
 
@@ -47,6 +53,37 @@ public class CompToBlockTrans extends Exp2StmTrans
 			ILanguageIterator langIterator, Exp2StmVarPrefixes prefixes)
 	{
 		super(iteVarPrefixes, transAssistant, counterData, langIterator, prefixes);
+	}
+	
+	@Override
+	public void caseAForAllQuantifierExpIR(AForAllQuantifierExpIR node) throws AnalysisException {
+
+		SStmIR enclosingStm = transAssistant.getEnclosingStm(node, "forall expression");
+
+		SExpIR predicate = node.getPredicate();
+		ITempVarGen tempVarNameGen = transAssistant.getInfo().getTempVarNameGen();
+		String var = tempVarNameGen.nextVarName(prefixes.forAll());
+
+		OrdinaryQuantifierStrategy strategy = new COrdinaryQuantifierStrategy(transAssistant, predicate, var, OrdinaryQuantifier.FORALL, langIterator, tempVarNameGen, iteVarPrefixes);
+
+		List<SMultipleBindIR> multipleSetBinds = filterBindList(node, node.getBindList());
+
+		ABlockStmIR block = transAssistant.consComplexCompIterationBlock(multipleSetBinds, tempVarNameGen, strategy, iteVarPrefixes);
+
+		if (multipleSetBinds.isEmpty())
+		{
+			ABoolLiteralExpIR forAllResult = transAssistant.getInfo().getExpAssistant().consBoolLiteral(true);
+			transAssistant.replaceNodeWith(node, forAllResult);
+		} else
+		{
+			AIdentifierVarExpIR forAllResult = new AIdentifierVarExpIR();
+			forAllResult.setIsLocal(true);
+			forAllResult.setType(new ABoolBasicTypeIR());
+			forAllResult.setName(var);
+
+			transform(enclosingStm, block, forAllResult, node);
+			block.apply(this);
+		}
 	}
 	
 	@Override
