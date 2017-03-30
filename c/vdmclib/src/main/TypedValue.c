@@ -85,6 +85,22 @@ TVP newQuote(unsigned int x)
 			{ .quoteVal = x });
 }
 
+TVP newToken(TVP x)
+{
+	char *str = unpackString(x);
+	int hashVal = 5381;
+	int c;
+
+	while (c = *str++)
+		hashVal = ((hashVal << 2) + hashVal) + c;
+
+	free(str);
+
+	return newTypeValue(VDM_TOKEN, (TypedValueType
+	)
+			{ .intVal = hashVal });
+}
+
 TVP newCollection(size_t size, vdmtype type)
 {
 	struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
@@ -575,36 +591,36 @@ void vdmFree(TVP ptr)
 #ifndef NO_PRODUCTS
 	case VDM_PRODUCT:
 	{
-			UNWRAP_COLLECTION(cptr, ptr);
-			for (int i = 0; i < cptr->size; i++)
+		UNWRAP_COLLECTION(cptr, ptr);
+		for (int i = 0; i < cptr->size; i++)
+		{
+			if (cptr->value[i] != NULL)
 			{
-				if (cptr->value[i] != NULL)
-				{
-					vdmFree(cptr->value[i]);
-				}
+				vdmFree(cptr->value[i]);
 			}
-			free(cptr->value);
-			free(cptr);
-			ptr->value.ptr = NULL;
-			break;
 		}
+		free(cptr->value);
+		free(cptr);
+		ptr->value.ptr = NULL;
+		break;
+	}
 #endif
 #ifndef NO_SEQS
 	case VDM_SEQ:
 	{
-			UNWRAP_COLLECTION(cptr, ptr);
-			for (int i = 0; i < cptr->size; i++)
+		UNWRAP_COLLECTION(cptr, ptr);
+		for (int i = 0; i < cptr->size; i++)
+		{
+			if (cptr->value[i] != NULL)
 			{
-				if (cptr->value[i] != NULL)
-				{
-					vdmFree(cptr->value[i]);
-				}
+				vdmFree(cptr->value[i]);
 			}
-			free(cptr->value);
-			free(cptr);
-			ptr->value.ptr = NULL;
-			break;
 		}
+		free(cptr->value);
+		free(cptr);
+		ptr->value.ptr = NULL;
+		break;
+	}
 #endif
 #ifndef NO_SETS
 	case VDM_SET:

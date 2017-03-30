@@ -2,6 +2,7 @@
 #define VDMGC_H_
 
 #include "Vdm.h"
+#include "VdmUnpackString.h"
 
 struct alloc_list_node
 {
@@ -31,6 +32,7 @@ TVP newBoolGC(bool x, TVP *from);
 TVP newRealGC(double x, TVP *from);
 TVP newCharGC(char x, TVP *from);
 TVP newQuoteGC(unsigned int x, TVP *from);
+TVP newTokenGC(TVP x, TVP *from);
 TVP vdmEqualsGC(TVP a, TVP b, TVP *from);
 //#endif /* WITH_GC */
 

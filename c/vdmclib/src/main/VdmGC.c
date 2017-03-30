@@ -214,23 +214,42 @@ TVP newBoolGC(bool x, TVP *from)
 	)
 			{ .boolVal = x }, from);
 }
+
 TVP newRealGC(double x, TVP *from)
 {
 	return newTypeValueGC(VDM_REAL, (TypedValueType
 	)
 			{ .doubleVal = x }, from);
 }
+
 TVP newCharGC(char x, TVP *from)
 {
 	return newTypeValueGC(VDM_CHAR, (TypedValueType
 	)
 			{ .charVal = x }, from);
 }
+
 TVP newQuoteGC(unsigned int x, TVP *from)
 {
 	return newTypeValueGC(VDM_QUOTE, (TypedValueType
 	)
 			{ .quoteVal = x }, from);
+}
+
+TVP newTokenGC(TVP x, TVP *from)
+{
+	char *str = unpackString(x);
+	int hashVal = 5381;
+	int c;
+
+	while (c = *str++)
+		hashVal = ((hashVal << 2) + hashVal) + c;
+
+	free(str);
+
+	return newTypeValueGC(VDM_TOKEN, (TypedValueType
+	)
+			{ .intVal = hashVal }, from);
 }
 
 TVP newCollectionGC(size_t size, vdmtype type)

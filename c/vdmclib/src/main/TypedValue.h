@@ -71,6 +71,7 @@ typedef enum
 #ifndef NO_RECORDS
 	VDM_RECORD,
 #endif
+	VDM_TOKEN,
 	VDM_CLASS
 } vdmtype;
 
@@ -160,6 +161,7 @@ TVP newBool(bool x);
 TVP newReal(double x);
 TVP newChar(char x);
 TVP newQuote(unsigned int x);
+TVP newToken(TVP x);
 
 
 
