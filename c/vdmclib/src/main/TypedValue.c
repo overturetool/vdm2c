@@ -88,13 +88,14 @@ TVP newQuote(unsigned int x)
 TVP newToken(TVP x)
 {
 	char *str = unpackString(x);
+	char *strTmp = str;
 	int hashVal = 5381;
 	int c;
 
 	while (c = *str++)
 		hashVal = ((hashVal << 2) + hashVal) + c;
 
-	free(str);
+	free(strTmp);
 
 	return newTypeValue(VDM_TOKEN, (TypedValueType
 	)

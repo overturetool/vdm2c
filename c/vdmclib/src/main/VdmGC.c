@@ -239,13 +239,14 @@ TVP newQuoteGC(unsigned int x, TVP *from)
 TVP newTokenGC(TVP x, TVP *from)
 {
 	char *str = unpackString(x);
+	char *strTmp = str;
 	int hashVal = 5381;
 	int c;
 
 	while (c = *str++)
 		hashVal = ((hashVal << 2) + hashVal) + c;
 
-	free(str);
+	free(strTmp);
 
 	return newTypeValueGC(VDM_TOKEN, (TypedValueType
 	)
