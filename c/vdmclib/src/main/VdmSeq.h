@@ -40,16 +40,16 @@
 /*
  * New empty sequence
  */
-struct TypedValue* newSeq(size_t size);
+TVP newSeq(size_t size);
 /*
  * New sequence from array of elements
  */
-struct TypedValue* newSeqWithValues(size_t size,TVP* elements);
+TVP newSeqWithValues(size_t size,TVP* elements);
 /*
  * Create new seq from variadic list of elements
  */
-struct TypedValue* newSeqVar(size_t size,...);
-struct TypedValue* newSeqVarToGrow(size_t size, size_t expected_size, ...);
+TVP newSeqVar(size_t size,...);
+TVP newSeqVarToGrow(size_t size, size_t expected_size, ...);
 
 void vdmSeqGrow(TVP seq, TVP element);
 void vdmSeqFit(TVP seq);

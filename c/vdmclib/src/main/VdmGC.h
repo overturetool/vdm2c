@@ -24,14 +24,14 @@ extern struct alloc_list_node *allocd_mem_current;
 //#ifdef WITH_GC
 //====  Gargabe collected versions ======
 
-struct TypedValue* newTypeValueGC(vdmtype type, TypedValueType value, TVP *ref_from);
-struct TypedValue* vdmCloneGC(TVP x, TVP *from);
-struct TypedValue* newIntGC(int x, TVP *from);
-struct TypedValue* newBoolGC(bool x, TVP *from);
-struct TypedValue* newRealGC(double x, TVP *from);
-struct TypedValue* newCharGC(char x, TVP *from);
-struct TypedValue* newQuoteGC(unsigned int x, TVP *from);
-struct TypedValue* vdmEqualsGC(struct TypedValue* a, struct TypedValue* b, TVP *from);
+TVP newTypeValueGC(vdmtype type, TypedValueType value, TVP *ref_from);
+TVP vdmCloneGC(TVP x, TVP *from);
+TVP newIntGC(int x, TVP *from);
+TVP newBoolGC(bool x, TVP *from);
+TVP newRealGC(double x, TVP *from);
+TVP newCharGC(char x, TVP *from);
+TVP newQuoteGC(unsigned int x, TVP *from);
+TVP vdmEqualsGC(TVP a, TVP b, TVP *from);
 //#endif /* WITH_GC */
 
 
