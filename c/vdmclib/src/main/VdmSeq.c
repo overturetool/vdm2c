@@ -39,7 +39,7 @@
 
 //Utility functions.
 //------------------------------------------------
-static void vdmSeqAdd(struct TypedValue** value, int* index, TVP newValue)
+static void vdmSeqAdd(TVP* value, int* index, TVP newValue)
 {
 	value[*index] = newValue;
 	*index = (*index) + 1;
@@ -51,17 +51,17 @@ static void vdmSeqAdd(struct TypedValue** value, int* index, TVP newValue)
 
 
 
-struct TypedValue* newSeq(size_t size)
+TVP newSeq(size_t size)
 {
 	return newCollection(size, VDM_SEQ);
 }
 
-struct TypedValue* newSeqWithValues(size_t size, TVP* elements)
+TVP newSeqWithValues(size_t size, TVP* elements)
 {
 	return newCollectionWithValues(size, VDM_SEQ,elements);
 }
 
-struct TypedValue* newSeqVar(size_t size, ...)
+TVP newSeqVar(size_t size, ...)
 {
 	TVP elements[size];
 
@@ -80,7 +80,7 @@ struct TypedValue* newSeqVar(size_t size, ...)
 
 //Just like newSeqVar, but with memory preallocated to an expected
 //result sequence length.
-struct TypedValue* newSeqVarToGrow(size_t size, size_t expected_size, ...)
+TVP newSeqVarToGrow(size_t size, size_t expected_size, ...)
 {
 	va_list ap;
 	va_start(ap, expected_size);
@@ -88,7 +88,7 @@ struct TypedValue* newSeqVarToGrow(size_t size, size_t expected_size, ...)
 	int count = 0;
 
 	int bufsize = expected_size;  //DEFAULT_SEQ_COMP_BUFFER;
-	struct TypedValue** value = (struct TypedValue**) calloc(bufsize, sizeof(struct TypedValue*));
+	TVP* value = (TVP*) calloc(bufsize, sizeof(TVP));
 
 	for (int i = 0; i < size; i++)
 	{
@@ -101,7 +101,7 @@ struct TypedValue* newSeqVarToGrow(size_t size, size_t expected_size, ...)
 		{
 			//buffer too small add memory chunk
 			bufsize += DEFAULT_SEQ_COMP_BUFFER_STEPSIZE;
-			value = (struct TypedValue**)realloc(value, bufsize * sizeof(struct TypedValue*));
+			value = (TVP*)realloc(value, bufsize * sizeof(TVP));
 		}
 		vdmSeqAdd(value,&count,v);
 	}
@@ -123,7 +123,7 @@ void vdmSeqGrow(TVP seq, TVP element)
 	{
 		//buffer too small add memory chunk
 		bufsize += DEFAULT_SEQ_COMP_BUFFER_STEPSIZE;
-		col->value = (struct TypedValue**)realloc(col->value, bufsize * sizeof(struct TypedValue*));
+		col->value = (TVP*)realloc(col->value, bufsize * sizeof(TVP));
 	}
 	vdmSeqAdd(col->value, &(col->size), element);
 }
@@ -133,7 +133,7 @@ void vdmSeqFit(TVP seq)
 	UNWRAP_COLLECTION(col, seq);
 
 	//Assumes that more memory is allocated in the col->value array than there are elements.
-	col->value = (struct TypedValue**)realloc(col->value, col->size * sizeof(struct TypedValue*));
+	col->value = (TVP*)realloc(col->value, col->size * sizeof(TVP));
 }
 
 TVP vdmSeqHd(TVP seq)
@@ -182,7 +182,7 @@ TVP vdmSeqInds(TVP seq)
 	ASSERT_CHECK(seq);
 	UNWRAP_COLLECTION(col,seq);
 
-	struct TypedValue** value = (struct TypedValue**) calloc(col->size, sizeof(struct TypedValue*));
+	TVP* value = (TVP*) calloc(col->size, sizeof(TVP));
 
 	//copy  list
 	for (int i = 0; i < col->size; i++)

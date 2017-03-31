@@ -34,9 +34,9 @@
 
 #ifndef NO_PRODUCTS
 
-struct TypedValue* newProductVar(size_t size,...);
-struct TypedValue* newProduct(size_t size);
-struct TypedValue* newProductWithValues(size_t size,TVP* elements);
+TVP newProductVar(size_t size,...);
+TVP newProduct(size_t size);
+TVP newProductWithValues(size_t size,TVP* elements);
 
 TVP productGet(TVP product, int index);
 void productSet(TVP product, int index, TVP val);

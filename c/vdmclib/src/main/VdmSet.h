@@ -39,16 +39,16 @@
 /*
  * Create new empty set
  */
-//struct TypedValue* newSet(size_t size);
+//TVP newSet(size_t size);
 /*
  * Create new set from array of elements
  */
-struct TypedValue* newSetWithValues(size_t size,TVP* elements);
+TVP newSetWithValues(size_t size,TVP* elements);
 /*
  * Create new set from variadic list of elements
  */
-struct TypedValue* newSetVar(size_t size,...);
-struct TypedValue* newSetVarToGrow(size_t size, size_t expected_size, ...);
+TVP newSetVar(size_t size,...);
+TVP newSetVarToGrow(size_t size, size_t expected_size, ...);
 
 void vdmSetGrow(TVP set, TVP element);
 void vdmSetFit(TVP set);

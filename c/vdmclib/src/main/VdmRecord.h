@@ -46,7 +46,7 @@ struct RecordType
 	int recordId;
 	freeVdmClassFunction freeRecord;//TODO move to global map
 	vdmRecordEqualityFunction equalFun; //TODO move to global map
-	struct TypedValue* (*vdmCloneFun)(TVP self);
+	TVP (*vdmCloneFun)(TVP self);
 };
 
 #endif /* NO_RECORDS */

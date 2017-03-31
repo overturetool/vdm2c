@@ -41,9 +41,9 @@
 
 
 
-struct TypedValue* newTypeValue(vdmtype type, TypedValueType value)
+TVP newTypeValue(vdmtype type, TypedValueType value)
 {
-	struct TypedValue* ptr = (struct TypedValue*) malloc(sizeof(struct TypedValue));
+	TVP ptr = malloc(sizeof(struct TypedValue));
 	ptr->type = type;
 	ptr->value = value;
 	ptr->ref_from = NULL;
@@ -53,49 +53,66 @@ struct TypedValue* newTypeValue(vdmtype type, TypedValueType value)
 
 //#ifndef WITH_GC
 /// Basic
-struct TypedValue* newInt(int x)
+TVP newInt(int x)
 {
 	return newTypeValue(VDM_INT, (TypedValueType
 	)
 			{ .intVal = x });
 }
 
-struct TypedValue* newBool(bool x)
+TVP newBool(bool x)
 {
 	return newTypeValue(VDM_BOOL, (TypedValueType
 	)
 			{ .boolVal = x });
 }
-struct TypedValue* newReal(double x)
+TVP newReal(double x)
 {
 	return newTypeValue(VDM_REAL, (TypedValueType
 	)
 			{ .doubleVal = x });
 }
-struct TypedValue* newChar(char x)
+TVP newChar(char x)
 {
 	return newTypeValue(VDM_CHAR, (TypedValueType
 	)
 			{ .charVal = x });
 }
-struct TypedValue* newQuote(unsigned int x)
+TVP newQuote(unsigned int x)
 {
 	return newTypeValue(VDM_QUOTE, (TypedValueType
 	)
 			{ .quoteVal = x });
 }
 
-struct TypedValue* newCollection(size_t size, vdmtype type)
+TVP newToken(TVP x)
+{
+	char *str = unpackString(x);
+	char *strTmp = str;
+	int hashVal = 5381;
+	int c;
+
+	while (c = *str++)
+		hashVal = ((hashVal << 2) + hashVal) + c;
+
+	free(strTmp);
+
+	return newTypeValue(VDM_TOKEN, (TypedValueType
+	)
+			{ .intVal = hashVal });
+}
+
+TVP newCollection(size_t size, vdmtype type)
 {
 	struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
 	ptr->size = size;
-	ptr->value = (struct TypedValue**) calloc(size, sizeof(struct TypedValue*)); //I know this is slower than malloc but better for products
+	ptr->value = (TVP*) calloc(size, sizeof(TVP)); //I know this is slower than malloc but better for products
 	return newTypeValue(type, (TypedValueType
 	)
 			{ .ptr = ptr });
 }
 
-struct TypedValue* newCollectionWithValues(size_t size, vdmtype type, TVP* elements)
+TVP newCollectionWithValues(size_t size, vdmtype type, TVP* elements)
 {
 	TVP product = newCollection(size,type);
 	UNWRAP_COLLECTION(col,product);
@@ -151,6 +168,7 @@ TVP vdmClone(TVP x)
 	case VDM_REAL:
 	case VDM_RAT:
 	case VDM_QUOTE:
+	case VDM_TOKEN:
 	{
 		//encoded as values so the initial copy line handles these
 		break;
@@ -169,7 +187,7 @@ TVP vdmClone(TVP x)
 
 		//copy (size)
 		*ptr = *cptr;
-		ptr->value = (struct TypedValue**) malloc(sizeof(struct TypedValue) * ptr->size);
+		ptr->value = (TVP*) malloc(sizeof(TVP) * ptr->size);
 
 		for (int i = 0; i < cptr->size; i++)
 		{
@@ -189,7 +207,7 @@ TVP vdmClone(TVP x)
 
 		//copy (size)
 		*ptr = *cptr;
-		ptr->value = (struct TypedValue**) malloc(sizeof(struct TypedValue) * ptr->size);
+		ptr->value = (TVP*) malloc(sizeof(TVP) * ptr->size);
 
 		for (int i = 0; i < cptr->size; i++)
 		{
@@ -209,7 +227,7 @@ TVP vdmClone(TVP x)
 
 		//copy (size)
 		*ptr = *cptr;
-		ptr->value = (struct TypedValue**) malloc(sizeof(struct TypedValue) * ptr->size);
+		ptr->value = (TVP*) malloc(sizeof(TVP) * ptr->size);
 
 		for (int i = 0; i < cptr->size; i++)
 		{
@@ -242,22 +260,22 @@ TVP vdmClone(TVP x)
 
 		//Generic way of accessing the number-of-fields field.  The name of the record type is
 		//hard-coded into the corresponding struct name.
-		numFields = (*((struct TypedValue**)((char*)(((struct ClassType*)x->value.ptr)->value) + \
+		numFields = (*((TVP*)((char*)(((struct ClassType*)x->value.ptr)->value) + \
 				sizeof(struct VTable*) + \
 				sizeof(int) + \
 				sizeof(unsigned int))))->value.intVal;
 
 		//Allocate memory to be populated with the pointers pointing to the cloned fields.
-		((struct ClassType*)((tmp->value).ptr))->value = malloc(sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(struct TypedValue*) + sizeof(struct TypedValue*) * numFields);
+		((struct ClassType*)((tmp->value).ptr))->value = malloc(sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(TVP) + sizeof(TVP) * numFields);
 
 		for(i = 0; i <= numFields; i++)
 		{
 			//Start cloning the fields one by one, including the number-of-fields field,
 			//since it is just a TVP.
-			tmpField = vdmClone(*((struct TypedValue**)((char*)(((struct ClassType*)x->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(struct TypedValue*) * i)));
+			tmpField = vdmClone(*((TVP*)((char*)(((struct ClassType*)x->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(TVP) * i)));
 
 			//Only copy the address stored in tmpField so that that memory is now addressed by the current field in the struct.
-			memcpy(((struct TypedValue**)((char*)(((struct ClassType*)tmp->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(struct TypedValue*) * i)), &tmpField, sizeof(struct TypedValue*));
+			memcpy(((TVP*)((char*)(((struct ClassType*)tmp->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(TVP) * i)), &tmpField, sizeof(TVP));
 		}
 
 		break;
@@ -279,7 +297,7 @@ TVP vdmClone(TVP x)
 
 
 
-bool equals(struct TypedValue* a, struct TypedValue* b)
+bool equals(TVP a, TVP b)
 {
 	if(isNumber(a)&& isNumber(b))
 	{
@@ -303,6 +321,7 @@ bool equals(struct TypedValue* a, struct TypedValue* b)
 	case VDM_INT:
 	case VDM_NAT:
 	case VDM_NAT1:
+	case VDM_TOKEN:
 	{
 		return a->value.intVal == b->value.intVal;
 	}
@@ -359,12 +378,12 @@ bool equals(struct TypedValue* a, struct TypedValue* b)
 		TVP res;
 		int numFields_a, numFields_b;
 
-		numFields_a = (*((struct TypedValue**)((char*)(((struct ClassType*)a->value.ptr)->value) + \
+		numFields_a = (*((TVP*)((char*)(((struct ClassType*)a->value.ptr)->value) + \
 				sizeof(struct VTable*) + \
 				sizeof(int) + \
 				sizeof(unsigned int))))->value.intVal;
 
-		numFields_b = (*((struct TypedValue**)((char*)(((struct ClassType*)b->value.ptr)->value) + \
+		numFields_b = (*((TVP*)((char*)(((struct ClassType*)b->value.ptr)->value) + \
 				sizeof(struct VTable*) + \
 				sizeof(int) + \
 				sizeof(unsigned int))))->value.intVal;
@@ -376,8 +395,8 @@ bool equals(struct TypedValue* a, struct TypedValue* b)
 
 		for(i = 0; i < numFields_a; i++)
 		{
-			res = vdmEquals(*((struct TypedValue**)((char*)(((struct ClassType*)a->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(struct TypedValue*) + sizeof(struct TypedValue*) * i)), \
-					*((struct TypedValue**)((char*)(((struct ClassType*)b->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(struct TypedValue*) + sizeof(struct TypedValue*) * i)));
+			res = vdmEquals(*((TVP*)((char*)(((struct ClassType*)a->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(TVP) + sizeof(TVP) * i)), \
+					*((TVP*)((char*)(((struct ClassType*)b->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(TVP) + sizeof(TVP) * i)));
 			if(!res->value.boolVal)
 			{
 				vdmFree(res);
@@ -426,7 +445,7 @@ bool collectionEqual(TVP col1,TVP col2)
 }
 
 
-void vdmFree_GCInternal(struct TypedValue* ptr)
+void vdmFree_GCInternal(TVP ptr)
 {
 	if (ptr == NULL)
 		return;
@@ -441,6 +460,7 @@ void vdmFree_GCInternal(struct TypedValue* ptr)
 	case VDM_REAL:
 	case VDM_RAT:
 	case VDM_QUOTE:
+	case VDM_TOKEN:
 	{
 		break;
 	}
@@ -510,7 +530,7 @@ void vdmFree_GCInternal(struct TypedValue* ptr)
 		int i;
 		int numFields;
 
-		numFields = (*((struct TypedValue**)((char*)(((struct ClassType*)ptr->value.ptr)->value) + \
+		numFields = (*((TVP*)((char*)(((struct ClassType*)ptr->value.ptr)->value) + \
 				sizeof(struct VTable*) + \
 				sizeof(int) + \
 				sizeof(unsigned int))))->value.intVal;
@@ -518,7 +538,7 @@ void vdmFree_GCInternal(struct TypedValue* ptr)
 		//We include the numFields field here, since it is just a TVP.
 		for(i = 0; i <= numFields; i++)
 		{
-			vdmFree_GCInternal(*((struct TypedValue**)((char*)(((struct ClassType*)ptr->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(struct TypedValue*) * i)));
+			vdmFree_GCInternal(*((TVP*)((char*)(((struct ClassType*)ptr->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(TVP) * i)));
 		}
 
 		//Free the virtual function table.
@@ -547,7 +567,7 @@ void vdmFree_GCInternal(struct TypedValue* ptr)
 
 
 
-void vdmFree(struct TypedValue* ptr)
+void vdmFree(TVP ptr)
 {
 	TVP *tmp;
 
@@ -564,6 +584,7 @@ void vdmFree(struct TypedValue* ptr)
 	case VDM_REAL:
 	case VDM_RAT:
 	case VDM_QUOTE:
+	case VDM_TOKEN:
 	{
 		break;
 	}
@@ -575,36 +596,36 @@ void vdmFree(struct TypedValue* ptr)
 #ifndef NO_PRODUCTS
 	case VDM_PRODUCT:
 	{
-			UNWRAP_COLLECTION(cptr, ptr);
-			for (int i = 0; i < cptr->size; i++)
+		UNWRAP_COLLECTION(cptr, ptr);
+		for (int i = 0; i < cptr->size; i++)
+		{
+			if (cptr->value[i] != NULL)
 			{
-				if (cptr->value[i] != NULL)
-				{
-					vdmFree(cptr->value[i]);
-				}
+				vdmFree(cptr->value[i]);
 			}
-			free(cptr->value);
-			free(cptr);
-			ptr->value.ptr = NULL;
-			break;
 		}
+		free(cptr->value);
+		free(cptr);
+		ptr->value.ptr = NULL;
+		break;
+	}
 #endif
 #ifndef NO_SEQS
 	case VDM_SEQ:
 	{
-			UNWRAP_COLLECTION(cptr, ptr);
-			for (int i = 0; i < cptr->size; i++)
+		UNWRAP_COLLECTION(cptr, ptr);
+		for (int i = 0; i < cptr->size; i++)
+		{
+			if (cptr->value[i] != NULL)
 			{
-				if (cptr->value[i] != NULL)
-				{
-					vdmFree(cptr->value[i]);
-				}
+				vdmFree(cptr->value[i]);
 			}
-			free(cptr->value);
-			free(cptr);
-			ptr->value.ptr = NULL;
-			break;
 		}
+		free(cptr->value);
+		free(cptr);
+		ptr->value.ptr = NULL;
+		break;
+	}
 #endif
 #ifndef NO_SETS
 	case VDM_SET:
@@ -633,7 +654,7 @@ void vdmFree(struct TypedValue* ptr)
 		int i;
 		int numFields;
 
-		numFields = (*((struct TypedValue**)((char*)(((struct ClassType*)ptr->value.ptr)->value) + \
+		numFields = (*((TVP*)((char*)(((struct ClassType*)ptr->value.ptr)->value) + \
 				sizeof(struct VTable*) + \
 				sizeof(int) + \
 				sizeof(unsigned int))))->value.intVal;
@@ -641,7 +662,7 @@ void vdmFree(struct TypedValue* ptr)
 		//We include the numFields field here, since it is just a TVP.
 		for(i = 0; i <= numFields; i++)
 		{
-			vdmFree(*((struct TypedValue**)((char*)(((struct ClassType*)ptr->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(struct TypedValue*) * i)));
+			vdmFree(*((TVP*)((char*)(((struct ClassType*)ptr->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(TVP) * i)));
 		}
 
 		//Free the virtual function table.
@@ -674,12 +695,12 @@ void vdmFree(struct TypedValue* ptr)
 	}
 }
 
-TVP vdmEquals(struct TypedValue* a, struct TypedValue* b)
+TVP vdmEquals(TVP a, TVP b)
 {	return newBool(equals(a,b));}
 
-TVP vdmEqualsGC(struct TypedValue* a, struct TypedValue* b, TVP *from)
+TVP vdmEqualsGC(TVP a, TVP b, TVP *from)
 {	return newBoolGC(equals(a,b), from);}
 
-TVP vdmInEquals(struct TypedValue* a, struct TypedValue* b)
+TVP vdmInEquals(TVP a, TVP b)
 {	return newBool(!equals(a,b));}
 
