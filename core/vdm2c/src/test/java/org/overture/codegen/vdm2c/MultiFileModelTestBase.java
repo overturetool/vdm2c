@@ -26,7 +26,7 @@ public class MultiFileModelTestBase extends NativeTestBase {
 			@Override
 			public boolean accept(File dir, String name)
 			{
-				return new File(dir, name).isDirectory() || name.endsWith(".vdmrt");
+				return new File(dir, name).isDirectory() || name.endsWith(".vdmrt") || name.endsWith(".vdmpp");
 			}
 		});
 		
