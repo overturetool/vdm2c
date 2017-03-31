@@ -30,6 +30,7 @@
 #include "Vdm.h"
 #include "TypedValue.h"
 #include "VdmClass.h"
+#include "VdmGC.h"
 
 #define ASSERT_CHECK_BOOL(s) assert(s->type == VDM_BOOL && "Value is not a boolean")
 #define ASSERT_CHECK_NUMERIC(s) assert((s->type == VDM_INT||s->type == VDM_NAT||s->type == VDM_NAT1||s->type == VDM_REAL||s->type == VDM_RAT) && "Value is not numeric")
@@ -112,6 +113,16 @@ TVP newCollection(size_t size, vdmtype type)
 			{ .ptr = ptr });
 }
 
+TVP newCollectionGC(size_t size, vdmtype type, TVP *from)
+{
+	struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
+	ptr->size = size;
+	ptr->value = (TVP*) calloc(size, sizeof(TVP)); //I know this is slower than malloc but better for products
+	return newTypeValueGC(type, (TypedValueType
+	)
+			{ .ptr = ptr }, from);
+}
+
 TVP newCollectionWithValues(size_t size, vdmtype type, TVP* elements)
 {
 	TVP product = newCollection(size,type);
@@ -121,6 +132,19 @@ TVP newCollectionWithValues(size_t size, vdmtype type, TVP* elements)
 	{
 		col->value[i]= vdmClone(elements[i]);
 	}
+	return product;
+}
+
+TVP newCollectionWithValuesGC(size_t size, vdmtype type, TVP* elements, TVP *from)
+{
+	TVP product = newCollectionGC(size, type, from);
+	UNWRAP_COLLECTION(col, product);
+
+	for (int i = 0; i < size; i++)
+	{
+		col->value[i]= vdmClone(elements[i]);
+	}
+
 	return product;
 }
 //#endif /* ifndef WITH_GC */

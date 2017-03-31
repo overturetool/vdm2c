@@ -26,6 +26,7 @@ extern "C"
 {
 #include "Vdm.h"
 #include "VdmSeq.h"
+#include "VdmGC.h"
 #include <stdio.h>
 }
 
@@ -49,6 +50,22 @@ TVP newSequence(int size, int* arr)
 	return seq;
 }
 
+//This GC test is commented out for now until GC tests can be added for the entire runtime library.
+//In the meantime we rely on the integration tests from the generator proper.
+/*
+TEST(Expression_Seq, seqGC)
+{
+	vdm_gc_init();
+
+	TVP seq1 = newSeqVarGC(2, &seq1, newIntGC(1, NULL), newIntGC(2, NULL));
+	TVP seq2 = newSeqVar(2, newInt(1), newInt(2));
+	TVP res = vdmSeqEqual(seq1, seq2);
+	EXPECT_TRUE(res->value.boolVal);
+
+	vdm_gc();
+	vdm_gc_shutdown();
+}
+*/
 
 TEST(Expression_Seq, seqGrow)
 {

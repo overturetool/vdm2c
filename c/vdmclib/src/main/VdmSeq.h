@@ -49,6 +49,7 @@ TVP newSeqWithValues(size_t size,TVP* elements);
  * Create new seq from variadic list of elements
  */
 TVP newSeqVar(size_t size,...);
+TVP newSeqVarGC(size_t size, TVP *from, ...);
 TVP newSeqVarToGrow(size_t size, size_t expected_size, ...);
 
 void vdmSeqGrow(TVP seq, TVP element);
@@ -56,6 +57,11 @@ void vdmSeqFit(TVP seq);
 TVP vdmSeqHd(TVP seq);
 TVP vdmSeqTl(TVP seq);
 TVP vdmSeqLen(TVP seq);
+TVP vdmSeqHdGC(TVP seq, TVP *from);
+TVP vdmSeqLenGC(TVP seq, TVP *from);
+TVP vdmSeqIndexGC(TVP seq, TVP indexVal, TVP *from);
+TVP vdmSeqEqualGC(TVP seq, TVP seq2, TVP *from);
+TVP vdmSeqInEqualGC(TVP seq, TVP seq2, TVP *from);
 
 #ifndef NO_SETS
 TVP vdmSeqElems(TVP seq);

@@ -28,6 +28,7 @@
  */
 #include <stdarg.h>
 #include "VdmSeq.h"
+#include "VdmGC.h"
 #include <assert.h>
 
 #ifndef NO_SEQS
@@ -76,6 +77,23 @@ TVP newSeqVar(size_t size, ...)
 	va_end(ap);
 
 	return newCollectionWithValues(size, VDM_SEQ, elements);
+}
+
+TVP newSeqVarGC(size_t size, TVP *from, ...)
+{
+	TVP elements[size];
+
+	va_list ap;
+	va_start(ap, from);
+
+	for (int i = 0; i < size; i++)
+	{
+		TVP arg = va_arg(ap, TVP);
+		elements[i] = arg;
+	}
+	va_end(ap);
+
+	return newCollectionWithValuesGC(size, VDM_SEQ, elements, from);
 }
 
 //Just like newSeqVar, but with memory preallocated to an expected
@@ -142,6 +160,14 @@ TVP vdmSeqHd(TVP seq)
 	UNWRAP_COLLECTION(col,seq);
 	return vdmClone(col->value[0]);
 }
+
+TVP vdmSeqHdGC(TVP seq, TVP *from)
+{
+	ASSERT_CHECK(seq);
+	UNWRAP_COLLECTION(col,seq);
+	return vdmCloneGC(col->value[0], from);
+}
+
 TVP vdmSeqTl(TVP seq)
 {
 	ASSERT_CHECK(seq);
@@ -159,11 +185,19 @@ TVP vdmSeqTl(TVP seq)
 
 	return tailVal;
 }
+
 TVP vdmSeqLen(TVP seq)
 {
 	ASSERT_CHECK(seq);
 	UNWRAP_COLLECTION(col,seq);
 	return newInt(col->size);
+}
+
+TVP vdmSeqLenGC(TVP seq, TVP *from)
+{
+	ASSERT_CHECK(seq);
+	UNWRAP_COLLECTION(col,seq);
+	return newIntGC(col->size, from);
 }
 
 #ifndef NO_SETS
@@ -243,7 +277,7 @@ TVP vdmSeqReverse(TVP seq)
 
 //TVP seqMod(TVP seq,TVP seq);
 
-TVP vdmSeqIndex(TVP seq,TVP indexVal) //VDM uses 1 based index
+TVP vdmSeqIndex(TVP seq, TVP indexVal) //VDM uses 1 based index
 {
 	ASSERT_CHECK(seq);
 	assert((indexVal->type == VDM_INT||indexVal->type == VDM_NAT||indexVal->type == VDM_NAT1) && "index is not a int");
@@ -254,19 +288,49 @@ TVP vdmSeqIndex(TVP seq,TVP indexVal) //VDM uses 1 based index
 	assert(index - 1 >= 0 && index - 1 < col->size && "invalid index");
 	return vdmClone(col->value[index-1]);
 }
-TVP vdmSeqEqual(TVP seq,TVP seq2)
+
+TVP vdmSeqIndexGC(TVP seq, TVP indexVal, TVP *from) //VDM uses 1 based index
+{
+	ASSERT_CHECK(seq);
+	assert((indexVal->type == VDM_INT||indexVal->type == VDM_NAT||indexVal->type == VDM_NAT1) && "index is not a int");
+
+	int index = indexVal->value.intVal;
+	UNWRAP_COLLECTION(col,seq);
+
+	assert(index - 1 >= 0 && index - 1 < col->size && "invalid index");
+	return vdmCloneGC(col->value[index-1], from);
+}
+
+TVP vdmSeqEqual(TVP seq, TVP seq2)
 {
 	ASSERT_CHECK(seq);
 	ASSERT_CHECK(seq2);
 
 	return newBool(collectionEqual(seq,seq2));
 }
-TVP vdmSeqInEqual(TVP seq,TVP seq2)
+
+TVP vdmSeqEqualGC(TVP seq, TVP seq2, TVP *from)
+{
+	ASSERT_CHECK(seq);
+	ASSERT_CHECK(seq2);
+
+	return newBoolGC(collectionEqual(seq,seq2), from);
+}
+
+TVP vdmSeqInEqual(TVP seq, TVP seq2)
 {
 	ASSERT_CHECK(seq);
 	ASSERT_CHECK(seq2);
 
 	return newBool(!collectionEqual(seq,seq2));
+}
+
+TVP vdmSeqInEqualGC(TVP seq, TVP seq2, TVP *from)
+{
+	ASSERT_CHECK(seq);
+	ASSERT_CHECK(seq2);
+
+	return newBoolGC(!collectionEqual(seq,seq2), from);
 }
 
 void vdmSeqUpdate(TVP seq, TVP indexVal, TVP newValue)

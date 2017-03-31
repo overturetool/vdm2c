@@ -172,6 +172,8 @@ TVP newToken(TVP x);
 //utils
 TVP newCollectionWithValues(size_t size, vdmtype type, TVP* elements);
 TVP newCollection(size_t size, vdmtype type);
+TVP newCollectionGC(size_t size, vdmtype type, TVP *from);
+TVP newCollectionWithValuesGC(size_t size, vdmtype type, TVP* elements, TVP *from);
 
 TVP vdmClone(TVP x);
 

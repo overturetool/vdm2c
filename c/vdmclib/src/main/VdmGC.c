@@ -253,28 +253,6 @@ TVP newTokenGC(TVP x, TVP *from)
 			{ .intVal = hashVal }, from);
 }
 
-TVP newCollectionGC(size_t size, vdmtype type)
-{
-	struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
-	ptr->size = size;
-	ptr->value = (TVP*) calloc(size, sizeof(TVP)); //I know this is slower than malloc but better for products
-	return newTypeValue(type, (TypedValueType
-	)
-			{ .ptr = ptr });
-}
-
-TVP newCollectionWithValuesGC(size_t size, vdmtype type, TVP* elements)
-{
-	TVP product = newCollection(size,type);
-	UNWRAP_COLLECTION(col,product);
-
-	for (int i = 0; i < size; i++)
-	{
-		col->value[i]= vdmClone(elements[i]);
-	}
-	return product;
-}
-
 TVP vdmCloneGC(TVP x, TVP *from)
 {
 	TVP tmp;
