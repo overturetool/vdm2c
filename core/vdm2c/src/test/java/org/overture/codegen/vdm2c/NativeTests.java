@@ -112,6 +112,14 @@ public class NativeTests extends NativeTestBase
 		generate(getPath("expressions/ExpressionQuantifiers.vdmrt"));
 		compileAndTest(getTestCppFile("quantifiers/ExpressionQuantifiers_Tests.cpp"));
 	}
+
+	@Test
+	public void ExpressionToken() throws IOException, InterruptedException,
+			CMakeGenerateException
+	{
+		generate(getPath("expressions/ExpressionToken.vdmrt"));
+		compileAndTest(getTestCppFile("token/ExpressionToken_Tests.cpp"));
+	}
 	
 	@Test
 	public void SubclassResponsibility() throws IOException, InterruptedException,
