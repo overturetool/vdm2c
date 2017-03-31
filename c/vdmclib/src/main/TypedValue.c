@@ -168,6 +168,7 @@ TVP vdmClone(TVP x)
 	case VDM_REAL:
 	case VDM_RAT:
 	case VDM_QUOTE:
+	case VDM_TOKEN:
 	{
 		//encoded as values so the initial copy line handles these
 		break;
@@ -320,6 +321,7 @@ bool equals(TVP a, TVP b)
 	case VDM_INT:
 	case VDM_NAT:
 	case VDM_NAT1:
+	case VDM_TOKEN:
 	{
 		return a->value.intVal == b->value.intVal;
 	}
@@ -458,6 +460,7 @@ void vdmFree_GCInternal(TVP ptr)
 	case VDM_REAL:
 	case VDM_RAT:
 	case VDM_QUOTE:
+	case VDM_TOKEN:
 	{
 		break;
 	}
@@ -581,6 +584,7 @@ void vdmFree(TVP ptr)
 	case VDM_REAL:
 	case VDM_RAT:
 	case VDM_QUOTE:
+	case VDM_TOKEN:
 	{
 		break;
 	}

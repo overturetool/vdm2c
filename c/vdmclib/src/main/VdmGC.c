@@ -297,6 +297,7 @@ TVP vdmCloneGC(TVP x, TVP *from)
 	case VDM_REAL:
 	case VDM_RAT:
 	case VDM_QUOTE:
+	case VDM_TOKEN:
 	{
 		//encoded as values so the initial copy line handles these
 		break;
