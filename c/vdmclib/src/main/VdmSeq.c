@@ -57,6 +57,11 @@ TVP newSeq(size_t size)
 	return newCollection(size, VDM_SEQ);
 }
 
+TVP newSeqGC(size_t size, TVP *from)
+{
+	return newCollectionGC(size, VDM_SEQ, from);
+}
+
 TVP newSeqWithValues(size_t size, TVP* elements)
 {
 	return newCollectionWithValues(size, VDM_SEQ,elements);
@@ -186,6 +191,24 @@ TVP vdmSeqTl(TVP seq)
 	return tailVal;
 }
 
+TVP vdmSeqTlGC(TVP seq, TVP *from)
+{
+	ASSERT_CHECK(seq);
+	UNWRAP_COLLECTION(col,seq);
+
+	//malloc
+	TVP tailVal = newSeqGC(col->size - 1, from);
+	UNWRAP_COLLECTION(tail,tailVal);
+
+	//copy tail list
+	for (int i = 1; i < col->size; i++)
+	{
+		tail->value[i-1] = vdmClone(col->value[i]);
+	}
+
+	return tailVal;
+}
+
 TVP vdmSeqLen(TVP seq)
 {
 	ASSERT_CHECK(seq);
@@ -256,6 +279,32 @@ TVP vdmSeqConc(TVP seq,TVP seq2)
 	return concVal;
 }
 
+TVP vdmSeqConcGC(TVP seq, TVP seq2, TVP *from)
+{
+	ASSERT_CHECK(seq);
+	ASSERT_CHECK(seq2);
+	UNWRAP_COLLECTION(col,seq);
+	UNWRAP_COLLECTION(col2,seq2);
+
+	//malloc
+	TVP concVal = newSeqGC(col->size+col2->size, from);
+	UNWRAP_COLLECTION(concSeq,concVal);
+
+	//copy  list
+	for (int i = 0; i < col->size; i++)
+	{
+		concSeq->value[i] = vdmClone(col->value[i]);
+	}
+
+	int offset = col->size;
+	for (int i = 0; i < col2->size; i++)
+	{
+		concSeq->value[i+offset] = vdmClone(col2->value[i]);
+	}
+
+	return concVal;
+}
+
 TVP vdmSeqReverse(TVP seq)
 {
 	ASSERT_CHECK(seq);
@@ -263,6 +312,25 @@ TVP vdmSeqReverse(TVP seq)
 
 	//malloc
 	TVP elemsVal = newSeq(col->size);
+	UNWRAP_COLLECTION(elems,elemsVal);
+
+	int offset = col->size-1;
+	//copy  list
+	for (int i = 0; i < col->size; i++)
+	{
+		elems->value[i] = vdmClone(col->value[offset - i]);
+	}
+
+	return elemsVal;
+}
+
+TVP vdmSeqReverseGC(TVP seq, TVP *from)
+{
+	ASSERT_CHECK(seq);
+	UNWRAP_COLLECTION(col,seq);
+
+	//malloc
+	TVP elemsVal = newSeqGC(col->size, from);
 	UNWRAP_COLLECTION(elems,elemsVal);
 
 	int offset = col->size-1;

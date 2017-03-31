@@ -41,6 +41,7 @@
  * New empty sequence
  */
 TVP newSeq(size_t size);
+TVP newSeqGC(size_t size, TVP *from);
 /*
  * New sequence from array of elements
  */
@@ -56,9 +57,13 @@ void vdmSeqGrow(TVP seq, TVP element);
 void vdmSeqFit(TVP seq);
 TVP vdmSeqHd(TVP seq);
 TVP vdmSeqTl(TVP seq);
+TVP vdmSeqTlGC(TVP seq, TVP *from);
 TVP vdmSeqLen(TVP seq);
+TVP vdmSeqLenGC(TVP seq, TVP *from);
 TVP vdmSeqHdGC(TVP seq, TVP *from);
 TVP vdmSeqLenGC(TVP seq, TVP *from);
+TVP vdmSeqConcGC(TVP seq, TVP seq2, TVP *from);
+TVP vdmSeqReverseGC(TVP seq, TVP *from);
 TVP vdmSeqIndexGC(TVP seq, TVP indexVal, TVP *from);
 TVP vdmSeqEqualGC(TVP seq, TVP seq2, TVP *from);
 TVP vdmSeqInEqualGC(TVP seq, TVP seq2, TVP *from);
