@@ -23,6 +23,7 @@ import org.overture.codegen.utils.GeneralUtils;
 import org.overture.codegen.utils.GeneratedData;
 import org.overture.codegen.utils.GeneratedModule;
 import org.overture.codegen.vdm2c.sourceformat.ISourceFileFormatter;
+import org.overture.config.Release;
 import org.overture.config.Settings;
 import org.overture.typechecker.util.TypeCheckerUtil;
 import org.overture.typechecker.util.TypeCheckerUtil.TypeCheckResult;
@@ -33,7 +34,7 @@ public class CGenMain
 	
 	public static void main(String[] args)
 	{
-		Settings.dialect = Dialect.VDM_RT;
+		Settings.release = Release.VDM_10;
 		
 		LogManager.getRootLogger().setLevel(Level.ERROR);
 		
@@ -127,7 +128,7 @@ public class CGenMain
 			
 			if(filterFiles == null || filterFiles.isEmpty())
 			{
-				usage(options, sourceOpt, "No VDM-RT source files found in " + path);
+				usage(options, sourceOpt, "No VDM++/VDM-RT source files found in " + path);
 			}
 			
 			files.addAll(filterFiles);
@@ -154,14 +155,20 @@ public class CGenMain
 		for (String s : remainingArguments)
 		{
 			File f = new File(s);
-			if (f.exists() && f.isFile())
+			if (f.exists() && f.isFile() && (isPpFile(f) || isRtFile(f)))
 			{
 				files.add(f);
 			} else
 			{
-				error("Not a file: " + s);
+				error("Not a VDM++/VDM-RT file: " + s);
 				return;
 			}
+		}
+		
+		if (!files.isEmpty() && isPpFile(files.get(0))) {
+			Settings.dialect = Dialect.VDM_PP;
+		} else {
+			Settings.dialect = Dialect.VDM_RT;
 		}
 
 		try
@@ -267,7 +274,7 @@ public class CGenMain
 
 		for (File f : files)
 		{
-			if (isRtFile(f))
+			if (isPpFile(f) || isRtFile(f))
 			{
 				filtered.add(f);
 			}
@@ -279,6 +286,11 @@ public class CGenMain
 	private static boolean isRtFile(File f)
 	{
 		return f.getName().endsWith(".vdmrt") || f.getName().endsWith(".vrt");
+	}
+	
+	private static boolean isPpFile(File f)
+	{
+		return f.getName().endsWith(".vdmpp") || f.getName().endsWith(".vpp");
 	}
 
 	private static void usage(Options options, Option opt, String string)
