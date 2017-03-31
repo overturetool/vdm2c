@@ -71,7 +71,7 @@ guint vdm_typedvalue_hash(gconstpointer v)
 		//
 		//			//copy (size)
 		//			*ptr = *cptr;
-		//			ptr->value = (struct TypedValue**) malloc(sizeof(struct TypedValue) * ptr->size);
+		//			ptr->value = (TVP*) malloc(sizeof(struct TypedValue) * ptr->size);
 		//
 		//			for (int i = 0; i < cptr->size; i++)
 		//			{
@@ -115,7 +115,7 @@ void vdm_g_free(gpointer mem)
 
 
 
-struct TypedValue* newMap()
+TVP newMap()
 {
 	struct Map* ptr = (struct Map*) malloc(sizeof(struct Map));
 	ptr->table = g_hash_table_new_full(vdm_typedvalue_hash, vdm_typedvalue_equal, vdm_g_free, vdm_g_free);

@@ -74,7 +74,7 @@ struct Map
 hashtable_t *ht_create( int size );
 
 
-struct TypedValue* newMap();
+TVP newMap();
 
 //util method for adding maplets
 void vdmMapAdd(TVP map,TVP key, TVP value);

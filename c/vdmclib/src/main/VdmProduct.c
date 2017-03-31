@@ -35,18 +35,18 @@
 #define ASSERT_CHECK(s) assert(s->type == VDM_PRODUCT && "Value is not a product")
 
 
-struct TypedValue* newProduct(size_t size)
+TVP newProduct(size_t size)
 {
 	return newCollection(size, VDM_PRODUCT);
 }
 
-struct TypedValue* newProductWithValues(size_t size,TVP* elements)
+TVP newProductWithValues(size_t size,TVP* elements)
 {
 	return newCollectionWithValues(size, VDM_PRODUCT, elements);
 }
 
 
-struct TypedValue* newProductVar(size_t size, ...)
+TVP newProductVar(size_t size, ...)
 {
 	TVP elements[size];
 

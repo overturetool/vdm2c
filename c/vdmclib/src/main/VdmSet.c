@@ -42,7 +42,7 @@
 
 //Utility functions.
 //------------------------------------------------
-static void vdmSetAdd(struct TypedValue** value, int* index, TVP newValue)
+static void vdmSetAdd(TVP* value, int* index, TVP newValue)
 {
 	bool found = false;
 
@@ -65,11 +65,11 @@ static void vdmSetAdd(struct TypedValue** value, int* index, TVP newValue)
 
 
 
-struct TypedValue* newSetWithValues(size_t size, TVP* elements)
+TVP newSetWithValues(size_t size, TVP* elements)
 {
 	int count = 0;
 	int bufsize = DEFAULT_SET_COMP_BUFFER;
-	struct TypedValue** value = (struct TypedValue**)calloc(bufsize, sizeof(struct TypedValue*));
+	TVP* value = (TVP*)calloc(bufsize, sizeof(TVP));
 
 	for (int i = 0; i < size; i++)
 	{
@@ -79,7 +79,7 @@ struct TypedValue* newSetWithValues(size_t size, TVP* elements)
 		{
 			//buffer too small add memory chunk
 			bufsize += DEFAULT_SET_COMP_BUFFER_STEPSIZE;
-			value = (struct TypedValue**)realloc(value, bufsize * sizeof(struct TypedValue*));
+			value = (TVP*)realloc(value, bufsize * sizeof(TVP));
 		}
 		vdmSetAdd(value, &count,v);
 	}
@@ -96,7 +96,7 @@ struct TypedValue* newSetWithValues(size_t size, TVP* elements)
 
 
 
-struct TypedValue* newSetVar(size_t size, ...)
+TVP newSetVar(size_t size, ...)
 {
 
 	va_list ap;
@@ -105,7 +105,7 @@ struct TypedValue* newSetVar(size_t size, ...)
 	int count = 0;
 
 	int bufsize = DEFAULT_SET_COMP_BUFFER;
-	struct TypedValue** value = (struct TypedValue**) calloc(bufsize, sizeof(struct TypedValue*));
+	TVP* value = (TVP*) calloc(bufsize, sizeof(TVP));
 
 	for (int i = 0; i < size; i++)
 	{
@@ -119,7 +119,7 @@ struct TypedValue* newSetVar(size_t size, ...)
 		{
 			//buffer too small add memory chunk
 			bufsize += DEFAULT_SET_COMP_BUFFER_STEPSIZE;
-			value = (struct TypedValue**)realloc(value,bufsize * sizeof(struct TypedValue*));
+			value = (TVP*)realloc(value,bufsize * sizeof(TVP));
 		}
 		vdmSetAdd(value,&count,v);
 	}
@@ -134,7 +134,7 @@ struct TypedValue* newSetVar(size_t size, ...)
 
 //Just like newSetVar, but with memory preallocated to an expected
 //result set size.
-struct TypedValue* newSetVarToGrow(size_t size, size_t expected_size, ...)
+TVP newSetVarToGrow(size_t size, size_t expected_size, ...)
 {
 	va_list ap;
 	va_start(ap, expected_size);
@@ -142,7 +142,7 @@ struct TypedValue* newSetVarToGrow(size_t size, size_t expected_size, ...)
 	int count = 0;
 
 	int bufsize = expected_size;  //DEFAULT_SET_COMP_BUFFER;
-	struct TypedValue** value = (struct TypedValue**) calloc(bufsize, sizeof(struct TypedValue*));
+	TVP* value = (TVP*) calloc(bufsize, sizeof(TVP));
 
 	for (int i = 0; i < size; i++)
 	{
@@ -155,7 +155,7 @@ struct TypedValue* newSetVarToGrow(size_t size, size_t expected_size, ...)
 		{
 			//buffer too small add memory chunk
 			bufsize += DEFAULT_SET_COMP_BUFFER_STEPSIZE;
-			value = (struct TypedValue**)realloc(value, bufsize * sizeof(struct TypedValue*));
+			value = (TVP*)realloc(value, bufsize * sizeof(TVP));
 		}
 		vdmSetAdd(value,&count,v);
 	}
@@ -180,7 +180,7 @@ void vdmSetGrow(TVP set, TVP element)
 	{
 		//buffer too small add memory chunk
 		bufsize += DEFAULT_SET_COMP_BUFFER_STEPSIZE;
-		col->value = (struct TypedValue**)realloc(col->value, bufsize * sizeof(struct TypedValue*));
+		col->value = (TVP*)realloc(col->value, bufsize * sizeof(TVP));
 	}
 	vdmSetAdd(col->value, &(col->size), element);
 }
@@ -192,14 +192,14 @@ void vdmSetFit(TVP set)
 	UNWRAP_COLLECTION(col, set);
 
 	//Assumes that more memory is allocated in the col->value array than there are elements.
-	col->value = (struct TypedValue**)realloc(col->value, col->size * sizeof(struct TypedValue*));
+	col->value = (TVP*)realloc(col->value, col->size * sizeof(TVP));
 }
 
 
 
 TVP vdmSetEnumerateSetOfInts(int lower, int upper)
 {
-	struct TypedValue** theset;
+	TVP* theset;
 	int count;
 
 	//Wrong parameter types.
@@ -224,7 +224,7 @@ TVP vdmSetEnumerateSetOfInts(int lower, int upper)
 	}
 
 	//The common case.
-	theset = (struct TypedValue**)calloc(upper - lower + 1, sizeof(struct TypedValue*));
+	theset = (TVP*)calloc(upper - lower + 1, sizeof(TVP));
 	count = 0;
 
 	for (int i = lower; i <= upper; i++)

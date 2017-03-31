@@ -71,6 +71,7 @@ typedef enum
 #ifndef NO_RECORDS
 	VDM_RECORD,
 #endif
+	VDM_TOKEN,
 	VDM_CLASS
 } vdmtype;
 
@@ -108,7 +109,7 @@ struct TypedValue
 
 struct Collection
 {
-	struct TypedValue** value;
+	TVP* value;
 	int size;
 };
 
@@ -151,15 +152,17 @@ struct OptionalType
 	struct TypedValue value;
 };
 
-struct TypedValue* newTypeValue(vdmtype type, TypedValueType value);
+TVP newTypeValue(vdmtype type, TypedValueType value);
 
 
 // Basic - these should inline
-struct TypedValue* newInt(int x);
-struct TypedValue* newBool(bool x);
-struct TypedValue* newReal(double x);
-struct TypedValue* newChar(char x);
-struct TypedValue* newQuote(unsigned int x);
+TVP newInt(int x);
+TVP newBool(bool x);
+TVP newReal(double x);
+TVP newChar(char x);
+TVP newQuote(unsigned int x);
+TVP newToken(TVP x);
+
 
 
 
@@ -167,19 +170,19 @@ struct TypedValue* newQuote(unsigned int x);
 
 
 //utils
-struct TypedValue* newCollectionWithValues(size_t size, vdmtype type, TVP* elements);
-struct TypedValue* newCollection(size_t size, vdmtype type);
+TVP newCollectionWithValues(size_t size, vdmtype type, TVP* elements);
+TVP newCollection(size_t size, vdmtype type);
 
-struct TypedValue* vdmClone(struct TypedValue* x);
+TVP vdmClone(TVP x);
 
-bool equals(struct TypedValue* a, struct TypedValue* b);
-TVP vdmEquals(struct TypedValue* a, struct TypedValue* b);
-TVP vdmInEquals(struct TypedValue* a, struct TypedValue* b);
+bool equals(TVP a, TVP b);
+TVP vdmEquals(TVP a, TVP b);
+TVP vdmInEquals(TVP a, TVP b);
 bool collectionEqual(TVP col1,TVP col2);
 
-void vdmFree(struct TypedValue* ptr);
+void vdmFree(TVP ptr);
 
-extern struct TypedValue* newSetVar(size_t size,...);
+extern TVP newSetVar(size_t size,...);
 
 #ifndef NO_MAPS
 extern TVP vdmMapEquals(TVP map1, TVP map2);

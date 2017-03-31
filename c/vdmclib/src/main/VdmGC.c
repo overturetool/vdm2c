@@ -3,7 +3,7 @@
 #include "VdmClass.h"
 
 
-extern void vdmFree_GCInternal(struct TypedValue* ptr);
+extern void vdmFree_GCInternal(TVP ptr);
 
 #define ASSERT_CHECK_RECORD(s) assert(s->type == VDM_RECORD && "Value is not a record")
 
@@ -190,9 +190,9 @@ void vdm_gc()
 
 //#ifdef WITH_GC
 //===============  Garbage collected versions  ==============
-struct TypedValue* newTypeValueGC(vdmtype type, TypedValueType value, TVP *ref_from)
+TVP newTypeValueGC(vdmtype type, TypedValueType value, TVP *ref_from)
 {
-	struct TypedValue* ptr = (struct TypedValue*) malloc(sizeof(struct TypedValue));
+	TVP ptr = (TVP) malloc(sizeof(struct TypedValue));
 	ptr->type = type;
 	ptr->value = value;
 	add_allocd_mem_node(ptr, ref_from);
@@ -201,49 +201,69 @@ struct TypedValue* newTypeValueGC(vdmtype type, TypedValueType value, TVP *ref_f
 }
 
 /// Basic
-struct TypedValue* newIntGC(int x, TVP *from)
+TVP newIntGC(int x, TVP *from)
 {
 	return newTypeValueGC(VDM_INT, (TypedValueType
 	)
 			{ .intVal = x }, from);
 }
 
-struct TypedValue* newBoolGC(bool x, TVP *from)
+TVP newBoolGC(bool x, TVP *from)
 {
 	return newTypeValueGC(VDM_BOOL, (TypedValueType
 	)
 			{ .boolVal = x }, from);
 }
-struct TypedValue* newRealGC(double x, TVP *from)
+
+TVP newRealGC(double x, TVP *from)
 {
 	return newTypeValueGC(VDM_REAL, (TypedValueType
 	)
 			{ .doubleVal = x }, from);
 }
-struct TypedValue* newCharGC(char x, TVP *from)
+
+TVP newCharGC(char x, TVP *from)
 {
 	return newTypeValueGC(VDM_CHAR, (TypedValueType
 	)
 			{ .charVal = x }, from);
 }
-struct TypedValue* newQuoteGC(unsigned int x, TVP *from)
+
+TVP newQuoteGC(unsigned int x, TVP *from)
 {
 	return newTypeValueGC(VDM_QUOTE, (TypedValueType
 	)
 			{ .quoteVal = x }, from);
 }
 
-struct TypedValue* newCollectionGC(size_t size, vdmtype type)
+TVP newTokenGC(TVP x, TVP *from)
+{
+	char *str = unpackString(x);
+	char *strTmp = str;
+	int hashVal = 5381;
+	int c;
+
+	while (c = *str++)
+		hashVal = ((hashVal << 2) + hashVal) + c;
+
+	free(strTmp);
+
+	return newTypeValueGC(VDM_TOKEN, (TypedValueType
+	)
+			{ .intVal = hashVal }, from);
+}
+
+TVP newCollectionGC(size_t size, vdmtype type)
 {
 	struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
 	ptr->size = size;
-	ptr->value = (struct TypedValue**) calloc(size, sizeof(struct TypedValue*)); //I know this is slower than malloc but better for products
+	ptr->value = (TVP*) calloc(size, sizeof(TVP)); //I know this is slower than malloc but better for products
 	return newTypeValue(type, (TypedValueType
 	)
 			{ .ptr = ptr });
 }
 
-struct TypedValue* newCollectionWithValuesGC(size_t size, vdmtype type, TVP* elements)
+TVP newCollectionWithValuesGC(size_t size, vdmtype type, TVP* elements)
 {
 	TVP product = newCollection(size,type);
 	UNWRAP_COLLECTION(col,product);
@@ -277,6 +297,7 @@ TVP vdmCloneGC(TVP x, TVP *from)
 	case VDM_REAL:
 	case VDM_RAT:
 	case VDM_QUOTE:
+	case VDM_TOKEN:
 	{
 		//encoded as values so the initial copy line handles these
 		break;
@@ -295,7 +316,7 @@ TVP vdmCloneGC(TVP x, TVP *from)
 
 		//copy (size)
 		*ptr = *cptr;
-		ptr->value = (struct TypedValue**) malloc(sizeof(struct TypedValue) * ptr->size);
+		ptr->value = (TVP*) malloc(sizeof(TVP) * ptr->size);
 
 		for (int i = 0; i < cptr->size; i++)
 		{
@@ -315,7 +336,7 @@ TVP vdmCloneGC(TVP x, TVP *from)
 
 		//copy (size)
 		*ptr = *cptr;
-		ptr->value = (struct TypedValue**) malloc(sizeof(struct TypedValue) * ptr->size);
+		ptr->value = (TVP*) malloc(sizeof(TVP) * ptr->size);
 
 		for (int i = 0; i < cptr->size; i++)
 		{
@@ -335,7 +356,7 @@ TVP vdmCloneGC(TVP x, TVP *from)
 
 		//copy (size)
 		*ptr = *cptr;
-		ptr->value = (struct TypedValue**) malloc(sizeof(struct TypedValue) * ptr->size);
+		ptr->value = (TVP*) malloc(sizeof(TVP) * ptr->size);
 
 		for (int i = 0; i < cptr->size; i++)
 		{
@@ -368,22 +389,22 @@ TVP vdmCloneGC(TVP x, TVP *from)
 
 		//Generic way of accessing the number-of-fields field.  The name of the record type is
 		//hard-coded into the corresponding struct name.
-		numFields = (*((struct TypedValue**)((char*)(((struct ClassType*)x->value.ptr)->value) + \
+		numFields = (*((TVP*)((char*)(((struct ClassType*)x->value.ptr)->value) + \
 				sizeof(struct VTable*) + \
 				sizeof(int) + \
 				sizeof(unsigned int))))->value.intVal;
 
 		//Allocate memory to be populated with the pointers pointing to the cloned fields.
-		((struct ClassType*)((tmp->value).ptr))->value = malloc(sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(struct TypedValue*) + sizeof(struct TypedValue*) * numFields);
+		((struct ClassType*)((tmp->value).ptr))->value = malloc(sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(TVP) + sizeof(TVP) * numFields);
 
 		for(i = 0; i <= numFields; i++)
 		{
 			//Start cloning the fields one by one, including the number-of-fields field,
 			//since it is just a TVP.
-			tmpField = vdmClone(*((struct TypedValue**)((char*)(((struct ClassType*)x->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(struct TypedValue*) * i)));
+			tmpField = vdmClone(*((TVP*)((char*)(((struct ClassType*)x->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(TVP) * i)));
 
 			//Only copy the address stored in tmpField so that that memory is now addressed by the current field in the struct.
-			memcpy(((struct TypedValue**)((char*)(((struct ClassType*)tmp->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(struct TypedValue*) * i)), &tmpField, sizeof(struct TypedValue*));
+			memcpy(((TVP*)((char*)(((struct ClassType*)tmp->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(TVP) * i)), &tmpField, sizeof(TVP));
 		}
 
 		break;
