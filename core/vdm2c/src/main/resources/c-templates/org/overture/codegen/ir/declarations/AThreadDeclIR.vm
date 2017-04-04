@@ -1,3 +1,0 @@
-public void run(){
-	$CFormat.format($node.getStm())
-}
