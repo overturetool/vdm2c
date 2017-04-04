@@ -198,8 +198,6 @@ public class CGenMain
 			
 			GeneratedData data = cGen.generate(filter);
 			
-			print("C code generated to folder: " + outputDir.getAbsolutePath());
-			
 			if (!data.getClasses().isEmpty()) {
 				for (GeneratedModule generatedClass : data.getClasses()) {
 
@@ -248,6 +246,9 @@ public class CGenMain
 				{
 					print("Generated feature file: " + new File(outputDir, CGen.FEATURE_FILE_NAME).getAbsolutePath());
 				}
+				
+				print("C code generated to folder: " + outputDir.getAbsolutePath());
+				
 			}
 			else
 			{
