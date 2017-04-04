@@ -283,12 +283,12 @@ public class CGenMain
 		return filtered;
 	}
 
-	private static boolean isRtFile(File f)
+	public static boolean isRtFile(File f)
 	{
 		return f.getName().endsWith(".vdmrt") || f.getName().endsWith(".vrt");
 	}
 	
-	private static boolean isPpFile(File f)
+	public static boolean isPpFile(File f)
 	{
 		return f.getName().endsWith(".vdmpp") || f.getName().endsWith(".vpp");
 	}
