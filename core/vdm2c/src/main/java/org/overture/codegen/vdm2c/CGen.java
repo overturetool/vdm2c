@@ -455,6 +455,8 @@ public class CGen extends CodeGenBase
 	private void writeFile(File output_dir, String fileName, String content)
 			throws IOException
 	{
+		output_dir.mkdirs();
+		
 		File file = new File(output_dir, fileName);
 		BufferedWriter output = new BufferedWriter(new FileWriter(file));
 
