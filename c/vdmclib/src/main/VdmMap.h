@@ -75,6 +75,7 @@ hashtable_t *ht_create( int size );
 
 
 TVP newMap();
+TVP newMapGC(TVP *from);
 
 //util method for adding maplets
 void vdmMapAdd(TVP map,TVP key, TVP value);
@@ -86,15 +87,24 @@ void vdmMapFit(TVP);
 
 //VDM map operators
 TVP vdmMapDom(TVP map);
+TVP vdmMapDomGC(TVP map, TVP *from);
 TVP vdmMapRng(TVP map);
+TVP vdmMapRngGC(TVP map, TVP *from);
 TVP vdmMapMunion(TVP map1, TVP map2);
+TVP vdmMapMunionGC(TVP map1, TVP map2, TVP *from);
 TVP vdmMapOverride(TVP map1, TVP map2);
+TVP vdmMapOverrideGC(TVP map1, TVP map2, TVP *from);
 TVP vdmMapMerge(TVP set);
+TVP vdmMapMergeGC(TVP set, TVP *from);
 TVP vdmMapDomRestrictTo(TVP set,TVP map);
+TVP vdmMapDomRestrictToGC(TVP set,TVP map, TVP *from);
 TVP vdmMapDomRestrictBy(TVP set,TVP map);
+TVP vdmMapDomRestrictByGC(TVP set,TVP map, TVP *from);
 TVP vdmMapRngRestrictTo(TVP set,TVP map);
+TVP vdmMapRngRestrictToGC(TVP set,TVP map, TVP *from);
 TVP vdmMapRngRestrictBy(TVP set,TVP map);
 TVP vdmMapApply(TVP map, TVP key);
+TVP vdmMapApplyGC(TVP map, TVP key, TVP *from);
 TVP vdmMapInverse(TVP map);
 
 TVP vdmMapEquals(TVP map1, TVP map2);
