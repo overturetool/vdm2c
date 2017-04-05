@@ -1,5 +1,0 @@
-#set( $exp = $CFormat.format($node.getExp()) )
-#set( $checkedType = $node.getCheckedType() )
-#set( $typeArg = $CFormat.formatTypeArg(${checkedType}) )
-##
-Utils.is_(${exp}, ${typeArg})

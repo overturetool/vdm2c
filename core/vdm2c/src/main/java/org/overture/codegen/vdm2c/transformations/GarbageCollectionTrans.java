@@ -15,6 +15,7 @@ import org.overture.codegen.ir.expressions.AExternalExpIR;
 import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
 import org.overture.codegen.ir.patterns.AIdentifierPatternIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
+import org.overture.codegen.vdm2c.SeqTrans;
 import org.overture.codegen.vdm2c.Vdm2cTag;
 import org.overture.codegen.vdm2c.Vdm2cTag.MethodTag;
 import org.overture.codegen.vdm2c.extast.expressions.AMacroApplyExpIR;
@@ -79,6 +80,9 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 		gcNames.put(LiteralInstantiationRewriteTrans.NEW_QUOTE, "newQuoteGC");
 		gcNames.put(LiteralInstantiationRewriteTrans.NEW_TOKEN, "newTokenGC");
 		
+		// Collections
+		gcNames.put(SeqTrans.SEQ_VAR, "newSeqVarGC");
+		
 		// Copying
 		gcNames.put(ValueSemantics.VDM_CLONE, "vdmCloneGC");
 		
@@ -138,7 +142,14 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 				id.setName(val);
 				if(!(isFieldAccessor(oldName) || isSetter(oldName)))
 				{
-					args.add(consReference(node));
+					if (isSeqEnum(oldName)) {
+						// The signature of 'newSeqVarGC' is:
+						// TVP newSeqVarGC(size_t size, TVP *from, ...)
+						// Therefore, 'from' is the second argument (at index 1)
+						args.add(1, consReference(node));
+					} else {
+						args.add(consReference(node));
+					}
 				}
 			}
 		}
@@ -201,6 +212,11 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 	private boolean isSetter(String name)
 	{
 		return name.equals(CTransUtil.SET_FIELD) || name.equals(CTransUtil.SET_FIELD_PTR);
+	}
+	
+	private boolean isSeqEnum(String name)
+	{
+		return name.equals(SeqTrans.SEQ_VAR);
 	}
 	
 	private boolean insideFieldInitializer(SExpIR exp)
