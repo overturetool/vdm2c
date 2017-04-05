@@ -56,11 +56,10 @@ TVP newSeqVarToGrow(size_t size, size_t expected_size, ...);
 void vdmSeqGrow(TVP seq, TVP element);
 void vdmSeqFit(TVP seq);
 TVP vdmSeqHd(TVP seq);
+TVP vdmSeqHdGC(TVP seq, TVP *from);
 TVP vdmSeqTl(TVP seq);
 TVP vdmSeqTlGC(TVP seq, TVP *from);
 TVP vdmSeqLen(TVP seq);
-TVP vdmSeqLenGC(TVP seq, TVP *from);
-TVP vdmSeqHdGC(TVP seq, TVP *from);
 TVP vdmSeqLenGC(TVP seq, TVP *from);
 TVP vdmSeqConcGC(TVP seq, TVP seq2, TVP *from);
 TVP vdmSeqReverseGC(TVP seq, TVP *from);
@@ -70,7 +69,9 @@ TVP vdmSeqInEqualGC(TVP seq, TVP seq2, TVP *from);
 
 #ifndef NO_SETS
 TVP vdmSeqElems(TVP seq);
+TVP vdmSeqElemsGC(TVP seq, TVP *from);
 TVP vdmSeqInds(TVP seq);
+TVP vdmSeqIndsGC(TVP seq, TVP *from);
 #endif
 
 TVP vdmSeqConc(TVP seq,TVP seq2);

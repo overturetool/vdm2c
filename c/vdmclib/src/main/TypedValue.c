@@ -728,3 +728,6 @@ TVP vdmEqualsGC(TVP a, TVP b, TVP *from)
 TVP vdmInEquals(TVP a, TVP b)
 {	return newBool(!equals(a,b));}
 
+TVP vdmInEqualsGC(TVP a, TVP b, TVP *from)
+{	return newBoolGC(!equals(a,b), from);}
+

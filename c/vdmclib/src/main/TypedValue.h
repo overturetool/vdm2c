@@ -179,7 +179,9 @@ TVP vdmClone(TVP x);
 
 bool equals(TVP a, TVP b);
 TVP vdmEquals(TVP a, TVP b);
+TVP vdmEqualsGC(TVP a, TVP b, TVP *from);
 TVP vdmInEquals(TVP a, TVP b);
+TVP vdmInEqualsGC(TVP a, TVP b, TVP *from);
 bool collectionEqual(TVP col1,TVP col2);
 
 void vdmFree(TVP ptr);
