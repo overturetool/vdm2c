@@ -69,7 +69,9 @@ TVP vdmSeqInEqualGC(TVP seq, TVP seq2, TVP *from);
 
 #ifndef NO_SETS
 TVP vdmSeqElems(TVP seq);
+TVP vdmSeqElemsGC(TVP seq, TVP *from);
 TVP vdmSeqInds(TVP seq);
+TVP vdmSeqIndsGC(TVP seq, TVP *from);
 #endif
 
 TVP vdmSeqConc(TVP seq,TVP seq2);

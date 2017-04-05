@@ -234,6 +234,18 @@ TVP vdmSeqElems(TVP seq)
 	return elemsVal;
 }
 
+
+TVP vdmSeqElemsGC(TVP seq, TVP *from)
+{
+	ASSERT_CHECK(seq);
+	UNWRAP_COLLECTION(col,seq);
+
+	TVP elemsVal = newSetWithValuesGC(col->size, col->value, from);
+
+	return elemsVal;
+}
+
+
 TVP vdmSeqInds(TVP seq)
 {
 	ASSERT_CHECK(seq);
@@ -248,6 +260,25 @@ TVP vdmSeqInds(TVP seq)
 	}
 
 	TVP indsVal = newSetWithValues(col->size, value);
+
+	return indsVal;
+}
+
+
+TVP vdmSeqIndsGC(TVP seq, TVP *from)
+{
+	ASSERT_CHECK(seq);
+	UNWRAP_COLLECTION(col,seq);
+
+	TVP* value = (TVP*) calloc(col->size, sizeof(TVP));
+
+	//copy  list
+	for (int i = 0; i < col->size; i++)
+	{
+		value[i] = newInt(i+1);
+	}
+
+	TVP indsVal = newSetWithValuesGC(col->size, value, from);
 
 	return indsVal;
 }
