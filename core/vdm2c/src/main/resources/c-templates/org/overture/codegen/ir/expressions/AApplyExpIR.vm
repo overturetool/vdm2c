@@ -18,9 +18,6 @@ vdmSeqIndex(${root},${index})
 	#set( $index = $CFormat.format($node.getArgs().get(0)))
 	${root}.charAt(Utils.index($index))##
 ##
-#elseif ($CFormat.isLambda($node))
-	${root}.eval(${args})##
-##
 #else
 ${root}($args)##
 #end
