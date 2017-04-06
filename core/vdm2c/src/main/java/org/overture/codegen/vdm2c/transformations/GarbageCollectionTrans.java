@@ -87,6 +87,7 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 		// Sequence operations
 		gcNames.put(ColTrans.SEQ_TAIL, "vdmSeqTlGC");
 		gcNames.put(ColTrans.SEQ_LEN, "vdmSeqLenGC");
+		gcNames.put(ColTrans.SEQ_HEAD, "vdmSeqHdGC");
 		
 		// Copying
 		gcNames.put(ValueSemantics.VDM_CLONE, "vdmCloneGC");
