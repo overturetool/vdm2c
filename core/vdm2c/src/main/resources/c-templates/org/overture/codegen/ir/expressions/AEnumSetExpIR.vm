@@ -1,2 +1,0 @@
-#set ( $setsize = $node.getMembers().size() )
-newSetVar(${setsize}, #{if}($setsize == 0)NULL#{else}$CFormat.formatArgs($node.getMembers())#{end})
