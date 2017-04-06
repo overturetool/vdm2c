@@ -293,7 +293,7 @@ public class NameMangler
 		@Override
 		public String defaultInINode(INode node) throws AnalysisException
 		{
-			logger.error("Mangling not handled: {}", node.getClass().getName());
+			logger.debug("Mangling not handled: {}", node.getClass().getName());
 			return super.defaultInINode(node);
 		}
 

@@ -235,10 +235,37 @@ public class CGen extends CodeGenBase
 			}
 		}
 		
+		filterHeaders(genModules);
+		
 		GeneratedData data = new GeneratedData();
 		data.setClasses(genModules);
 
 		return data;
+	}
+
+	private void filterHeaders(List<GeneratedModule> genModules) {
+
+		List<GeneratedModule> headersToRemove = new LinkedList<>();
+		
+		for(GeneratedModule g : genModules)
+		{
+			if(g.getIrNode() instanceof AClassHeaderDeclIR)
+			{
+				for(GeneratedModule o : genModules)
+				{
+					if(g != o && g.getName().equals(o.getName()))
+					{
+						// 'o' must be the C source
+						if(o.hasUnsupportedIrNodes() || o.hasMergeErrors() || o.hasUnsupportedTargLangNodes())
+						{
+							headersToRemove.add(g);
+						}
+					}
+				}
+			}
+		}
+		
+		genModules.removeAll(headersToRemove);
 	}
 
 	private List<IRStatus<PIR>> ignoreVDMUnitTests(
@@ -428,6 +455,8 @@ public class CGen extends CodeGenBase
 	private void writeFile(File output_dir, String fileName, String content)
 			throws IOException
 	{
+		output_dir.mkdirs();
+		
 		File file = new File(output_dir, fileName);
 		BufferedWriter output = new BufferedWriter(new FileWriter(file));
 
