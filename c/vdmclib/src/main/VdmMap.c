@@ -554,6 +554,41 @@ TVP newMapVarToGrow(size_t size, size_t expected_size, ...)
 	return theMap;
 }
 
+//Not a very useful function, but here to support the map comprehension mechanism.
+TVP newMapVarToGrowGC(size_t size, size_t expected_size, TVP *from, ...)
+{
+	struct Map* ptr;
+	TVP key;
+	TVP value;
+	TVP theMap;
+
+	if(size == 0)
+	{
+		return newMapGC(from);
+	}
+
+	ptr = (struct Map*) malloc(sizeof(struct Map));
+	ptr->table =  ht_create(expected_size);
+	theMap = newTypeValueGC(VDM_MAP, (TypedValueType){ .ptr = ptr }, from);
+
+	va_list argList;
+	va_start(argList, expected_size);
+
+	for(int i = 0; i < size; i++)
+	{
+		key = vdmClone(va_arg(argList, TVP));
+		value = vdmClone(va_arg(argList, TVP));
+
+		vdmMapAdd(theMap, key, value);
+
+		vdmFree(key);
+		vdmFree(value);
+	}
+	va_end(argList);
+
+	return theMap;
+}
+
 //Not a very useful operation, but here to support the map comprehension mechanism.
 void vdmMapGrow(TVP theMap, TVP key, TVP val)
 {
