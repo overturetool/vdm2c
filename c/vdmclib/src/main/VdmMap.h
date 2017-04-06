@@ -44,7 +44,7 @@
 
 #ifndef NO_MAPS
 
-#define UNWRAP_MAP(var,map) struct Map* var = (struct Map*)map->value.ptr
+#define UNWRAP_MAP(var, map) struct Map* var = (struct Map*)map->value.ptr
 
 
 struct entry_s {
@@ -57,7 +57,7 @@ typedef struct entry_s entry_t;
 
 struct hashtable_s {
 	int size;
-	struct entry_s **table;
+	entry_t **chain;
 };
 
 typedef struct hashtable_s hashtable_t;
@@ -76,6 +76,7 @@ hashtable_t *ht_create( int size );
 
 TVP newMap();
 TVP newMapGC(TVP *from);
+void freeMap(struct Map *m);
 
 //util method for adding maplets
 void vdmMapAdd(TVP map,TVP key, TVP value);
@@ -103,12 +104,16 @@ TVP vdmMapDomRestrictByGC(TVP set,TVP map, TVP *from);
 TVP vdmMapRngRestrictTo(TVP set,TVP map);
 TVP vdmMapRngRestrictToGC(TVP set,TVP map, TVP *from);
 TVP vdmMapRngRestrictBy(TVP set,TVP map);
+TVP vdmMapRngRestrictByGC(TVP set,TVP map, TVP *from);
 TVP vdmMapApply(TVP map, TVP key);
 TVP vdmMapApplyGC(TVP map, TVP key, TVP *from);
 TVP vdmMapInverse(TVP map);
+TVP vdmMapInverseGC(TVP map, TVP *from);
 
 TVP vdmMapEquals(TVP map1, TVP map2);
-bool vdmMapInEquals(TVP map1, TVP map2);
+TVP vdmMapEqualsGC(TVP map1, TVP map2, TVP *from);
+TVP vdmMapInEquals(TVP map1, TVP map2);
+TVP vdmMapInEqualsGC(TVP map1, TVP map2, TVP *from);
 
 #ifdef WITH_GLIB_HASH
 guint vdm_typedvalue_hash(gconstpointer v);

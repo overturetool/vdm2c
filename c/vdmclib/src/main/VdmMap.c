@@ -227,11 +227,11 @@ hashtable_t *ht_create( int size ) {
 	}
 
 	/* Allocate pointers to the head nodes. */
-	if( ( hashtable->table = malloc( sizeof( entry_t * ) * size ) ) == NULL ) {
+	if( ( hashtable->chain = malloc( sizeof( entry_t * ) * size ) ) == NULL ) {
 		return NULL;
 	}
 	for( i = 0; i < size; i++ ) {
-		hashtable->table[i] = NULL;
+		hashtable->chain[i] = NULL;
 	}
 
 	hashtable->size = size;
@@ -294,7 +294,7 @@ void ht_set( hashtable_t *hashtable, TVP key, TVP value ) {
 
 	bin = ht_hash( hashtable, key );
 
-	next = hashtable->table[ bin ];
+	next = hashtable->chain[ bin ];
 
 	if(next != NULL && next->key != NULL)
 	{
@@ -330,9 +330,9 @@ void ht_set( hashtable_t *hashtable, TVP key, TVP value ) {
 		newpair = ht_newpair( key, value );
 
 		/* We're at the start of the linked list in this bin. */
-		if( next == hashtable->table[ bin ] ) {
+		if( next == hashtable->chain[ bin ] ) {
 			newpair->next = next;
-			hashtable->table[ bin ] = newpair;
+			hashtable->chain[ bin ] = newpair;
 
 			/* We're at the end of the linked list in this bin. */
 		} else if ( next == NULL ) {
@@ -355,7 +355,7 @@ TVP ht_get( hashtable_t *hashtable, TVP key ) {
 	bin = ht_hash( hashtable, key );
 
 	/* Step through the bin, looking for our value. */
-	pair = hashtable->table[ bin ];
+	pair = hashtable->chain[ bin ];
 
 	if(pair != NULL && pair->key != NULL)
 	{
@@ -396,6 +396,29 @@ TVP newMap()
 			{ .ptr = ptr });
 }
 
+void freeChain(entry_t *chain)
+{
+	if(chain == NULL)
+		return;
+
+	if(chain->next != NULL)
+		freeChain(chain->next);
+
+	vdmFree(chain->key);
+//	vdmFree(chain->value);
+//	free(chain);
+}
+
+void freeMap(struct Map *m)
+{
+	for(int i = 0; i < m->table->size; i++)
+	{
+		freeChain(m->table->chain[i]);
+	}
+
+//	free(m->table);
+//	free(m);
+}
 
 TVP newMapGC(TVP *from)
 {
@@ -509,7 +532,7 @@ TVP vdmMapDom(TVP map)
 
 	for(i = 0; i < m->table->size; i++)
 	{
-		currentry = (m->table->table)[i];
+		currentry = (m->table->chain)[i];
 
 		while(currentry != NULL)
 		{
@@ -525,7 +548,7 @@ TVP vdmMapDom(TVP map)
 	//Get keys.
 	for(i = 0; i < m->table->size; i++)
 	{
-		currentry = (m->table->table)[i];
+		currentry = (m->table->chain)[i];
 
 		while(currentry != NULL)
 		{
@@ -554,7 +577,7 @@ TVP vdmMapDomGC(TVP map, TVP *from)
 
 	for(i = 0; i < m->table->size; i++)
 	{
-		currentry = (m->table->table)[i];
+		currentry = (m->table->chain)[i];
 
 		while(currentry != NULL)
 		{
@@ -570,7 +593,7 @@ TVP vdmMapDomGC(TVP map, TVP *from)
 	//Get keys.
 	for(i = 0; i < m->table->size; i++)
 	{
-		currentry = (m->table->table)[i];
+		currentry = (m->table->chain)[i];
 
 		while(currentry != NULL)
 		{
@@ -600,7 +623,7 @@ TVP vdmMapRng(TVP map)
 
 	for(i = 0; i < m->table->size; i++)
 	{
-		currentry = (m->table->table)[i];
+		currentry = (m->table->chain)[i];
 
 		while(currentry != NULL)
 		{
@@ -616,7 +639,7 @@ TVP vdmMapRng(TVP map)
 	//Get keys.
 	for(i = 0; i < m->table->size; i++)
 	{
-		currentry = (m->table->table)[i];
+		currentry = (m->table->chain)[i];
 
 		while(currentry != NULL)
 		{
@@ -645,7 +668,7 @@ TVP vdmMapRngGC(TVP map, TVP *from)
 
 	for(i = 0; i < m->table->size; i++)
 	{
-		currentry = (m->table->table)[i];
+		currentry = (m->table->chain)[i];
 
 		while(currentry != NULL)
 		{
@@ -661,7 +684,7 @@ TVP vdmMapRngGC(TVP map, TVP *from)
 	//Get keys.
 	for(i = 0; i < m->table->size; i++)
 	{
-		currentry = (m->table->table)[i];
+		currentry = (m->table->chain)[i];
 
 		while(currentry != NULL)
 		{
@@ -1040,9 +1063,12 @@ TVP vdmMapRngRestrictTo(TVP set,TVP map)
 	for(int i=0; i<m->size;i++){
 		TVP key = m->value[i];
 		TVP val = vdmMapApply(map,key);
-		if(vdmSetMemberOf(set,val)->value.boolVal){
+		TVP res = vdmSetMemberOf(set,val);
+		if(res->value.boolVal)
+		{
 			vdmMapAdd(map_res,key,val);
 		}
+		vdmFree(res);
 	}
 
 	vdmFree(map_dom);
@@ -1054,7 +1080,7 @@ TVP vdmMapRngRestrictToGC(TVP set,TVP map, TVP *from)
 {
 	ASSERT_CHECK(map);
 
-	TVP map_res = newMap();
+	TVP map_res = newMapGC(from);
 
 	TVP map_dom = vdmMapDom(map);
 	UNWRAP_COLLECTION(m,map_dom);
@@ -1062,9 +1088,12 @@ TVP vdmMapRngRestrictToGC(TVP set,TVP map, TVP *from)
 	for(int i=0; i<m->size;i++){
 		TVP key = m->value[i];
 		TVP val = vdmMapApply(map,key);
-		if(vdmSetMemberOf(set,val)->value.boolVal){
+		TVP res = vdmSetMemberOf(set,val);
+		if(res->value.boolVal)
+		{
 			vdmMapAdd(map_res,key,val);
 		}
+		vdmFree(res);
 	}
 
 	vdmFree(map_dom);
@@ -1085,13 +1114,41 @@ TVP vdmMapRngRestrictBy(TVP set,TVP map)
 	for(int i=0; i<m->size;i++){
 		TVP key = m->value[i];
 		TVP val = vdmMapApply(map,key);
-		if(vdmSetNotMemberOf(set,val)->value.boolVal){
+		TVP res = vdmSetNotMemberOf(set,val);
+		if(res->value.boolVal)
+		{
 			vdmMapAdd(map_res,key,val);
 		}
+		vdmFree(res);
 	}
 
 	return map_res;
 }
+
+
+TVP vdmMapRngRestrictByGC(TVP set,TVP map, TVP *from)
+{
+	ASSERT_CHECK(map);
+
+	TVP map_res = newMapGC(from);
+
+	TVP map_dom = vdmMapDom(map);
+	UNWRAP_COLLECTION(m,map_dom);
+
+	for(int i=0; i<m->size;i++){
+		TVP key = m->value[i];
+		TVP val = vdmMapApply(map,key);
+		TVP res = vdmSetNotMemberOf(set,val);
+		if(res->value.boolVal)
+		{
+			vdmMapAdd(map_res,key,val);
+		}
+		vdmFree(res);
+	}
+
+	return map_res;
+}
+
 
 TVP vdmMapInverse(TVP map){
 
@@ -1106,10 +1163,35 @@ TVP vdmMapInverse(TVP map){
 		TVP key = m->value[i];
 		TVP val = vdmMapApply(map,key);
 		vdmMapAdd(map_res,val,key);
+		vdmFree(key);
+		vdmFree(val);
 	}
 
 	return map_res;
 }
+
+
+TVP vdmMapInverseGC(TVP map, TVP *from)
+{
+
+	ASSERT_CHECK(map);
+
+	TVP map_res = newMapGC(from);
+
+	TVP map_dom = vdmMapDom(map);
+	UNWRAP_COLLECTION(m,map_dom);
+
+	for(int i=0; i<m->size;i++){
+		TVP key = m->value[i];
+		TVP val = vdmMapApply(map,key);
+		vdmMapAdd(map_res,val,key);
+		vdmFree(key);
+		vdmFree(val);
+	}
+
+	return map_res;
+}
+
 
 TVP vdmMapEquals(TVP map1, TVP map2){
 
@@ -1192,7 +1274,91 @@ TVP vdmMapEquals(TVP map1, TVP map2){
 
 }
 
-bool vdmMapInEquals(TVP map1, TVP map2){
+
+TVP vdmMapEqualsGC(TVP map1, TVP map2, TVP *from)
+{
+
+	//Assert map
+	ASSERT_CHECK(map1);
+	ASSERT_CHECK(map2);
+
+	bool eq = true;
+
+	TVP key1;
+	TVP val1;
+	TVP key2;
+	TVP val2;
+	TVP map1_dom;
+	TVP map2_dom;
+
+	TVP map1_rng;
+	TVP map2_rng;
+
+	map1_dom = vdmMapDom(map1);
+	map2_dom = vdmMapDom(map2);
+	if(!equals(map1_dom, map2_dom))
+	{
+		eq = false;
+
+		vdmFree(map1_dom);
+		vdmFree(map2_dom);
+
+		return newBool(eq);
+	}
+
+
+	map1_rng = vdmMapRng(map1);
+	map2_rng = vdmMapRng(map2);
+	if(!equals(map1_rng, map2_rng))
+	{
+		eq = false;
+
+		vdmFree(map1_dom);
+		vdmFree(map2_dom);
+		vdmFree(map1_rng);
+		vdmFree(map2_rng);
+
+		return newBool(eq);
+	}
+
+	UNWRAP_COLLECTION(m1, map1_dom);
+
+	for (int i = 0; i < m1->size; i++)
+	{
+		key1 = m1->value[i];
+		val1 = vdmMapApply(map1, key1);
+
+		key2 = m1->value[i];
+		val2 = vdmMapApply(map2, key2);
+
+		if(!equals(val1, val2))
+		{
+			eq = false;
+
+			vdmFree(val1);
+			vdmFree(val2);
+			vdmFree(map1_dom);
+			vdmFree(map2_dom);
+			vdmFree(map1_rng);
+			vdmFree(map2_rng);
+
+			return newBool(eq);
+		}
+	}
+
+	vdmFree(val1);
+	vdmFree(val2);
+	vdmFree(map1_dom);
+	vdmFree(map2_dom);
+	vdmFree(map1_rng);
+	vdmFree(map2_rng);
+
+	return newBoolGC(eq, from);
+
+}
+
+TVP vdmMapInEquals(TVP map1, TVP map2)
+{
 
 	//Assert map
 	ASSERT_CHECK(map1);
@@ -1207,7 +1373,7 @@ bool vdmMapInEquals(TVP map1, TVP map2){
 	UNWRAP_COLLECTION(m2,map2_dom);
 
 	if(m1->size!=m2->size)
-		return true;
+		return newBool(true);
 
 	for (int i=0; i<m1->size; i++){
 		TVP key1 = m1->value[i];
@@ -1222,8 +1388,41 @@ bool vdmMapInEquals(TVP map1, TVP map2){
 		}
 	}
 
-	return not_eq;
-
+	return newBool(not_eq);
 }
 
+
+
+TVP vdmMapInEqualsGC(TVP map1, TVP map2, TVP *from)
+{
+	//Assert map
+	ASSERT_CHECK(map1);
+	ASSERT_CHECK(map2);
+
+	bool not_eq = true;
+
+	TVP map1_dom = vdmMapDom(map1);
+	UNWRAP_COLLECTION(m1,map1_dom);
+
+	TVP map2_dom = vdmMapDom(map2);
+	UNWRAP_COLLECTION(m2,map2_dom);
+
+	if(m1->size!=m2->size)
+		return newBoolGC(true, from);
+
+	for (int i=0; i<m1->size; i++){
+		TVP key1 = m1->value[i];
+		TVP val1 = vdmMapApply(map1,key1);
+
+		TVP key2 = m2->value[i];
+		TVP val2 = vdmMapApply(map2,key2);
+
+		if(equals(key1,key2) && equals(val1,val2)){
+			not_eq = false;
+			break;
+		}
+	}
+
+	return newBoolGC(not_eq, from);
+}
 #endif /* NO_MAPS */
