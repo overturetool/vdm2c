@@ -125,6 +125,16 @@ TVP newMap()
 			{ .ptr = ptr });
 }
 
+TVP newMapGC(TVP *from)
+{
+	struct Map* ptr = (struct Map*) malloc(sizeof(struct Map));
+		ptr->table = g_hash_table_new_full(vdm_typedvalue_hash, vdm_typedvalue_equal, vdm_g_free, vdm_g_free);
+
+	return newTypeValueGC(VDM_MAP, (TypedValueType
+	)
+			{ .ptr = ptr }, from);
+}
+
 void vdmMapAdd(TVP map, TVP key, TVP value)
 {
 	ASSERT_CHECK(map);
@@ -181,7 +191,32 @@ TVP vdmMapDom(TVP map)
 	//TODO: Free necessary variables
 	g_list_free(dom);
 
-	return newSetWithValues(set_size, arr);
+	return res
+}
+
+TVP vdmMapDomGC(TVP map, TVP *from)
+{
+	//Assert map
+	ASSERT_CHECK(map);
+
+	// Get map size
+	UNWRAP_MAP(m,map);
+	int set_size = g_hash_table_size(m->table);
+
+	GList* dom = g_hash_table_get_keys(m->table), *iterator = NULL;;
+
+	TVP arr[set_size];
+
+	int i;
+	for (iterator = dom, i=0; iterator; iterator = iterator->next,i++)
+		arr[i]=(TVP) iterator->data;
+
+	TVP res = newSetWithValuesGC(set_size, arr, from);
+
+	//TODO: Free necessary variables
+	g_list_free(dom);
+
+	return res
 }
 
 TVP vdmMapRng(TVP map)
@@ -209,7 +244,30 @@ TVP vdmMapRng(TVP map)
 	return newSetWithValues(set_size, arr);
 }
 
+TVP vdmMapRngGC(TVP map, TVP *from)
+{
+	//Assert map
+	ASSERT_CHECK(map);
 
+	// Get map size
+	UNWRAP_MAP(m,map);
+	int set_size = g_hash_table_size(m->table);
+
+	GList* dom = g_hash_table_get_values(m->table), *iterator = NULL;;
+
+	TVP arr[set_size];
+
+	int i;
+	for (iterator = dom, i=0; iterator; iterator = iterator->next,i++)
+		arr[i]=(TVP) iterator->data;
+
+	TVP res = newSetWithValuesGC(set_size, arr, from);
+
+	//TODO: Free necessary variables
+	g_list_free(dom);
+
+	return res;
+}
 
 #else
 
