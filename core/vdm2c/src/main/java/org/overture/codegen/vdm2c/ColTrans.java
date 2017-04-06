@@ -8,6 +8,7 @@ import org.overture.cgc.extast.analysis.DepthFirstAnalysisCAdaptor;
 import org.overture.codegen.ir.SExpIR;
 import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.analysis.intf.IAnalysis;
+import org.overture.codegen.ir.expressions.AApplyExpIR;
 import org.overture.codegen.ir.expressions.AEnumSeqExpIR;
 import org.overture.codegen.ir.expressions.AEnumSetExpIR;
 import org.overture.codegen.ir.expressions.AExternalExpIR;
@@ -37,6 +38,8 @@ public class ColTrans extends DepthFirstAnalysisCAdaptor implements IApplyAssist
 	public static final String SEQ_HEAD = "vdmSeqHd";
 	public static final String SEQ_CONC = "vdmSeqConc";
 	public static final String SEQ_REVERSE = "vdmSeqReverse";
+	public static final String SEQ_INDEX = "vdmSeqIndex";
+
 
 	private TransAssistantIR assist;
 
@@ -82,6 +85,19 @@ public class ColTrans extends DepthFirstAnalysisCAdaptor implements IApplyAssist
 	public void caseAReverseUnaryExpIR(AReverseUnaryExpIR node) throws AnalysisException {
 
 		rewriteToApply(this, node, SEQ_REVERSE, node.getExp());
+	}
+	
+	@Override
+	public void caseAApplyExpIR(AApplyExpIR node) throws AnalysisException {
+	
+		if(assist.getInfo().getTypeAssistant().isSeqType(node.getRoot()) && node.getArgs().size() == 1)
+		{
+			rewriteToApply(this, node, SEQ_INDEX, node.getRoot(), node.getArgs().getFirst());
+		}
+		else
+		{
+			super.caseAApplyExpIR(node);
+		}
 	}
 	
 	@Override

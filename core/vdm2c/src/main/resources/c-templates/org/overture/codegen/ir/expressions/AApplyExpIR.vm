@@ -5,12 +5,7 @@
 #set( $root = $CFormat.format($node.getRoot()) )
 #set( $args = $CFormat.formatArgs($node.getArgs()) )
 ##
-#if ($CFormat.isSeqType($node.getRoot()) && $node.getArgs().size() == 1)
-##
-	#set( $index = $CFormat.format($node.getArgs().get(0)))
-vdmSeqIndex(${root},${index})
-##
-#elseif ($CFormat.isMapType($node.getRoot()) && $node.getArgs().size() == 1)
+#if ($CFormat.isMapType($node.getRoot()) && $node.getArgs().size() == 1)
 	#set( $key = $CFormat.format($node.getArgs().get(0)))
 	vdmMapApply(${root},${key})
 ##
