@@ -199,8 +199,12 @@ TVP vdmClone(TVP x)
 	}
 #ifndef NO_MAPS
 	case VDM_MAP:
-		//todo
+	{
+		UNWRAP_MAP(m, x);
+		struct Map *map = cloneMap(m);
+		tmp->value.ptr = map;
 		break;
+	}
 #endif
 #ifndef NO_PRODUCTS
 	case VDM_PRODUCT:

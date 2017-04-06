@@ -405,8 +405,8 @@ void freeChain(entry_t *chain)
 		freeChain(chain->next);
 
 	vdmFree(chain->key);
-//	vdmFree(chain->value);
-//	free(chain);
+	vdmFree(chain->value);
+	free(chain);
 }
 
 void freeMap(struct Map *m)
@@ -416,9 +416,38 @@ void freeMap(struct Map *m)
 		freeChain(m->table->chain[i]);
 	}
 
-//	free(m->table);
-//	free(m);
+	free(m->table);
+	free(m);
 }
+
+entry_t* cloneChain(entry_t *chain)
+{
+	entry_t *entry;
+
+	if(chain == NULL)
+		return NULL;
+
+	entry = (entry_t *)malloc(sizeof(entry_t));
+	entry->key = vdmClone(chain->key);
+	entry->value = vdmClone(chain->value);
+	entry->next = cloneChain(chain->next);
+
+	return entry;
+}
+
+struct Map* cloneMap(struct Map *m)
+{
+	struct Map* ptr = (struct Map*) malloc(sizeof(struct Map));
+
+	ptr->table = ht_create(m->table->size);
+	for(int i = 0; i < ptr->table->size; i++)
+	{
+		ptr->table->chain[i] = cloneChain(m->table->chain[i]);
+	}
+
+	return ptr;
+}
+
 
 TVP newMapGC(TVP *from)
 {

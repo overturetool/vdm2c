@@ -158,13 +158,13 @@ TEST(Expression_Map, mapClone)
 	TVP res = vdmMapEquals(map, map_clone);
 	EXPECT_EQ (true, equals(TEST_TRUE, res));
 
-//	vdmFree(map);
+	vdmFree(map);
 	vdmFree(res);
 
 	res = vdmMapEquals(map_copy, map_clone);
 	EXPECT_EQ (true, equals(TEST_TRUE, res));
 
-//	vdmFree(map_clone);
+	vdmFree(map_clone);
 	vdmFree(map_copy);
 	vdmFree(TEST_TRUE);
 	vdmFree(res);
