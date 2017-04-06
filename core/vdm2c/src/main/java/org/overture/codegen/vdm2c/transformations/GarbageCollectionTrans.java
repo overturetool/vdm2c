@@ -82,6 +82,7 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 		
 		// Collections
 		gcNames.put(ColTrans.SEQ_VAR, "newSeqVarGC");
+		gcNames.put(ColTrans.SET_VAR, "newSetVarGC");
 		
 		// Copying
 		gcNames.put(ValueSemantics.VDM_CLONE, "vdmCloneGC");
@@ -142,9 +143,10 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 				id.setName(val);
 				if(!(isFieldAccessor(oldName) || isSetter(oldName)))
 				{
-					if (isSeqEnum(oldName)) {
-						// The signature of 'newSeqVarGC' is:
+					if (isSeqOrSetEnum(oldName)) {
+						// The signatures of 'newSeqVarGC' and newSetVarGC are:
 						// TVP newSeqVarGC(size_t size, TVP *from, ...)
+						// TVP newSetVarGC(size_t size, TVP *from, ...)
 						// Therefore, 'from' is the second argument (at index 1)
 						args.add(1, consReference(node));
 					} else {
@@ -214,9 +216,9 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 		return name.equals(CTransUtil.SET_FIELD) || name.equals(CTransUtil.SET_FIELD_PTR);
 	}
 	
-	private boolean isSeqEnum(String name)
+	private boolean isSeqOrSetEnum(String name)
 	{
-		return name.equals(ColTrans.SEQ_VAR);
+		return name.equals(ColTrans.SEQ_VAR) || name.equals(ColTrans.SET_VAR);
 	}
 	
 	private boolean insideFieldInitializer(SExpIR exp)
