@@ -13,6 +13,7 @@ import org.overture.codegen.ir.expressions.AEnumSetExpIR;
 import org.overture.codegen.ir.expressions.AExternalExpIR;
 import org.overture.codegen.ir.expressions.AHeadUnaryExpIR;
 import org.overture.codegen.ir.expressions.ALenUnaryExpIR;
+import org.overture.codegen.ir.expressions.ASeqConcatBinaryExpIR;
 import org.overture.codegen.ir.expressions.ATailUnaryExpIR;
 import org.overture.codegen.ir.types.AExternalTypeIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
@@ -33,6 +34,7 @@ public class ColTrans extends DepthFirstAnalysisCAdaptor implements IApplyAssist
 	public static final String SEQ_TAIL = "vdmSeqTl";
 	public static final String SEQ_LEN = "vdmSeqLen";
 	public static final String SEQ_HEAD = "vdmSeqHd";
+	public static final String SEQ_CONC = "vdmSeqConc";
 
 	private TransAssistantIR assist;
 
@@ -68,6 +70,12 @@ public class ColTrans extends DepthFirstAnalysisCAdaptor implements IApplyAssist
 		rewriteToApply(this, node, SEQ_HEAD, node.getExp());
 	}
 
+	@Override
+	public void caseASeqConcatBinaryExpIR(ASeqConcatBinaryExpIR node) throws AnalysisException {
+
+		rewriteToApply(this, node, SEQ_CONC, node.getLeft(), node.getRight());
+	}
+	
 	@Override
 	public void caseAEnumSeqExpIR(AEnumSeqExpIR node) throws AnalysisException {
 
