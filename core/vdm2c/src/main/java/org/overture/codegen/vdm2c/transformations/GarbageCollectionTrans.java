@@ -15,7 +15,7 @@ import org.overture.codegen.ir.expressions.AExternalExpIR;
 import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
 import org.overture.codegen.ir.patterns.AIdentifierPatternIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
-import org.overture.codegen.vdm2c.SeqTrans;
+import org.overture.codegen.vdm2c.ColTrans;
 import org.overture.codegen.vdm2c.Vdm2cTag;
 import org.overture.codegen.vdm2c.Vdm2cTag.MethodTag;
 import org.overture.codegen.vdm2c.extast.expressions.AMacroApplyExpIR;
@@ -81,7 +81,7 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 		gcNames.put(LiteralInstantiationRewriteTrans.NEW_TOKEN, "newTokenGC");
 		
 		// Collections
-		gcNames.put(SeqTrans.SEQ_VAR, "newSeqVarGC");
+		gcNames.put(ColTrans.SEQ_VAR, "newSeqVarGC");
 		
 		// Copying
 		gcNames.put(ValueSemantics.VDM_CLONE, "vdmCloneGC");
@@ -216,7 +216,7 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 	
 	private boolean isSeqEnum(String name)
 	{
-		return name.equals(SeqTrans.SEQ_VAR);
+		return name.equals(ColTrans.SEQ_VAR);
 	}
 	
 	private boolean insideFieldInitializer(SExpIR exp)

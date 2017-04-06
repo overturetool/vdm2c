@@ -19,14 +19,14 @@ import org.overture.codegen.vdm2c.utils.IApplyAssistant;
  * TODO: Extend this class to handle sets and maps too (rename class accordingly)
  * 
  */
-public class SeqTrans extends DepthFirstAnalysisCAdaptor implements
+public class ColTrans extends DepthFirstAnalysisCAdaptor implements
 IApplyAssistant {
 
 	public static final String SEQ_VAR = "newSeqVar";
 	
 	private TransAssistantIR assist;
 	
-	public SeqTrans(TransAssistantIR assist)
+	public ColTrans(TransAssistantIR assist)
 	{
 		this.assist = assist;
 	}
@@ -46,22 +46,26 @@ IApplyAssistant {
 	@Override
 	public void caseAEnumSeqExpIR(AEnumSeqExpIR node) throws AnalysisException {
 
+		rewriteColEnumToApply(node, SEQ_VAR, node.getMembers());
+	}
+
+	private void rewriteColEnumToApply(AEnumSeqExpIR node, String seqVar, LinkedList<SExpIR> members) throws AnalysisException {
 		AExternalTypeIR extType = new AExternalTypeIR();
 		extType.setName("size_t");
 		
 		AExternalExpIR size = new AExternalExpIR();
-		size.setTargetLangExp(node.getMembers().size() + "");
+		size.setTargetLangExp(members.size() + "");
 		
-		LinkedList<SExpIR> argList = new LinkedList<>(node.getMembers());
+		LinkedList<SExpIR> argList = new LinkedList<>(members);
 		argList.addFirst(size);
 		
-		if(node.getMembers().isEmpty())
+		if(members.isEmpty())
 		{
 			argList.add(assist.getInfo().getExpAssistant().consNullExp());
 		}
 		
 		SExpIR[] args = argList.toArray(new SExpIR[0]);
 		
-		rewriteToApply(this, node, SEQ_VAR, args);
+		rewriteToApply(this, node, seqVar, args);
 	}
 }
