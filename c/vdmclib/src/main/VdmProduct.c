@@ -40,9 +40,19 @@ TVP newProduct(size_t size)
 	return newCollection(size, VDM_PRODUCT);
 }
 
+TVP newProductGC(size_t size, TVP *from)
+{
+	return newCollectionGC(size, VDM_PRODUCT, from);
+}
+
 TVP newProductWithValues(size_t size,TVP* elements)
 {
 	return newCollectionWithValues(size, VDM_PRODUCT, elements);
+}
+
+TVP newProductWithValuesGC(size_t size,TVP* elements, TVP *from)
+{
+	return newCollectionWithValuesGC(size, VDM_PRODUCT, elements, from);
 }
 
 
@@ -65,6 +75,24 @@ TVP newProductVar(size_t size, ...)
 
 
 
+TVP newProductVarGC(size_t size, TVP *from, ...)
+{
+	TVP elements[size];
+
+	va_list ap;
+	va_start(ap, from);
+
+	for (int i = 0; i < size; i++)
+	{
+		TVP arg = va_arg(ap, TVP);
+		elements[i]=arg;
+	}
+	va_end(ap);
+
+	return newCollectionWithValuesGC(size, VDM_PRODUCT, elements, from);
+}
+
+
 TVP productGet(TVP product, int index)
 {
 	ASSERT_CHECK(product);
@@ -74,6 +102,18 @@ TVP productGet(TVP product, int index)
 	assert(index-1>=0 && index-1<col->size && "invalid index");
 	return vdmClone(col->value[index-1]);
 }
+
+
+TVP productGetGC(TVP product, int index, TVP *from)
+{
+	ASSERT_CHECK(product);
+
+	UNWRAP_PRODUCT(col,product);
+
+	assert(index-1>=0 && index-1<col->size && "invalid index");
+	return vdmCloneGC(col->value[index-1], from);
+}
+
 
 void productSet(TVP product, int index, TVP val)
 {

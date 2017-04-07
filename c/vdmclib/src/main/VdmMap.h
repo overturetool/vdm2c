@@ -44,7 +44,7 @@
 
 #ifndef NO_MAPS
 
-#define UNWRAP_MAP(var,map) struct Map* var = (struct Map*)map->value.ptr
+#define UNWRAP_MAP(var, map) struct Map* var = (struct Map*)map->value.ptr
 
 
 struct entry_s {
@@ -57,7 +57,7 @@ typedef struct entry_s entry_t;
 
 struct hashtable_s {
 	int size;
-	struct entry_s **table;
+	entry_t **chain;
 };
 
 typedef struct hashtable_s hashtable_t;
@@ -75,30 +75,47 @@ hashtable_t *ht_create( int size );
 
 
 TVP newMap();
+TVP newMapGC(TVP *from);
+void freeMap(struct Map *m);
+struct Map* cloneMap(struct Map *m);
 
 //util method for adding maplets
 void vdmMapAdd(TVP map,TVP key, TVP value);
 void vdmMapUpdate(TVP map, TVP key, TVP value);
 
 TVP newMapVarToGrow(size_t, size_t, ...);
+TVP newMapVarToGrowGC(size_t size, size_t expected_size, TVP *from, ...);
 void vdmMapGrow(TVP, TVP, TVP);
 void vdmMapFit(TVP);
 
 //VDM map operators
 TVP vdmMapDom(TVP map);
+TVP vdmMapDomGC(TVP map, TVP *from);
 TVP vdmMapRng(TVP map);
+TVP vdmMapRngGC(TVP map, TVP *from);
 TVP vdmMapMunion(TVP map1, TVP map2);
+TVP vdmMapMunionGC(TVP map1, TVP map2, TVP *from);
 TVP vdmMapOverride(TVP map1, TVP map2);
+TVP vdmMapOverrideGC(TVP map1, TVP map2, TVP *from);
 TVP vdmMapMerge(TVP set);
+TVP vdmMapMergeGC(TVP set, TVP *from);
 TVP vdmMapDomRestrictTo(TVP set,TVP map);
+TVP vdmMapDomRestrictToGC(TVP set,TVP map, TVP *from);
 TVP vdmMapDomRestrictBy(TVP set,TVP map);
+TVP vdmMapDomRestrictByGC(TVP set,TVP map, TVP *from);
 TVP vdmMapRngRestrictTo(TVP set,TVP map);
+TVP vdmMapRngRestrictToGC(TVP set,TVP map, TVP *from);
 TVP vdmMapRngRestrictBy(TVP set,TVP map);
+TVP vdmMapRngRestrictByGC(TVP set,TVP map, TVP *from);
 TVP vdmMapApply(TVP map, TVP key);
+TVP vdmMapApplyGC(TVP map, TVP key, TVP *from);
 TVP vdmMapInverse(TVP map);
+TVP vdmMapInverseGC(TVP map, TVP *from);
 
 TVP vdmMapEquals(TVP map1, TVP map2);
-bool vdmMapInEquals(TVP map1, TVP map2);
+TVP vdmMapEqualsGC(TVP map1, TVP map2, TVP *from);
+TVP vdmMapInEquals(TVP map1, TVP map2);
+TVP vdmMapInEqualsGC(TVP map1, TVP map2, TVP *from);
 
 #ifdef WITH_GLIB_HASH
 guint vdm_typedvalue_hash(gconstpointer v);

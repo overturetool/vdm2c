@@ -41,11 +41,6 @@
 #endif
 
 
-//Pretty printing functions.
-char* printBool(TVP val);
-char* printInt(TVP val);
-char* printChar(TVP val);
-char* printDouble(TVP val);
-char* printVdmBasicValue(TVP val);
+char* toString(TVP val);
 
 #endif /* PRETTYPRINT_H_ */

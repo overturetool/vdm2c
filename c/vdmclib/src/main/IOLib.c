@@ -38,12 +38,12 @@ void vdm_IO_println(TVP arg)
 		}
 		else
 		{
-			str = printVdmBasicValue(arg);
+			str = toString(arg);
 		}
 	}
 	else
 	{
-		str = printVdmBasicValue(arg);
+		str = toString(arg);
 	}
 
 	printf("%s\n", str);
@@ -79,12 +79,12 @@ void vdm_IO_print(TVP arg)
 		}
 		else
 		{
-			str = printVdmBasicValue(arg);
+			str = toString(arg);
 		}
 	}
 	else
 	{
-		str = printVdmBasicValue(arg);
+		str = toString(arg);
 	}
 
 	printf("%s\n", str);

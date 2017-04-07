@@ -32,7 +32,7 @@ extern "C"
 
 #ifndef NO_CSV
 
-TVP packString(char *charseq)
+TVP packString(const char *charseq)
 {
 	int len = strlen(charseq);
 	int i;
@@ -54,7 +54,7 @@ TEST(ClassCSV, linecount)
 	TVP CSVFileAsSeq;
 	TVP lineCount;
 
-	char *CSVContents[] =
+	const char *CSVContents[] =
 	{		"1,2,3,4",
 			"5,6,7,8",
 			"9,10,11,12",
@@ -86,7 +86,7 @@ TEST(ClassCSV, read_value)
 	TVP CSVFileAsSeq;
 	TVP lineInFileAsSeq;
 
-	char *CSVContents[] =
+	const char *CSVContents[] =
 	{		"1,2,3,4",
 			"5,6,7,8",
 			"9,10,11,12",

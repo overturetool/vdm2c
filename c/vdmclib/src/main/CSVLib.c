@@ -12,7 +12,7 @@ char* resourcesLocation = NULL;
 
 #ifndef NO_CSV
 
-const char* URIToNativePath(const char* uri)
+char* URIToNativePath(const char* uri)
 {
 #if defined WIN32 || defined WIN64
 	char native_path_separator = '\\';
@@ -148,7 +148,7 @@ const char* URIToNativePath(const char* uri)
 
 TVP vdm_CSV_flinecount(TVP f)
 {
-	const char *resLoc = NULL;
+	char *resLoc = NULL;
 	char *fileName, *filePath;
 	FILE *file;
 
@@ -204,7 +204,7 @@ TVP vdm_CSV_flinecount(TVP f)
 //For now only handles CSV files containing floating point numbers.
 TVP vdm_CSV_freadval(TVP f, TVP index)
 {
-	const char *resLoc = NULL;
+	char *resLoc = NULL;
 	char *fileName, *filePath;
 	FILE *file;
 

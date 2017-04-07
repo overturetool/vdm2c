@@ -148,6 +148,28 @@ TVP mapApply()
 	return res;
 }
 
+TEST(Expression_Map, mapClone)
+{
+	TVP map = createMap1();
+	TVP map_copy = createMap1();
+	TVP map_clone = vdmClone(map);
+	TVP TEST_TRUE = newBool(true);
+
+	TVP res = vdmMapEquals(map, map_clone);
+	EXPECT_EQ (true, equals(TEST_TRUE, res));
+
+	vdmFree(map);
+	vdmFree(res);
+
+	res = vdmMapEquals(map_copy, map_clone);
+	EXPECT_EQ (true, equals(TEST_TRUE, res));
+
+	vdmFree(map_clone);
+	vdmFree(map_copy);
+	vdmFree(TEST_TRUE);
+	vdmFree(res);
+}
+
 TEST(Expression_Map, mapApply)
 {
 	TVP TEST_TRUE = newBool(true);
@@ -409,11 +431,17 @@ TEST(Expression_Map, mapInEquals)
 	//map3: {6|->7,9|->11}
 	TVP map3 = createMap2();
 
-	bool map_not_eq1 = vdmMapInEquals(map1,map2);
-	EXPECT_FALSE(map_not_eq1);
+	TVP map_not_eq1 = vdmMapInEquals(map1,map2);
+	EXPECT_FALSE(map_not_eq1->value.boolVal);
 
-	bool map_not_eq2 = vdmMapInEquals(map1,map3);
-	EXPECT_TRUE(map_not_eq2);
+	TVP map_not_eq2 = vdmMapInEquals(map1,map3);
+	EXPECT_TRUE(map_not_eq2->value.boolVal);
+
+	vdmFree(map1);
+	vdmFree(map2);
+	vdmFree(map3);
+	vdmFree(map_not_eq1);
+	vdmFree(map_not_eq2);
 }
 
 
