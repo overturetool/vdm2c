@@ -128,7 +128,7 @@ TVP newMap()
 TVP newMapGC(TVP *from)
 {
 	struct Map* ptr = (struct Map*) malloc(sizeof(struct Map));
-		ptr->table = g_hash_table_new_full(vdm_typedvalue_hash, vdm_typedvalue_equal, vdm_g_free, vdm_g_free);
+	ptr->table = g_hash_table_new_full(vdm_typedvalue_hash, vdm_typedvalue_equal, vdm_g_free, vdm_g_free);
 
 	return newTypeValueGC(VDM_MAP, (TypedValueType
 	)
@@ -943,6 +943,7 @@ TVP vdmMapMunionGC(TVP map1, TVP map2, TVP *from)
 		key = d1->value[i];
 		val = vdmMapApply(map1,key);
 		vdmMapAdd(map,key,val);
+
 		vdmFree(val);
 	}
 
@@ -955,6 +956,7 @@ TVP vdmMapMunionGC(TVP map1, TVP map2, TVP *from)
 		key = d2->value[i];
 		val = vdmMapApply(map2,key);
 		vdmMapAdd(map,key,val);
+
 		vdmFree(val);
 	}
 
@@ -968,6 +970,8 @@ TVP vdmMapOverride(TVP map1, TVP map2)
 {
 	// Create a new map
 	TVP map = newMap();
+	TVP key;
+	TVP val;
 
 	//Assert map
 	ASSERT_CHECK(map1);
@@ -978,9 +982,11 @@ TVP vdmMapOverride(TVP map1, TVP map2)
 
 	// Add key/val for map1
 	for (int i=0; i<d1->size; i++){
-		TVP key = d1->value[i];
-		TVP val = vdmMapApply(map1,key);
+		key = d1->value[i];
+		val = vdmMapApply(map1,key);
 		vdmMapAdd(map,key,val);
+
+		vdmFree(val);
 	}
 
 	TVP map2_dom = vdmMapDom(map2);
@@ -988,9 +994,11 @@ TVP vdmMapOverride(TVP map1, TVP map2)
 
 	// Add key/val for map2
 	for (int i=0; i<d2->size; i++){
-		TVP key = d2->value[i];
-		TVP val = vdmMapApply(map2,key);
+		key = d2->value[i];
+		val = vdmMapApply(map2,key);
 		vdmMapAdd(map,key,val);
+
+		vdmFree(val);
 	}
 
 	vdmFree(map1_dom);
@@ -1004,6 +1012,8 @@ TVP vdmMapOverrideGC(TVP map1, TVP map2, TVP *from)
 {
 	// Create a new map
 	TVP map = newMapGC(from);
+	TVP key;
+	TVP val;
 
 	//Assert map
 	ASSERT_CHECK(map1);
@@ -1014,9 +1024,11 @@ TVP vdmMapOverrideGC(TVP map1, TVP map2, TVP *from)
 
 	// Add key/val for map1
 	for (int i=0; i<d1->size; i++){
-		TVP key = d1->value[i];
-		TVP val = vdmMapApply(map1,key);
+		key = d1->value[i];
+		val = vdmMapApply(map1,key);
 		vdmMapAdd(map,key,val);
+
+		vdmFree(val);
 	}
 
 	TVP map2_dom = vdmMapDom(map2);
@@ -1024,9 +1036,11 @@ TVP vdmMapOverrideGC(TVP map1, TVP map2, TVP *from)
 
 	// Add key/val for map2
 	for (int i=0; i<d2->size; i++){
-		TVP key = d2->value[i];
-		TVP val = vdmMapApply(map2,key);
+		key = d2->value[i];
+		val = vdmMapApply(map2,key);
 		vdmMapAdd(map,key,val);
+
+		vdmFree(val);
 	}
 
 	vdmFree(map1_dom);
@@ -1038,8 +1052,6 @@ TVP vdmMapOverrideGC(TVP map1, TVP map2, TVP *from)
 
 TVP vdmMapMerge(TVP set)
 {
-	// TODO unwrap set, creat a new map to return and set munion on it. Then return it
-
 	TVP map = newMap();
 
 	UNWRAP_COLLECTION(s,set);
@@ -1053,8 +1065,6 @@ TVP vdmMapMerge(TVP set)
 
 TVP vdmMapMergeGC(TVP set, TVP *from)
 {
-	// TODO unwrap set, creat a new map to return and set munion on it. Then return it
-
 	TVP map = newMapGC(from);
 
 	UNWRAP_COLLECTION(s,set);
@@ -1070,6 +1080,7 @@ TVP vdmMapDomRestrictTo(TVP set,TVP map)
 	ASSERT_CHECK(map);
 
 	TVP key;
+	TVP val;
 
 	TVP map_res = newMap();
 	TVP res;
@@ -1083,8 +1094,9 @@ TVP vdmMapDomRestrictTo(TVP set,TVP map)
 		res = vdmSetMemberOf(set, key);
 		if(res->value.boolVal)
 		{
-			TVP val = vdmMapApply(map,key);
+			val = vdmMapApply(map,key);
 			vdmMapAdd(map_res,key,val);
+
 			vdmFree(val);
 		}
 		vdmFree(res);
@@ -1100,6 +1112,7 @@ TVP vdmMapDomRestrictToGC(TVP set,TVP map, TVP *from)
 	ASSERT_CHECK(map);
 
 	TVP key;
+	TVP val;
 
 	TVP map_res = newMapGC(from);
 	TVP res;
@@ -1113,8 +1126,9 @@ TVP vdmMapDomRestrictToGC(TVP set,TVP map, TVP *from)
 		res = vdmSetMemberOf(set, key);
 		if(res->value.boolVal)
 		{
-			TVP val = vdmMapApply(map,key);
+			val = vdmMapApply(map,key);
 			vdmMapAdd(map_res,key,val);
+
 			vdmFree(val);
 		}
 		vdmFree(res);
@@ -1130,16 +1144,20 @@ TVP vdmMapDomRestrictBy(TVP set,TVP map)
 	ASSERT_CHECK(map);
 
 	TVP map_res = newMap();
+	TVP key;
+	TVP val;
 
 	TVP map_dom = vdmMapDom(map);
 	UNWRAP_COLLECTION(m,map_dom);
 
 	for(int i=0; i<m->size;i++)
 	{
-		TVP key = m->value[i];
+		key = m->value[i];
+
 		if(vdmSetNotMemberOf(set,key)->value.boolVal){
-			TVP val = vdmMapApply(map,key);
+			val = vdmMapApply(map,key);
 			vdmMapAdd(map_res,key,val);
+
 			vdmFree(val);
 		}
 	}
@@ -1155,17 +1173,20 @@ TVP vdmMapDomRestrictByGC(TVP set,TVP map, TVP *from)
 	ASSERT_CHECK(map);
 
 	TVP map_res = newMapGC(from);
+	TVP key;
+	TVP val;
 
 	TVP map_dom = vdmMapDom(map);
 	UNWRAP_COLLECTION(m,map_dom);
 
 	for(int i=0; i<m->size;i++)
 	{
-		TVP key = m->value[i];
+		key = m->value[i];
 		if(vdmSetNotMemberOf(set,key)->value.boolVal){
-			TVP val = vdmMapApply(map,key);
+			val = vdmMapApply(map,key);
 			vdmMapAdd(map_res,key,val);
 
+			vdmFree(val);
 		}
 	}
 
@@ -1179,20 +1200,25 @@ TVP vdmMapRngRestrictTo(TVP set,TVP map)
 {
 	ASSERT_CHECK(map);
 
+	TVP key;
+	TVP val;
+	TVP res;
 	TVP map_res = newMap();
-
 	TVP map_dom = vdmMapDom(map);
+
 	UNWRAP_COLLECTION(m,map_dom);
 
 	for(int i=0; i<m->size;i++){
-		TVP key = m->value[i];
-		TVP val = vdmMapApply(map,key);
-		TVP res = vdmSetMemberOf(set,val);
+		key = m->value[i];
+		val = vdmMapApply(map,key);
+		res = vdmSetMemberOf(set,val);
+
 		if(res->value.boolVal)
 		{
 			vdmMapAdd(map_res,key,val);
 		}
 		vdmFree(res);
+		vdmFree(val);
 	}
 
 	vdmFree(map_dom);
@@ -1204,20 +1230,25 @@ TVP vdmMapRngRestrictToGC(TVP set,TVP map, TVP *from)
 {
 	ASSERT_CHECK(map);
 
+	TVP key;
+	TVP val;
+	TVP res;
 	TVP map_res = newMapGC(from);
 
 	TVP map_dom = vdmMapDom(map);
 	UNWRAP_COLLECTION(m,map_dom);
 
 	for(int i=0; i<m->size;i++){
-		TVP key = m->value[i];
-		TVP val = vdmMapApply(map,key);
-		TVP res = vdmSetMemberOf(set,val);
+		key = m->value[i];
+		val = vdmMapApply(map,key);
+		res = vdmSetMemberOf(set,val);
+
 		if(res->value.boolVal)
 		{
 			vdmMapAdd(map_res,key,val);
 		}
 		vdmFree(res);
+		vdmFree(val);
 	}
 
 	vdmFree(map_dom);
@@ -1230,22 +1261,28 @@ TVP vdmMapRngRestrictBy(TVP set,TVP map)
 {
 	ASSERT_CHECK(map);
 
+	TVP key;
+	TVP val;
+	TVP res;
 	TVP map_res = newMap();
 
 	TVP map_dom = vdmMapDom(map);
 	UNWRAP_COLLECTION(m,map_dom);
 
 	for(int i=0; i<m->size;i++){
-		TVP key = m->value[i];
-		TVP val = vdmMapApply(map,key);
-		TVP res = vdmSetNotMemberOf(set,val);
+		key = m->value[i];
+		val = vdmMapApply(map,key);
+		res = vdmSetNotMemberOf(set,val);
+
 		if(res->value.boolVal)
 		{
 			vdmMapAdd(map_res,key,val);
 		}
 		vdmFree(res);
+		vdmFree(val);
 	}
 
+	vdmFree(map_dom);
 	return map_res;
 }
 
@@ -1254,22 +1291,28 @@ TVP vdmMapRngRestrictByGC(TVP set,TVP map, TVP *from)
 {
 	ASSERT_CHECK(map);
 
+	TVP key;
+	TVP val;
+	TVP res;
 	TVP map_res = newMapGC(from);
 
 	TVP map_dom = vdmMapDom(map);
 	UNWRAP_COLLECTION(m,map_dom);
 
 	for(int i=0; i<m->size;i++){
-		TVP key = m->value[i];
-		TVP val = vdmMapApply(map,key);
-		TVP res = vdmSetNotMemberOf(set,val);
+		key = m->value[i];
+		val = vdmMapApply(map,key);
+		res = vdmSetNotMemberOf(set,val);
+
 		if(res->value.boolVal)
 		{
 			vdmMapAdd(map_res,key,val);
 		}
 		vdmFree(res);
+		vdmFree(val);
 	}
 
+	vdmFree(map_dom);
 	return map_res;
 }
 
@@ -1278,19 +1321,22 @@ TVP vdmMapInverse(TVP map){
 
 	ASSERT_CHECK(map);
 
+	TVP key;
+	TVP val;
 	TVP map_res = newMap();
 
 	TVP map_dom = vdmMapDom(map);
 	UNWRAP_COLLECTION(m,map_dom);
 
 	for(int i=0; i<m->size;i++){
-		TVP key = m->value[i];
-		TVP val = vdmMapApply(map,key);
+		key = m->value[i];
+		val = vdmMapApply(map,key);
 		vdmMapAdd(map_res,val,key);
-		vdmFree(key);
+
 		vdmFree(val);
 	}
 
+	vdmFree(map_dom);
 	return map_res;
 }
 
@@ -1300,19 +1346,22 @@ TVP vdmMapInverseGC(TVP map, TVP *from)
 
 	ASSERT_CHECK(map);
 
+	TVP key;
+	TVP val;
 	TVP map_res = newMapGC(from);
 
 	TVP map_dom = vdmMapDom(map);
 	UNWRAP_COLLECTION(m,map_dom);
 
 	for(int i=0; i<m->size;i++){
-		TVP key = m->value[i];
-		TVP val = vdmMapApply(map,key);
+		key = m->value[i];
+		val = vdmMapApply(map,key);
 		vdmMapAdd(map_res,val,key);
-		vdmFree(key);
+
 		vdmFree(val);
 	}
 
+	vdmFree(map_dom);
 	return map_res;
 }
 
@@ -1488,6 +1537,11 @@ TVP vdmMapInEquals(TVP map1, TVP map2)
 	ASSERT_CHECK(map1);
 	ASSERT_CHECK(map2);
 
+	TVP key1;
+	TVP val1;
+	TVP key2;
+	TVP val2;
+
 	bool not_eq = true;
 
 	TVP map1_dom = vdmMapDom(map1);
@@ -1500,17 +1554,23 @@ TVP vdmMapInEquals(TVP map1, TVP map2)
 		return newBool(true);
 
 	for (int i=0; i<m1->size; i++){
-		TVP key1 = m1->value[i];
-		TVP val1 = vdmMapApply(map1,key1);
+		key1 = m1->value[i];
+		val1 = vdmMapApply(map1,key1);
 
-		TVP key2 = m2->value[i];
-		TVP val2 = vdmMapApply(map2,key2);
+		key2 = m2->value[i];
+		val2 = vdmMapApply(map2,key2);
 
 		if(equals(key1,key2) && equals(val1,val2)){
 			not_eq = false;
 			break;
 		}
+
+		vdmFree(val1);
+		vdmFree(val2);
 	}
+
+	vdmFree(map1_dom);
+	vdmFree(map2_dom);
 
 	return newBool(not_eq);
 }
@@ -1522,6 +1582,11 @@ TVP vdmMapInEqualsGC(TVP map1, TVP map2, TVP *from)
 	//Assert map
 	ASSERT_CHECK(map1);
 	ASSERT_CHECK(map2);
+
+	TVP key1;
+	TVP val1;
+	TVP key2;
+	TVP val2;
 
 	bool not_eq = true;
 
@@ -1535,17 +1600,23 @@ TVP vdmMapInEqualsGC(TVP map1, TVP map2, TVP *from)
 		return newBoolGC(true, from);
 
 	for (int i=0; i<m1->size; i++){
-		TVP key1 = m1->value[i];
-		TVP val1 = vdmMapApply(map1,key1);
+		key1 = m1->value[i];
+		val1 = vdmMapApply(map1,key1);
 
-		TVP key2 = m2->value[i];
-		TVP val2 = vdmMapApply(map2,key2);
+		key2 = m2->value[i];
+		val2 = vdmMapApply(map2,key2);
 
 		if(equals(key1,key2) && equals(val1,val2)){
 			not_eq = false;
 			break;
 		}
+
+		vdmFree(val1);
+		vdmFree(val2);
 	}
+
+	vdmFree(map1_dom);
+	vdmFree(map2_dom);
 
 	return newBoolGC(not_eq, from);
 }
