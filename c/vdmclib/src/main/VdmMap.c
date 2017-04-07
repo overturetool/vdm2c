@@ -572,7 +572,7 @@ TVP newMapVarToGrowGC(size_t size, size_t expected_size, TVP *from, ...)
 	theMap = newTypeValueGC(VDM_MAP, (TypedValueType){ .ptr = ptr }, from);
 
 	va_list argList;
-	va_start(argList, expected_size);
+	va_start(argList, from);
 
 	for(int i = 0; i < size; i++)
 	{
@@ -872,6 +872,7 @@ TVP vdmMapMunion(TVP map1, TVP map2)
 		key = d1->value[i];
 		val = vdmMapApply(map1,key);
 		vdmMapAdd(map,key,val);
+
 		vdmFree(val);
 	}
 
@@ -884,6 +885,7 @@ TVP vdmMapMunion(TVP map1, TVP map2)
 		key = d2->value[i];
 		val = vdmMapApply(map2,key);
 		vdmMapAdd(map,key,val);
+
 		vdmFree(val);
 	}
 

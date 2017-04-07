@@ -77,6 +77,7 @@ hashtable_t *ht_create( int size );
 TVP newMap();
 TVP newMapGC(TVP *from);
 void freeMap(struct Map *m);
+struct Map* cloneMap(struct Map *m);
 
 //util method for adding maplets
 void vdmMapAdd(TVP map,TVP key, TVP value);
