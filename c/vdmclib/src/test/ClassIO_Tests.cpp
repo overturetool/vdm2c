@@ -47,6 +47,8 @@ TEST(ClassIO, print)
 	vdm_IO_print(newChar('z'));
 	vdm_IO_print(newReal(12.34));
 	vdm_IO_print(newSetVar(2, newInt(1), newInt(2)));
+	vdm_IO_print(newProductVar(2, newInt(33), newInt(44)));
+	vdm_IO_print(newProductVar(3, newInt(33), newInt(44), newSetVar(2, newInt(55), newProductVar(2, newReal(3.2), newChar('A')))));
 
 	vdm_IO_println(newInt(1234));
 	vdm_IO_println(newInt(-1234));
