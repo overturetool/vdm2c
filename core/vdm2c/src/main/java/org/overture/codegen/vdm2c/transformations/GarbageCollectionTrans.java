@@ -98,6 +98,7 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 		gcNames.put(ColTrans.SET_MEMBER, "vdmSetMemberOfGC");
 		gcNames.put(ColTrans.SET_UNION, "vdmSetUnionGC");
 		gcNames.put(ColTrans.SET_INTER, "vdmSetInterGC");
+		gcNames.put(ColTrans.SET_DIFF, "vdmSetDifferenceGC");
 		
 		// Copying
 		gcNames.put(ValueSemantics.VDM_CLONE, "vdmCloneGC");
