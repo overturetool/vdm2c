@@ -26,6 +26,7 @@ import org.overture.codegen.vdm2c.utils.CTransUtil;
 
 public class CForIterator extends AbstractLanguageIterator
 {
+	public static final String VDM_SET_ELEMENT_AT = "vdmSetElementAt";
 
 	public CForIterator(TransAssistantIR transformationAssistant,
 			IterationVarPrefixes iteVarPrefixes)
@@ -80,7 +81,7 @@ public class CForIterator extends AbstractLanguageIterator
 		setId.setIsLocal(true);
 		AIdentifierVarExpIR itrId = newIdentifier(iteratorName, null);
 		itrId.setIsLocal(true);
-		return newDeclarationAssignment(pattern, newTvpType(), newApply("vdmSetElementAt", setId, newApply("toInteger", itrId)), null);
+		return newDeclarationAssignment(pattern, newTvpType(), newApply(VDM_SET_ELEMENT_AT, setId, newApply("toInteger", itrId)), null);
 	}
 
 	@Override
@@ -98,7 +99,7 @@ public class CForIterator extends AbstractLanguageIterator
 		ALocalPatternAssignmentStmIR assign = new ALocalPatternAssignmentStmIR();
 		assign.setNextElementDecl(nextElementDecl);
 		assign.setTarget(pattern);
-		assign.setExp(newApply("vdmSetElementAt", newIdentifier(setName, null), newApply("toInteger", newIdentifier(iteratorName, null))));
+		assign.setExp(newApply(VDM_SET_ELEMENT_AT, newIdentifier(setName, null), newApply("toInteger", newIdentifier(iteratorName, null))));
 		
 		return assign;
 	}

@@ -15,6 +15,7 @@ import org.overture.codegen.ir.expressions.AExternalExpIR;
 import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
 import org.overture.codegen.ir.patterns.AIdentifierPatternIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
+import org.overture.codegen.vdm2c.CForIterator;
 import org.overture.codegen.vdm2c.ColTrans;
 import org.overture.codegen.vdm2c.Vdm2cTag;
 import org.overture.codegen.vdm2c.Vdm2cTag.MethodTag;
@@ -91,6 +92,9 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 		gcNames.put(ColTrans.SEQ_CONC, "vdmSeqConcGC");
 		gcNames.put(ColTrans.SEQ_REVERSE, "vdmSeqReverseGC");
 		gcNames.put(ColTrans.SEQ_INDEX, "vdmSeqIndexGC");
+		
+		// Set operations and utility functions
+		gcNames.put(CForIterator.VDM_SET_ELEMENT_AT, "vdmSetElementAtGC");
 		
 		// Copying
 		gcNames.put(ValueSemantics.VDM_CLONE, "vdmCloneGC");
