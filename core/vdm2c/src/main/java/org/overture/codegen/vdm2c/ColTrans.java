@@ -13,6 +13,7 @@ import org.overture.codegen.ir.expressions.AEnumSeqExpIR;
 import org.overture.codegen.ir.expressions.AEnumSetExpIR;
 import org.overture.codegen.ir.expressions.AExternalExpIR;
 import org.overture.codegen.ir.expressions.AHeadUnaryExpIR;
+import org.overture.codegen.ir.expressions.AInSetBinaryExpIR;
 import org.overture.codegen.ir.expressions.ALenUnaryExpIR;
 import org.overture.codegen.ir.expressions.AReverseUnaryExpIR;
 import org.overture.codegen.ir.expressions.ASeqConcatBinaryExpIR;
@@ -39,7 +40,9 @@ public class ColTrans extends DepthFirstAnalysisCAdaptor implements IApplyAssist
 	public static final String SEQ_CONC = "vdmSeqConc";
 	public static final String SEQ_REVERSE = "vdmSeqReverse";
 	public static final String SEQ_INDEX = "vdmSeqIndex";
-
+	
+	// Set operations
+	public static final String SET_MEMBER = "vdmSetMemberOf";
 
 	private TransAssistantIR assist;
 
@@ -110,6 +113,12 @@ public class ColTrans extends DepthFirstAnalysisCAdaptor implements IApplyAssist
 	public void caseAEnumSetExpIR(AEnumSetExpIR node) throws AnalysisException {
 
 		rewriteColEnumToApply(node, SET_VAR, node.getMembers());
+	}
+	
+	@Override
+	public void caseAInSetBinaryExpIR(AInSetBinaryExpIR node) throws AnalysisException {
+
+		rewriteToApply(this, node, SET_MEMBER, node.getRight(), node.getLeft());
 	}
 
 	private void rewriteColEnumToApply(SExpIR node, String seqVar, LinkedList<SExpIR> members)
