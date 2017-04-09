@@ -105,6 +105,7 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 		gcNames.put(CLetBeStStrategy.SET_CARD, "vdmSetCardGC");
 		gcNames.put(ColTrans.SET_DIST_UNION, "vdmSetDunionGC");
 		gcNames.put(ColTrans.SET_DIST_INTER, "vdmSetDinterGC");
+		gcNames.put(ColTrans.SET_POWER_SET, "vdmSetPowerGC");
 		
 		// Copying
 		gcNames.put(ValueSemantics.VDM_CLONE, "vdmCloneGC");
