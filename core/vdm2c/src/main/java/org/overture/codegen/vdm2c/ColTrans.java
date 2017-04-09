@@ -10,6 +10,7 @@ import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.analysis.intf.IAnalysis;
 import org.overture.codegen.ir.expressions.AApplyExpIR;
 import org.overture.codegen.ir.expressions.ACardUnaryExpIR;
+import org.overture.codegen.ir.expressions.ADistUnionUnaryExpIR;
 import org.overture.codegen.ir.expressions.AEnumSeqExpIR;
 import org.overture.codegen.ir.expressions.AEnumSetExpIR;
 import org.overture.codegen.ir.expressions.AExternalExpIR;
@@ -55,6 +56,7 @@ public class ColTrans extends DepthFirstAnalysisCAdaptor implements IApplyAssist
 	public static final String SET_DIFF = "vdmSetDifference";
 	public static final String SET_SUBSET = "vdmSetSubset";
 	public static final String SET_PROPER_SUBSET = "vdmSetProperSubset";
+	public static final String SET_DIST_UNION = "vdmSetDunion";
 
 	private TransAssistantIR assist;
 
@@ -167,6 +169,12 @@ public class ColTrans extends DepthFirstAnalysisCAdaptor implements IApplyAssist
 	public void caseACardUnaryExpIR(ACardUnaryExpIR node) throws AnalysisException {
 		
 		rewriteToApply(this, node, CLetBeStStrategy.SET_CARD, node.getExp());
+	}
+	
+	@Override
+	public void caseADistUnionUnaryExpIR(ADistUnionUnaryExpIR node) throws AnalysisException {
+		
+		rewriteToApply(this, node, SET_DIST_UNION, node.getExp());
 	}
 	
 	private void rewriteColEnumToApply(SExpIR node, String seqVar, LinkedList<SExpIR> members)
