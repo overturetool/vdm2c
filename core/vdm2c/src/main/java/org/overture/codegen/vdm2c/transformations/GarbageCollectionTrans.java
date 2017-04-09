@@ -20,6 +20,7 @@ import org.overture.codegen.vdm2c.ColTrans;
 import org.overture.codegen.vdm2c.Vdm2cTag;
 import org.overture.codegen.vdm2c.Vdm2cTag.MethodTag;
 import org.overture.codegen.vdm2c.extast.expressions.AMacroApplyExpIR;
+import org.overture.codegen.vdm2c.utils.CLetBeStStrategy;
 import org.overture.codegen.vdm2c.utils.CTransUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -101,6 +102,7 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 		gcNames.put(ColTrans.SET_DIFF, "vdmSetDifferenceGC");
 		gcNames.put(ColTrans.SET_SUBSET, "vdmSetSubsetGC");
 		gcNames.put(ColTrans.SET_PROPER_SUBSET, "vdmSetProperSubsetGC");
+		gcNames.put(CLetBeStStrategy.SET_CARD, "vdmSetCardGC");
 		
 		// Copying
 		gcNames.put(ValueSemantics.VDM_CLONE, "vdmCloneGC");

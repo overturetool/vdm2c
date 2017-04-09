@@ -22,6 +22,7 @@ import org.overture.codegen.ir.statements.ALocalPatternAssignmentStmIR;
 import org.overture.codegen.trans.IterationVarPrefixes;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.trans.iterator.AbstractLanguageIterator;
+import org.overture.codegen.vdm2c.utils.CLetBeStStrategy;
 import org.overture.codegen.vdm2c.utils.CTransUtil;
 
 public class CForIterator extends AbstractLanguageIterator
@@ -62,7 +63,7 @@ public class CForIterator extends AbstractLanguageIterator
 			List<SPatternIR> patterns, SPatternIR pattern)
 			throws AnalysisException
 	{
-		return newApply("vdmLessThan", newIdentifier(iteratorName, null), newApply("vdmSetCard", newIdentifier(setName, null)));
+		return newApply("vdmLessThan", newIdentifier(iteratorName, null), newApply(CLetBeStStrategy.SET_CARD, newIdentifier(setName, null)));
 	}
 
 	@Override

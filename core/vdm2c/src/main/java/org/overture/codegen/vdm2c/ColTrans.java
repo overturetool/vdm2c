@@ -9,6 +9,7 @@ import org.overture.codegen.ir.SExpIR;
 import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.analysis.intf.IAnalysis;
 import org.overture.codegen.ir.expressions.AApplyExpIR;
+import org.overture.codegen.ir.expressions.ACardUnaryExpIR;
 import org.overture.codegen.ir.expressions.AEnumSeqExpIR;
 import org.overture.codegen.ir.expressions.AEnumSetExpIR;
 import org.overture.codegen.ir.expressions.AExternalExpIR;
@@ -25,6 +26,7 @@ import org.overture.codegen.ir.expressions.ASetUnionBinaryExpIR;
 import org.overture.codegen.ir.expressions.ATailUnaryExpIR;
 import org.overture.codegen.ir.types.AExternalTypeIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
+import org.overture.codegen.vdm2c.utils.CLetBeStStrategy;
 import org.overture.codegen.vdm2c.utils.IApplyAssistant;
 
 /**
@@ -159,6 +161,12 @@ public class ColTrans extends DepthFirstAnalysisCAdaptor implements IApplyAssist
 	public void caseASetProperSubsetBinaryExpIR(ASetProperSubsetBinaryExpIR node) throws AnalysisException {
 		
 		rewriteToApply(this, node, SET_PROPER_SUBSET, node.getLeft(), node.getRight());
+	}
+	
+	@Override
+	public void caseACardUnaryExpIR(ACardUnaryExpIR node) throws AnalysisException {
+		
+		rewriteToApply(this, node, CLetBeStStrategy.SET_CARD, node.getExp());
 	}
 	
 	private void rewriteColEnumToApply(SExpIR node, String seqVar, LinkedList<SExpIR> members)

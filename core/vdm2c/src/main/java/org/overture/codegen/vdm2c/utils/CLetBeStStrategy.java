@@ -20,6 +20,7 @@ import org.overture.codegen.vdm2c.CForIterator;
 
 public class CLetBeStStrategy extends LetBeStStrategy {
 
+	public static final String SET_CARD = "vdmSetCard";
 	protected Logger log = Logger.getLogger(this.getClass().getName());
 	
 	public CLetBeStStrategy(TransAssistantIR transformationAssistant, SExpIR suchThat, STypeIR setSeqType,
@@ -44,7 +45,7 @@ public class CLetBeStStrategy extends LetBeStStrategy {
 			return null;
 		}
 		
-		SExpIR left = newApply("vdmLessThan", newIdentifier(iteratorName, null), newApply("vdmSetCard", newIdentifier(setVar.getName(), null)));
+		SExpIR left = newApply("vdmLessThan", newIdentifier(iteratorName, null), newApply(SET_CARD, newIdentifier(setVar.getName(), null)));
 		SExpIR right = transAssist.consBoolCheck(successVarName, true);
 
 		return CTransUtil.newApply("toBool", transAssist.consAndExp(left, right));
