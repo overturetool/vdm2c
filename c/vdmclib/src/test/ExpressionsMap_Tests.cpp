@@ -27,6 +27,8 @@ extern "C"
 #include "Vdm.h"
 #include "VdmMap.h"
 #include <stdio.h>
+
+extern TVP newMap();
 }
 
 
@@ -421,28 +423,6 @@ TEST(Expression_Map, mapEquals2)
 	vdmFree(expectedResult);
 }
 
-
-TEST(Expression_Map, mapInEquals)
-{
-	//map1: {1|->2,3|->4,6|->7}
-	TVP map1 = createMap1();
-	//map2: {1|->2,3|->4,6|->7}
-	TVP map2 = createMap1();
-	//map3: {6|->7,9|->11}
-	TVP map3 = createMap2();
-
-	TVP map_not_eq1 = vdmMapInEquals(map1,map2);
-	EXPECT_FALSE(map_not_eq1->value.boolVal);
-
-	TVP map_not_eq2 = vdmMapInEquals(map1,map3);
-	EXPECT_TRUE(map_not_eq2->value.boolVal);
-
-	vdmFree(map1);
-	vdmFree(map2);
-	vdmFree(map3);
-	vdmFree(map_not_eq1);
-	vdmFree(map_not_eq2);
-}
 
 
 TEST(Expression_Map, newMapVarToGrow)

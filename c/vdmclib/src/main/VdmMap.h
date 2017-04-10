@@ -73,9 +73,6 @@ struct Map
 
 hashtable_t *ht_create( int size );
 
-
-TVP newMap();
-TVP newMapGC(TVP *from);
 void freeMap(struct Map *m);
 struct Map* cloneMap(struct Map *m);
 
@@ -113,9 +110,6 @@ TVP vdmMapInverse(TVP map);
 TVP vdmMapInverseGC(TVP map, TVP *from);
 
 TVP vdmMapEquals(TVP map1, TVP map2);
-TVP vdmMapEqualsGC(TVP map1, TVP map2, TVP *from);
-TVP vdmMapInEquals(TVP map1, TVP map2);
-TVP vdmMapInEqualsGC(TVP map1, TVP map2, TVP *from);
 
 #ifdef WITH_GLIB_HASH
 guint vdm_typedvalue_hash(gconstpointer v);
