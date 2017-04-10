@@ -17,6 +17,7 @@ import org.overture.codegen.ir.patterns.AIdentifierPatternIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.CForIterator;
 import org.overture.codegen.vdm2c.ColTrans;
+import org.overture.codegen.vdm2c.TupleTrans;
 import org.overture.codegen.vdm2c.Vdm2cTag;
 import org.overture.codegen.vdm2c.Vdm2cTag.MethodTag;
 import org.overture.codegen.vdm2c.extast.expressions.AMacroApplyExpIR;
@@ -114,6 +115,9 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 		gcNames.put(ColTrans.MAP_UNION, "vdmMapMunionGC");
 		gcNames.put(ColTrans.MAP_APPLY, "vdmMapApplyGC");
 		
+		// Tuples
+		gcNames.put(TupleTrans.TUPLE_EXP, "newProductVarGC");
+		
 		// Copying
 		gcNames.put(ValueSemantics.VDM_CLONE, "vdmCloneGC");
 		
@@ -173,10 +177,11 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 				id.setName(val);
 				if(!(isFieldAccessor(oldName) || isSetter(oldName)))
 				{
-					if (isSeqOrSet(oldName)) {
-						// The signatures of 'newSeqVarGC' and newSetVarGC are:
+					if (isSeqOrSet(oldName) || isTupleExp(oldName)) {
+						// The signatures of 'newSeqVarGC', 'newSetVarGC' and 'newProductVarGC' are:
 						// TVP newSeqVarGC(size_t size, TVP *from, ...)
 						// TVP newSetVarGC(size_t size, TVP *from, ...)
+						// TVP newProductVarGC(size_t size, TVP *from, ...)
 						// Therefore, 'from' is the second argument (at index 1)
 						args.add(1, consReference(node));
 					}
@@ -257,6 +262,11 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 	private boolean isSeqOrSet(String name)
 	{
 		return name.equals(ColTrans.SEQ_VAR) || name.equals(ColTrans.SET_VAR);
+	}
+	
+	private boolean isTupleExp(String name) {
+	
+		return name.equals(TupleTrans.TUPLE_EXP);
 	}
 	
 	private boolean isMap(String name)
