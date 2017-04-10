@@ -10,6 +10,7 @@ import org.overture.codegen.ir.SExpIR;
 import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.analysis.intf.IAnalysis;
 import org.overture.codegen.ir.expressions.AExternalExpIR;
+import org.overture.codegen.ir.expressions.AFieldNumberExpIR;
 import org.overture.codegen.ir.expressions.ATupleExpIR;
 import org.overture.codegen.ir.types.AExternalTypeIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
@@ -18,6 +19,7 @@ import org.overture.codegen.vdm2c.utils.IApplyAssistant;
 public class TupleTrans  extends DepthFirstAnalysisCAdaptor implements IApplyAssistant {
 
 	public static final String TUPLE_EXP = "newProductVar";
+	public static final String TUPLE_FIELD_NUMBER_EXP = "productGet";
 	
 	private TransAssistantIR assist;
 
@@ -28,11 +30,7 @@ public class TupleTrans  extends DepthFirstAnalysisCAdaptor implements IApplyAss
 	@Override
 	public void caseATupleExpIR(ATupleExpIR node) throws AnalysisException {
 
-		AExternalTypeIR extType = new AExternalTypeIR();
-		extType.setName("size_t");
-
-		AExternalExpIR sizeExp = new AExternalExpIR();		
-		sizeExp.setTargetLangExp(node.getArgs().size() + "");
+		AExternalExpIR sizeExp = consSizeArg(node.getArgs().size());
 		
 		List<SExpIR> args = new LinkedList<>();
 		args.add(sizeExp);
@@ -40,6 +38,21 @@ public class TupleTrans  extends DepthFirstAnalysisCAdaptor implements IApplyAss
 		args.addAll(node.getArgs());
 		
 		rewriteToApply(this, node, TUPLE_EXP, args.toArray(new SExpIR[0]));
+	}
+	
+	@Override
+	public void caseAFieldNumberExpIR(AFieldNumberExpIR node) throws AnalysisException {
+	
+		rewriteToApply(this, node, TUPLE_FIELD_NUMBER_EXP, node.getTuple(), consSizeArg(node.getField()));
+	}
+
+	private AExternalExpIR consSizeArg(long size) {
+		AExternalTypeIR extType = new AExternalTypeIR();
+		extType.setName("size_t");
+
+		AExternalExpIR sizeExp = new AExternalExpIR();		
+		sizeExp.setTargetLangExp(size + "");
+		return sizeExp;
 	}
 	
 	@Override
