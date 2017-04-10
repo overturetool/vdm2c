@@ -27,6 +27,8 @@ extern "C"
 #include "Vdm.h"
 #include "VdmProduct.h"
 #include <stdio.h>
+
+TVP newProduct(size_t size);
 }
 
 
@@ -52,14 +54,6 @@ TVP productExp()
 	vdmFree(tmp2_1);
 	vdmFree(tmp2_2);
 
-//
-//	TVP tmp2_1 = newInt(1);
-//	productSet(tmp2,1,tmp2_1);
-//	vdmFree(tmp2_1);
-//
-//	TVP tmp2_2 = newInt(2);
-//	productSet(tmp2,2,tmp2_2);
-//	vdmFree(tmp2_2);
 
 	TVP res =newBool(equals(tmp1,tmp2));
 
