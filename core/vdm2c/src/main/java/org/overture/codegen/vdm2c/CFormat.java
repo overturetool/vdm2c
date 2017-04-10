@@ -175,19 +175,6 @@ public class CFormat
 
 		return writer.toString();
 	}
-	
-	public String formatMapArgs(List<AMapletExpIR> exps) throws AnalysisException
-	{
-		List<SExpIR> flattened = new LinkedList<>();
-		
-		for(AMapletExpIR e : exps)
-		{
-			flattened.add(e.getLeft());
-			flattened.add(e.getRight());
-		}
-		
-		return formatArgs(flattened);
-	}
 
 	public boolean isNull(INode node)
 	{

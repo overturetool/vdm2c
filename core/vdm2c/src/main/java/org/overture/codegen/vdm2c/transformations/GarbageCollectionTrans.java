@@ -85,6 +85,7 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 		// Collections
 		gcNames.put(ColTrans.SEQ_VAR, "newSeqVarGC");
 		gcNames.put(ColTrans.SET_VAR, "newSetVarGC");
+		gcNames.put(ColTrans.MAP_VAR, "newMapVarToGrowGC");
 		
 		// Sequence operations
 		gcNames.put(ColTrans.SEQ_TAIL, "vdmSeqTlGC");

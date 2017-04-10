@@ -3,6 +3,7 @@ package org.overture.codegen.vdm2c;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.rewriteToApply;
 
 import java.util.LinkedList;
+import java.util.List;
 
 import org.overture.cgc.extast.analysis.DepthFirstAnalysisCAdaptor;
 import org.overture.codegen.ir.SExpIR;
@@ -12,12 +13,14 @@ import org.overture.codegen.ir.expressions.AApplyExpIR;
 import org.overture.codegen.ir.expressions.ACardUnaryExpIR;
 import org.overture.codegen.ir.expressions.ADistIntersectUnaryExpIR;
 import org.overture.codegen.ir.expressions.ADistUnionUnaryExpIR;
+import org.overture.codegen.ir.expressions.AEnumMapExpIR;
 import org.overture.codegen.ir.expressions.AEnumSeqExpIR;
 import org.overture.codegen.ir.expressions.AEnumSetExpIR;
 import org.overture.codegen.ir.expressions.AExternalExpIR;
 import org.overture.codegen.ir.expressions.AHeadUnaryExpIR;
 import org.overture.codegen.ir.expressions.AInSetBinaryExpIR;
 import org.overture.codegen.ir.expressions.ALenUnaryExpIR;
+import org.overture.codegen.ir.expressions.AMapletExpIR;
 import org.overture.codegen.ir.expressions.APowerSetUnaryExpIR;
 import org.overture.codegen.ir.expressions.AReverseUnaryExpIR;
 import org.overture.codegen.ir.expressions.ASeqConcatBinaryExpIR;
@@ -42,6 +45,7 @@ public class ColTrans extends DepthFirstAnalysisCAdaptor implements IApplyAssist
 
 	public static final String SEQ_VAR = "newSeqVar";
 	public static final String SET_VAR = "newSetVar";
+	public static final String MAP_VAR = "newMapVarToGrow";	
 	
 	// Sequence operations
 	public static final String SEQ_TAIL = "vdmSeqTl";
@@ -134,6 +138,19 @@ public class ColTrans extends DepthFirstAnalysisCAdaptor implements IApplyAssist
 	}
 	
 	@Override
+	public void caseAEnumMapExpIR(AEnumMapExpIR node) throws AnalysisException {
+
+		List<SExpIR> flattened = new LinkedList<>();
+
+		for (AMapletExpIR e : node.getMembers()) {
+			flattened.add(e.getLeft());
+			flattened.add(e.getRight());
+		}
+
+		rewriteColEnumToApply(node, MAP_VAR, flattened);
+	}
+	
+	@Override
 	public void caseAInSetBinaryExpIR(AInSetBinaryExpIR node) throws AnalysisException {
 
 		rewriteToApply(this, node, SET_MEMBER, node.getRight(), node.getLeft());
@@ -193,7 +210,7 @@ public class ColTrans extends DepthFirstAnalysisCAdaptor implements IApplyAssist
 		rewriteToApply(this, node, SET_POWER_SET, node.getExp());
 	}
 	
-	private void rewriteColEnumToApply(SExpIR node, String seqVar, LinkedList<SExpIR> members)
+	private void rewriteColEnumToApply(SExpIR node, String seqVar, List<SExpIR> members)
 			throws AnalysisException {
 		AExternalTypeIR extType = new AExternalTypeIR();
 		extType.setName("size_t");
