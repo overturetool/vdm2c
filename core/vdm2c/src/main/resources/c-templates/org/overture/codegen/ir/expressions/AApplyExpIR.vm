@@ -5,11 +5,7 @@
 #set( $root = $CFormat.format($node.getRoot()) )
 #set( $args = $CFormat.formatArgs($node.getArgs()) )
 ##
-#if ($CFormat.isMapType($node.getRoot()) && $node.getArgs().size() == 1)
-	#set( $key = $CFormat.format($node.getArgs().get(0)))
-	vdmMapApply(${root},${key})
-##
-#elseif ($CFormat.isStringType($node.getRoot()))
+#if ($CFormat.isStringType($node.getRoot()))
 	#set( $index = $CFormat.format($node.getArgs().get(0)))
 	${root}.charAt(Utils.index($index))##
 ##

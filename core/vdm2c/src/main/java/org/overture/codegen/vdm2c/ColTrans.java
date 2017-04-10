@@ -73,6 +73,7 @@ public class ColTrans extends DepthFirstAnalysisCAdaptor implements IApplyAssist
 	public static final String MAP_DOM = "vdmMapDom";
 	public static final String MAP_RNG = "vdmMapRng";
 	public static final String MAP_UNION = "vdmMapMunion";
+	public static final String MAP_APPLY = "vdmMapApply";
 
 	private TransAssistantIR assist;
 
@@ -126,6 +127,10 @@ public class ColTrans extends DepthFirstAnalysisCAdaptor implements IApplyAssist
 		if(assist.getInfo().getTypeAssistant().isSeqType(node.getRoot()) && node.getArgs().size() == 1)
 		{
 			rewriteToApply(this, node, SEQ_INDEX, node.getRoot(), node.getArgs().getFirst());
+		}
+		else if(assist.getInfo().getTypeAssistant().isMapType(node.getRoot()) && node.getArgs().size() == 1)
+		{
+			rewriteToApply(this, node, MAP_APPLY, node.getRoot(), node.getArgs().getFirst());
 		}
 		else
 		{
