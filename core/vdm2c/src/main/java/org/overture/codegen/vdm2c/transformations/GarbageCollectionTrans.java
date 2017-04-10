@@ -111,6 +111,7 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 		// Map operations
 		gcNames.put(ColTrans.MAP_DOM, "vdmMapDomGC");
 		gcNames.put(ColTrans.MAP_RNG, "vdmMapRngGC");
+		gcNames.put(ColTrans.MAP_UNION, "vdmMapMunionGC");
 		
 		// Copying
 		gcNames.put(ValueSemantics.VDM_CLONE, "vdmCloneGC");
