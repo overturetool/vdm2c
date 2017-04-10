@@ -172,13 +172,21 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 				id.setName(val);
 				if(!(isFieldAccessor(oldName) || isSetter(oldName)))
 				{
-					if (isColVar(oldName)) {
+					if (isSeqOrSet(oldName)) {
 						// The signatures of 'newSeqVarGC' and newSetVarGC are:
 						// TVP newSeqVarGC(size_t size, TVP *from, ...)
 						// TVP newSetVarGC(size_t size, TVP *from, ...)
 						// Therefore, 'from' is the second argument (at index 1)
 						args.add(1, consReference(node));
-					} else {
+					}
+					else if(isMap(oldName))
+					{
+						// The signature of 'newMapVarToGrowGC' is:
+						// TVP newMapVarToGrowGC(size_t size, size_t expected_size, TVP *from, ...);
+						// Therefore, 'from' is the third argument (at index 2)
+						args.add(2, consReference(node));
+					}
+					else {
 						args.add(consReference(node));
 					}
 				}
@@ -245,9 +253,14 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 		return name.equals(CTransUtil.SET_FIELD) || name.equals(CTransUtil.SET_FIELD_PTR);
 	}
 	
-	private boolean isColVar(String name)
+	private boolean isSeqOrSet(String name)
 	{
-		return name.equals(ColTrans.SEQ_VAR) || name.equals(ColTrans.SET_VAR) || name.equals(ColTrans.MAP_VAR);
+		return name.equals(ColTrans.SEQ_VAR) || name.equals(ColTrans.SET_VAR);
+	}
+	
+	private boolean isMap(String name)
+	{
+		return name.equals(ColTrans.MAP_VAR);
 	}
 	
 	private boolean insideFieldInitializer(SExpIR exp)

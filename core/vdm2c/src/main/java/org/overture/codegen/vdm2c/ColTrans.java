@@ -148,14 +148,23 @@ public class ColTrans extends DepthFirstAnalysisCAdaptor implements IApplyAssist
 	@Override
 	public void caseAEnumMapExpIR(AEnumMapExpIR node) throws AnalysisException {
 
-		List<SExpIR> flattened = new LinkedList<>();
+		List<SExpIR> args = new LinkedList<>();
+		
+		// Guess expected size
+		AExternalTypeIR extType = new AExternalTypeIR();
+		extType.setName("size_t");
+
+		AExternalExpIR expectedSize = new AExternalExpIR();
+		expectedSize.setTargetLangExp(5	 + "");
+		
+		args.add(expectedSize);
 
 		for (AMapletExpIR e : node.getMembers()) {
-			flattened.add(e.getLeft());
-			flattened.add(e.getRight());
+			args.add(e.getLeft());
+			args.add(e.getRight());
 		}
 
-		rewriteColEnumToApply(node, MAP_VAR, flattened);
+		rewriteColEnumToApply(node, MAP_VAR, args);
 	}
 	
 	@Override
@@ -241,11 +250,15 @@ public class ColTrans extends DepthFirstAnalysisCAdaptor implements IApplyAssist
 		AExternalTypeIR extType = new AExternalTypeIR();
 		extType.setName("size_t");
 
-		AExternalExpIR size = new AExternalExpIR();
-		size.setTargetLangExp(members.size() + "");
+		AExternalExpIR sizeExp = new AExternalExpIR();		
+
+		// Maps: divide by 2 to count the numbers of maplets. Subtract 1 to not
+		// take into account the expected map size.
+		int size = node instanceof AEnumMapExpIR ? (members.size() - 1)/2 : members.size(); 
+		sizeExp.setTargetLangExp(size + "");
 
 		LinkedList<SExpIR> argList = new LinkedList<>(members);
-		argList.addFirst(size);
+		argList.addFirst(sizeExp);
 
 		if (members.isEmpty()) {
 			argList.add(assist.getInfo().getExpAssistant().consNullExp());
