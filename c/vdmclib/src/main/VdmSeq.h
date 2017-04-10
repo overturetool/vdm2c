@@ -40,8 +40,6 @@
 /*
  * New empty sequence
  */
-TVP newSeq(size_t size);
-TVP newSeqGC(size_t size, TVP *from);
 /*
  * New sequence from array of elements
  */
@@ -64,8 +62,6 @@ TVP vdmSeqLenGC(TVP seq, TVP *from);
 TVP vdmSeqConcGC(TVP seq, TVP seq2, TVP *from);
 TVP vdmSeqReverseGC(TVP seq, TVP *from);
 TVP vdmSeqIndexGC(TVP seq, TVP indexVal, TVP *from);
-TVP vdmSeqEqualGC(TVP seq, TVP seq2, TVP *from);
-TVP vdmSeqInEqualGC(TVP seq, TVP seq2, TVP *from);
 
 #ifndef NO_SETS
 TVP vdmSeqElems(TVP seq);
@@ -78,8 +74,6 @@ TVP vdmSeqConc(TVP seq,TVP seq2);
 TVP vdmSeqReverse(TVP seq);
 //TVP seqMod(TVP seq,TVP seq);
 TVP vdmSeqIndex(TVP seq,TVP index);
-TVP vdmSeqEqual(TVP seq,TVP seq2);
-TVP vdmSeqInEqual(TVP seq,TVP seq2);
 
 void vdmSeqUpdate(TVP seq, TVP index, TVP newValue);
 
