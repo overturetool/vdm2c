@@ -10,13 +10,13 @@
 #include <stdio.h>
 #include <string.h>
 
+#if !defined(NO_IO) || !defined(NO_CSV)
 
 #define ASSERT_CHECK_BOOL(s) assert(s->type == VDM_BOOL && "Value is not a boolean")
 #define ASSERT_CHECK_NUMERIC(s) assert((s->type == VDM_INT||s->type == VDM_NAT||s->type == VDM_NAT1||s->type == VDM_REAL||s->type == VDM_RAT) && "Value is not numeric")
 #define ASSERT_CHECK_REAL(s) assert((s->type ==  VDM_REAL) && "Value is not real")
 #define ASSERT_CHECK_INT(s) assert((s->type ==  VDM_INT) && "Value is not integer")
 #define ASSERT_CHECK_CHAR(s) assert((s->type ==  VDM_CHAR) && "Value is not a character")
-
 
 char* printBool(TVP val)
 {
@@ -46,10 +46,12 @@ char* printChar(TVP val)
 
 	char* str;
 
-	str = (char*)malloc(2 * sizeof(char));
+	str = (char*)malloc(4 * sizeof(char));
 
-	str[0] = val->value.charVal;
-	str[1] = 0;
+	str[0] = '\'';
+	str[1] = val->value.charVal;
+	str[2] = '\'';
+	str[3] = 0;
 
 	return str;
 }
@@ -270,3 +272,7 @@ char* toString(TVP val)
 
 	return str;
 }
+
+#endif /* NO_IO */
+
+

@@ -30,6 +30,8 @@
 #ifndef PRETTYPRINT_H_
 #define PRETTYPRINT_H_
 
+#if !defined(NO_IO) || !defined(NO_CSV)
+
 #include <stdlib.h>
 #include <stdbool.h>
 
@@ -43,4 +45,5 @@
 
 char* toString(TVP val);
 
+#endif /* NO_IO */
 #endif /* PRETTYPRINT_H_ */
