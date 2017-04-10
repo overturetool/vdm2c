@@ -20,6 +20,7 @@ import org.overture.codegen.ir.expressions.AExternalExpIR;
 import org.overture.codegen.ir.expressions.AHeadUnaryExpIR;
 import org.overture.codegen.ir.expressions.AInSetBinaryExpIR;
 import org.overture.codegen.ir.expressions.ALenUnaryExpIR;
+import org.overture.codegen.ir.expressions.AMapDomainUnaryExpIR;
 import org.overture.codegen.ir.expressions.AMapletExpIR;
 import org.overture.codegen.ir.expressions.APowerSetUnaryExpIR;
 import org.overture.codegen.ir.expressions.AReverseUnaryExpIR;
@@ -65,6 +66,9 @@ public class ColTrans extends DepthFirstAnalysisCAdaptor implements IApplyAssist
 	public static final String SET_DIST_UNION = "vdmSetDunion";
 	public static final String SET_DIST_INTER = "vdmSetDinter";
 	public static final String SET_POWER_SET = "vdmSetPower";
+	
+	// Map operations
+	public static final String MAP_DOM = "vdmMapDom";
 
 	private TransAssistantIR assist;
 
@@ -208,6 +212,12 @@ public class ColTrans extends DepthFirstAnalysisCAdaptor implements IApplyAssist
 	public void caseAPowerSetUnaryExpIR(APowerSetUnaryExpIR node) throws AnalysisException {
 		
 		rewriteToApply(this, node, SET_POWER_SET, node.getExp());
+	}
+	
+	@Override
+	public void caseAMapDomainUnaryExpIR(AMapDomainUnaryExpIR node) throws AnalysisException {
+		
+		rewriteToApply(this, node, MAP_DOM, node.getExp());
 	}
 	
 	private void rewriteColEnumToApply(SExpIR node, String seqVar, List<SExpIR> members)
