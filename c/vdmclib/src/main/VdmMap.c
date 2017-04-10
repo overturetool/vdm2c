@@ -857,7 +857,7 @@ TVP vdmMapMunion(TVP map1, TVP map2)
 	map2resrng = vdmMapRng(map2res);
 	vdmFree(map1res);
 	vdmFree(map2res);
-	res = vdmSetEquals(map1resrng, map2resrng);
+	res = vdmEquals(map1resrng, map2resrng);
 	vdmFree(map1resrng);
 	vdmFree(map2resrng);
 	assert(res->value.boolVal && "Maps not compatible.");
@@ -928,7 +928,7 @@ TVP vdmMapMunionGC(TVP map1, TVP map2, TVP *from)
 	map2resrng = vdmMapRng(map2res);
 	vdmFree(map1res);
 	vdmFree(map2res);
-	res = vdmSetEquals(map1resrng, map2resrng);
+	res = vdmEquals(map1resrng, map2resrng);
 	vdmFree(map1resrng);
 	vdmFree(map2resrng);
 	assert(res->value.boolVal && "Maps not compatible.");
