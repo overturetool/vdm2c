@@ -1,3 +1,0 @@
-#set( $exp = $CFormat.format($node.getExp()) )
-##
-MapUtil.merge($exp)

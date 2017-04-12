@@ -5,6 +5,7 @@
 
 #include "Vdm.h"
 #include "PrettyPrint.h"
+#include "VdmUnpackString.h"
 
 
 /*
@@ -36,8 +37,6 @@
  *  Created on: February, 2015
  *      Author: Victor Bandur
  */
-
-char* unpackString(TVP charseq);
 
 #if !defined(NO_IO) || !defined(NO_CSV)
 

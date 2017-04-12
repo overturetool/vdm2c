@@ -34,11 +34,12 @@
 
 #ifndef NO_PRODUCTS
 
-struct TypedValue* newProductVar(size_t size,...);
-struct TypedValue* newProduct(size_t size);
-struct TypedValue* newProductWithValues(size_t size,TVP* elements);
+TVP newProductVar(size_t size,...);
+TVP newProductVarGC(size_t size, TVP *from, ...);
+TVP newProductWithValues(size_t size,TVP* elements);
 
 TVP productGet(TVP product, int index);
+TVP productGetGC(TVP product, int index, TVP *from);
 void productSet(TVP product, int index, TVP val);
 //bool productEqual(TVP product,TVP product2);
 

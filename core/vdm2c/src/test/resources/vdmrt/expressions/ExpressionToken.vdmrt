@@ -1,0 +1,32 @@
+class ExpressionToken
+
+types
+
+public T = token;
+
+values
+
+v = mk_token("first");
+
+instance variables
+
+field1 : token := mk_token("second");
+field2 : T := mk_token("third");
+
+operations
+
+public tokenEq : () ==> bool
+tokenEq()== 
+let a = mk_token("x"),
+    b = mk_token("x")
+in
+  return a = b;
+
+public tokenNotEq : () ==> bool
+tokenNotEq()== 
+let a = mk_token("x"),
+    b = mk_token("y")
+in
+  return a <> b;
+
+end ExpressionToken

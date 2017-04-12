@@ -22,10 +22,12 @@ import org.overture.codegen.ir.statements.ALocalPatternAssignmentStmIR;
 import org.overture.codegen.trans.IterationVarPrefixes;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.trans.iterator.AbstractLanguageIterator;
+import org.overture.codegen.vdm2c.utils.CLetBeStStrategy;
 import org.overture.codegen.vdm2c.utils.CTransUtil;
 
 public class CForIterator extends AbstractLanguageIterator
 {
+	public static final String VDM_SET_ELEMENT_AT = "vdmSetElementAt";
 
 	public CForIterator(TransAssistantIR transformationAssistant,
 			IterationVarPrefixes iteVarPrefixes)
@@ -61,7 +63,7 @@ public class CForIterator extends AbstractLanguageIterator
 			List<SPatternIR> patterns, SPatternIR pattern)
 			throws AnalysisException
 	{
-		return newApply("toBool", newApply("vdmLessThan", newIdentifier(iteratorName, null), newApply("vdmSetCard", newIdentifier(setName, null))));
+		return newApply("vdmLessThan", newIdentifier(iteratorName, null), newApply(CLetBeStStrategy.SET_CARD, newIdentifier(setName, null)));
 	}
 
 	@Override
@@ -80,7 +82,7 @@ public class CForIterator extends AbstractLanguageIterator
 		setId.setIsLocal(true);
 		AIdentifierVarExpIR itrId = newIdentifier(iteratorName, null);
 		itrId.setIsLocal(true);
-		return newDeclarationAssignment(pattern, newTvpType(), newApply("vdmSetElementAt", setId, newApply("toInteger", itrId)), null);
+		return newDeclarationAssignment(pattern, newTvpType(), newApply(VDM_SET_ELEMENT_AT, setId, newApply("toInteger", itrId)), null);
 	}
 
 	@Override
@@ -98,7 +100,7 @@ public class CForIterator extends AbstractLanguageIterator
 		ALocalPatternAssignmentStmIR assign = new ALocalPatternAssignmentStmIR();
 		assign.setNextElementDecl(nextElementDecl);
 		assign.setTarget(pattern);
-		assign.setExp(newApply("vdmSetElementAt", newIdentifier(setName, null), newApply("toInteger", newIdentifier(iteratorName, null))));
+		assign.setExp(newApply(VDM_SET_ELEMENT_AT, newIdentifier(setName, null), newApply("toInteger", newIdentifier(iteratorName, null))));
 		
 		return assign;
 	}

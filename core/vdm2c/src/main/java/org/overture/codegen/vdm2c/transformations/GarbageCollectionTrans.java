@@ -15,9 +15,12 @@ import org.overture.codegen.ir.expressions.AExternalExpIR;
 import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
 import org.overture.codegen.ir.patterns.AIdentifierPatternIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
+import org.overture.codegen.vdm2c.CForIterator;
+import org.overture.codegen.vdm2c.ColTrans;
 import org.overture.codegen.vdm2c.Vdm2cTag;
 import org.overture.codegen.vdm2c.Vdm2cTag.MethodTag;
 import org.overture.codegen.vdm2c.extast.expressions.AMacroApplyExpIR;
+import org.overture.codegen.vdm2c.utils.CLetBeStStrategy;
 import org.overture.codegen.vdm2c.utils.CTransUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,6 +80,38 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 		gcNames.put(LiteralInstantiationRewriteTrans.NEW_REAL, "newRealGC");
 		gcNames.put(LiteralInstantiationRewriteTrans.NEW_CHAR, "newCharGC");
 		gcNames.put(LiteralInstantiationRewriteTrans.NEW_QUOTE, "newQuoteGC");
+		gcNames.put(LiteralInstantiationRewriteTrans.NEW_TOKEN, "newTokenGC");
+		
+		// Collections
+		gcNames.put(ColTrans.SEQ_VAR, "newSeqVarGC");
+		gcNames.put(ColTrans.SET_VAR, "newSetVarGC");
+		gcNames.put(ColTrans.MAP_VAR, "newMapVarToGrowGC");
+		
+		// Sequence operations
+		gcNames.put(ColTrans.SEQ_TAIL, "vdmSeqTlGC");
+		gcNames.put(ColTrans.SEQ_LEN, "vdmSeqLenGC");
+		gcNames.put(ColTrans.SEQ_HEAD, "vdmSeqHdGC");
+		gcNames.put(ColTrans.SEQ_CONC, "vdmSeqConcGC");
+		gcNames.put(ColTrans.SEQ_REVERSE, "vdmSeqReverseGC");
+		gcNames.put(ColTrans.SEQ_INDEX, "vdmSeqIndexGC");
+		
+		// Set operations and utility functions
+		gcNames.put(CForIterator.VDM_SET_ELEMENT_AT, "vdmSetElementAtGC");
+		gcNames.put(ColTrans.SET_MEMBER, "vdmSetMemberOfGC");
+		gcNames.put(ColTrans.SET_UNION, "vdmSetUnionGC");
+		gcNames.put(ColTrans.SET_INTER, "vdmSetInterGC");
+		gcNames.put(ColTrans.SET_DIFF, "vdmSetDifferenceGC");
+		gcNames.put(ColTrans.SET_SUBSET, "vdmSetSubsetGC");
+		gcNames.put(ColTrans.SET_PROPER_SUBSET, "vdmSetProperSubsetGC");
+		gcNames.put(CLetBeStStrategy.SET_CARD, "vdmSetCardGC");
+		gcNames.put(ColTrans.SET_DIST_UNION, "vdmSetDunionGC");
+		gcNames.put(ColTrans.SET_DIST_INTER, "vdmSetDinterGC");
+		gcNames.put(ColTrans.SET_POWER_SET, "vdmSetPowerGC");
+		
+		// Map operations
+		gcNames.put(ColTrans.MAP_DOM, "vdmMapDomGC");
+		gcNames.put(ColTrans.MAP_RNG, "vdmMapRngGC");
+		gcNames.put(ColTrans.MAP_UNION, "vdmMapMunionGC");
 		
 		// Copying
 		gcNames.put(ValueSemantics.VDM_CLONE, "vdmCloneGC");
@@ -137,7 +172,23 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 				id.setName(val);
 				if(!(isFieldAccessor(oldName) || isSetter(oldName)))
 				{
-					args.add(consReference(node));
+					if (isSeqOrSet(oldName)) {
+						// The signatures of 'newSeqVarGC' and newSetVarGC are:
+						// TVP newSeqVarGC(size_t size, TVP *from, ...)
+						// TVP newSetVarGC(size_t size, TVP *from, ...)
+						// Therefore, 'from' is the second argument (at index 1)
+						args.add(1, consReference(node));
+					}
+					else if(isMap(oldName))
+					{
+						// The signature of 'newMapVarToGrowGC' is:
+						// TVP newMapVarToGrowGC(size_t size, size_t expected_size, TVP *from, ...);
+						// Therefore, 'from' is the third argument (at index 2)
+						args.add(2, consReference(node));
+					}
+					else {
+						args.add(consReference(node));
+					}
 				}
 			}
 		}
@@ -200,6 +251,16 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 	private boolean isSetter(String name)
 	{
 		return name.equals(CTransUtil.SET_FIELD) || name.equals(CTransUtil.SET_FIELD_PTR);
+	}
+	
+	private boolean isSeqOrSet(String name)
+	{
+		return name.equals(ColTrans.SEQ_VAR) || name.equals(ColTrans.SET_VAR);
+	}
+	
+	private boolean isMap(String name)
+	{
+		return name.equals(ColTrans.MAP_VAR);
 	}
 	
 	private boolean insideFieldInitializer(SExpIR exp)

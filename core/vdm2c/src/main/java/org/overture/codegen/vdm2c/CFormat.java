@@ -6,7 +6,6 @@ import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -24,7 +23,6 @@ import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.declarations.AFormalParamLocalParamIR;
 import org.overture.codegen.ir.declarations.AMethodDeclIR;
 import org.overture.codegen.ir.declarations.SClassDeclIR;
-import org.overture.codegen.ir.expressions.AMapletExpIR;
 import org.overture.codegen.ir.statements.ABlockStmIR;
 import org.overture.codegen.merging.MergeVisitor;
 import org.overture.codegen.merging.TemplateCallable;
@@ -174,19 +172,6 @@ public class CFormat
 		}
 
 		return writer.toString();
-	}
-	
-	public String formatMapArgs(List<AMapletExpIR> exps) throws AnalysisException
-	{
-		List<SExpIR> flattened = new LinkedList<>();
-		
-		for(AMapletExpIR e : exps)
-		{
-			flattened.add(e.getLeft());
-			flattened.add(e.getRight());
-		}
-		
-		return formatArgs(flattened);
 	}
 
 	public boolean isNull(INode node)

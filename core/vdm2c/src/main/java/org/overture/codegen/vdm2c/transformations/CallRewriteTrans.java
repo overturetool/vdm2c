@@ -37,6 +37,7 @@ import org.overture.codegen.ir.types.AClassTypeIR;
 import org.overture.codegen.ir.types.AMethodTypeIR;
 import org.overture.codegen.ir.types.ASeqSeqTypeIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
+import org.overture.codegen.vdm2c.ColTrans;
 import org.overture.codegen.vdm2c.extast.expressions.AMacroApplyExpIR;
 import org.overture.codegen.vdm2c.utils.CTransUtil;
 import org.overture.codegen.vdm2c.utils.NameMangler;
@@ -368,7 +369,7 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 		} else if (applyType instanceof ASeqSeqTypeIR)
 		{
 			// sequence index
-			AApplyExpIR seqIndexApply = newApply("vdmSeqIndex", originalApply.getRoot().clone());
+			AApplyExpIR seqIndexApply = newApply(ColTrans.SEQ_INDEX, originalApply.getRoot().clone());
 			
 			for(SExpIR a : originalApply.getArgs())
 			{

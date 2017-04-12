@@ -5,6 +5,7 @@
 #include "IOLib.h"
 #include "VdmProduct.h"
 #include "VdmSeq.h"
+#include "VdmUnpackString.h"
 
 
 /*
@@ -38,6 +39,8 @@
  */
 
 #ifndef NO_CSV
+
+#include <ctype.h>
 
 TVP vdm_CSV_flinecount(TVP f);
 TVP vdm_CSV_freadval(TVP f, TVP index);

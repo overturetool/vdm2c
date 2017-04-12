@@ -27,7 +27,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-public class DistTestBase extends BaseGeneratorTest
+public class DistTestBase extends NativeTestBase
 {
 	private static final String TEST_REPORT = "report.xml";
 

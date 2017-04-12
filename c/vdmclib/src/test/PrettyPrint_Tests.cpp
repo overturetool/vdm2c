@@ -29,8 +29,11 @@ extern "C"
 #include <math.h>
 }
 
-
+#if !defined(NO_IO)
 
 TEST(PrettyPrint, print)
 {
 }
+
+
+#endif /* NO_IO */

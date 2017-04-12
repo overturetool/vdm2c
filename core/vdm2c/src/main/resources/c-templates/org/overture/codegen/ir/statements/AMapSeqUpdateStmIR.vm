@@ -1,5 +1,0 @@
-#set( $col = $CFormat.format($node.getCol()) )
-#set( $index = $CFormat.format($node.getIndex()) )
-#set( $value = $CFormat.format($node.getValue()) )
-##
-Utils.mapSeqUpdate(${col},${index},${value})
