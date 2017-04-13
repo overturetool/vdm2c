@@ -238,16 +238,20 @@ TVP newSetVarToGrow(size_t size, size_t expected_size, ...)
 //What to return?
 void vdmSetGrow(TVP set, TVP element)
 {
-	int bufsize = DEFAULT_SET_COMP_BUFFER;
+//	int bufsize = DEFAULT_SET_COMP_BUFFER;
 
 	UNWRAP_COLLECTION(col, set);
+	int size = col->size;
 
-	if(col->size >= bufsize)
-	{
-		//buffer too small add memory chunk
-		bufsize += DEFAULT_SET_COMP_BUFFER_STEPSIZE;
-		col->value = (TVP*)realloc(col->value, bufsize * sizeof(TVP));
-	}
+//	if(col->size >= bufsize)
+//	{
+//		//buffer too small add memory chunk
+//		bufsize += DEFAULT_SET_COMP_BUFFER_STEPSIZE;
+//		col->value = (TVP*)realloc(col->value, bufsize * sizeof(TVP));
+//	}
+
+	col->value = (TVP *)realloc(col->value, (size + 1) * sizeof(TVP));
+
 	vdmSetAdd(col->value, &(col->size), element);
 }
 
