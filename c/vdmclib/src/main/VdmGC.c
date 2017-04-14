@@ -174,7 +174,9 @@ void vdm_gc()
 			//Check that there is no interference between this call's stack
 			//variables and the reference to the memory we are freeing.
 			//If there is, then postpone reclamation to a later pass.
-			if(!(((void *)(current->loc->ref_from) == (void *)(&tmp)) || ((void *)(current->loc->ref_from) == (void *)&current) || (current->loc->ref_from == &tmp_loc)))
+			if(!(((void *)&tmp) <= ((void *)current->loc->ref_from) && ((void *)current->loc->ref_from) <= ((void *)(&tmp + 1)) ||
+					((void *)&current) <= ((void *)current->loc->ref_from) && ((void *)current->loc->ref_from) <= ((void *)(&current + 1)) ||
+					((void *)&tmp_loc) <= ((void *)current->loc->ref_from) && ((void *)current->loc->ref_from) <= ((void *)(&tmp_loc + 1))))
 			{
 				//For compatibility with vdmFree().
 				*(current->loc->ref_from) = NULL;
