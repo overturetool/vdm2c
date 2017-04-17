@@ -938,6 +938,21 @@ TEST(Expression_Set, setPower)
 	vdmFree(res);
 }
 
+TEST(Expression_Set, setCloneFree)
+{
+	TVP set1;
+	TVP set3;
+
+	vdm_gc_init();
+	set1 = newSetVar(1, newInt(1));
+	TVP set2 = vdmCloneGC(set1, &set2);
+	set3 = set2;
+	vdmFree(set1);
+	vdm_gc_shutdown();
+
+	EXPECT_TRUE(set2 == set3);
+}
+
 
 
 /*
