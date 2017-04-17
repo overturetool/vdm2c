@@ -474,6 +474,7 @@ void freeMap(struct Map *m)
 		freeChain(m->table->chain[i]);
 	}
 
+	free(m->table->chain);
 	free(m->table);
 	free(m);
 }
