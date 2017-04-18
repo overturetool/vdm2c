@@ -57,7 +57,7 @@ TVP newSeq(size_t size)
 	return newCollection(size, VDM_SEQ);
 }
 
-TVP newSeqGC(size_t size, TVP *from)
+static TVP newSeqGC(size_t size, TVP *from)
 {
 	return newCollectionGC(size, VDM_SEQ, from);
 }
@@ -398,38 +398,6 @@ TVP vdmSeqIndexGC(TVP seq, TVP indexVal, TVP *from) //VDM uses 1 based index
 
 	assert(index - 1 >= 0 && index - 1 < col->size && "invalid index");
 	return vdmCloneGC(col->value[index-1], from);
-}
-
-TVP vdmSeqEqual(TVP seq, TVP seq2)
-{
-	ASSERT_CHECK(seq);
-	ASSERT_CHECK(seq2);
-
-	return newBool(collectionEqual(seq,seq2));
-}
-
-TVP vdmSeqEqualGC(TVP seq, TVP seq2, TVP *from)
-{
-	ASSERT_CHECK(seq);
-	ASSERT_CHECK(seq2);
-
-	return newBoolGC(collectionEqual(seq,seq2), from);
-}
-
-TVP vdmSeqInEqual(TVP seq, TVP seq2)
-{
-	ASSERT_CHECK(seq);
-	ASSERT_CHECK(seq2);
-
-	return newBool(!collectionEqual(seq,seq2));
-}
-
-TVP vdmSeqInEqualGC(TVP seq, TVP seq2, TVP *from)
-{
-	ASSERT_CHECK(seq);
-	ASSERT_CHECK(seq2);
-
-	return newBoolGC(!collectionEqual(seq,seq2), from);
 }
 
 void vdmSeqUpdate(TVP seq, TVP indexVal, TVP newValue)

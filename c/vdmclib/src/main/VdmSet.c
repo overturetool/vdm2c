@@ -210,10 +210,13 @@ TVP newSetVarToGrow(size_t size, size_t expected_size, ...)
 	int bufsize = expected_size;  //DEFAULT_SET_COMP_BUFFER;
 	TVP* value = (TVP*) calloc(bufsize, sizeof(TVP));
 
+	TVP arg;
+	TVP v;
+
 	for (int i = 0; i < size; i++)
 	{
-		TVP arg = va_arg(ap, TVP);
-		TVP v= vdmClone(arg); // set binding
+		arg = va_arg(ap, TVP);
+		v = vdmClone(arg); // set binding
 
 
 		//Extra security measure.  Will only be true if size >= expected_size.
@@ -233,21 +236,61 @@ TVP newSetVarToGrow(size_t size, size_t expected_size, ...)
 	return res;
 }
 
+TVP newSetVarToGrowGC(size_t size, size_t expected_size, TVP *from, ...)
+{
+	va_list ap;
+	va_start(ap, from);
+
+	int count = 0;
+
+	int bufsize = expected_size;  //DEFAULT_SET_COMP_BUFFER;
+	TVP* value = (TVP*) calloc(bufsize, sizeof(TVP));
+
+	TVP arg;
+	TVP v;
+
+	for (int i = 0; i < size; i++)
+	{
+		arg = va_arg(ap, TVP);
+		v = vdmClone(arg); // set binding
+
+
+		//Extra security measure.  Will only be true if size >= expected_size.
+		if(count>=bufsize)
+		{
+			//buffer too small add memory chunk
+			bufsize += DEFAULT_SET_COMP_BUFFER_STEPSIZE;
+			value = (TVP*)realloc(value, bufsize * sizeof(TVP));
+		}
+		vdmSetAdd(value,&count,v);
+	}
+
+	va_end(ap);
+
+	TVP res = newCollectionWithValuesGC(count, VDM_SET, value, from);
+	free(value);
+	return res;
+}
+
 
 
 //What to return?
 void vdmSetGrow(TVP set, TVP element)
 {
-	int bufsize = DEFAULT_SET_COMP_BUFFER;
+//	int bufsize = DEFAULT_SET_COMP_BUFFER;
 
 	UNWRAP_COLLECTION(col, set);
+	int size = col->size;
 
-	if(col->size >= bufsize)
-	{
-		//buffer too small add memory chunk
-		bufsize += DEFAULT_SET_COMP_BUFFER_STEPSIZE;
-		col->value = (TVP*)realloc(col->value, bufsize * sizeof(TVP));
-	}
+//	if(col->size >= bufsize)
+//	{
+//		//buffer too small add memory chunk
+//		bufsize += DEFAULT_SET_COMP_BUFFER_STEPSIZE;
+//		col->value = (TVP*)realloc(col->value, bufsize * sizeof(TVP));
+//	}
+
+	col->value = (TVP *)realloc(col->value, (size + 1) * sizeof(TVP));
+
 	vdmSetAdd(col->value, &(col->size), element);
 }
 
@@ -751,28 +794,6 @@ TVP vdmSetEquals(TVP set1, TVP set2)
 
 	return newBool(subsetRes);
 }
-
-
-TVP vdmSetEqualsGC(TVP set1, TVP set2, TVP *from)
-{
-	ASSERT_CHECK(set1);
-	ASSERT_CHECK(set2);
-
-	TVP subset12Res;
-	TVP subset21Res;
-	bool subsetRes;
-
-	//Check mutual inclusion.
-	subset12Res = vdmSetSubset(set1, set2);
-	subset21Res = vdmSetSubset(set2, set1);
-
-	subsetRes = subset12Res->value.boolVal && subset21Res->value.boolVal;
-	vdmFree(subset12Res);
-	vdmFree(subset21Res);
-
-	return newBoolGC(subsetRes, from);
-}
-
 
 
 TVP vdmSetNotEquals(TVP set1, TVP set2)

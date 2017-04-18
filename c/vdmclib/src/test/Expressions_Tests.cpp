@@ -30,6 +30,8 @@ extern "C"
 #include "VdmProduct.h"
 #include "PatternBindMatch.h"
 #include <stdio.h>
+
+extern TVP newProduct(size_t size);
 }
 
 TVP letIdentifierExp()

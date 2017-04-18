@@ -474,6 +474,7 @@ void freeMap(struct Map *m)
 		freeChain(m->table->chain[i]);
 	}
 
+	free(m->table->chain);
 	free(m->table);
 	free(m);
 }
@@ -857,7 +858,7 @@ TVP vdmMapMunion(TVP map1, TVP map2)
 	map2resrng = vdmMapRng(map2res);
 	vdmFree(map1res);
 	vdmFree(map2res);
-	res = vdmSetEquals(map1resrng, map2resrng);
+	res = vdmEquals(map1resrng, map2resrng);
 	vdmFree(map1resrng);
 	vdmFree(map2resrng);
 	assert(res->value.boolVal && "Maps not compatible.");
@@ -928,7 +929,7 @@ TVP vdmMapMunionGC(TVP map1, TVP map2, TVP *from)
 	map2resrng = vdmMapRng(map2res);
 	vdmFree(map1res);
 	vdmFree(map2res);
-	res = vdmSetEquals(map1resrng, map2resrng);
+	res = vdmEquals(map1resrng, map2resrng);
 	vdmFree(map1resrng);
 	vdmFree(map2resrng);
 	assert(res->value.boolVal && "Maps not compatible.");
@@ -1445,179 +1446,5 @@ TVP vdmMapEquals(TVP map1, TVP map2){
 
 	return newBool(eq);
 
-}
-
-
-TVP vdmMapEqualsGC(TVP map1, TVP map2, TVP *from)
-{
-
-	//Assert map
-	ASSERT_CHECK(map1);
-	ASSERT_CHECK(map2);
-
-	bool eq = true;
-
-	TVP key1;
-	TVP val1;
-	TVP key2;
-	TVP val2;
-	TVP map1_dom;
-	TVP map2_dom;
-
-	TVP map1_rng;
-	TVP map2_rng;
-
-	map1_dom = vdmMapDom(map1);
-	map2_dom = vdmMapDom(map2);
-	if(!equals(map1_dom, map2_dom))
-	{
-		eq = false;
-
-		vdmFree(map1_dom);
-		vdmFree(map2_dom);
-
-		return newBool(eq);
-	}
-
-
-	map1_rng = vdmMapRng(map1);
-	map2_rng = vdmMapRng(map2);
-	if(!equals(map1_rng, map2_rng))
-	{
-		eq = false;
-
-		vdmFree(map1_dom);
-		vdmFree(map2_dom);
-		vdmFree(map1_rng);
-		vdmFree(map2_rng);
-
-		return newBool(eq);
-	}
-
-	UNWRAP_COLLECTION(m1, map1_dom);
-
-	for (int i = 0; i < m1->size; i++)
-	{
-		key1 = m1->value[i];
-		val1 = vdmMapApply(map1, key1);
-
-		key2 = m1->value[i];
-		val2 = vdmMapApply(map2, key2);
-
-		if(!equals(val1, val2))
-		{
-			eq = false;
-
-			vdmFree(val1);
-			vdmFree(val2);
-			vdmFree(map1_dom);
-			vdmFree(map2_dom);
-			vdmFree(map1_rng);
-			vdmFree(map2_rng);
-
-			return newBool(eq);
-		}
-	}
-
-	vdmFree(val1);
-	vdmFree(val2);
-	vdmFree(map1_dom);
-	vdmFree(map2_dom);
-	vdmFree(map1_rng);
-	vdmFree(map2_rng);
-
-	return newBoolGC(eq, from);
-
-}
-
-TVP vdmMapInEquals(TVP map1, TVP map2)
-{
-
-	//Assert map
-	ASSERT_CHECK(map1);
-	ASSERT_CHECK(map2);
-
-	TVP key1;
-	TVP val1;
-	TVP key2;
-	TVP val2;
-
-	bool not_eq = true;
-
-	TVP map1_dom = vdmMapDom(map1);
-	UNWRAP_COLLECTION(m1,map1_dom);
-
-	TVP map2_dom = vdmMapDom(map2);
-	UNWRAP_COLLECTION(m2,map2_dom);
-
-	if(m1->size!=m2->size)
-		return newBool(true);
-
-	for (int i=0; i<m1->size; i++){
-		key1 = m1->value[i];
-		val1 = vdmMapApply(map1,key1);
-
-		key2 = m2->value[i];
-		val2 = vdmMapApply(map2,key2);
-
-		if(equals(key1,key2) && equals(val1,val2)){
-			not_eq = false;
-			break;
-		}
-
-		vdmFree(val1);
-		vdmFree(val2);
-	}
-
-	vdmFree(map1_dom);
-	vdmFree(map2_dom);
-
-	return newBool(not_eq);
-}
-
-
-
-TVP vdmMapInEqualsGC(TVP map1, TVP map2, TVP *from)
-{
-	//Assert map
-	ASSERT_CHECK(map1);
-	ASSERT_CHECK(map2);
-
-	TVP key1;
-	TVP val1;
-	TVP key2;
-	TVP val2;
-
-	bool not_eq = true;
-
-	TVP map1_dom = vdmMapDom(map1);
-	UNWRAP_COLLECTION(m1,map1_dom);
-
-	TVP map2_dom = vdmMapDom(map2);
-	UNWRAP_COLLECTION(m2,map2_dom);
-
-	if(m1->size!=m2->size)
-		return newBoolGC(true, from);
-
-	for (int i=0; i<m1->size; i++){
-		key1 = m1->value[i];
-		val1 = vdmMapApply(map1,key1);
-
-		key2 = m2->value[i];
-		val2 = vdmMapApply(map2,key2);
-
-		if(equals(key1,key2) && equals(val1,val2)){
-			not_eq = false;
-			break;
-		}
-
-		vdmFree(val1);
-		vdmFree(val2);
-	}
-
-	vdmFree(map1_dom);
-	vdmFree(map2_dom);
-
-	return newBoolGC(not_eq, from);
 }
 #endif /* NO_MAPS */

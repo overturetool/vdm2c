@@ -36,10 +36,7 @@
 
 TVP newProductVar(size_t size,...);
 TVP newProductVarGC(size_t size, TVP *from, ...);
-TVP newProduct(size_t size);
-TVP newProductGC(size_t size, TVP *from);
 TVP newProductWithValues(size_t size,TVP* elements);
-TVP newProductWithValuesGC(size_t size,TVP* elements, TVP *from);
 
 TVP productGet(TVP product, int index);
 TVP productGetGC(TVP product, int index, TVP *from);

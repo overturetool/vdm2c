@@ -51,6 +51,7 @@ TVP newSetWithValuesGC(size_t size,TVP* elements, TVP *from);
 TVP newSetVar(size_t size, ...);
 TVP newSetVarGC(size_t size, TVP *from, ...);
 TVP newSetVarToGrow(size_t size, size_t expected_size, ...);
+TVP newSetVarToGrowGC(size_t size, size_t expected_size, TVP *from,  ...);
 
 void vdmSetGrow(TVP set, TVP element);
 void vdmSetFit(TVP set);
@@ -72,9 +73,6 @@ TVP vdmSetSubsetGC(TVP set1, TVP set2, TVP *from);
 TVP vdmSetProperSubset(TVP set1, TVP set2);
 TVP vdmSetProperSubsetGC(TVP set1, TVP set2, TVP *from);
 TVP vdmSetEquals(TVP set1, TVP set2);
-TVP vdmSetEqualsGC(TVP set1, TVP set2, TVP *from);
-TVP vdmSetNotEquals(TVP set1, TVP set2);
-TVP vdmSetNotEqualsGC(TVP set1, TVP set2, TVP *from);
 TVP vdmSetCard(TVP set);
 TVP vdmSetCardGC(TVP set, TVP *from);
 TVP vdmSetDunion(TVP set);

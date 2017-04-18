@@ -40,19 +40,10 @@ TVP newProduct(size_t size)
 	return newCollection(size, VDM_PRODUCT);
 }
 
-TVP newProductGC(size_t size, TVP *from)
-{
-	return newCollectionGC(size, VDM_PRODUCT, from);
-}
 
 TVP newProductWithValues(size_t size,TVP* elements)
 {
 	return newCollectionWithValues(size, VDM_PRODUCT, elements);
-}
-
-TVP newProductWithValuesGC(size_t size,TVP* elements, TVP *from)
-{
-	return newCollectionWithValuesGC(size, VDM_PRODUCT, elements, from);
 }
 
 
