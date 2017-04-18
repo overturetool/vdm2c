@@ -233,6 +233,39 @@ TVP newSetVarToGrow(size_t size, size_t expected_size, ...)
 	return res;
 }
 
+TVP newSetVarToGrowGC(size_t size, size_t expected_size, TVP *from, ...)
+{
+	va_list ap;
+	va_start(ap, from);
+
+	int count = 0;
+
+	int bufsize = expected_size;  //DEFAULT_SET_COMP_BUFFER;
+	TVP* value = (TVP*) calloc(bufsize, sizeof(TVP));
+
+	for (int i = 0; i < size; i++)
+	{
+		TVP arg = va_arg(ap, TVP);
+		TVP v= vdmClone(arg); // set binding
+
+
+		//Extra security measure.  Will only be true if size >= expected_size.
+		if(count>=bufsize)
+		{
+			//buffer too small add memory chunk
+			bufsize += DEFAULT_SET_COMP_BUFFER_STEPSIZE;
+			value = (TVP*)realloc(value, bufsize * sizeof(TVP));
+		}
+		vdmSetAdd(value,&count,v);
+	}
+
+	va_end(ap);
+
+	TVP res = newCollectionWithValuesGC(count, VDM_SET, value, from);
+	free(value);
+	return res;
+}
+
 
 
 //What to return?

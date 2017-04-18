@@ -51,6 +51,7 @@ TVP newSetWithValuesGC(size_t size,TVP* elements, TVP *from);
 TVP newSetVar(size_t size, ...);
 TVP newSetVarGC(size_t size, TVP *from, ...);
 TVP newSetVarToGrow(size_t size, size_t expected_size, ...);
+TVP newSetVarToGrowGC(size_t size, size_t expected_size, TVP *from,  ...);
 
 void vdmSetGrow(TVP set, TVP element);
 void vdmSetFit(TVP set);
