@@ -22,6 +22,7 @@ import org.overture.codegen.vdm2c.Vdm2cTag;
 import org.overture.codegen.vdm2c.Vdm2cTag.MethodTag;
 import org.overture.codegen.vdm2c.extast.expressions.AMacroApplyExpIR;
 import org.overture.codegen.vdm2c.utils.CLetBeStStrategy;
+import org.overture.codegen.vdm2c.utils.CSetCompStrategy;
 import org.overture.codegen.vdm2c.utils.CTransUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -109,6 +110,9 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 		gcNames.put(ColTrans.SET_DIST_INTER, "vdmSetDinterGC");
 		gcNames.put(ColTrans.SET_POWER_SET, "vdmSetPowerGC");
 		
+		// Comprehensions
+		gcNames.put(CSetCompStrategy.NEW_SET_VAR_TO_GROW, "newSetVarToGrowGC");
+		
 		// Map operations
 		gcNames.put(ColTrans.MAP_DOM, "vdmMapDomGC");
 		gcNames.put(ColTrans.MAP_RNG, "vdmMapRngGC");
@@ -186,10 +190,11 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 						// Therefore, 'from' is the second argument (at index 1)
 						args.add(1, consReference(node));
 					}
-					else if(isMap(oldName))
+					else if(isMap(oldName) || isSetVarToGrow(oldName))
 					{
 						// The signature of 'newMapVarToGrowGC' is:
 						// TVP newMapVarToGrowGC(size_t size, size_t expected_size, TVP *from, ...);
+						// TVP newSetVarToGrowGC(size_t size, size_t expected_size, TVP *from, ...)
 						// Therefore, 'from' is the third argument (at index 2)
 						args.add(2, consReference(node));
 					}
@@ -273,6 +278,11 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 	private boolean isMap(String name)
 	{
 		return name.equals(ColTrans.MAP_VAR);
+	}
+	
+	private boolean isSetVarToGrow(String name)
+	{
+		return name.equals(CSetCompStrategy.NEW_SET_VAR_TO_GROW);
 	}
 	
 	private boolean insideFieldInitializer(SExpIR exp)
