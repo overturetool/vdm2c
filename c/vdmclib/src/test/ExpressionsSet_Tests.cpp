@@ -78,8 +78,26 @@ TEST(Expression_Set, setGrow)
 
 	vdmSetGrow(set1, newInt(3));
 
-	UNWRAP_COLLECTION(col, set1);
 	vdmFree(res);
+	res = vdmEquals(set1, set2);
+	EXPECT_FALSE(res->value.boolVal);
+
+	vdmFree(set2);
+	vdmFree(res);
+	set2 = newSetVar(10, newInt(1), newInt(2), newInt(3), newInt(4), newInt(5), newInt(6), newInt(7), newInt(8), newInt(9), newInt(10));
+	vdmSetGrow(set1, newInt(3));
+	vdmSetGrow(set1, newInt(4));
+	vdmSetGrow(set1, newInt(5));
+	vdmSetGrow(set1, newInt(6));
+	vdmSetGrow(set1, newInt(7));
+	vdmSetGrow(set1, newInt(8));
+	vdmSetGrow(set1, newInt(9));
+	vdmSetGrow(set1, newInt(10));
+	res = vdmEquals(set1, set2);
+	EXPECT_TRUE(res->value.boolVal);
+
+	vdmFree(res);
+	vdmSetGrow(set1, newInt(11));
 	res = vdmEquals(set1, set2);
 	EXPECT_FALSE(res->value.boolVal);
 
@@ -87,6 +105,68 @@ TEST(Expression_Set, setGrow)
 	vdmFree(res);
 	vdmFree(set1);
 	vdmFree(set2);
+}
+
+TEST(Expression_Set, setGrowGC)
+{
+	TVP set1;
+	TVP set2;
+	TVP res;
+
+	vdm_gc_init();
+
+	//Create test set.
+	set1 = newSetVarToGrowGC(1, 2, NULL, newInt(1));
+	set2 = newSetVarGC(2, NULL, newInt(1), newInt(2));
+
+	vdmSetGrow(set1, newInt(2));
+
+	res = vdmEquals(set1, set2);
+	EXPECT_TRUE(res->value.boolVal);
+
+	vdmSetGrow(set1, newInt(3));
+
+	vdmFree(res);
+	res = vdmEquals(set1, set2);
+	EXPECT_FALSE(res->value.boolVal);
+
+	vdmFree(set2);
+	vdmFree(res);
+	set2 = newSetVarGC(10, NULL, newInt(1), newInt(2), newInt(3), newInt(4), newInt(5), newInt(6), newInt(7), newInt(8), newInt(9), newInt(10));
+	vdmSetGrow(set1, newInt(3));
+	vdmSetGrow(set1, newInt(4));
+	vdmSetGrow(set1, newInt(5));
+	vdmSetGrow(set1, newInt(6));
+	vdmSetGrow(set1, newInt(7));
+	vdmSetGrow(set1, newInt(8));
+	vdmSetGrow(set1, newInt(9));
+	vdmSetGrow(set1, newInt(10));
+	res = vdmEquals(set1, set2);
+	EXPECT_TRUE(res->value.boolVal);
+
+	vdmFree(res);
+	vdmSetGrow(set1, newInt(11));
+	res = vdmEquals(set1, set2);
+	EXPECT_FALSE(res->value.boolVal);
+
+	//Clean up.
+	vdmFree(res);
+//	vdmFree(set1);
+//	vdmFree(set2);
+	vdm_gc();
+
+	set1 = newSetVarToGrowGC(0, 2, NULL);
+	vdmSetGrow(set1, newInt(3));
+	vdmSetGrow(set1, newInt(4));
+	vdmSetGrow(set1, newInt(5));
+	vdmSetGrow(set1, newInt(6));
+	vdmSetGrow(set1, newInt(7));
+	vdmSetGrow(set1, newInt(8));
+	vdmSetGrow(set1, newInt(9));
+	vdmSetGrow(set1, newInt(10));
+
+	vdm_gc();
+	vdm_gc_shutdown();
 }
 
 
@@ -126,6 +206,30 @@ TEST(Expression_Set, setFit)
 	vdmFree(res);
 	vdmFree(set1);
 	vdmFree(set2);
+}
+
+
+TEST(Expression_Set, setCloneFree)
+{
+	TVP set1;
+	TVP set2;
+	TVP set3;
+
+	vdm_gc_init();
+
+	set1 = newSetVarToGrowGC(0, 5, &set1);
+	vdmSetGrow(set1, newInt(1));
+	vdmSetFit(set1);
+
+	set2 = vdmCloneGC(set1, &set2);
+	set3 = set2;
+	vdmFree(set1);
+
+	EXPECT_TRUE(set2 == set3);
+
+	vdm_gc_shutdown();
+
+	EXPECT_TRUE(set2 == set3);
 }
 
 
@@ -937,23 +1041,6 @@ TEST(Expression_Set, setPower)
 	vdmFree(set2);
 	vdmFree(res);
 }
-
-TEST(Expression_Set, setCloneFree)
-{
-	TVP set1;
-	TVP set3;
-
-	vdm_gc_init();
-	set1 = newSetVar(1, newInt(1));
-	TVP set2 = vdmCloneGC(set1, &set2);
-	set3 = set2;
-	vdmFree(set1);
-	vdm_gc_shutdown();
-
-	EXPECT_TRUE(set2 == set3);
-}
-
-
 
 /*
 //A crude way of testing how long it takes to generate a power set.

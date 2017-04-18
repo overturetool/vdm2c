@@ -210,10 +210,13 @@ TVP newSetVarToGrow(size_t size, size_t expected_size, ...)
 	int bufsize = expected_size;  //DEFAULT_SET_COMP_BUFFER;
 	TVP* value = (TVP*) calloc(bufsize, sizeof(TVP));
 
+	TVP arg;
+	TVP v;
+
 	for (int i = 0; i < size; i++)
 	{
-		TVP arg = va_arg(ap, TVP);
-		TVP v= vdmClone(arg); // set binding
+		arg = va_arg(ap, TVP);
+		v = vdmClone(arg); // set binding
 
 
 		//Extra security measure.  Will only be true if size >= expected_size.
@@ -243,10 +246,13 @@ TVP newSetVarToGrowGC(size_t size, size_t expected_size, TVP *from, ...)
 	int bufsize = expected_size;  //DEFAULT_SET_COMP_BUFFER;
 	TVP* value = (TVP*) calloc(bufsize, sizeof(TVP));
 
+	TVP arg;
+	TVP v;
+
 	for (int i = 0; i < size; i++)
 	{
-		TVP arg = va_arg(ap, TVP);
-		TVP v= vdmClone(arg); // set binding
+		arg = va_arg(ap, TVP);
+		v = vdmClone(arg); // set binding
 
 
 		//Extra security measure.  Will only be true if size >= expected_size.
