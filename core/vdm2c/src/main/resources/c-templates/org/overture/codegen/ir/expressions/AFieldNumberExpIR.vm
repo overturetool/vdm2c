@@ -1,4 +1,0 @@
-#set( $index = $node.getField() )
-#set( $tuple = $CFormat.format($node.getTuple()) )
-##
-productGet(${tuple},${index})
