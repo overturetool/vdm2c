@@ -26,7 +26,6 @@ char* URIToNativePath(const char* uri)
 	char* path = NULL;
 	unsigned int path_len = 0;
 	unsigned int uri_len = 0;
-	char* pch = NULL;
 	unsigned int i = 0;
 	unsigned int j = 0;
 	char buf[3] = "00";
@@ -309,11 +308,15 @@ TVP vdm_CSV_freadval(TVP f, TVP index)
 
 
 TVP vdm_CSV_fwriteval(TVP filename, TVP val, TVP fdir)
-{}
+{
+	return NULL;
+}
 
 
 
 TVP vdm_CSV_ferror()
-{}
+{
+	return NULL;
+}
 
 #endif /* NO_CSV */

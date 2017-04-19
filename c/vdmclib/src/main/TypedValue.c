@@ -93,7 +93,7 @@ TVP newToken(TVP x)
 	int hashVal = 5381;
 	int c;
 
-	while (c = *str++)
+	while ((c = *str++))
 		hashVal = ((hashVal << 2) + hashVal) + c;
 
 	free(strTmp);

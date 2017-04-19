@@ -44,6 +44,7 @@ bool patternMatchBind(TVP patternBind, TVP value)
 		case VDM_NAT:
 		case VDM_NAT1:
 		case VDM_QUOTE:
+		case VDM_TOKEN:
 		case VDM_REAL:
 		case VDM_RAT:
 		//this is match value
