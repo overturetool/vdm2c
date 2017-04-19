@@ -291,7 +291,7 @@ void vdmSetGrow(TVP set, TVP element)
 
 	col->value = (TVP *)realloc(col->value, (size + 1) * sizeof(TVP));
 
-	vdmSetAdd(col->value, &(col->size), element);
+	vdmSetAdd(col->value, &(col->size), vdmClone(element));
 }
 
 
