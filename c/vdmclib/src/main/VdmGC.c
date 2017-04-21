@@ -166,8 +166,8 @@ void vdm_gc()
 		//This is the case when the value is created in-place or when freed using vdmFree().
 		if(current->loc->ref_from == NULL)
 		{
-			vdmFree_GCInternal(tmp_loc);
 			remove_allocd_mem_node(current);
+			vdmFree_GCInternal(tmp_loc);
 		}
 		else if(*(current->loc->ref_from) != current->loc)
 		{
