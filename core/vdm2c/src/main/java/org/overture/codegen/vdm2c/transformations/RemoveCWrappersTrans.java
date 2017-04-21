@@ -9,8 +9,6 @@ public class RemoveCWrappersTrans extends DepthFirstAnalysisCAdaptor
 {
 	public TransAssistantIR assist;
 
-	final static String retPrefix = "ret_";
-
 	public RemoveCWrappersTrans(TransAssistantIR assist)
 	{
 		this.assist = assist;

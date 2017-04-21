@@ -21,6 +21,7 @@ import org.overture.codegen.vdm2c.TupleTrans;
 import org.overture.codegen.vdm2c.Vdm2cTag;
 import org.overture.codegen.vdm2c.Vdm2cTag.MethodTag;
 import org.overture.codegen.vdm2c.extast.expressions.AMacroApplyExpIR;
+import org.overture.codegen.vdm2c.tags.CTags;
 import org.overture.codegen.vdm2c.utils.CLetBeStStrategy;
 import org.overture.codegen.vdm2c.utils.CSetCompStrategy;
 import org.overture.codegen.vdm2c.utils.CTransUtil;
@@ -212,21 +213,24 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 		
 		if (parent instanceof AVarDeclIR)
 		{
-			SPatternIR pat = ((AVarDeclIR) parent).getPattern();
+			AVarDeclIR decl = ((AVarDeclIR) parent);
+			SPatternIR pat = decl.getPattern();
 
-			if (pat instanceof AIdentifierPatternIR)
-			{
-				String name = ((AIdentifierPatternIR) pat).getName();
-				AExternalExpIR reference = new AExternalExpIR();
-				reference.setSourceNode(pat.getSourceNode());
-				String referencePrefix = findReferencePrefix(exp);
-				reference.setTargetLangExp(referencePrefix + name);
+			// "return" variables constitute a special case where 'from' must be NULL
+			// See https://github.com/overturetool/vdm2c/issues/87#issuecomment-295776237https://github.com/overturetool/vdm2c/issues/87#issuecomment-295776237
+			if (decl.getTag() != CTags.RET_VAR_TAG) {
 				
-				return reference;
-			}
-			else
-			{
-				logger.error("Expected identifier pattern at this point.");
+				if (pat instanceof AIdentifierPatternIR) {
+					String name = ((AIdentifierPatternIR) pat).getName();
+					AExternalExpIR reference = new AExternalExpIR();
+					reference.setSourceNode(pat.getSourceNode());
+					String referencePrefix = findReferencePrefix(exp);
+					reference.setTargetLangExp(referencePrefix + name);
+
+					return reference;
+				} else {
+					logger.error("Expected identifier pattern at this point.");
+				}
 			}
 		}
 
