@@ -13,6 +13,7 @@ import org.overture.codegen.ir.expressions.AApplyExpIR;
 import org.overture.codegen.ir.expressions.ACardUnaryExpIR;
 import org.overture.codegen.ir.expressions.ADistIntersectUnaryExpIR;
 import org.overture.codegen.ir.expressions.ADistUnionUnaryExpIR;
+import org.overture.codegen.ir.expressions.AElemsUnaryExpIR;
 import org.overture.codegen.ir.expressions.AEnumMapExpIR;
 import org.overture.codegen.ir.expressions.AEnumSeqExpIR;
 import org.overture.codegen.ir.expressions.AEnumSetExpIR;
@@ -68,6 +69,7 @@ public class ColTrans extends DepthFirstAnalysisCAdaptor implements IApplyAssist
 	public static final String SET_DIST_UNION = "vdmSetDunion";
 	public static final String SET_DIST_INTER = "vdmSetDinter";
 	public static final String SET_POWER_SET = "vdmSetPower";
+	public static final String SEQ_ELEMS = "vdmSeqElems";
 	
 	// Map operations
 	public static final String MAP_DOM = "vdmMapDom";
@@ -230,6 +232,12 @@ public class ColTrans extends DepthFirstAnalysisCAdaptor implements IApplyAssist
 	public void caseAPowerSetUnaryExpIR(APowerSetUnaryExpIR node) throws AnalysisException {
 		
 		rewriteToApply(this, node, SET_POWER_SET, node.getExp());
+	}
+	
+	@Override
+	public void caseAElemsUnaryExpIR(AElemsUnaryExpIR node) throws AnalysisException {
+	
+		rewriteToApply(this, node, SEQ_ELEMS, node.getExp());
 	}
 	
 	@Override

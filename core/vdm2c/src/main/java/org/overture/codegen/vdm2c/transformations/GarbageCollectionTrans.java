@@ -110,6 +110,7 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 		gcNames.put(ColTrans.SET_DIST_UNION, "vdmSetDunionGC");
 		gcNames.put(ColTrans.SET_DIST_INTER, "vdmSetDinterGC");
 		gcNames.put(ColTrans.SET_POWER_SET, "vdmSetPowerGC");
+		gcNames.put(ColTrans.SEQ_ELEMS, "vdmSeqElemsGC");
 		
 		// Comprehensions
 		gcNames.put(CSetCompStrategy.NEW_SET_VAR_TO_GROW, "newSetVarToGrowGC");
