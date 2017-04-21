@@ -13,12 +13,14 @@ import org.overture.codegen.ir.expressions.AApplyExpIR;
 import org.overture.codegen.ir.expressions.ACardUnaryExpIR;
 import org.overture.codegen.ir.expressions.ADistIntersectUnaryExpIR;
 import org.overture.codegen.ir.expressions.ADistUnionUnaryExpIR;
+import org.overture.codegen.ir.expressions.AElemsUnaryExpIR;
 import org.overture.codegen.ir.expressions.AEnumMapExpIR;
 import org.overture.codegen.ir.expressions.AEnumSeqExpIR;
 import org.overture.codegen.ir.expressions.AEnumSetExpIR;
 import org.overture.codegen.ir.expressions.AExternalExpIR;
 import org.overture.codegen.ir.expressions.AHeadUnaryExpIR;
 import org.overture.codegen.ir.expressions.AInSetBinaryExpIR;
+import org.overture.codegen.ir.expressions.AIndicesUnaryExpIR;
 import org.overture.codegen.ir.expressions.ALenUnaryExpIR;
 import org.overture.codegen.ir.expressions.AMapDomainUnaryExpIR;
 import org.overture.codegen.ir.expressions.AMapRangeUnaryExpIR;
@@ -57,6 +59,8 @@ public class ColTrans extends DepthFirstAnalysisCAdaptor implements IApplyAssist
 	public static final String SEQ_CONC = "vdmSeqConc";
 	public static final String SEQ_REVERSE = "vdmSeqReverse";
 	public static final String SEQ_INDEX = "vdmSeqIndex";
+	public static final String SEQ_ELEMS = "vdmSeqElems";
+	public static final String SEQ_INDS = "vdmSeqInds";
 	
 	// Set operations
 	public static final String SET_MEMBER = "vdmSetMemberOf";
@@ -119,6 +123,18 @@ public class ColTrans extends DepthFirstAnalysisCAdaptor implements IApplyAssist
 	public void caseAReverseUnaryExpIR(AReverseUnaryExpIR node) throws AnalysisException {
 
 		rewriteToApply(this, node, SEQ_REVERSE, node.getExp());
+	}
+	
+	@Override
+	public void caseAElemsUnaryExpIR(AElemsUnaryExpIR node) throws AnalysisException {
+	
+		rewriteToApply(this, node, SEQ_ELEMS, node.getExp());
+	}
+	
+	@Override
+	public void caseAIndicesUnaryExpIR(AIndicesUnaryExpIR node) throws AnalysisException {
+		
+		rewriteToApply(this, node, SEQ_INDS, node.getExp());
 	}
 	
 	@Override

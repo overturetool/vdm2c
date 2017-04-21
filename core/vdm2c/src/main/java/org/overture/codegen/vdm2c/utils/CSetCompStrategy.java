@@ -18,6 +18,8 @@ import org.overture.codegen.trans.iterator.ILanguageIterator;
 public class CSetCompStrategy extends SetCompStrategy
 {
 
+	public static final String NEW_SET_VAR_TO_GROW = "newSetVarToGrow";
+
 	public CSetCompStrategy(TransAssistantIR transformationAssitant,
 			SExpIR first, SExpIR predicate, String var, STypeIR compType,
 			ILanguageIterator langIterator, ITempVarGen tempGen,
@@ -37,7 +39,7 @@ public class CSetCompStrategy extends SetCompStrategy
 		// useful estimate can
 		// be made of the size
 		
-		return CTransUtil.newApply("newSetVarToGrow", CTransUtil.consCInt("0"), CTransUtil.consCInt("5"));
+		return CTransUtil.newApply(NEW_SET_VAR_TO_GROW, CTransUtil.consCInt("0"), CTransUtil.consCInt("5"));
 	}
 	
 	@Override
