@@ -67,3 +67,8 @@ TEST_F(TestFlowFunctions, mapDomResTo)
 {
 	CHECK(CLASS_ExpressionMap__Z13mapRestrictToEV);
 }
+
+TEST_F(TestFlowFunctions, mapDomResBy)
+{
+	CHECK(CLASS_ExpressionMap__Z13mapRestrictByEV);
+}

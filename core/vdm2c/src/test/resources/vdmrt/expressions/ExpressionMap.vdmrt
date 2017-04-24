@@ -36,4 +36,8 @@ mapDistMerge () == merge {{1 |-> 2},{3 |-> 4}, {4 |-> 5}} = {1 |-> 2, 3 |-> 4, 4
 public mapRestrictTo :  () -> bool
 mapRestrictTo () == {2} <: {1 |-> 2, 2 |-> 3} = {2 |-> 3};
 
+public mapRestrictBy :  () -> bool
+mapRestrictBy () == {2} <-: {1 |-> 2, 2 |-> 3} = {1 |-> 2};
+
+
 end ExpressionMap
