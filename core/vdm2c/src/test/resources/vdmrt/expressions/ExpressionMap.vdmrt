@@ -33,4 +33,7 @@ mapOverride () == {1 |-> 2, 3 |-> 5} ++ {10 |-> 10, 3 |-> 15} = {1 |-> 2, 10 |->
 public mapDistMerge :  () -> bool
 mapDistMerge () == merge {{1 |-> 2},{3 |-> 4}, {4 |-> 5}} = {1 |-> 2, 3 |-> 4, 4 |-> 5};
 
+public mapRestrictTo :  () -> bool
+mapRestrictTo () == {2} <: {1 |-> 2, 2 |-> 3} = {2 |-> 3};
+
 end ExpressionMap

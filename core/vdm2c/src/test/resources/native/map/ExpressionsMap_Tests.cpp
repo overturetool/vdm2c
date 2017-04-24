@@ -62,3 +62,8 @@ TEST_F(TestFlowFunctions, mapDistMerge)
 {
 	CHECK(CLASS_ExpressionMap__Z12mapDistMergeEV);
 }
+
+TEST_F(TestFlowFunctions, mapDomResTo)
+{
+	CHECK(CLASS_ExpressionMap__Z13mapRestrictToEV);
+}
