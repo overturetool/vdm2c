@@ -52,3 +52,8 @@ TEST_F(TestFlowFunctions, mapUnion)
 {
 	CHECK(CLASS_ExpressionMap__Z8mapUnionEV);
 }
+
+TEST_F(TestFlowFunctions, mapOverride)
+{
+	CHECK(CLASS_ExpressionMap__Z11mapOverrideEV);
+}
