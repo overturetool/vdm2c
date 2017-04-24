@@ -30,4 +30,7 @@ mapUnion () == {1 |-> 2} munion {3 |-> 4} = {3 |-> 4, 1 |-> 2};
 public mapOverride : () -> bool
 mapOverride () == {1 |-> 2, 3 |-> 5} ++ {10 |-> 10, 3 |-> 15} = {1 |-> 2, 10 |-> 10, 3 |-> 15};
 
+public mapDistMerge :  () -> bool
+mapDistMerge () == merge {{1 |-> 2},{3 |-> 4}, {4 |-> 5}} = {1 |-> 2, 3 |-> 4, 4 |-> 5};
+
 end ExpressionMap

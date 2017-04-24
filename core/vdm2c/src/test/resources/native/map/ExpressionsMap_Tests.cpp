@@ -57,3 +57,8 @@ TEST_F(TestFlowFunctions, mapOverride)
 {
 	CHECK(CLASS_ExpressionMap__Z11mapOverrideEV);
 }
+
+TEST_F(TestFlowFunctions, mapDistMerge)
+{
+	CHECK(CLASS_ExpressionMap__Z12mapDistMergeEV);
+}
