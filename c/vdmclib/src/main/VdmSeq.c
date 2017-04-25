@@ -69,12 +69,13 @@ TVP newSeqWithValues(size_t size, TVP* elements)
 
 TVP newSeqVar(size_t size, ...)
 {
+	int i;
 	TVP elements[size];
 
 	va_list ap;
 	va_start(ap, size);
 
-	for (int i = 0; i < size; i++)
+	for (i = 0; i < size; i++)
 	{
 		TVP arg = va_arg(ap, TVP);
 		elements[i]=arg;
@@ -86,12 +87,13 @@ TVP newSeqVar(size_t size, ...)
 
 TVP newSeqVarGC(size_t size, TVP *from, ...)
 {
+	int i;
 	TVP elements[size];
 
 	va_list ap;
 	va_start(ap, from);
 
-	for (int i = 0; i < size; i++)
+	for (i = 0; i < size; i++)
 	{
 		TVP arg = va_arg(ap, TVP);
 		elements[i] = arg;
@@ -105,6 +107,8 @@ TVP newSeqVarGC(size_t size, TVP *from, ...)
 //result sequence length.
 TVP newSeqVarToGrow(size_t size, size_t expected_size, ...)
 {
+	int i;
+
 	va_list ap;
 	va_start(ap, expected_size);
 
@@ -113,7 +117,7 @@ TVP newSeqVarToGrow(size_t size, size_t expected_size, ...)
 	int bufsize = expected_size;  //DEFAULT_SEQ_COMP_BUFFER;
 	TVP* value = (TVP*) calloc(bufsize, sizeof(TVP));
 
-	for (int i = 0; i < size; i++)
+	for(i = 0; i < size; i++)
 	{
 		TVP arg = va_arg(ap, TVP);
 		TVP v= vdmClone(arg); // set binding
@@ -175,6 +179,8 @@ TVP vdmSeqHdGC(TVP seq, TVP *from)
 
 TVP vdmSeqTl(TVP seq)
 {
+	int i;
+
 	ASSERT_CHECK(seq);
 	UNWRAP_COLLECTION(col,seq);
 
@@ -183,7 +189,7 @@ TVP vdmSeqTl(TVP seq)
 	UNWRAP_COLLECTION(tail,tailVal);
 
 	//copy tail list
-	for (int i = 1; i < col->size; i++)
+	for (i = 1; i < col->size; i++)
 	{
 		tail->value[i-1] = vdmClone(col->value[i]);
 	}
@@ -193,6 +199,8 @@ TVP vdmSeqTl(TVP seq)
 
 TVP vdmSeqTlGC(TVP seq, TVP *from)
 {
+	int i;
+
 	ASSERT_CHECK(seq);
 	UNWRAP_COLLECTION(col,seq);
 
@@ -201,7 +209,7 @@ TVP vdmSeqTlGC(TVP seq, TVP *from)
 	UNWRAP_COLLECTION(tail,tailVal);
 
 	//copy tail list
-	for (int i = 1; i < col->size; i++)
+	for (i = 1; i < col->size; i++)
 	{
 		tail->value[i-1] = vdmClone(col->value[i]);
 	}
@@ -248,13 +256,15 @@ TVP vdmSeqElemsGC(TVP seq, TVP *from)
 
 TVP vdmSeqInds(TVP seq)
 {
+	int i;
+
 	ASSERT_CHECK(seq);
 	UNWRAP_COLLECTION(col,seq);
 
 	TVP* value = (TVP*) calloc(col->size, sizeof(TVP));
 
 	//copy  list
-	for (int i = 0; i < col->size; i++)
+	for (i = 0; i < col->size; i++)
 	{
 		value[i] = newInt(i+1);
 	}
@@ -267,13 +277,15 @@ TVP vdmSeqInds(TVP seq)
 
 TVP vdmSeqIndsGC(TVP seq, TVP *from)
 {
+	int i;
+
 	ASSERT_CHECK(seq);
 	UNWRAP_COLLECTION(col,seq);
 
 	TVP* value = (TVP*) calloc(col->size, sizeof(TVP));
 
 	//copy  list
-	for (int i = 0; i < col->size; i++)
+	for (i = 0; i < col->size; i++)
 	{
 		value[i] = newInt(i+1);
 	}
@@ -286,6 +298,8 @@ TVP vdmSeqIndsGC(TVP seq, TVP *from)
 
 TVP vdmSeqConc(TVP seq,TVP seq2)
 {
+	int i;
+
 	ASSERT_CHECK(seq);
 	ASSERT_CHECK(seq2);
 	UNWRAP_COLLECTION(col,seq);
@@ -296,13 +310,13 @@ TVP vdmSeqConc(TVP seq,TVP seq2)
 	UNWRAP_COLLECTION(concSeq,concVal);
 
 	//copy  list
-	for (int i = 0; i < col->size; i++)
+	for (i = 0; i < col->size; i++)
 	{
 		concSeq->value[i] = vdmClone(col->value[i]);
 	}
 
 	int offset = col->size;
-	for (int i = 0; i < col2->size; i++)
+	for (i = 0; i < col2->size; i++)
 	{
 		concSeq->value[i+offset] = vdmClone(col2->value[i]);
 	}
@@ -312,6 +326,8 @@ TVP vdmSeqConc(TVP seq,TVP seq2)
 
 TVP vdmSeqConcGC(TVP seq, TVP seq2, TVP *from)
 {
+	int i;
+
 	ASSERT_CHECK(seq);
 	ASSERT_CHECK(seq2);
 	UNWRAP_COLLECTION(col,seq);
@@ -322,13 +338,13 @@ TVP vdmSeqConcGC(TVP seq, TVP seq2, TVP *from)
 	UNWRAP_COLLECTION(concSeq,concVal);
 
 	//copy  list
-	for (int i = 0; i < col->size; i++)
+	for (i = 0; i < col->size; i++)
 	{
 		concSeq->value[i] = vdmClone(col->value[i]);
 	}
 
 	int offset = col->size;
-	for (int i = 0; i < col2->size; i++)
+	for (i = 0; i < col2->size; i++)
 	{
 		concSeq->value[i+offset] = vdmClone(col2->value[i]);
 	}
@@ -338,6 +354,8 @@ TVP vdmSeqConcGC(TVP seq, TVP seq2, TVP *from)
 
 TVP vdmSeqReverse(TVP seq)
 {
+	int i;
+
 	ASSERT_CHECK(seq);
 	UNWRAP_COLLECTION(col,seq);
 
@@ -347,7 +365,7 @@ TVP vdmSeqReverse(TVP seq)
 
 	int offset = col->size-1;
 	//copy  list
-	for (int i = 0; i < col->size; i++)
+	for (i = 0; i < col->size; i++)
 	{
 		elems->value[i] = vdmClone(col->value[offset - i]);
 	}
@@ -357,6 +375,8 @@ TVP vdmSeqReverse(TVP seq)
 
 TVP vdmSeqReverseGC(TVP seq, TVP *from)
 {
+	int i;
+
 	ASSERT_CHECK(seq);
 	UNWRAP_COLLECTION(col,seq);
 
@@ -366,7 +386,7 @@ TVP vdmSeqReverseGC(TVP seq, TVP *from)
 
 	int offset = col->size-1;
 	//copy  list
-	for (int i = 0; i < col->size; i++)
+	for (i = 0; i < col->size; i++)
 	{
 		elems->value[i] = vdmClone(col->value[offset - i]);
 	}

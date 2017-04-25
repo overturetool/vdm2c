@@ -312,6 +312,8 @@ TVP vdmCloneGC(TVP x, TVP *from)
 #ifndef NO_SEQS
 	case VDM_SEQ:
 	{
+		int i;
+
 		UNWRAP_COLLECTION(cptr, tmp);
 
 		struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
@@ -320,7 +322,7 @@ TVP vdmCloneGC(TVP x, TVP *from)
 		*ptr = *cptr;
 		ptr->value = (TVP*) malloc(sizeof(TVP) * ptr->size);
 
-		for (int i = 0; i < cptr->size; i++)
+		for (i = 0; i < cptr->size; i++)
 		{
 			ptr->value[i] = vdmClone(cptr->value[i]);
 		}
@@ -332,6 +334,8 @@ TVP vdmCloneGC(TVP x, TVP *from)
 #ifndef NO_SETS
 	case VDM_SET:
 	{
+		int i;
+
 		UNWRAP_COLLECTION(cptr, tmp);
 
 		struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
@@ -340,7 +344,7 @@ TVP vdmCloneGC(TVP x, TVP *from)
 		*ptr = *cptr;
 		ptr->value = (TVP*) malloc(sizeof(TVP) * ptr->size);
 
-		for (int i = 0; i < cptr->size; i++)
+		for (i = 0; i < cptr->size; i++)
 		{
 			ptr->value[i] = vdmClone(cptr->value[i]);
 		}

@@ -125,10 +125,12 @@ TVP newCollectionGC(size_t size, vdmtype type, TVP *from)
 
 TVP newCollectionWithValues(size_t size, vdmtype type, TVP* elements)
 {
+	int i;
+
 	TVP product = newCollection(size,type);
 	UNWRAP_COLLECTION(col,product);
 
-	for (int i = 0; i < size; i++)
+	for (i = 0; i < size; i++)
 	{
 		col->value[i]= vdmClone(elements[i]);
 	}
@@ -137,10 +139,12 @@ TVP newCollectionWithValues(size_t size, vdmtype type, TVP* elements)
 
 TVP newCollectionWithValuesGC(size_t size, vdmtype type, TVP* elements, TVP *from)
 {
+	int i;
+
 	TVP product = newCollectionGC(size, type, from);
 	UNWRAP_COLLECTION(col, product);
 
-	for (int i = 0; i < size; i++)
+	for (i = 0; i < size; i++)
 	{
 		col->value[i]= vdmClone(elements[i]);
 	}
@@ -229,6 +233,8 @@ TVP vdmClone(TVP x)
 #ifndef NO_SEQS
 	case VDM_SEQ:
 	{
+		int i;
+
 		UNWRAP_COLLECTION(cptr, tmp);
 
 		struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
@@ -237,7 +243,7 @@ TVP vdmClone(TVP x)
 		*ptr = *cptr;
 		ptr->value = (TVP*) malloc(sizeof(TVP) * ptr->size);
 
-		for (int i = 0; i < cptr->size; i++)
+		for (i = 0; i < cptr->size; i++)
 		{
 			ptr->value[i] = vdmClone(cptr->value[i]);
 		}
@@ -249,6 +255,8 @@ TVP vdmClone(TVP x)
 #ifndef NO_SETS
 	case VDM_SET:
 	{
+		int i;
+
 		UNWRAP_COLLECTION(cptr, tmp);
 
 		struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
@@ -257,7 +265,7 @@ TVP vdmClone(TVP x)
 		*ptr = *cptr;
 		ptr->value = (TVP*) malloc(sizeof(TVP) * ptr->size);
 
-		for (int i = 0; i < cptr->size; i++)
+		for (i = 0; i < cptr->size; i++)
 		{
 			ptr->value[i] = vdmClone(cptr->value[i]);
 		}
@@ -454,6 +462,8 @@ bool collectionEqual(TVP col1,TVP col2)
 {
 	//internal function do not call except if args points to a collection
 
+	int i;
+
 	UNWRAP_COLLECTION(aCol,col1);
 	UNWRAP_COLLECTION(bCol,col2);
 
@@ -465,7 +475,7 @@ bool collectionEqual(TVP col1,TVP col2)
 
 	bool match = true;
 
-	for (int i = 0; i < aCol->size; i++)
+	for (i = 0; i < aCol->size; i++)
 	{
 		match &= equals(aCol->value[i],bCol->value[i]);
 	}
@@ -520,8 +530,10 @@ void vdmFree_GCInternal(TVP ptr)
 #ifndef NO_SEQS
 	case VDM_SEQ:
 	{
+		int i;
+
 		UNWRAP_COLLECTION(cptr, ptr);
-		for (int i = 0; i < cptr->size; i++)
+		for (i = 0; i < cptr->size; i++)
 		{
 			if (cptr->value[i] != NULL)
 			{
@@ -537,8 +549,10 @@ void vdmFree_GCInternal(TVP ptr)
 #ifndef NO_SETS
 	case VDM_SET:
 	{
+		int i;
+
 		UNWRAP_COLLECTION(cptr, ptr);
-		for (int i = 0; i < cptr->size; i++)
+		for (i = 0; i < cptr->size; i++)
 		{
 			if (cptr->value[i] != NULL)
 			{
@@ -630,8 +644,10 @@ void vdmFree(TVP ptr)
 #ifndef NO_PRODUCTS
 	case VDM_PRODUCT:
 	{
+		int i;
+
 		UNWRAP_COLLECTION(cptr, ptr);
-		for (int i = 0; i < cptr->size; i++)
+		for (i = 0; i < cptr->size; i++)
 		{
 			if (cptr->value[i] != NULL)
 			{
@@ -647,8 +663,10 @@ void vdmFree(TVP ptr)
 #ifndef NO_SEQS
 	case VDM_SEQ:
 	{
+		int i;
+
 		UNWRAP_COLLECTION(cptr, ptr);
-		for (int i = 0; i < cptr->size; i++)
+		for (i = 0; i < cptr->size; i++)
 		{
 			if (cptr->value[i] != NULL)
 			{
@@ -664,8 +682,10 @@ void vdmFree(TVP ptr)
 #ifndef NO_SETS
 	case VDM_SET:
 	{
+		int i;
+
 		UNWRAP_COLLECTION(cptr, ptr);
-		for (int i = 0; i < cptr->size; i++)
+		for (i = 0; i < cptr->size; i++)
 		{
 			if (cptr->value[i] != NULL)
 			{
