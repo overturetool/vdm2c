@@ -40,12 +40,6 @@ import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.utils.CLetBeStStrategy;
 import org.overture.codegen.vdm2c.utils.IApplyAssistant;
 
-/**
- *
- * TODO: Extend this class to handle sets and maps too (rename class
- * accordingly)
- * 
- */
 public class ColTrans extends DepthFirstAnalysisCAdaptor implements IApplyAssistant {
 
 	public static final String SEQ_VAR = "newSeqVar";
