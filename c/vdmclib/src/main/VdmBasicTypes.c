@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * <http:XXXwww.gnu.org/licenses/gpl-3.0.html>.
  * #~%
  */
 
@@ -384,7 +384,7 @@ TVP vdmFloorGC(TVP arg, TVP *from)
 {
 	ASSERT_CHECK_REAL(arg);
 
-	//TODO: Why do we return a Real, when floor is int in VDM?
+	/* TODO: Why do we return a Real, when floor is int in VDM?  */
 	return newIntGC(floor(arg->value.doubleVal), from);
 }
 
@@ -526,7 +526,7 @@ TVP vdmDiv(TVP a, TVP b)
 	ASSERT_CHECK_NUMERIC(a);
 	ASSERT_CHECK_NUMERIC(b);
 
-	//See https://github.com/overturetool/overture/blob/development/core/interpreter/src/main/java/org/overture/interpreter/eval/BinaryExpressionEvaluator.java#L444
+	/* See https://github.com/overturetool/overture/blob/development/core/interpreter/src/main/java/org/overture/interpreter/eval/BinaryExpressionEvaluator.java#L444  */
 
 	ASSERT_CHECK_INT(a);
 	ASSERT_CHECK_INT(b);
@@ -542,7 +542,7 @@ TVP vdmDivGC(TVP a, TVP b, TVP *from)
 	ASSERT_CHECK_NUMERIC(a);
 	ASSERT_CHECK_NUMERIC(b);
 
-	//See https://github.com/overturetool/overture/blob/development/core/interpreter/src/main/java/org/overture/interpreter/eval/BinaryExpressionEvaluator.java#L444
+	/* See https://github.com/overturetool/overture/blob/development/core/interpreter/src/main/java/org/overture/interpreter/eval/BinaryExpressionEvaluator.java#L444  */
 
 	ASSERT_CHECK_INT(a);
 	ASSERT_CHECK_INT(b);
@@ -558,7 +558,7 @@ TVP vdmRem(TVP a,TVP b)
 	ASSERT_CHECK_NUMERIC(a);
 	ASSERT_CHECK_NUMERIC(b);
 
-	//See https://github.com/overturetool/overture/blob/development/core/interpreter/src/main/java/org/overture/interpreter/eval/BinaryExpressionEvaluator.java#L628
+	/* See https://github.com/overturetool/overture/blob/development/core/interpreter/src/main/java/org/overture/interpreter/eval/BinaryExpressionEvaluator.java#L628  */
 	ASSERT_CHECK_INT(a);
 	ASSERT_CHECK_INT(b);
 
@@ -573,7 +573,7 @@ TVP vdmRemGC(TVP a, TVP b, TVP *from)
 	ASSERT_CHECK_NUMERIC(a);
 	ASSERT_CHECK_NUMERIC(b);
 
-	//See https://github.com/overturetool/overture/blob/development/core/interpreter/src/main/java/org/overture/interpreter/eval/BinaryExpressionEvaluator.java#L628
+	/* See https://github.com/overturetool/overture/blob/development/core/interpreter/src/main/java/org/overture/interpreter/eval/BinaryExpressionEvaluator.java#L628  */
 	ASSERT_CHECK_INT(a);
 	ASSERT_CHECK_INT(b);
 
@@ -588,7 +588,7 @@ TVP vdmMod(TVP a,TVP b)
 	ASSERT_CHECK_NUMERIC(a);
 	ASSERT_CHECK_NUMERIC(b);
 
-	//See https://github.com/overturetool/overture/blob/development/core/interpreter/src/main/java/org/overture/interpreter/eval/BinaryExpressionEvaluator.java#L575
+	/* See https://github.com/overturetool/overture/blob/development/core/interpreter/src/main/java/org/overture/interpreter/eval/BinaryExpressionEvaluator.java#L575  */
 	ASSERT_CHECK_INT(a);
 	ASSERT_CHECK_INT(b);
 
@@ -607,7 +607,7 @@ TVP vdmModGC(TVP a, TVP b, TVP *from)
 	ASSERT_CHECK_NUMERIC(a);
 	ASSERT_CHECK_NUMERIC(b);
 
-	//See https://github.com/overturetool/overture/blob/development/core/interpreter/src/main/java/org/overture/interpreter/eval/BinaryExpressionEvaluator.java#L575
+	/* See https://github.com/overturetool/overture/blob/development/core/interpreter/src/main/java/org/overture/interpreter/eval/BinaryExpressionEvaluator.java#L575  */
 	ASSERT_CHECK_INT(a);
 	ASSERT_CHECK_INT(b);
 

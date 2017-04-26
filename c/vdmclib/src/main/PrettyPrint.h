@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * <http:XXXwww.gnu.org/licenses/gpl-3.0.html>.
  * #~%
  */
 
@@ -37,9 +37,9 @@
 
 #include "Vdm.h"
 
-//Eclipse hack
+/* Eclipse hack  */
 #if !defined(va_arg)
-#define va_arg(ap,TVP) NULL //just for Eclipse must not be defined
+#define va_arg(ap,TVP) NULL /* just for Eclipse must not be defined  */
 #endif
 
 

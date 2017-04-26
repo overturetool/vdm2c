@@ -7,7 +7,7 @@
 
 #include "CSVLib.h"
 
-//This must not be protected by NO_CSV for source code FMU export to work properly.
+/* This must not be protected by NO_CSV for source code FMU export to work properly.  */
 char* resourcesLocation = NULL;
 
 #ifndef NO_CSV
@@ -44,7 +44,7 @@ char* URIToNativePath(const char* uri)
 	{
 		if (uri[9] == ':')
 		{
-			// Windows drive letter in the URI (e.g. file:///c:/ uri
+			/* Windows drive letter in the URI (e.g. file:///c:/ uri */
 			/* Remove the file:/// */
 			path_start = 8;
 		}
@@ -67,7 +67,7 @@ char* URIToNativePath(const char* uri)
 	{
 		if (uri[7] == ':')
 		{
-			// Windows drive letter in the URI (e.g. file:/c:/ uri
+			/* Windows drive letter in the URI (e.g. file:/c:/ uri */
 			/* Remove the  file:/ */
 			path_start = 6;
 		}
@@ -153,7 +153,7 @@ TVP vdm_CSV_flinecount(TVP f)
 
 	fileName = unpackString(f);
 
-	//Generated code is in the context of a co-simulation;
+	/* Generated code is in the context of a co-simulation;  */
 	if(resourcesLocation != NULL)
 	{
 		resLoc = URIToNativePath(resourcesLocation);
@@ -161,7 +161,7 @@ TVP vdm_CSV_flinecount(TVP f)
 		strcat(filePath, resLoc);
 		strcat(filePath, fileName);
 	}
-	//Generated code is being used on its own.
+	/* Generated code is being used on its own.  */
 	else
 	{
 		filePath = (char*)calloc(strlen(fileName) + 1, sizeof(char));
@@ -200,7 +200,7 @@ TVP vdm_CSV_flinecount(TVP f)
 
 
 
-//For now only handles CSV files containing floating point numbers.
+/* For now only handles CSV files containing floating point numbers.  */
 TVP vdm_CSV_freadval(TVP f, TVP index)
 {
 	char *resLoc = NULL;
@@ -217,12 +217,12 @@ TVP vdm_CSV_freadval(TVP f, TVP index)
 	TVP resultProd[2];
 	TVP result;
 
-	//If only one column there will be no comma.
+	/* If only one column there will be no comma.  */
 	int numCols = 1;
 
 	fileName = unpackString(f);
 
-	//Generated code is in the context of a co-simulation;
+	/* Generated code is in the context of a co-simulation;  */
 	if(resourcesLocation != NULL)
 	{
 		resLoc = URIToNativePath(resourcesLocation);
@@ -230,7 +230,7 @@ TVP vdm_CSV_freadval(TVP f, TVP index)
 		strcat(filePath, resLoc);
 		strcat(filePath, fileName);
 	}
-	//Generated code is being used on its own.
+	/* Generated code is being used on its own.  */
 	else
 	{
 		filePath = (char*)calloc(strlen(fileName) + 1, sizeof(char));
@@ -239,17 +239,17 @@ TVP vdm_CSV_freadval(TVP f, TVP index)
 
 	file = fopen(filePath, "r");
 
-	//Determine number of columns.
+	/* Determine number of columns.  */
 	while(c != '\n')
 	{
 		c = fgetc(file);
 		if(c == ',')
 			numCols++;
 	}
-	//For the list into which they will be stored.
+	/* For the list into which they will be stored.  */
 	values = malloc(numCols * sizeof(TVP));
 
-	//Seek to the specified line.
+	/* Seek to the specified line.  */
 	rewind(file);
 	while(currLine < lineSought)
 	{
@@ -258,7 +258,7 @@ TVP vdm_CSV_freadval(TVP f, TVP index)
 			currLine++;
 	}
 
-	//Read line.
+	/* Read line.  */
 	lineBuf = malloc(bytesToRead);
 	tempLineBuf = lineBuf;
 
@@ -272,7 +272,7 @@ TVP vdm_CSV_freadval(TVP f, TVP index)
 	}
 
 
-	//Parse line.
+	/* Parse line.  */
 	for(i = 0; i < numCols; i++)
 	{
 		values[i] = newReal(strtod(lineBuf, &tailPtr));
@@ -281,15 +281,15 @@ TVP vdm_CSV_freadval(TVP f, TVP index)
 	}
 
 
-	//Create result product of success value and list of values
-	//on line sought.
+	/* Create result product of success value and list of values  */
+	/* on line sought.  */
 	resultProd[0] = newBool(true);
 	resultProd[1] = newSeqWithValues(numCols, values);
 	result = newProductWithValues(2, resultProd);
 
 	fclose(file);
 
-	//Clean up
+	/* Clean up  */
 	free(tempLineBuf);
 	for(i = 0; i < numCols; i++)
 	{

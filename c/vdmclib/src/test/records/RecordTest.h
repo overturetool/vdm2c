@@ -1,4 +1,3 @@
-// The template for class header
 #ifndef CLASSES_RecordTest_H_
 #define CLASSES_RecordTest_H_
 
@@ -6,7 +5,6 @@
 
 #include "Vdm.h"
 
-//include types used in the class
 #include "MyRec.h"
 #include "MyRec2.h"
 #include "RecordTest.h"
@@ -37,12 +35,10 @@
  --------------------------------- */ 
  
 
-//class id
 #define CLASS_ID_RecordTest_ID 0
 
 #define RecordTestCLASS struct RecordTest*
 
-// The vtable ids
 #define CLASS_RecordTest__Z5test1EV 0
 #define CLASS_RecordTest__Z5test2EV 1
 #define CLASS_RecordTest__Z5test3EV 2
