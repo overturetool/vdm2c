@@ -23,6 +23,7 @@ import org.overture.codegen.ir.expressions.AInSetBinaryExpIR;
 import org.overture.codegen.ir.expressions.AIndicesUnaryExpIR;
 import org.overture.codegen.ir.expressions.ALenUnaryExpIR;
 import org.overture.codegen.ir.expressions.AMapDomainUnaryExpIR;
+import org.overture.codegen.ir.expressions.AMapOverrideBinaryExpIR;
 import org.overture.codegen.ir.expressions.AMapRangeUnaryExpIR;
 import org.overture.codegen.ir.expressions.AMapUnionBinaryExpIR;
 import org.overture.codegen.ir.expressions.AMapletExpIR;
@@ -72,6 +73,7 @@ public class ColTrans extends DepthFirstAnalysisCAdaptor implements IApplyAssist
 	public static final String MAP_RNG = "vdmMapRng";
 	public static final String MAP_UNION = "vdmMapMunion";
 	public static final String MAP_APPLY = "vdmMapApply";
+	public static final String MAP_OVERRIDE = " vdmMapOverride";
 
 	private TransAssistantIR assist;
 
@@ -258,6 +260,12 @@ public class ColTrans extends DepthFirstAnalysisCAdaptor implements IApplyAssist
 	public void caseAMapUnionBinaryExpIR(AMapUnionBinaryExpIR node) throws AnalysisException {
 
 		rewriteToApply(this, node, MAP_UNION, node.getLeft(), node.getRight());
+	}
+	
+	@Override
+	public void caseAMapOverrideBinaryExpIR(AMapOverrideBinaryExpIR node) throws AnalysisException {
+
+		rewriteToApply(this, node, MAP_OVERRIDE, node.getLeft(), node.getRight());
 	}
 	
 	private void rewriteColEnumToApply(SExpIR node, String seqVar, List<SExpIR> members)
