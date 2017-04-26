@@ -1,1 +1,0 @@
-vdmMapMerge($CFormat.format($node.getExp()))
