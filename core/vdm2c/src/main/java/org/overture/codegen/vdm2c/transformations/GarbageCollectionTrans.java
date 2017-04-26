@@ -121,6 +121,12 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 		gcNames.put(ColTrans.MAP_RNG, "vdmMapRngGC");
 		gcNames.put(ColTrans.MAP_UNION, "vdmMapMunionGC");
 		gcNames.put(ColTrans.MAP_APPLY, "vdmMapApplyGC");
+		gcNames.put(ColTrans.MAP_OVERRIDE, "vdmMapOverrideGC");
+		gcNames.put(ColTrans.MAP_DIST_MERGE, "vdmMapMergeGC");
+		gcNames.put(ColTrans.MAP_RES_DOM_TO, "vdmMapDomRestrictToGC");
+		gcNames.put(ColTrans.MAP_RES_DOM_BY, "vdmMapDomRestrictByGC");
+		gcNames.put(ColTrans.MAP_RES_RNG_TO, "vdmMapRngRestrictToGC");
+		gcNames.put(ColTrans.MAP_RES_RNG_BY, "vdmMapRngRestrictByGC");
 		
 		// Tuples
 		gcNames.put(TupleTrans.TUPLE_EXP, "newProductVarGC");

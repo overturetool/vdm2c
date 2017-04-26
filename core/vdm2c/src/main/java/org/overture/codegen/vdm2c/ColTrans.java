@@ -12,7 +12,10 @@ import org.overture.codegen.ir.analysis.intf.IAnalysis;
 import org.overture.codegen.ir.expressions.AApplyExpIR;
 import org.overture.codegen.ir.expressions.ACardUnaryExpIR;
 import org.overture.codegen.ir.expressions.ADistIntersectUnaryExpIR;
+import org.overture.codegen.ir.expressions.ADistMergeUnaryExpIR;
 import org.overture.codegen.ir.expressions.ADistUnionUnaryExpIR;
+import org.overture.codegen.ir.expressions.ADomainResByBinaryExpIR;
+import org.overture.codegen.ir.expressions.ADomainResToBinaryExpIR;
 import org.overture.codegen.ir.expressions.AElemsUnaryExpIR;
 import org.overture.codegen.ir.expressions.AEnumMapExpIR;
 import org.overture.codegen.ir.expressions.AEnumSeqExpIR;
@@ -23,10 +26,13 @@ import org.overture.codegen.ir.expressions.AInSetBinaryExpIR;
 import org.overture.codegen.ir.expressions.AIndicesUnaryExpIR;
 import org.overture.codegen.ir.expressions.ALenUnaryExpIR;
 import org.overture.codegen.ir.expressions.AMapDomainUnaryExpIR;
+import org.overture.codegen.ir.expressions.AMapOverrideBinaryExpIR;
 import org.overture.codegen.ir.expressions.AMapRangeUnaryExpIR;
 import org.overture.codegen.ir.expressions.AMapUnionBinaryExpIR;
 import org.overture.codegen.ir.expressions.AMapletExpIR;
 import org.overture.codegen.ir.expressions.APowerSetUnaryExpIR;
+import org.overture.codegen.ir.expressions.ARangeResByBinaryExpIR;
+import org.overture.codegen.ir.expressions.ARangeResToBinaryExpIR;
 import org.overture.codegen.ir.expressions.AReverseUnaryExpIR;
 import org.overture.codegen.ir.expressions.ASeqConcatBinaryExpIR;
 import org.overture.codegen.ir.expressions.ASetDifferenceBinaryExpIR;
@@ -40,12 +46,6 @@ import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.utils.CLetBeStStrategy;
 import org.overture.codegen.vdm2c.utils.IApplyAssistant;
 
-/**
- *
- * TODO: Extend this class to handle sets and maps too (rename class
- * accordingly)
- * 
- */
 public class ColTrans extends DepthFirstAnalysisCAdaptor implements IApplyAssistant {
 
 	public static final String SEQ_VAR = "newSeqVar";
@@ -78,6 +78,12 @@ public class ColTrans extends DepthFirstAnalysisCAdaptor implements IApplyAssist
 	public static final String MAP_RNG = "vdmMapRng";
 	public static final String MAP_UNION = "vdmMapMunion";
 	public static final String MAP_APPLY = "vdmMapApply";
+	public static final String MAP_OVERRIDE = "vdmMapOverride";
+	public static final String MAP_DIST_MERGE = "vdmMapMerge";
+	public static final String MAP_RES_DOM_TO = "vdmMapDomRestrictTo";
+	public static final String MAP_RES_DOM_BY = "vdmMapDomRestrictBy";
+	public static final String MAP_RES_RNG_TO = "vdmMapRngRestrictTo";
+	public static final String MAP_RES_RNG_BY = "vdmMapRngRestrictBy";
 
 	private TransAssistantIR assist;
 
@@ -264,6 +270,42 @@ public class ColTrans extends DepthFirstAnalysisCAdaptor implements IApplyAssist
 	public void caseAMapUnionBinaryExpIR(AMapUnionBinaryExpIR node) throws AnalysisException {
 
 		rewriteToApply(this, node, MAP_UNION, node.getLeft(), node.getRight());
+	}
+	
+	@Override
+	public void caseAMapOverrideBinaryExpIR(AMapOverrideBinaryExpIR node) throws AnalysisException {
+
+		rewriteToApply(this, node, MAP_OVERRIDE, node.getLeft(), node.getRight());
+	}
+	
+	@Override
+	public void caseADistMergeUnaryExpIR(ADistMergeUnaryExpIR node) throws AnalysisException {
+
+		rewriteToApply(this, node, MAP_DIST_MERGE, node.getExp());
+	}
+	
+	@Override
+	public void caseADomainResToBinaryExpIR(ADomainResToBinaryExpIR node) throws AnalysisException {
+		
+		rewriteToApply(this, node, MAP_RES_DOM_TO, node.getLeft(), node.getRight());
+	}
+	
+	@Override
+	public void caseADomainResByBinaryExpIR(ADomainResByBinaryExpIR node) throws AnalysisException {
+		
+		rewriteToApply(this, node, MAP_RES_DOM_BY, node.getLeft(), node.getRight());
+	}
+	
+	@Override
+	public void caseARangeResToBinaryExpIR(ARangeResToBinaryExpIR node) throws AnalysisException {
+		
+		rewriteToApply(this, node, MAP_RES_RNG_TO, node.getLeft(), node.getRight());
+	}
+	
+	@Override
+	public void caseARangeResByBinaryExpIR(ARangeResByBinaryExpIR node) throws AnalysisException {
+		
+		rewriteToApply(this, node, MAP_RES_RNG_BY, node.getLeft(), node.getRight());
 	}
 	
 	private void rewriteColEnumToApply(SExpIR node, String seqVar, List<SExpIR> members)
