@@ -1214,7 +1214,7 @@ TVP vdmMapDomRestrictByGC(TVP set,TVP map, TVP *from)
 
 
 
-TVP vdmMapRngRestrictTo(TVP set,TVP map)
+TVP vdmMapRngRestrictTo(TVP map, TVP set)
 {
 	ASSERT_CHECK(map);
 
@@ -1245,7 +1245,7 @@ TVP vdmMapRngRestrictTo(TVP set,TVP map)
 }
 
 
-TVP vdmMapRngRestrictToGC(TVP set,TVP map, TVP *from)
+TVP vdmMapRngRestrictToGC(TVP map, TVP set, TVP *from)
 {
 	ASSERT_CHECK(map);
 
@@ -1277,7 +1277,7 @@ TVP vdmMapRngRestrictToGC(TVP set,TVP map, TVP *from)
 
 
 
-TVP vdmMapRngRestrictBy(TVP set,TVP map)
+TVP vdmMapRngRestrictBy(TVP map, TVP set)
 {
 	ASSERT_CHECK(map);
 
@@ -1308,7 +1308,7 @@ TVP vdmMapRngRestrictBy(TVP set,TVP map)
 }
 
 
-TVP vdmMapRngRestrictByGC(TVP set,TVP map, TVP *from)
+TVP vdmMapRngRestrictByGC(TVP map, TVP set, TVP *from)
 {
 	ASSERT_CHECK(map);
 
