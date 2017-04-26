@@ -31,6 +31,7 @@ import org.overture.codegen.ir.expressions.AMapRangeUnaryExpIR;
 import org.overture.codegen.ir.expressions.AMapUnionBinaryExpIR;
 import org.overture.codegen.ir.expressions.AMapletExpIR;
 import org.overture.codegen.ir.expressions.APowerSetUnaryExpIR;
+import org.overture.codegen.ir.expressions.ARangeResByBinaryExpIR;
 import org.overture.codegen.ir.expressions.ARangeResToBinaryExpIR;
 import org.overture.codegen.ir.expressions.AReverseUnaryExpIR;
 import org.overture.codegen.ir.expressions.ASeqConcatBinaryExpIR;
@@ -82,6 +83,7 @@ public class ColTrans extends DepthFirstAnalysisCAdaptor implements IApplyAssist
 	public static final String MAP_RES_DOM_TO = "vdmMapDomRestrictTo";
 	public static final String MAP_RES_DOM_BY = "vdmMapDomRestrictBy";
 	public static final String MAP_RES_RNG_TO = "vdmMapRngRestrictTo";
+	public static final String MAP_RES_RNG_BY = "vdmMapRngRestrictBy";
 
 	private TransAssistantIR assist;
 
@@ -298,6 +300,12 @@ public class ColTrans extends DepthFirstAnalysisCAdaptor implements IApplyAssist
 	public void caseARangeResToBinaryExpIR(ARangeResToBinaryExpIR node) throws AnalysisException {
 		
 		rewriteToApply(this, node, MAP_RES_RNG_TO, node.getLeft(), node.getRight());
+	}
+	
+	@Override
+	public void caseARangeResByBinaryExpIR(ARangeResByBinaryExpIR node) throws AnalysisException {
+		
+		rewriteToApply(this, node, MAP_RES_RNG_BY, node.getLeft(), node.getRight());
 	}
 	
 	private void rewriteColEnumToApply(SExpIR node, String seqVar, List<SExpIR> members)

@@ -126,6 +126,7 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 		gcNames.put(ColTrans.MAP_RES_DOM_TO, "vdmMapDomRestrictToGC");
 		gcNames.put(ColTrans.MAP_RES_DOM_BY, "vdmMapDomRestrictByGC");
 		gcNames.put(ColTrans.MAP_RES_RNG_TO, "vdmMapRngRestrictToGC");
+		gcNames.put(ColTrans.MAP_RES_RNG_BY, "vdmMapRngRestrictByGC");
 		
 		// Tuples
 		gcNames.put(TupleTrans.TUPLE_EXP, "newProductVarGC");
