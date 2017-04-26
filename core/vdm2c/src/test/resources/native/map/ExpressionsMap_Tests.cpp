@@ -77,3 +77,8 @@ TEST_F(TestFlowFunctions, mapRngResTo)
 {
 	CHECK(CLASS_ExpressionMap__Z16mapRestrictRngToEV);
 }
+
+TEST_F(TestFlowFunctions, mapRngResBy)
+{
+	CHECK(CLASS_ExpressionMap__Z16mapRestrictRngByEV);
+}
