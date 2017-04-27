@@ -52,10 +52,10 @@ $CFormat.format($method)
  *
  --------------------------------- */
  ]]#
-// VTable for this class
+/*  VTable for this class  */
 $CFormat.format($CFormat.getHeader($node).getVtable().getVTableDeclarations())
 
-// Overload VTables
+/*  Overload VTables  */
 #foreach( $field in $CFormat.getHeader($node).getVtable().getOverrideVTableDeclarations() )
 $CFormat.format($field)
 #end
@@ -82,7 +82,7 @@ ${cname}CLASS ${cname}_Constructor(${cname}CLASS this_ptr)
 	#set( $cname = $node.getName())
 	#foreach( $super in $CFormat.getHeader($node).getFlattenedSupers() )
 	
-		//init base $super.getName()
+		/*  init base $super.getName()  */
 	#set( $sname = $super.getName())
 	$String.format("%s_Constructor((%sCLASS)CLASS_CAST(this_ptr,%s,%s));",$sname,$sname,$cname,$sname)
 
@@ -90,13 +90,13 @@ ${cname}CLASS ${cname}_Constructor(${cname}CLASS this_ptr)
 			#set($tn = $vtable.getOverrideStaticTableName($sname))
 			if(! ${tn}[0].pFunc)
 			{
-				//obtain original $sname VTable
-				//This will require rework for multiple inheritance, specifically the "... [0].getVtable..."
+				/*  obtain original $sname VTable  */
+				/*  This will require rework for multiple inheritance, specifically the "... [0].getVtable..."  */
 				memcpy( $tn, this_ptr->_${sname}_pVTable, sizeof( struct VTable) * $CFormat.getHeader($node).getFlattenedSupers()[0].getVtable().getTable().size());
 				
-				//install overrides
+				/*  install overrides  */
 				#foreach($entry in $vtable.getOverrides($sname).entrySet())
-					${tn}[$entry.getKey()].pFunc = (VirtualFunctionPointer)$entry.getValue(); //override
+					${tn}[$entry.getKey()].pFunc = (VirtualFunctionPointer)$entry.getValue(); /*  override  */
 					
 				#end
 			}
@@ -105,7 +105,7 @@ ${cname}CLASS ${cname}_Constructor(${cname}CLASS this_ptr)
 		
 	#end
 	
-		// $cname init
+		/*  $cname init  */
 		this_ptr->_${cname}_id = CLASS_ID_${cname}_ID;
 		this_ptr->_${cname}_refs = 0;
 		this_ptr->_${cname}_pVTable=VTableArrayFor${cname};
@@ -120,7 +120,7 @@ ${cname}CLASS ${cname}_Constructor(${cname}CLASS this_ptr)
 	return this_ptr;
 }
 
-// Method for creating new "class"
+/*  Method for creating new "class"  */
 static TVP new()
 {
 	${cname}CLASS ptr=${cname}_Constructor(NULL);
@@ -151,7 +151,7 @@ $CFormat.format($method)
  *
  --------------------------------- */
  ]]#
-// initialize globals - this is done last since they are declared in the header but uses init functions which are printet in any order
+/*  initialize globals - this is done last since they are declared in the header but uses init functions which are printet in any order  */
 #foreach($field in $node.getFields())
 	#if($field.getFinal() || $field.getStatic())
 TVP $field.getName() = #if($CFormat.isNull($field.getInitial())) NULL #else $CFormat.format($field.getInitial())#end;

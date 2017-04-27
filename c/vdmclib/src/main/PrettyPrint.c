@@ -97,7 +97,6 @@ char* printDouble(TVP val)
 }
 
 
-/* TODO:  Should change this to printVdmTypedValue  */
 char* toString(TVP val)
 {
 	char ldelim, rdelim;
