@@ -10,7 +10,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#if !defined(NO_IO) || !defined(NO_CSV)
+#if !defined(NO_IO) || !defined(NO_CSV) || defined(CUSTOM_IO)
 
 #define ASSERT_CHECK_BOOL(s) assert(s->type == VDM_BOOL && "Value is not a boolean")
 #define ASSERT_CHECK_NUMERIC(s) assert((s->type == VDM_INT||s->type == VDM_NAT||s->type == VDM_NAT1||s->type == VDM_REAL||s->type == VDM_RAT) && "Value is not numeric")
