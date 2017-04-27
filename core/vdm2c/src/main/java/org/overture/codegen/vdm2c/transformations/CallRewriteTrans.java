@@ -174,7 +174,7 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 		String methodOwnerType = selectedMethod.getAncestor(SClassDeclIR.class).getName();
 		String methodId = String.format(CTransUtil.METHOD_CALL_ID_PATTERN, methodOwnerType, selectedMethod.getName());
 		// CALL_FUNC(thisTypeName,funcTname,classValue,id, args...
-		AMacroApplyExpIR apply = newMacroApply(CTransUtil.CALL_FUNC, createIdentifier(thisType, null), createIdentifier(methodOwnerType, null), classValue, createIdentifier(methodId, null));
+		AMacroApplyExpIR apply = newMacroApply(CTransUtil.CALL_FUNC, createIdentifier(thisType, null), createIdentifier(methodOwnerType, null), classValue.clone(), createIdentifier(methodId, null));
 		apply.setType(method.getMethodType().getResult().clone());
 		for (SExpIR arg : linkedList)
 		{
