@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * <http:XXXwww.gnu.org/licenses/gpl-3.0.html>.
  * #~%
  */
 
@@ -39,8 +39,8 @@
 
 bool patternMatchBind(TVP patternBind, TVP value);
 
-//for match value
-//bool patternMatch(TVP patternBind, TVP value);
+/* for match value  */
+/* bool patternMatch(TVP patternBind, TVP value);  */
 
 #endif /* LIB_PATTERNBINDMATCH_H_ */
 #endif /* NO_PATTERNS */

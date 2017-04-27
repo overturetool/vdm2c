@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * <http:XXXwww.gnu.org/licenses/gpl-3.0.html>.
  * #~%
  */
 
@@ -50,11 +50,12 @@ TVP newProductWithValues(size_t size,TVP* elements)
 TVP newProductVar(size_t size, ...)
 {
 	TVP elements[size];
+	int i;
 
 	va_list ap;
 	va_start(ap, size);
 
-	for (int i = 0; i < size; i++)
+	for (i = 0; i < size; i++)
 	{
 		TVP arg = va_arg(ap, TVP);
 		elements[i]=arg;
@@ -69,11 +70,12 @@ TVP newProductVar(size_t size, ...)
 TVP newProductVarGC(size_t size, TVP *from, ...)
 {
 	TVP elements[size];
+	int i;
 
 	va_list ap;
 	va_start(ap, from);
 
-	for (int i = 0; i < size; i++)
+	for (i = 0; i < size; i++)
 	{
 		TVP arg = va_arg(ap, TVP);
 		elements[i]=arg;
@@ -122,13 +124,13 @@ void productSet(TVP product, int index, TVP val)
 	col->value[index-1]=vdmClone(val);
 }
 
-//TVP productEqual(TVP product,TVP product2)
-//{
-//
-//	ASSERT_CHECK(product);
-//	ASSERT_CHECK(product2);
-//
-//	return newBool(collectionEqual(product,product2));
-//}
+/* TVP productEqual(TVP product,TVP product2)  */
+/* {  */
+/*   */
+/* 	ASSERT_CHECK(product);  */
+/* 	ASSERT_CHECK(product2);  */
+/*   */
+/* 	return newBool(collectionEqual(product,product2));  */
+/* }  */
 
 #endif /* NO_PRODUCTS */

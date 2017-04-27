@@ -34,8 +34,6 @@
 
 #ifdef __cplusplus
 #else
-//#define X(a,b) (&a==&b?1:0)
-//#define X(a,b) (sizeof(a)==sizeof(b)?1:0)
 
 #define min(x,y) ({ \
     #x == #y; })

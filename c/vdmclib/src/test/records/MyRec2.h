@@ -1,4 +1,3 @@
-// The template for class header
 #ifndef CLASSES_MyRec2_H_
 #define CLASSES_MyRec2_H_
 
@@ -6,7 +5,6 @@
 
 #include "Vdm.h"
 
-//include types used in the class
 #include "VdmClass.h"
 
 
@@ -35,12 +33,12 @@
  --------------------------------- */ 
  
 
-//class id
+
 #define CLASS_ID_MyRec2_ID 2
 
 #define MyRec2CLASS struct MyRec2*
 
-// The vtable ids
+
 
 struct MyRec2
 {

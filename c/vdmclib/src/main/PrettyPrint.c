@@ -73,7 +73,7 @@ char* printInt(TVP val)
 		tmpval = tmpval / 10;
 	}
 
-	//Allow one extra space for negative numbers.
+	/* Allow one extra space for negative numbers.  */
 	str = (char*)malloc((numdigits + 2) * sizeof(char));
 	sprintf(str, "%d", val->value.intVal);
 
@@ -88,8 +88,8 @@ char* printDouble(TVP val)
 
 	char* str;
 
-	//Rounding behaviour for doubles in the less significant digits
-	//makes it impossible to count digits using subtraction and multiplication by 10.
+	/* Rounding behaviour for doubles in the less significant digits  */
+	/* makes it impossible to count digits using subtraction and multiplication by 10.  */
 	str = (char*)malloc(1000 * sizeof(char));
 	sprintf(str, "%f", val->value.doubleVal);
 
@@ -97,7 +97,7 @@ char* printDouble(TVP val)
 }
 
 
-//TODO:  Should change this to printVdmTypedValue
+/* TODO:  Should change this to printVdmTypedValue  */
 char* toString(TVP val)
 {
 	char ldelim, rdelim;
@@ -108,11 +108,11 @@ char* toString(TVP val)
 	int i;
 	int totallen;
 
-	//For compiler warnings.
+	/* For compiler warnings.  */
 	ldelim = 'a';
 	rdelim = 'a';
 
-	//Set up delimiters in case of collections.
+	/* Set up delimiters in case of collections.  */
 	switch(val->type)
 	{
 #ifndef NO_SETS
@@ -137,7 +137,7 @@ char* toString(TVP val)
 		break;
 	}
 
-	//Main operation.
+	/* Main operation.  */
 	switch(val->type)
 	{
 	case VDM_BOOL:
@@ -157,19 +157,19 @@ char* toString(TVP val)
 		break;
 #ifndef NO_SETS
 	case VDM_SET:
-		//Can not use UNWRAP_COLLECTION here because it includes a declaration.
+		/* Can not use UNWRAP_COLLECTION here because it includes a declaration.  */
 		col = (struct Collection*)val->value.ptr;
 		strcol = (char**)malloc(col->size * sizeof(char*));
 		totallen = 0;
 
-		//Get pretty printed representations of contents recursively.
+		/* Get pretty printed representations of contents recursively.  */
 		for(i = 0; i < col->size; i++)
 		{
 			strcol[i] = toString((col->value)[i]);
 			totallen += strlen(strcol[i]);
 		}
 
-		//Compose full string.
+		/* Compose full string.  */
 		str = (char*)malloc((2 + 1 + col->size * 2 + totallen));
 		strtmp = str;
 		sprintf(str, "%c", ldelim);
@@ -182,7 +182,7 @@ char* toString(TVP val)
 		sprintf(str, "%s%c", strcol[i], rdelim);
 		str = strtmp;
 
-		//Clean up.
+		/* Clean up.  */
 		for(i = 0; i < col->size; i++)
 		{
 			free(strcol[i]);
@@ -193,19 +193,19 @@ char* toString(TVP val)
 #endif
 #ifndef NO_SEQS
 	case VDM_SEQ:
-		//Can not use UNWRAP_COLLECTION here because it includes a declaration.
+		/* Can not use UNWRAP_COLLECTION here because it includes a declaration.  */
 		col = (struct Collection*)val->value.ptr;
 		strcol = (char**)malloc(col->size * sizeof(char*));
 		totallen = 0;
 
-		//Get pretty printed representations of contents recursively.
+		/* Get pretty printed representations of contents recursively.  */
 		for(i = 0; i < col->size; i++)
 		{
 			strcol[i] = toString((col->value)[i]);
 			totallen += strlen(strcol[i]);
 		}
 
-		//Compose full string.
+		/* Compose full string.  */
 		str = (char*)malloc((2 + 1 + col->size * 2 + totallen));
 		strtmp = str;
 		sprintf(str, "%c", ldelim);
@@ -218,7 +218,7 @@ char* toString(TVP val)
 		sprintf(str, "%s%c", strcol[i], rdelim);
 		str = strtmp;
 
-		//Clean up.
+		/* Clean up.  */
 		for(i = 0; i < col->size; i++)
 		{
 			free(strcol[i]);
@@ -229,19 +229,19 @@ char* toString(TVP val)
 #endif
 #ifndef NO_PRODUCTS
 	case VDM_PRODUCT:
-		//Can not use UNWRAP_COLLECTION here because it includes a declaration.
+		/* Can not use UNWRAP_COLLECTION here because it includes a declaration.  */
 		col = (struct Collection*)val->value.ptr;
 		strcol = (char**)malloc(col->size * sizeof(char*));
 		totallen = 0;
 
-		//Get pretty printed representations of contents recursively.
+		/* Get pretty printed representations of contents recursively.  */
 		for(i = 0; i < col->size; i++)
 		{
 			strcol[i] = toString((col->value)[i]);
 			totallen += strlen(strcol[i]);
 		}
 
-		//Compose full string.
+		/* Compose full string.  */
 		str = (char*)malloc(3 * sizeof(char) + 2 + 1 + col->size * 2 + totallen);
 		strtmp = str;
 		sprintf(str, "mk_%c", ldelim);
@@ -254,7 +254,7 @@ char* toString(TVP val)
 		sprintf(str, "%s%c", strcol[i], rdelim);
 		str = strtmp;
 
-		//Clean up.
+		/* Clean up.  */
 		for(i = 0; i < col->size; i++)
 		{
 			free(strcol[i]);
@@ -264,7 +264,7 @@ char* toString(TVP val)
 		break;
 #endif
 	default:
-		//Must return a valid pointer.
+		/* Must return a valid pointer.  */
 		str = (char*)malloc(1);
 		str[0] = 0;
 		break;

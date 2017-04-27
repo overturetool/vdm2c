@@ -1,4 +1,3 @@
-// The template for class
 #include "MyRec2.h"
 #include <stdio.h>
 #include <string.h>
@@ -71,10 +70,8 @@ return ;
  *
  --------------------------------- */
  
-// VTable for this class
  static  struct VTable VTableArrayForMyRec2  [0]  ;
 
-// Overload VTables
 
 
 /* -------------------------------
@@ -96,7 +93,6 @@ MyRec2CLASS MyRec2_Constructor(MyRec2CLASS this_ptr)
 	{
 	
 			
-		// MyRec2 init
 		this_ptr->_MyRec2_id = CLASS_ID_MyRec2_ID;
 		this_ptr->_MyRec2_refs = 0;
 		this_ptr->_MyRec2_pVTable=VTableArrayForMyRec2;
@@ -109,7 +105,6 @@ MyRec2CLASS MyRec2_Constructor(MyRec2CLASS this_ptr)
 	return this_ptr;
 }
 
-// Method for creating new "class"
 static TVP new()
 {
 	MyRec2CLASS ptr=MyRec2_Constructor(NULL);
@@ -168,6 +163,5 @@ return __buf;
  *
  --------------------------------- */
  
-// initialize globals - this is done last since they are declared in the header but uses init functions which are printet in any order
 		
 #endif /* NO_RECORDS */

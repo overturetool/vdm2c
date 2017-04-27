@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * <http:XXXwww.gnu.org/licenses/gpl-3.0.html>.
  * #~%
  */
 
@@ -35,16 +35,15 @@
 
 #include "VdmDefines.h"
 
-//Eclipse hack
+/* Eclipse hack  */
 #if !defined(va_arg)
-#define va_arg(ap,TVP) NULL //just for Eclipse must not be defined
+#define va_arg(ap,TVP) NULL /* just for Eclipse must not be defined  */
 #endif
 
 #define recursiveFree vdmFree
 
-//#define ALLOC(t,n) (t *) malloc((n)*sizeof(t))
 
-//,VDM_UNION
+/* ,VDM_UNION  */
 typedef enum
 {
 	VDM_INT,
@@ -67,7 +66,7 @@ typedef enum
 	VDM_PRODUCT,
 #endif
 	VDM_QUOTE,
-	//	VDM_OPTIONAL, think we will handle this with a TVP == NULL
+	/* 	VDM_OPTIONAL, think we will handle this with a TVP == NULL  */
 #ifndef NO_RECORDS
 	VDM_RECORD,
 #endif
@@ -75,25 +74,25 @@ typedef enum
 	VDM_CLASS
 } vdmtype;
 
-//typedef TypedValueType =
+/* typedef TypedValueType =  */
 typedef union TypedValueType
 {
-	//VDM_SET, SEQ, Map, Product and class
+	/* VDM_SET, SEQ, Map, Product and class  */
 	void* ptr;
 
-	//VDM_INT + INT1
+	/* VDM_INT + INT1  */
 	int intVal;
 
-	//VDM_BOOL
+	/* VDM_BOOL  */
 	bool boolVal;
 
-	//VDM_REAL
+	/* VDM_REAL  */
 	double doubleVal;
 
-	//VDM_CHAR
+	/* VDM_CHAR  */
 	char charVal;
 
-	//VDM_QUOTE
+	/* VDM_QUOTE  */
 	unsigned int quoteVal;
 } TypedValueType;
 
@@ -155,7 +154,7 @@ struct OptionalType
 TVP newTypeValue(vdmtype type, TypedValueType value);
 
 
-// Basic - these should inline
+/*  Basic - these should inline  */
 TVP newInt(int x);
 TVP newBool(bool x);
 TVP newReal(double x);
@@ -166,10 +165,10 @@ TVP newToken(TVP x);
 
 
 
-// Complex
+/*  Complex  */
 
 
-//utils
+/* utils  */
 TVP newCollectionWithValues(size_t size, vdmtype type, TVP* elements);
 TVP newCollection(size_t size, vdmtype type);
 TVP newCollectionGC(size_t size, vdmtype type, TVP *from);

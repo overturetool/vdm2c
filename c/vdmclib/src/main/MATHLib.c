@@ -71,11 +71,11 @@ TVP vdm_MATH_log(TVP a)
 		return newReal(log10((double)(a->value.intVal)));
 	}
 
-	//	RAT not yet implemented completely.
-	//	if(a->type != VDM_RAT)
-	//		return NULL;
-	//	else
-	//		return newReal(log10((double)(a->value.intVal)))
+	/* 	RAT not yet implemented completely.  */
+	/* 	if(a->type != VDM_RAT)  */
+	/* 		return NULL;  */
+	/* 	else  */
+	/* 		return newReal(log10((double)(a->value.intVal)))  */
 
 	return NULL;
 }
@@ -119,7 +119,7 @@ TVP vdm_MATH_ln(TVP a)
 
 TVP vdm_MATH_exp(TVP a)
 {
-	//not yet implemented.
+	/* not yet implemented.  */
 	return NULL;
 }
 
@@ -169,7 +169,7 @@ TVP vdm_MATH_sqrt(TVP a)
 
 TVP vdm_MATH_acot(TVP a)
 {
-	//not yet implemented.
+	/* not yet implemented.  */
 	return NULL;
 }
 
@@ -195,7 +195,7 @@ TVP vdm_MATH_atan(TVP v)
 
 TVP vdm_MATH_acos(TVP a)
 {
-	//not yet implemented.
+	/* not yet implemented.  */
 	return NULL;
 }
 
@@ -203,7 +203,7 @@ TVP vdm_MATH_acos(TVP a)
 
 TVP vdm_MATH_asin(TVP a)
 {
-	//not yet implemented.
+	/* not yet implemented.  */
 	return NULL;
 }
 
@@ -211,7 +211,7 @@ TVP vdm_MATH_asin(TVP a)
 
 TVP vdm_MATH_cot(TVP a)
 {
-	//not yet implemented.
+	/* not yet implemented.  */
 	return NULL;
 }
 
@@ -219,7 +219,7 @@ TVP vdm_MATH_cot(TVP a)
 
 TVP vdm_MATH_tan(TVP a)
 {
-	//not yet implemented.
+	/* not yet implemented.  */
 	return NULL;
 }
 
@@ -262,7 +262,7 @@ TVP vdm_MATH_sin(TVP v)
 
 TVP vdm_MATH_srand2(TVP a)
 {
-	//not yet implemented.
+	/* not yet implemented.  */
 	return NULL;
 }
 
@@ -270,7 +270,7 @@ TVP vdm_MATH_srand2(TVP a)
 
 TVP vdm_MATH_rand(TVP a)
 {
-	//not yet implemented.
+	/* not yet implemented.  */
 	return NULL;
 }
 
@@ -278,7 +278,7 @@ TVP vdm_MATH_rand(TVP a)
 
 void vdm_MATH_srand(TVP a)
 {
-	//not yet implemented.
+	/* not yet implemented.  */
 }
 
 

@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * <http:XXXwww.gnu.org/licenses/gpl-3.0.html>.
  * #~%
  */
 
@@ -44,8 +44,8 @@ struct RecordType
 {
 	void* value;
 	int recordId;
-	freeVdmClassFunction freeRecord;//TODO move to global map
-	vdmRecordEqualityFunction equalFun; //TODO move to global map
+	freeVdmClassFunction freeRecord;/* TODO move to global map  */
+	vdmRecordEqualityFunction equalFun; /* TODO move to global map  */
 	TVP (*vdmCloneFun)(TVP self);
 };
 

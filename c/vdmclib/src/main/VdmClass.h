@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * <http:XXXwww.gnu.org/licenses/gpl-3.0.html>.
  * #~%
  */
 
@@ -37,7 +37,7 @@
 typedef void (*freeVdmClassFunction)(void*);
 
 typedef TVP (*VirtualFunctionPointer)(void * self, ...);
-//typedef void (*VirtualFunctionPointer)(void * self, ...);
+/* typedef void (*VirtualFunctionPointer)(void * self, ...);  */
 
 /*
 VTable structure used by the compiler to keep
@@ -87,7 +87,7 @@ struct ClassType
 	void* value;
 	int classId;
 	unsigned int* refs;
-	freeVdmClassFunction freeClass;//TODO move to global map
+	freeVdmClassFunction freeClass;/* TODO move to global map  */
 };
 
 struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction freeClass, void* value);
@@ -100,7 +100,7 @@ struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction
  * --------------------------------------------------
  */
  
- // ############ PRIVATE INTERNAL MACROS #####################
+ /*  ############ PRIVATE INTERNAL MACROS #####################  */
  
  
 
@@ -113,7 +113,7 @@ struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction
 #define TVP_VARG_CAST_FE_3(WHAT, X, ...) TVP_VARG_CAST_FE_2(WHAT, __VA_ARGS__)WHAT(X)
 #define TVP_VARG_CAST_FE_4(WHAT, X, ...) TVP_VARG_CAST_FE_3(WHAT, __VA_ARGS__)WHAT(X)
 #define TVP_VARG_CAST_FE_5(WHAT, X, ...) TVP_VARG_CAST_FE_4(WHAT, __VA_ARGS__)WHAT(X)
-//... repeat as needed
+/* ... repeat as needed  */
 
 #define TVP_VARG_CAST_GET_MACRO(_1,_2,_3,_4,_5,NAME,...) NAME
 #define TVP_VARG_CAST_FOR_EACH(action,...) \
@@ -129,7 +129,7 @@ struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction
  */
 #define CREATE_CALL_VARG_CAST( ...) (TVP (*)( TVP_VARG_CAST_FOR_EACH(TVP_VARG_CAST_ARG_TYPE , ##__VA_ARGS__)))
 
-// ############ PUBLIC CLASS VALUE ACCESS #####################
+/*  ############ PUBLIC CLASS VALUE ACCESS #####################  */
 /*
  * Class Value unwrap macro - TODO: How to assert inline
  */
@@ -179,7 +179,6 @@ struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction
 
 #define CALL_FUNC(thisTypeName,funcTname,classValue,id, ... )     (CREATE_CALL_VARG_CAST(struct thisTypeName*, ## __VA_ARGS__ )GET_VTABLE_FUNC( thisTypeName,funcTname,TO_CLASS_PTR(classValue,thisTypeName),id))(CLASS_CAST(TO_CLASS_PTR(classValue,thisTypeName),thisTypeName,funcTname), ##  __VA_ARGS__)
 
-//#define CALL_FUNC(thisTypeName,funcTname,classValue,id, args... )     GET_VTABLE_FUNC( thisTypeName,funcTname,TO_CLASS_PTR(classValue,thisTypeName),id)(CLASS_CAST(TO_CLASS_PTR(classValue,thisTypeName),thisTypeName,funcTname), ## args)
 
 
 /*
@@ -204,12 +203,11 @@ struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction
 																							 newValue)
 
 
-// old stuff
+/*  old stuff  */
 
-//Call function from VTable and change ptr to the correct offset. With obtional arguments
-//#define CCCALL(thisTypeName,funcTname,ptr,id,...) GET_VTABLE_FUNC( thisTypeName,funcTname,ptr,id)(CLASS_CAST(ptr,thisTypeName,funcTname), ## __VA_ARGS__)
+/* Call function from VTable and change ptr to the correct offset. With obtional arguments  */
 
-// ############ PRIVATE CLASS POINTER ACCESS #####################
+/*  ############ PRIVATE CLASS POINTER ACCESS #####################  */
 
 /*
  * Macro to obtain a field from a (sub-)class specific class struct. We clone to preserve value semantics and the rule of freeing
@@ -243,7 +241,7 @@ struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction
 #define CALL_FUNC_PTR(thisTypeName,funcTname,ptr,id, ... )     (CREATE_CALL_VARG_CAST(struct thisTypeName*, ## __VA_ARGS__ )GET_VTABLE_FUNC( thisTypeName,funcTname,ptr,id))(CLASS_CAST(ptr,thisTypeName,funcTname), ##  __VA_ARGS__)
 
 
-// ############ UTILITIES #####################
+/*  ############ UTILITIES #####################  */
 /*
  * compare arguments. Techinically we wated: typeid(from)==typeid(to)
  * but this is not valid C. However it can be ifdeed for C++. But the name compare if ok

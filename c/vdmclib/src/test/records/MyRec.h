@@ -1,4 +1,3 @@
-// The template for class header
 #ifndef CLASSES_MyRec_H_
 #define CLASSES_MyRec_H_
 
@@ -9,7 +8,6 @@
 
 #ifndef NO_RECORDS
 
-//include types used in the class
 
 
 /* -------------------------------
@@ -35,12 +33,10 @@
  --------------------------------- */ 
 
 
-//class id
+
 #define CLASS_ID_MyRec_ID 1
 
 #define MyRecCLASS struct MyRec*
-
-// The vtable ids
 
 struct MyRec
 {

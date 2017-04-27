@@ -44,24 +44,24 @@
 
 struct B
 {
-	//---- A ----
+	/* ---- A ---- */
 	VDM_CLASS_BASE_DEFINITIONS(A);
 	/*vtable
 	 * calc --CLASS_A_calc
 	 * sum  -- CLASS_A_sum
 	 * */
 	VDM_CLASS_FIELD_DEFINITION(A,field1);
-	//-----end A ----
+	/* -----end A ---- */
 
 
-	// ---- C ----
+	/* ---- C ---- */
 	VDM_CLASS_BASE_DEFINITIONS(C);
 	/*vtable
 	 * getField1--CLASS_C_getField1
 	 * */
 	VDM_CLASS_FIELD_DEFINITION(C,field1c);
 
-	//---- end C----
+	/* ---- end C---- */
 
 	VDM_CLASS_BASE_DEFINITIONS(B);
 	/*vtable

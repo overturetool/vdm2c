@@ -35,7 +35,7 @@
 
 void C_free_fields(struct C *this)
 {
-	//free class struct
+	/* free class struct */
 	vdmFree(this->m_C_field1c);
 }
 
@@ -100,12 +100,12 @@ TVP C_ctor(CCLASS this)
 	TVP buf = NULL;
 	if(this ==NULL)
 	{
-		//root call i.e. not called from other constructor
+		/* root call i.e. not called from other constructor */
 		buf = new();
 		this = TO_CLASS_PTR(buf,C);
 	}
 
-	//ctor code
+	/* ctor code */
 
 	return buf;
 }

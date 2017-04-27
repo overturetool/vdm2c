@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * <http:XXXwww.gnu.org/licenses/gpl-3.0.html>.
  * #~%
  */
 
@@ -33,7 +33,7 @@
 
 #define SAMETYPE(a,b) a->type ==b->type
 
-//this is for match or bind and not for pattern identifier, this should be generated as p= value instead
+/* this is for match or bind and not for pattern identifier, this should be generated as p= value instead  */
 bool patternMatchBind(TVP patternBind, TVP value)
 {
 	switch(patternBind->type)
@@ -47,12 +47,12 @@ bool patternMatchBind(TVP patternBind, TVP value)
 		case VDM_TOKEN:
 		case VDM_REAL:
 		case VDM_RAT:
-		//this is match value
+		/* this is match value  */
 		return equals(patternBind,value);
 
-//		case VDM_OPTIONAL:
-//		//TODO not sure what should happen here
-//		break;
+/* 		case VDM_OPTIONAL:  */
+/* 		TODO not sure what should happen here  */
+/* 		break;  */
 #ifndef NO_SETS
 		case VDM_SET:
 		break;
@@ -67,7 +67,9 @@ bool patternMatchBind(TVP patternBind, TVP value)
 #endif
 #ifndef NO_PRODUCTS
 		case VDM_PRODUCT:
-		{ //this is a tuple pattern
+		{ /* this is a tuple pattern  */
+			int i;
+
 			if(!SAMETYPE(patternBind,value))
 			return false;
 
@@ -78,14 +80,14 @@ bool patternMatchBind(TVP patternBind, TVP value)
 			return false;
 
 			bool match = true;
-			for(int i = 0; i< pc->size;i++)
+			for(i = 0; i< pc->size;i++)
 			{
 				if(pc->value[i]!=NULL)
 				{
 					match &= patternMatchBind(pc->value[i],pv->value[i]);
 				} else
 				{
-					//bind
+					/* bind  */
 					productSet(patternBind,i+1,pv->value[i]);
 				}
 			}
