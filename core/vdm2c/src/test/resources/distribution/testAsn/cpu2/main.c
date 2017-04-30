@@ -24,6 +24,8 @@
 // Pr. CPU main
 int main(void) {
 
+	vdm_gc_init();
+
 	// Receive flag, becomes true when remote invocation need to be handled
 	bool rec_flag = false;
 

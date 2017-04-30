@@ -142,7 +142,7 @@ TVP bus(int objID, int funID, int supID, int nrArgs, va_list args){
 	TVP res;
 	fromInt2VdmInt(&res_ser, &res);
 
-	printInt(res);
+	//printInt(res);
 
 	//res = vdmClone(newInt( (int) res_ser));
 

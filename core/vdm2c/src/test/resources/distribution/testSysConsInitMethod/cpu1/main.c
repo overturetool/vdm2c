@@ -27,6 +27,8 @@
 // Pr. CPU main
 int main(void) {
 
+	vdm_gc_init();
+
 	// 1. System initialization
 	D_static_init();
 	cpu1_init();
@@ -34,12 +36,11 @@ int main(void) {
 	TVP w = _Z5WorldEV(NULL); // gets ID 0, due to being local
 
 	// 2. Run loop + handle receive values
-
 	printf("Hello World! \n");
 
 	// A local call
 	TVP ret = CALL_FUNC(World, World, w, CLASS_World__Z3RunEV); // Sequential code: CALL_FUNC(World, World, w, CLASS_World__Z3RunEV);
 	printf("Value is %d \n", ret->value.intVal);
 
-	return ret->value.intVal;
+	return (ret->value.intVal==38)?0:1;
 }

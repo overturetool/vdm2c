@@ -24,6 +24,8 @@
 // Pr. CPU main
 int main(void) {
 
+	vdm_gc_init();
+
 	// Receive flag, becomes true when remote invocation need to be handled
 	bool rec_flag = false;
 
@@ -39,6 +41,5 @@ int main(void) {
 	TVP ret = CALL_FUNC(World, World, w, CLASS_World__Z3RunEV); // Sequential code: CALL_FUNC(World, World, w, CLASS_World__Z3RunEV);
 	printf("Value is %d \n", ret->value.intVal);
 
-
-	return ret->value.intVal;
+	return (ret->value.intVal==14)?0:1;
 }

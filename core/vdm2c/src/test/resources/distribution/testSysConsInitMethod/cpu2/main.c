@@ -24,8 +24,10 @@
 // Pr. CPU main
 int main(void) {
 
+	vdm_gc_init();	
 	// 1. System initialization
 	cpu2_init();
+
 	TVP w = _Z5WorldEV(NULL); // gets ID 0, due to being local
 	D_static_init();
 

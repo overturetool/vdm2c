@@ -10,6 +10,7 @@ import org.overture.codegen.vdm2c.CMakeUtil.CMakeGenerateException;
 public class DistributionTests extends DistTestBase
 {
 
+	// Old test
 	//@Test
 	public void Test1() throws IOException, InterruptedException,
 	CMakeGenerateException
@@ -74,7 +75,7 @@ public class DistributionTests extends DistTestBase
 
 	}
 
-	//@Test
+	@Test
 	public void TestAsn() throws IOException, InterruptedException,
 	CMakeGenerateException
 	{
@@ -144,7 +145,9 @@ public class DistributionTests extends DistTestBase
 		pb3.start();
 
 		// cpu1 -- sync call
-		cmakeUtil.run(cpu1Dir, "cpu1Exe", TEST_OUTPUT != null);
+		boolean cpuReturnValue = cmakeUtil.run(cpu1Dir, "cpu1Exe", TEST_OUTPUT != null);
+		
+		Assert.assertTrue("Expected return value to be 0", cpuReturnValue);
 
 	}
 
@@ -235,7 +238,7 @@ public class DistributionTests extends DistTestBase
 		
 	}
 	
-	//@Test
+	@Test
 	public void TestSysConsInitMethod() throws IOException, InterruptedException,
 	CMakeGenerateException
 	{
@@ -319,7 +322,7 @@ public class DistributionTests extends DistTestBase
 		
 	}
 	
-	//@Test
+	@Test
 	public void TestQuotesBool() throws IOException, InterruptedException,
 	CMakeGenerateException
 	{
@@ -397,7 +400,9 @@ public class DistributionTests extends DistTestBase
 		pb3.start();
 
 		// cpu1 -- sync call
-		cmakeUtil.run(cpu1Dir, "cpu1Exe", TEST_OUTPUT != null);
+		boolean cpuReturnValue = cmakeUtil.run(cpu1Dir, "cpu1Exe", TEST_OUTPUT != null);
+				
+		Assert.assertTrue("Expected return value to be 0", cpuReturnValue);
 
 	}
 }

@@ -60,5 +60,5 @@ int main(void) {
 	TVP ret = CALL_FUNC(World, World, w, CLASS_World__Z3RunEV); // Sequential code: CALL_FUNC(World, World, w, CLASS_World__Z3RunEV);
 	printf("Value is %d \n", ret->value.boolVal);
 
-	return ret->value.intVal;
+	return (ret->value.boolVal==false)?0:1;
 }
