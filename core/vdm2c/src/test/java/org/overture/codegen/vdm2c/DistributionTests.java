@@ -147,7 +147,7 @@ public class DistributionTests extends DistTestBase
 
 	}
 
-	@Test
+	//@Test
 	public void TestAsnProd() throws IOException, InterruptedException,
 	CMakeGenerateException
 	{
@@ -225,7 +225,7 @@ public class DistributionTests extends DistTestBase
 		pb3.start();
 
 		String current = new java.io.File( "." ).getCanonicalPath();
-        System.out.println("Current dir:"+current);
+        //System.out.println("Current dir:"+current);
 		
 		// cpu1 -- sync call
 		cmakeUtil.run(cpu1Dir, "cpu1Exe", TEST_OUTPUT != null);
@@ -339,8 +339,8 @@ public class DistributionTests extends DistTestBase
 				new File("src/test/resources/distribution/testQuotesBool/cpu1/asn1vdm.h".replace('/', File.separatorChar)));
 
 		// cpu2 directory
-		File cpu2Dir = new File("target/test-cgen/DistributionTests/testAsnProd/cpu2");
-		copyTestFilesDist(cpu2Dir , new File("src/test/resources/distribution/testAsnProd/cpu2/distCall.h".replace('/', File.separatorChar)),
+		File cpu2Dir = new File("target/test-cgen/DistributionTests/testQuotesBool/cpu2");
+		copyTestFilesDist(cpu2Dir , new File("src/test/resources/distribution/testQuotesBool/cpu2/distCall.h".replace('/', File.separatorChar)),
 				new File("src/test/resources/distribution/testQuotesBool/cpu2/distCall.c".replace('/', File.separatorChar)),
 				new File("src/test/resources/distribution/testQuotesBool/cpu2/CMakeLists.txt".replace('/', File.separatorChar)),
 				new File("src/test/resources/distribution/testQuotesBool/cpu2/main.c".replace('/', File.separatorChar)),

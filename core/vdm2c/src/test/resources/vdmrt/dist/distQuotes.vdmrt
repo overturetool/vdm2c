@@ -35,7 +35,7 @@ a_rem := a2; -- Remote object
 --callLoc () == return a_loc.product(2,3); -- CALLFUNC(...)
 
 public callRem : () ==> bool
-callRem() == return a_rem.compare(<Master>,<Master>); -- DISTCALL(...)
+callRem() == return a_rem.compare(<Master>,<Slave>); -- DISTCALL(...)
 
 end B
 
