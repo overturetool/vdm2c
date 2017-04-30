@@ -17,10 +17,13 @@ import org.overture.codegen.ir.patterns.AIdentifierPatternIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.CForIterator;
 import org.overture.codegen.vdm2c.ColTrans;
+import org.overture.codegen.vdm2c.TupleTrans;
 import org.overture.codegen.vdm2c.Vdm2cTag;
 import org.overture.codegen.vdm2c.Vdm2cTag.MethodTag;
 import org.overture.codegen.vdm2c.extast.expressions.AMacroApplyExpIR;
+import org.overture.codegen.vdm2c.tags.CTags;
 import org.overture.codegen.vdm2c.utils.CLetBeStStrategy;
+import org.overture.codegen.vdm2c.utils.CSetCompStrategy;
 import org.overture.codegen.vdm2c.utils.CTransUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -94,6 +97,8 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 		gcNames.put(ColTrans.SEQ_CONC, "vdmSeqConcGC");
 		gcNames.put(ColTrans.SEQ_REVERSE, "vdmSeqReverseGC");
 		gcNames.put(ColTrans.SEQ_INDEX, "vdmSeqIndexGC");
+		gcNames.put(ColTrans.SEQ_ELEMS, "vdmSeqElemsGC");
+		gcNames.put(ColTrans.SEQ_INDS, "vdmSeqIndsGC");
 		
 		// Set operations and utility functions
 		gcNames.put(CForIterator.VDM_SET_ELEMENT_AT, "vdmSetElementAtGC");
@@ -108,10 +113,24 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 		gcNames.put(ColTrans.SET_DIST_INTER, "vdmSetDinterGC");
 		gcNames.put(ColTrans.SET_POWER_SET, "vdmSetPowerGC");
 		
+		// Comprehensions
+		gcNames.put(CSetCompStrategy.NEW_SET_VAR_TO_GROW, "newSetVarToGrowGC");
+		
 		// Map operations
 		gcNames.put(ColTrans.MAP_DOM, "vdmMapDomGC");
 		gcNames.put(ColTrans.MAP_RNG, "vdmMapRngGC");
 		gcNames.put(ColTrans.MAP_UNION, "vdmMapMunionGC");
+		gcNames.put(ColTrans.MAP_APPLY, "vdmMapApplyGC");
+		gcNames.put(ColTrans.MAP_OVERRIDE, "vdmMapOverrideGC");
+		gcNames.put(ColTrans.MAP_DIST_MERGE, "vdmMapMergeGC");
+		gcNames.put(ColTrans.MAP_RES_DOM_TO, "vdmMapDomRestrictToGC");
+		gcNames.put(ColTrans.MAP_RES_DOM_BY, "vdmMapDomRestrictByGC");
+		gcNames.put(ColTrans.MAP_RES_RNG_TO, "vdmMapRngRestrictToGC");
+		gcNames.put(ColTrans.MAP_RES_RNG_BY, "vdmMapRngRestrictByGC");
+		
+		// Tuples
+		gcNames.put(TupleTrans.TUPLE_EXP, "newProductVarGC");
+		gcNames.put(TupleTrans.TUPLE_FIELD_NUMBER_EXP, "productGetGC");
 		
 		// Copying
 		gcNames.put(ValueSemantics.VDM_CLONE, "vdmCloneGC");
@@ -172,17 +191,19 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 				id.setName(val);
 				if(!(isFieldAccessor(oldName) || isSetter(oldName)))
 				{
-					if (isSeqOrSet(oldName)) {
-						// The signatures of 'newSeqVarGC' and newSetVarGC are:
+					if (isSeqOrSet(oldName) || isTupleExp(oldName)) {
+						// The signatures of 'newSeqVarGC', 'newSetVarGC' and 'newProductVarGC' are:
 						// TVP newSeqVarGC(size_t size, TVP *from, ...)
 						// TVP newSetVarGC(size_t size, TVP *from, ...)
+						// TVP newProductVarGC(size_t size, TVP *from, ...)
 						// Therefore, 'from' is the second argument (at index 1)
 						args.add(1, consReference(node));
 					}
-					else if(isMap(oldName))
+					else if(isMap(oldName) || isSetVarToGrow(oldName))
 					{
 						// The signature of 'newMapVarToGrowGC' is:
 						// TVP newMapVarToGrowGC(size_t size, size_t expected_size, TVP *from, ...);
+						// TVP newSetVarToGrowGC(size_t size, size_t expected_size, TVP *from, ...)
 						// Therefore, 'from' is the third argument (at index 2)
 						args.add(2, consReference(node));
 					}
@@ -200,21 +221,24 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 		
 		if (parent instanceof AVarDeclIR)
 		{
-			SPatternIR pat = ((AVarDeclIR) parent).getPattern();
+			AVarDeclIR decl = ((AVarDeclIR) parent);
+			SPatternIR pat = decl.getPattern();
 
-			if (pat instanceof AIdentifierPatternIR)
-			{
-				String name = ((AIdentifierPatternIR) pat).getName();
-				AExternalExpIR reference = new AExternalExpIR();
-				reference.setSourceNode(pat.getSourceNode());
-				String referencePrefix = findReferencePrefix(exp);
-				reference.setTargetLangExp(referencePrefix + name);
+			// "return" variables constitute a special case where 'from' must be NULL
+			// See https://github.com/overturetool/vdm2c/issues/87#issuecomment-295776237https://github.com/overturetool/vdm2c/issues/87#issuecomment-295776237
+			if (decl.getTag() != CTags.RET_VAR_TAG) {
 				
-				return reference;
-			}
-			else
-			{
-				logger.error("Expected identifier pattern at this point.");
+				if (pat instanceof AIdentifierPatternIR) {
+					String name = ((AIdentifierPatternIR) pat).getName();
+					AExternalExpIR reference = new AExternalExpIR();
+					reference.setSourceNode(pat.getSourceNode());
+					String referencePrefix = findReferencePrefix(exp);
+					reference.setTargetLangExp(referencePrefix + name);
+
+					return reference;
+				} else {
+					logger.error("Expected identifier pattern at this point.");
+				}
 			}
 		}
 
@@ -258,9 +282,19 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 		return name.equals(ColTrans.SEQ_VAR) || name.equals(ColTrans.SET_VAR);
 	}
 	
+	private boolean isTupleExp(String name) {
+	
+		return name.equals(TupleTrans.TUPLE_EXP);
+	}
+	
 	private boolean isMap(String name)
 	{
 		return name.equals(ColTrans.MAP_VAR);
+	}
+	
+	private boolean isSetVarToGrow(String name)
+	{
+		return name.equals(CSetCompStrategy.NEW_SET_VAR_TO_GROW);
 	}
 	
 	private boolean insideFieldInitializer(SExpIR exp)

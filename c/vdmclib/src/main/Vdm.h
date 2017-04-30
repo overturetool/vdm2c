@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * <http:XXXwww.gnu.org/licenses/gpl-3.0.html>.
  * #~%
  */
 
@@ -53,5 +53,6 @@
 #include "VdmMap.h"
 #include "VdmClass.h"
 #include "VdmProduct.h"
+#include "VdmRecord.h"
 
 #endif /* LIB_VDM_H_ */

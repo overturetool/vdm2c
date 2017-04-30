@@ -74,10 +74,8 @@ TVP vdmCloneR1(TVP self)
 	UNWRAP_R1(selfR,tmp);
 	UNWRAP_R1(vdmCloneR,tmp2);
 
-	//copy record struct
 	*vdmCloneR = *selfR;
 
-	//copy fields
 	vdmCloneR->a = vdmClone(vdmCloneR->a);
 	vdmCloneR->b = vdmClone(vdmCloneR->b);
 	vdmCloneR->c = vdmClone(vdmCloneR->c);

@@ -325,7 +325,7 @@ TEST(Expression_Map, mapRngRestrictTo)
 	//map1: {1|->2,3|->4,6|->7}
 	TVP map = createMap1();
 
-	TVP map_res = vdmMapRngRestrictTo(set,map);
+	TVP map_res = vdmMapRngRestrictTo(map, set);
 
 	//Get domain
 	TVP map_dom = vdmMapDom(map_res);
@@ -346,7 +346,7 @@ TEST(Expression_Map, mapRngRestrictBy)
 	//map1: {1|->2,3|->4,6|->7}
 	TVP map = createMap1();
 
-	TVP map_res = vdmMapRngRestrictBy(set,map);
+	TVP map_res = vdmMapRngRestrictBy(map, set);
 
 	//Get domain
 	TVP map_dom = vdmMapDom(map_res);

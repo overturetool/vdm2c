@@ -22,8 +22,7 @@ extern struct alloc_list_node *allocd_mem_head;
 extern struct alloc_list_node *allocd_mem_current;
 
 
-//#ifdef WITH_GC
-//====  Gargabe collected versions ======
+/* ====  Gargabe collected versions ======  */
 
 TVP newTypeValueGC(vdmtype type, TypedValueType value, TVP *ref_from);
 TVP vdmCloneGC(TVP x, TVP *from);
@@ -34,7 +33,6 @@ TVP newCharGC(char x, TVP *from);
 TVP newQuoteGC(unsigned int x, TVP *from);
 TVP newTokenGC(TVP x, TVP *from);
 TVP vdmEqualsGC(TVP a, TVP b, TVP *from);
-//#endif /* WITH_GC */
 
 
 #endif /*VDMGC_H_*/

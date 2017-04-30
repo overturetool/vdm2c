@@ -36,7 +36,6 @@
 
 #ifndef NO_RECORDS
 
-//#define UNWRAP_R(var,map) struct Map* var = (struct Map*)map->value.ptr
 
 #define RECORD_ID_R1 1
 
@@ -44,7 +43,6 @@
 
 struct R1
 {
-	//needs if to identify it
 	int _id;
 
 	TVP a;

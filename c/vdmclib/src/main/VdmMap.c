@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * <http:XXXwww.gnu.org/licenses/gpl-3.0.html>.
  * #~%
  */
 
@@ -29,7 +29,7 @@
 
 #include "VdmMap.h"
 
-#include <stdio.h> //FIXME remove all printf!
+#include <stdio.h> /* FIXME remove all printf!  */
 #include <stdarg.h>
 
 #define ASSERT_CHECK(s) assert(s->type == VDM_MAP && "Value is not a map")
@@ -59,34 +59,34 @@ guint vdm_typedvalue_hash(gconstpointer v)
 	case VDM_QUOTE:
 		return g_int_hash(&tv->value.quoteVal);
 	case VDM_MAP:
-		//todo
+		/* todo  */
 		break;
 	case VDM_PRODUCT:
 	case VDM_SEQ:
 	case VDM_SET:
 	{
-		//			UNWRAP_COLLECTION(cptr,tmp);
-		//
-		//			struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
-		//
-		//			//copy (size)
-		//			*ptr = *cptr;
-		//			ptr->value = (TVP*) malloc(sizeof(struct TypedValue) * ptr->size);
-		//
-		//			for (int i = 0; i < cptr->size; i++)
-		//			{
-		//				ptr->value[i] = vdmClone(cptr->value[i]);
-		//			}
-		//
-		//			tmp->value.ptr = ptr;
+		/* 			UNWRAP_COLLECTION(cptr,tmp);  */
+		/*   */
+		/* 			struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));  */
+		/*   */
+		/* 			 copy (size)  */
+		/* 			*ptr = *cptr;  */
+		/* 			ptr->value = (TVP*) malloc(sizeof(struct TypedValue) * ptr->size);  */
+		/*   */
+		/* 			for (int i = 0; i < cptr->size; i++)  */
+		/* 			{  */
+		/* 				ptr->value[i] = vdmClone(cptr->value[i]);  */
+		/* 			}  */
+		/*   */
+		/* 			tmp->value.ptr = ptr;  */
 		break;
 	}
-	//		case VDM_OPTIONAL:
-	//		//TODO
-	//		break;
+	/* 		case VDM_OPTIONAL:  */
+	/* 		TODO  */
+	/* 		break;  */
 	case VDM_RECORD:
 	{
-		//TODO duplicate (memcpy) and duplicate what ever any pointers points to except if a class
+		/* TODO duplicate (memcpy) and duplicate what ever any pointers points to except if a class  */
 		break;
 	}
 	case VDM_CLASS:
@@ -95,7 +95,7 @@ guint vdm_typedvalue_hash(gconstpointer v)
 	}
 	}
 
-	return 0; //really bad hash
+	return 0; /* really bad hash  */
 }
 
 gboolean vdm_typedvalue_equal(gconstpointer v1, gconstpointer v2)
@@ -146,7 +146,7 @@ void vdmMapAdd(TVP map, TVP key, TVP value)
 }
 
 
-// TODO: Apply does not work, if they key is not found
+/*  TODO: Apply does not work, if they key is not found  */
 TVP vdmMapApply(TVP map, TVP key)
 {
 	ASSERT_CHECK(map);
@@ -158,7 +158,7 @@ TVP vdmMapApply(TVP map, TVP key)
 
 void print_iterator(gpointer item, gpointer prefix) {
 	TVP item2 = (TVP) item;
-	//FIXME you cannot print a union type like this printf("%d \n", item2->value);
+	/* FIXME you cannot print a union type like this printf("%d \n", item2->value);  */
 }
 void print_iterator_short(gpointer item) {
 	printf("%s\n", item);
@@ -171,10 +171,10 @@ int getGreater(int a, int b){
 
 TVP vdmMapDom(TVP map)
 {
-	//Assert map
+	/* Assert map  */
 	ASSERT_CHECK(map);
 
-	// Get map size
+	/*  Get map size  */
 	UNWRAP_MAP(m,map);
 	int set_size = g_hash_table_size(m->table);
 
@@ -188,7 +188,7 @@ TVP vdmMapDom(TVP map)
 
 	TVP res = newSetWithValues(set_size, arr);
 
-	//TODO: Free necessary variables
+	/* TODO: Free necessary variables  */
 	g_list_free(dom);
 
 	return res
@@ -196,10 +196,10 @@ TVP vdmMapDom(TVP map)
 
 TVP vdmMapDomGC(TVP map, TVP *from)
 {
-	//Assert map
+	/* Assert map  */
 	ASSERT_CHECK(map);
 
-	// Get map size
+	/*  Get map size  */
 	UNWRAP_MAP(m,map);
 	int set_size = g_hash_table_size(m->table);
 
@@ -213,7 +213,7 @@ TVP vdmMapDomGC(TVP map, TVP *from)
 
 	TVP res = newSetWithValuesGC(set_size, arr, from);
 
-	//TODO: Free necessary variables
+	/* TODO: Free necessary variables  */
 	g_list_free(dom);
 
 	return res
@@ -221,10 +221,10 @@ TVP vdmMapDomGC(TVP map, TVP *from)
 
 TVP vdmMapRng(TVP map)
 {
-	//Assert map
+	/* Assert map  */
 	ASSERT_CHECK(map);
 
-	// Get map size
+	/*  Get map size  */
 	UNWRAP_MAP(m,map);
 	int set_size = g_hash_table_size(m->table);
 
@@ -238,7 +238,7 @@ TVP vdmMapRng(TVP map)
 
 	TVP res = newSetWithValues(set_size, arr);
 
-	//TODO: Free necessary variables
+	/* TODO: Free necessary variables  */
 	g_list_free(dom);
 
 	return newSetWithValues(set_size, arr);
@@ -246,10 +246,10 @@ TVP vdmMapRng(TVP map)
 
 TVP vdmMapRngGC(TVP map, TVP *from)
 {
-	//Assert map
+	/* Assert map  */
 	ASSERT_CHECK(map);
 
-	// Get map size
+	/*  Get map size  */
 	UNWRAP_MAP(m,map);
 	int set_size = g_hash_table_size(m->table);
 
@@ -263,7 +263,7 @@ TVP vdmMapRngGC(TVP map, TVP *from)
 
 	TVP res = newSetWithValuesGC(set_size, arr, from);
 
-	//TODO: Free necessary variables
+	/* TODO: Free necessary variables  */
 	g_list_free(dom);
 
 	return res;
@@ -313,7 +313,7 @@ int ht_hash( hashtable_t *hashtable, TVP key ) {
 	return hashval % hashtable->size;
 	 */
 
-	//TODO:  Figure out hash function for TVP
+	/* TODO:  Figure out hash function for TVP  */
 	return 0;
 }
 
@@ -446,7 +446,7 @@ TVP ht_get( hashtable_t *hashtable, TVP key ) {
 TVP newMap()
 {
 	struct Map* ptr = (struct Map*) malloc(sizeof(struct Map));
-	//TODO:  work out initial size.
+	/* TODO:  work out initial size.  */
 	ptr->table =  ht_create(10);
 
 	return newTypeValue(VDM_MAP, (TypedValueType
@@ -469,11 +469,13 @@ void freeChain(entry_t *chain)
 
 void freeMap(struct Map *m)
 {
-	for(int i = 0; i < m->table->size; i++)
+	int i;
+	for(i = 0; i < m->table->size; i++)
 	{
 		freeChain(m->table->chain[i]);
 	}
 
+	free(m->table->chain);
 	free(m->table);
 	free(m);
 }
@@ -495,10 +497,12 @@ entry_t* cloneChain(entry_t *chain)
 
 struct Map* cloneMap(struct Map *m)
 {
+	int i;
+
 	struct Map* ptr = (struct Map*) malloc(sizeof(struct Map));
 
 	ptr->table = ht_create(m->table->size);
-	for(int i = 0; i < ptr->table->size; i++)
+	for(i = 0; i < ptr->table->size; i++)
 	{
 		ptr->table->chain[i] = cloneChain(m->table->chain[i]);
 	}
@@ -510,7 +514,7 @@ struct Map* cloneMap(struct Map *m)
 TVP newMapGC(TVP *from)
 {
 	struct Map* ptr = (struct Map*) malloc(sizeof(struct Map));
-	//TODO:  work out initial size.
+	/* TODO:  work out initial size.  */
 	ptr->table =  ht_create(10);
 
 	return newTypeValueGC(VDM_MAP, (TypedValueType
@@ -519,13 +523,14 @@ TVP newMapGC(TVP *from)
 }
 
 
-//Not a very useful function, but here to support the map comprehension mechanism.
+/* Not a very useful function, but here to support the map comprehension mechanism.  */
 TVP newMapVarToGrow(size_t size, size_t expected_size, ...)
 {
 	struct Map* ptr;
 	TVP key;
 	TVP value;
 	TVP theMap;
+	int i;
 
 	if(size == 0)
 	{
@@ -539,7 +544,7 @@ TVP newMapVarToGrow(size_t size, size_t expected_size, ...)
 	va_list argList;
 	va_start(argList, expected_size);
 
-	for(int i = 0; i < size; i++)
+	for(i = 0; i < size; i++)
 	{
 		key = vdmClone(va_arg(argList, TVP));
 		value = vdmClone(va_arg(argList, TVP));
@@ -554,13 +559,14 @@ TVP newMapVarToGrow(size_t size, size_t expected_size, ...)
 	return theMap;
 }
 
-//Not a very useful function, but here to support the map comprehension mechanism.
+/* Not a very useful function, but here to support the map comprehension mechanism.  */
 TVP newMapVarToGrowGC(size_t size, size_t expected_size, TVP *from, ...)
 {
 	struct Map* ptr;
 	TVP key;
 	TVP value;
 	TVP theMap;
+	int i;
 
 	if(size == 0)
 	{
@@ -574,7 +580,7 @@ TVP newMapVarToGrowGC(size_t size, size_t expected_size, TVP *from, ...)
 	va_list argList;
 	va_start(argList, from);
 
-	for(int i = 0; i < size; i++)
+	for(i = 0; i < size; i++)
 	{
 		key = vdmClone(va_arg(argList, TVP));
 		value = vdmClone(va_arg(argList, TVP));
@@ -589,13 +595,13 @@ TVP newMapVarToGrowGC(size_t size, size_t expected_size, TVP *from, ...)
 	return theMap;
 }
 
-//Not a very useful operation, but here to support the map comprehension mechanism.
+/* Not a very useful operation, but here to support the map comprehension mechanism.  */
 void vdmMapGrow(TVP theMap, TVP key, TVP val)
 {
 	vdmMapAdd(theMap, key, val);
 }
 
-//Not a very useful operation, but here to support the map comprehension mechanism.
+/* Not a very useful operation, but here to support the map comprehension mechanism.  */
 void vdmMapFit(TVP theMap)
 {
 	return;
@@ -619,7 +625,7 @@ void vdmMapUpdate(TVP map, TVP key, TVP value)
 
 
 
-// TODO: Apply does not work if the key is not found
+/*  TODO: Apply does not work if the key is not found  */
 TVP vdmMapApply(TVP map, TVP key)
 {
 	ASSERT_CHECK(map);
@@ -629,7 +635,7 @@ TVP vdmMapApply(TVP map, TVP key)
 }
 
 
-// TODO: Apply does not work if the key is not found
+/*  TODO: Apply does not work if the key is not found  */
 TVP vdmMapApplyGC(TVP map, TVP key, TVP *from)
 {
 	ASSERT_CHECK(map);
@@ -642,10 +648,10 @@ TVP vdmMapApplyGC(TVP map, TVP key, TVP *from)
 
 TVP vdmMapDom(TVP map)
 {
-	//Assert map
+	/* Assert map  */
 	ASSERT_CHECK(map);
 
-	// Get map size
+	/*  Get map size  */
 	UNWRAP_MAP(m,map);
 
 	int i;
@@ -665,9 +671,9 @@ TVP vdmMapDom(TVP map)
 
 	TVP arr[mapsize];
 
-	//Reusing this variable.
+	/* Reusing this variable.  */
 	mapsize = 0;
-	//Get keys.
+	/* Get keys.  */
 	for(i = 0; i < m->table->size; i++)
 	{
 		currentry = (m->table->chain)[i];
@@ -687,10 +693,10 @@ TVP vdmMapDom(TVP map)
 
 TVP vdmMapDomGC(TVP map, TVP *from)
 {
-	//Assert map
+	/* Assert map  */
 	ASSERT_CHECK(map);
 
-	// Get map size
+	/*  Get map size  */
 	UNWRAP_MAP(m,map);
 
 	int i;
@@ -710,9 +716,9 @@ TVP vdmMapDomGC(TVP map, TVP *from)
 
 	TVP arr[mapsize];
 
-	//Reusing this variable.
+	/* Reusing this variable.  */
 	mapsize = 0;
-	//Get keys.
+	/* Get keys.  */
 	for(i = 0; i < m->table->size; i++)
 	{
 		currentry = (m->table->chain)[i];
@@ -733,10 +739,10 @@ TVP vdmMapDomGC(TVP map, TVP *from)
 
 TVP vdmMapRng(TVP map)
 {
-	//Assert map
+	/* Assert map  */
 	ASSERT_CHECK(map);
 
-	// Get map size
+	/*  Get map size  */
 	UNWRAP_MAP(m,map);
 
 	int i;
@@ -756,9 +762,9 @@ TVP vdmMapRng(TVP map)
 
 	TVP arr[mapsize];
 
-	//Reusing this variable.
+	/* Reusing this variable.  */
 	mapsize = 0;
-	//Get keys.
+	/* Get keys.  */
 	for(i = 0; i < m->table->size; i++)
 	{
 		currentry = (m->table->chain)[i];
@@ -778,10 +784,10 @@ TVP vdmMapRng(TVP map)
 
 TVP vdmMapRngGC(TVP map, TVP *from)
 {
-	//Assert map
+	/* Assert map  */
 	ASSERT_CHECK(map);
 
-	// Get map size
+	/*  Get map size  */
 	UNWRAP_MAP(m,map);
 
 	int i;
@@ -801,9 +807,9 @@ TVP vdmMapRngGC(TVP map, TVP *from)
 
 	TVP arr[mapsize];
 
-	//Reusing this variable.
+	/* Reusing this variable.  */
 	mapsize = 0;
-	//Get keys.
+	/* Get keys.  */
 	for(i = 0; i < m->table->size; i++)
 	{
 		currentry = (m->table->chain)[i];
@@ -826,7 +832,7 @@ TVP vdmMapRngGC(TVP map, TVP *from)
 
 TVP vdmMapMunion(TVP map1, TVP map2)
 {
-	// Create a new map
+	/*  Create a new map  */
 	TVP map = newMap();
 	TVP dom1set;
 	TVP dom2set;
@@ -838,12 +844,13 @@ TVP vdmMapMunion(TVP map1, TVP map2)
 	TVP res;
 	TVP key;
 	TVP val;
+	int i;
 
-	//Assert map
+	/* Assert map  */
 	ASSERT_CHECK(map1);
 	ASSERT_CHECK(map2);
 
-	//Ensure that maps are compatible.
+	/* Ensure that maps are compatible.  */
 	dom1set = vdmMapDom(map1);
 	dom2set = vdmMapDom(map2);
 	dominter = vdmSetInter(dom1set, dom2set);
@@ -866,8 +873,8 @@ TVP vdmMapMunion(TVP map1, TVP map2)
 	TVP map1_dom = vdmMapDom(map1);
 	UNWRAP_COLLECTION(d1,map1_dom);
 
-	// Add key/val for map1
-	for (int i=0; i<d1->size; i++)
+	/*  Add key/val for map1  */
+	for (i=0; i<d1->size; i++)
 	{
 		key = d1->value[i];
 		val = vdmMapApply(map1,key);
@@ -879,8 +886,8 @@ TVP vdmMapMunion(TVP map1, TVP map2)
 	TVP map2_dom = vdmMapDom(map2);
 	UNWRAP_COLLECTION(d2,map2_dom);
 
-	// Add key/val for map2
-	for (int i=0; i<d2->size; i++)
+	/*  Add key/val for map2  */
+	for (i=0; i<d2->size; i++)
 	{
 		key = d2->value[i];
 		val = vdmMapApply(map2,key);
@@ -897,7 +904,7 @@ TVP vdmMapMunion(TVP map1, TVP map2)
 
 TVP vdmMapMunionGC(TVP map1, TVP map2, TVP *from)
 {
-	// Create a new map
+	/*  Create a new map  */
 	TVP map = newMapGC(from);
 	TVP dom1set;
 	TVP dom2set;
@@ -909,12 +916,13 @@ TVP vdmMapMunionGC(TVP map1, TVP map2, TVP *from)
 	TVP res;
 	TVP key;
 	TVP val;
+	int i;
 
-	//Assert map
+	/* Assert map  */
 	ASSERT_CHECK(map1);
 	ASSERT_CHECK(map2);
 
-	//Ensure that maps are compatible.
+	/* Ensure that maps are compatible.  */
 	dom1set = vdmMapDom(map1);
 	dom2set = vdmMapDom(map2);
 	dominter = vdmSetInter(dom1set, dom2set);
@@ -937,8 +945,8 @@ TVP vdmMapMunionGC(TVP map1, TVP map2, TVP *from)
 	TVP map1_dom = vdmMapDom(map1);
 	UNWRAP_COLLECTION(d1,map1_dom);
 
-	// Add key/val for map1
-	for (int i=0; i<d1->size; i++)
+	/*  Add key/val for map1  */
+	for (i=0; i<d1->size; i++)
 	{
 		key = d1->value[i];
 		val = vdmMapApply(map1,key);
@@ -950,8 +958,8 @@ TVP vdmMapMunionGC(TVP map1, TVP map2, TVP *from)
 	TVP map2_dom = vdmMapDom(map2);
 	UNWRAP_COLLECTION(d2,map2_dom);
 
-	// Add key/val for map2
-	for (int i=0; i<d2->size; i++)
+	/*  Add key/val for map2  */
+	for (i=0; i<d2->size; i++)
 	{
 		key = d2->value[i];
 		val = vdmMapApply(map2,key);
@@ -968,20 +976,21 @@ TVP vdmMapMunionGC(TVP map1, TVP map2, TVP *from)
 
 TVP vdmMapOverride(TVP map1, TVP map2)
 {
-	// Create a new map
+	/*  Create a new map  */
 	TVP map = newMap();
 	TVP key;
 	TVP val;
+	int i;
 
-	//Assert map
+	/* Assert map  */
 	ASSERT_CHECK(map1);
 	ASSERT_CHECK(map2);
 
 	TVP map1_dom = vdmMapDom(map1);
 	UNWRAP_COLLECTION(d1,map1_dom);
 
-	// Add key/val for map1
-	for (int i=0; i<d1->size; i++){
+	/*  Add key/val for map1  */
+	for (i=0; i<d1->size; i++){
 		key = d1->value[i];
 		val = vdmMapApply(map1,key);
 		vdmMapAdd(map,key,val);
@@ -992,8 +1001,8 @@ TVP vdmMapOverride(TVP map1, TVP map2)
 	TVP map2_dom = vdmMapDom(map2);
 	UNWRAP_COLLECTION(d2,map2_dom);
 
-	// Add key/val for map2
-	for (int i=0; i<d2->size; i++){
+	/*  Add key/val for map2  */
+	for (i=0; i<d2->size; i++){
 		key = d2->value[i];
 		val = vdmMapApply(map2,key);
 		vdmMapAdd(map,key,val);
@@ -1010,20 +1019,21 @@ TVP vdmMapOverride(TVP map1, TVP map2)
 
 TVP vdmMapOverrideGC(TVP map1, TVP map2, TVP *from)
 {
-	// Create a new map
+	/*  Create a new map  */
 	TVP map = newMapGC(from);
 	TVP key;
 	TVP val;
+	int i;
 
-	//Assert map
+	/* Assert map  */
 	ASSERT_CHECK(map1);
 	ASSERT_CHECK(map2);
 
 	TVP map1_dom = vdmMapDom(map1);
 	UNWRAP_COLLECTION(d1,map1_dom);
 
-	// Add key/val for map1
-	for (int i=0; i<d1->size; i++){
+	/*  Add key/val for map1  */
+	for (i=0; i<d1->size; i++){
 		key = d1->value[i];
 		val = vdmMapApply(map1,key);
 		vdmMapAdd(map,key,val);
@@ -1034,8 +1044,8 @@ TVP vdmMapOverrideGC(TVP map1, TVP map2, TVP *from)
 	TVP map2_dom = vdmMapDom(map2);
 	UNWRAP_COLLECTION(d2,map2_dom);
 
-	// Add key/val for map2
-	for (int i=0; i<d2->size; i++){
+	/*  Add key/val for map2  */
+	for (i=0; i<d2->size; i++){
 		key = d2->value[i];
 		val = vdmMapApply(map2,key);
 		vdmMapAdd(map,key,val);
@@ -1053,10 +1063,11 @@ TVP vdmMapOverrideGC(TVP map1, TVP map2, TVP *from)
 TVP vdmMapMerge(TVP set)
 {
 	TVP map = newMap();
+	int i;
 
 	UNWRAP_COLLECTION(s,set);
 
-	for(int i=0; i<s->size; i++)
+	for(i=0; i<s->size; i++)
 		map = vdmMapMunion(map,s->value[i]);
 
 	return map;
@@ -1066,10 +1077,11 @@ TVP vdmMapMerge(TVP set)
 TVP vdmMapMergeGC(TVP set, TVP *from)
 {
 	TVP map = newMapGC(from);
+	int i;
 
 	UNWRAP_COLLECTION(s,set);
 
-	for(int i=0; i<s->size; i++)
+	for(i=0; i<s->size; i++)
 		map = vdmMapMunionGC(map,s->value[i], from);
 
 	return map;
@@ -1085,10 +1097,12 @@ TVP vdmMapDomRestrictTo(TVP set,TVP map)
 	TVP map_res = newMap();
 	TVP res;
 
+	int i;
+
 	TVP map_dom = vdmMapDom(map);
 	UNWRAP_COLLECTION(m,map_dom);
 
-	for(int i=0; i<m->size;i++)
+	for(i=0; i<m->size;i++)
 	{
 		key = m->value[i];
 		res = vdmSetMemberOf(set, key);
@@ -1117,10 +1131,12 @@ TVP vdmMapDomRestrictToGC(TVP set,TVP map, TVP *from)
 	TVP map_res = newMapGC(from);
 	TVP res;
 
+	int i;
+
 	TVP map_dom = vdmMapDom(map);
 	UNWRAP_COLLECTION(m,map_dom);
 
-	for(int i=0; i<m->size;i++)
+	for(i=0; i<m->size;i++)
 	{
 		key = m->value[i];
 		res = vdmSetMemberOf(set, key);
@@ -1146,11 +1162,12 @@ TVP vdmMapDomRestrictBy(TVP set,TVP map)
 	TVP map_res = newMap();
 	TVP key;
 	TVP val;
+	int i;
 
 	TVP map_dom = vdmMapDom(map);
 	UNWRAP_COLLECTION(m,map_dom);
 
-	for(int i=0; i<m->size;i++)
+	for(i=0; i<m->size;i++)
 	{
 		key = m->value[i];
 
@@ -1175,11 +1192,12 @@ TVP vdmMapDomRestrictByGC(TVP set,TVP map, TVP *from)
 	TVP map_res = newMapGC(from);
 	TVP key;
 	TVP val;
+	int i;
 
 	TVP map_dom = vdmMapDom(map);
 	UNWRAP_COLLECTION(m,map_dom);
 
-	for(int i=0; i<m->size;i++)
+	for(i=0; i<m->size;i++)
 	{
 		key = m->value[i];
 		if(vdmSetNotMemberOf(set,key)->value.boolVal){
@@ -1196,19 +1214,20 @@ TVP vdmMapDomRestrictByGC(TVP set,TVP map, TVP *from)
 
 
 
-TVP vdmMapRngRestrictTo(TVP set,TVP map)
+TVP vdmMapRngRestrictTo(TVP map, TVP set)
 {
 	ASSERT_CHECK(map);
 
 	TVP key;
 	TVP val;
 	TVP res;
+	int i;
 	TVP map_res = newMap();
 	TVP map_dom = vdmMapDom(map);
 
 	UNWRAP_COLLECTION(m,map_dom);
 
-	for(int i=0; i<m->size;i++){
+	for(i=0; i<m->size;i++){
 		key = m->value[i];
 		val = vdmMapApply(map,key);
 		res = vdmSetMemberOf(set,val);
@@ -1226,19 +1245,20 @@ TVP vdmMapRngRestrictTo(TVP set,TVP map)
 }
 
 
-TVP vdmMapRngRestrictToGC(TVP set,TVP map, TVP *from)
+TVP vdmMapRngRestrictToGC(TVP map, TVP set, TVP *from)
 {
 	ASSERT_CHECK(map);
 
 	TVP key;
 	TVP val;
 	TVP res;
+	int i;
 	TVP map_res = newMapGC(from);
 
 	TVP map_dom = vdmMapDom(map);
 	UNWRAP_COLLECTION(m,map_dom);
 
-	for(int i=0; i<m->size;i++){
+	for(i=0; i<m->size;i++){
 		key = m->value[i];
 		val = vdmMapApply(map,key);
 		res = vdmSetMemberOf(set,val);
@@ -1257,19 +1277,20 @@ TVP vdmMapRngRestrictToGC(TVP set,TVP map, TVP *from)
 
 
 
-TVP vdmMapRngRestrictBy(TVP set,TVP map)
+TVP vdmMapRngRestrictBy(TVP map, TVP set)
 {
 	ASSERT_CHECK(map);
 
 	TVP key;
 	TVP val;
 	TVP res;
+	int i;
 	TVP map_res = newMap();
 
 	TVP map_dom = vdmMapDom(map);
 	UNWRAP_COLLECTION(m,map_dom);
 
-	for(int i=0; i<m->size;i++){
+	for(i=0; i<m->size;i++){
 		key = m->value[i];
 		val = vdmMapApply(map,key);
 		res = vdmSetNotMemberOf(set,val);
@@ -1287,19 +1308,20 @@ TVP vdmMapRngRestrictBy(TVP set,TVP map)
 }
 
 
-TVP vdmMapRngRestrictByGC(TVP set,TVP map, TVP *from)
+TVP vdmMapRngRestrictByGC(TVP map, TVP set, TVP *from)
 {
 	ASSERT_CHECK(map);
 
 	TVP key;
 	TVP val;
 	TVP res;
+	int i;
 	TVP map_res = newMapGC(from);
 
 	TVP map_dom = vdmMapDom(map);
 	UNWRAP_COLLECTION(m,map_dom);
 
-	for(int i=0; i<m->size;i++){
+	for(i=0; i<m->size;i++){
 		key = m->value[i];
 		val = vdmMapApply(map,key);
 		res = vdmSetNotMemberOf(set,val);
@@ -1323,12 +1345,13 @@ TVP vdmMapInverse(TVP map){
 
 	TVP key;
 	TVP val;
+	int i;
 	TVP map_res = newMap();
 
 	TVP map_dom = vdmMapDom(map);
 	UNWRAP_COLLECTION(m,map_dom);
 
-	for(int i=0; i<m->size;i++){
+	for(i=0; i<m->size;i++){
 		key = m->value[i];
 		val = vdmMapApply(map,key);
 		vdmMapAdd(map_res,val,key);
@@ -1348,12 +1371,13 @@ TVP vdmMapInverseGC(TVP map, TVP *from)
 
 	TVP key;
 	TVP val;
+	int i;
 	TVP map_res = newMapGC(from);
 
 	TVP map_dom = vdmMapDom(map);
 	UNWRAP_COLLECTION(m,map_dom);
 
-	for(int i=0; i<m->size;i++){
+	for(i=0; i<m->size;i++){
 		key = m->value[i];
 		val = vdmMapApply(map,key);
 		vdmMapAdd(map_res,val,key);
@@ -1368,7 +1392,7 @@ TVP vdmMapInverseGC(TVP map, TVP *from)
 
 TVP vdmMapEquals(TVP map1, TVP map2){
 
-	//Assert map
+	/* Assert map  */
 	ASSERT_CHECK(map1);
 	ASSERT_CHECK(map2);
 
@@ -1383,6 +1407,8 @@ TVP vdmMapEquals(TVP map1, TVP map2){
 
 	TVP map1_rng;
 	TVP map2_rng;
+
+	int i;
 
 	map1_dom = vdmMapDom(map1);
 	map2_dom = vdmMapDom(map2);
@@ -1413,7 +1439,7 @@ TVP vdmMapEquals(TVP map1, TVP map2){
 
 	UNWRAP_COLLECTION(m1, map1_dom);
 
-	for (int i = 0; i < m1->size; i++)
+	for (i = 0; i < m1->size; i++)
 	{
 		key1 = m1->value[i];
 		val1 = vdmMapApply(map1, key1);

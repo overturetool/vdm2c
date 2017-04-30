@@ -1,4 +1,4 @@
-//User has not provided their own IO library.
+/* User has not provided their own IO library.  */
 
 #ifndef IOLIB_H_
 #define IOLIB_H_
@@ -26,7 +26,7 @@
  *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * <http:XXXwww.gnu.org/licenses/gpl-3.0.html>.
  * #~%
  *
  */

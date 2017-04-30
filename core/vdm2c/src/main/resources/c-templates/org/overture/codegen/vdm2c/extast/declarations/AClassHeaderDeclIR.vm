@@ -12,7 +12,7 @@ $CFormat.getGeneratedFileComment()
 \#include "$String.format("%s.h",$super.getName().toString())"
 #end
 
-//include types used in the class
+/*  include types used in the class */
 #foreach( $typeName in $node.getIncludes() )
 \#include "$String.format("%s.h",$typeName)"
 #end
@@ -51,12 +51,12 @@ extern TVP $val.getName();
  --------------------------------- */ 
  ]]#
 
-//class id
+/*  class id  */
 \#define $String.format("CLASS_ID_%s_ID %d",$cname, $CFormat.getClassId($cname))
 
 \#define $String.format("%s struct %s*",$cstructname,$cname)
 
-// The vtable ids
+/*  The vtable ids  */
 #foreach( $entry in $node.getVtable().getTable() )
 \#define $String.format("CLASS_%s_%s %d",$cname,$entry.getKey(), $node.getVtable().getTable().indexOf($entry))
 #end

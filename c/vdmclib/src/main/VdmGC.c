@@ -40,7 +40,7 @@ void remove_allocd_mem_node_by_location(TVP loc)
 
 	if(tmp == NULL)
 	{
-		//GC list empty.
+		/* GC list empty.  */
 		return;
 	}
 
@@ -57,7 +57,7 @@ void remove_allocd_mem_node_by_location(TVP loc)
 
 	if(tmp == NULL)
 	{
-		//This memory is not under GC control.
+		/* This memory is not under GC control.  */
 		return;
 	}
 	else if(tmp == allocd_mem_head)
@@ -91,7 +91,7 @@ void remove_allocd_mem_node(struct alloc_list_node *node)
 
 	if(tmp == NULL)
 	{
-		//GC list empty.
+		/* GC list empty.  */
 		return;
 	}
 
@@ -153,7 +153,7 @@ void vdm_gc()
 
 	current = allocd_mem_head;
 
-	//Nothing to do if no memory currently allocated.
+	/* Nothing to do if no memory currently allocated.  */
 	if(current->loc == NULL && current->next == NULL)
 		return;
 
@@ -162,8 +162,8 @@ void vdm_gc()
 		tmp = current->next;
 		tmp_loc = current->loc;
 
-		//No information was passed about where the reference was assigned.
-		//This is the case when the value is created in-place or when freed using vdmFree().
+		/* No information was passed about where the reference was assigned.  */
+		/* This is the case when the value is created in-place or when freed using vdmFree().  */
 		if(current->loc->ref_from == NULL)
 		{
 			remove_allocd_mem_node(current);
@@ -171,25 +171,25 @@ void vdm_gc()
 		}
 		else if(*(current->loc->ref_from) != current->loc)
 		{
-			//Check that there is no interference between this call's stack
-			//variables and the reference to the memory we are freeing.
-			//If there is, then postpone reclamation to a later pass.
-			if(!(((void *)(current->loc->ref_from) == (void *)(&tmp)) || ((void *)(current->loc->ref_from) == (void *)&current) || (current->loc->ref_from == &tmp_loc)))
-			{
-				//For compatibility with vdmFree().
+			/* For compatibility with vdmFree().  */
+			/* Check that there is no interference between this call's stack  */
+			/* variables and the reference to the memory we are freeing  */
+			/* Before NULLing the referencing location for vdmFree.  */
+			if(!((((void *)&tmp) <= ((void *)current->loc->ref_from) && ((void *)current->loc->ref_from) <= ((void *)(&tmp + 1))) ||
+					(((void *)&current) <= ((void *)current->loc->ref_from) && ((void *)current->loc->ref_from) <= ((void *)(&current + 1))) ||
+					(((void *)&tmp_loc) <= ((void *)current->loc->ref_from) && ((void *)current->loc->ref_from) <= ((void *)(&tmp_loc + 1)))))
 				*(current->loc->ref_from) = NULL;
 
-				vdmFree_GCInternal(current->loc);
-				remove_allocd_mem_node(current);
-			}
-		}
 
+			vdmFree_GCInternal(current->loc);
+			remove_allocd_mem_node(current);
+		}
 		current = tmp;
 	}
 }
 
-//#ifdef WITH_GC
-//===============  Garbage collected versions  ==============
+/* #ifdef WITH_GC  */
+/* ===============  Garbage collected versions  ==============  */
 TVP newTypeValueGC(vdmtype type, TypedValueType value, TVP *ref_from)
 {
 	TVP ptr = (TVP) malloc(sizeof(struct TypedValue));
@@ -200,7 +200,7 @@ TVP newTypeValueGC(vdmtype type, TypedValueType value, TVP *ref_from)
 	return ptr;
 }
 
-/// Basic
+/* / Basic  */
 TVP newIntGC(int x, TVP *from)
 {
 	return newTypeValueGC(VDM_INT, (TypedValueType
@@ -243,7 +243,7 @@ TVP newTokenGC(TVP x, TVP *from)
 	int hashVal = 5381;
 	int c;
 
-	while (c = *str++)
+	while ((c = *str++))
 		hashVal = ((hashVal << 2) + hashVal) + c;
 
 	free(strTmp);
@@ -264,7 +264,7 @@ TVP vdmCloneGC(TVP x, TVP *from)
 
 	tmp = newTypeValueGC(x->type, x->value, from);
 
-	//FIXME vdmClone any pointers
+	/* FIXME vdmClone any pointers  */
 	switch (tmp->type)
 	{
 	case VDM_BOOL:
@@ -277,7 +277,7 @@ TVP vdmCloneGC(TVP x, TVP *from)
 	case VDM_QUOTE:
 	case VDM_TOKEN:
 	{
-		//encoded as values so the initial copy line handles these
+		/* encoded as values so the initial copy line handles these  */
 		break;
 	}
 #ifndef NO_MAPS
@@ -292,15 +292,16 @@ TVP vdmCloneGC(TVP x, TVP *from)
 #ifndef NO_PRODUCTS
 	case VDM_PRODUCT:
 	{
+		int i;
 		UNWRAP_COLLECTION(cptr, tmp);
 
 		struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
 
-		//copy (size)
+		/* copy (size)  */
 		*ptr = *cptr;
 		ptr->value = (TVP*) malloc(sizeof(TVP) * ptr->size);
 
-		for (int i = 0; i < cptr->size; i++)
+		for (i = 0; i < cptr->size; i++)
 		{
 			ptr->value[i] = vdmClone(cptr->value[i]);
 		}
@@ -312,15 +313,17 @@ TVP vdmCloneGC(TVP x, TVP *from)
 #ifndef NO_SEQS
 	case VDM_SEQ:
 	{
+		int i;
+
 		UNWRAP_COLLECTION(cptr, tmp);
 
 		struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
 
-		//copy (size)
+		/* copy (size)  */
 		*ptr = *cptr;
 		ptr->value = (TVP*) malloc(sizeof(TVP) * ptr->size);
 
-		for (int i = 0; i < cptr->size; i++)
+		for (i = 0; i < cptr->size; i++)
 		{
 			ptr->value[i] = vdmClone(cptr->value[i]);
 		}
@@ -332,15 +335,17 @@ TVP vdmCloneGC(TVP x, TVP *from)
 #ifndef NO_SETS
 	case VDM_SET:
 	{
+		int i;
+
 		UNWRAP_COLLECTION(cptr, tmp);
 
 		struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
 
-		//copy (size)
+		/* copy (size)  */
 		*ptr = *cptr;
 		ptr->value = (TVP*) malloc(sizeof(TVP) * ptr->size);
 
-		for (int i = 0; i < cptr->size; i++)
+		for (i = 0; i < cptr->size; i++)
 		{
 			ptr->value[i] = vdmClone(cptr->value[i]);
 		}
@@ -349,9 +354,9 @@ TVP vdmCloneGC(TVP x, TVP *from)
 		break;
 	}
 #endif
-	//	case VDM_OPTIONAL:
-	//		//TODO
-	//		break;
+	/* 	case VDM_OPTIONAL:  */
+	/* 		TODO  */
+	/* 		break;  */
 #ifndef NO_RECORDS
 	case VDM_RECORD:
 	{
@@ -361,31 +366,31 @@ TVP vdmCloneGC(TVP x, TVP *from)
 		TVP tmpField = NULL;
 		int numFields;
 
-		//Create a shell for a new class and populate it with the information
-		//that can be used from the one being cloned, but all of it should be
-		//irrelevant for records.
+		/* Create a shell for a new class and populate it with the information  */
+		/* that can be used from the one being cloned, but all of it should be  */
+		/* irrelevant for records.  */
 		(tmp->value).ptr = newClassValue(((struct ClassType*)(x->value.ptr))->classId,
 				((struct ClassType*)(x->value.ptr))->refs,
 				NULL,
 				NULL);
 
-		//Generic way of accessing the number-of-fields field.  The name of the record type is
-		//hard-coded into the corresponding struct name.
+		/* Generic way of accessing the number-of-fields field.  The name of the record type is  */
+		/* hard-coded into the corresponding struct name.  */
 		numFields = (*((TVP*)((char*)(((struct ClassType*)x->value.ptr)->value) + \
 				sizeof(struct VTable*) + \
 				sizeof(int) + \
 				sizeof(unsigned int))))->value.intVal;
 
-		//Allocate memory to be populated with the pointers pointing to the cloned fields.
+		/* Allocate memory to be populated with the pointers pointing to the cloned fields.  */
 		((struct ClassType*)((tmp->value).ptr))->value = malloc(sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(TVP) + sizeof(TVP) * numFields);
 
 		for(i = 0; i <= numFields; i++)
 		{
-			//Start cloning the fields one by one, including the number-of-fields field,
-			//since it is just a TVP.
+			/* Start cloning the fields one by one, including the number-of-fields field,  */
+			/* since it is just a TVP.  */
 			tmpField = vdmClone(*((TVP*)((char*)(((struct ClassType*)x->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(TVP) * i)));
 
-			//Only copy the address stored in tmpField so that that memory is now addressed by the current field in the struct.
+			/* Only copy the address stored in tmpField so that that memory is now addressed by the current field in the struct.  */
 			memcpy(((TVP*)((char*)(((struct ClassType*)tmp->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(TVP) * i)), &tmpField, sizeof(TVP));
 		}
 
@@ -394,10 +399,10 @@ TVP vdmCloneGC(TVP x, TVP *from)
 #endif
 	case VDM_CLASS:
 	{
-		//handle smart pointer
+		/* handle smart pointer  */
 		struct ClassType* classTptr = (struct ClassType*) tmp->value.ptr;
 
-		//improve using memcpy
+		/* improve using memcpy  */
 		tmp->value.ptr = newClassValue(classTptr->classId, classTptr->refs, classTptr->freeClass, classTptr->value);
 		break;
 	}
@@ -405,7 +410,3 @@ TVP vdmCloneGC(TVP x, TVP *from)
 
 	return tmp;
 }
-
-
-//=============  Garbage collected versions  ================
-//#endif /* WITH_GC */

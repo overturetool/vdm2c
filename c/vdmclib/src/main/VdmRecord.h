@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * <http:XXXwww.gnu.org/licenses/gpl-3.0.html>.
  * #~%
  */
 
@@ -32,6 +32,7 @@
 
 
 typedef bool (*vdmRecordEqualityFunction)(TVP a, TVP b);
+typedef void (*freeVdmRecordFunction)(void*);
 
 #define UNWRAP_RECORD(var,record) struct RecordType* var = (struct RecordType*)record->value.ptr
 #define ASSERT_CHECK_RECORD(s) assert(s->type == VDM_RECORD && "Value is not a record")
@@ -44,8 +45,8 @@ struct RecordType
 {
 	void* value;
 	int recordId;
-	freeVdmClassFunction freeRecord;//TODO move to global map
-	vdmRecordEqualityFunction equalFun; //TODO move to global map
+	freeVdmRecordFunction freeRecord;/* TODO move to global map  */
+	vdmRecordEqualityFunction equalFun; /* TODO move to global map  */
 	TVP (*vdmCloneFun)(TVP self);
 };
 

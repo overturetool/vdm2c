@@ -52,3 +52,33 @@ TEST_F(TestFlowFunctions, mapUnion)
 {
 	CHECK(CLASS_ExpressionMap__Z8mapUnionEV);
 }
+
+TEST_F(TestFlowFunctions, mapOverride)
+{
+	CHECK(CLASS_ExpressionMap__Z11mapOverrideEV);
+}
+
+TEST_F(TestFlowFunctions, mapDistMerge)
+{
+	CHECK(CLASS_ExpressionMap__Z12mapDistMergeEV);
+}
+
+TEST_F(TestFlowFunctions, mapDomResTo)
+{
+	CHECK(CLASS_ExpressionMap__Z13mapRestrictToEV);
+}
+
+TEST_F(TestFlowFunctions, mapDomResBy)
+{
+	CHECK(CLASS_ExpressionMap__Z13mapRestrictByEV);
+}
+
+TEST_F(TestFlowFunctions, mapRngResTo)
+{
+	CHECK(CLASS_ExpressionMap__Z16mapRestrictRngToEV);
+}
+
+TEST_F(TestFlowFunctions, mapRngResBy)
+{
+	CHECK(CLASS_ExpressionMap__Z16mapRestrictRngByEV);
+}

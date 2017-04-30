@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * <http:XXXwww.gnu.org/licenses/gpl-3.0.html>.
  * #~%
  */
 
@@ -72,7 +72,7 @@ TVP vdmSeqIndsGC(TVP seq, TVP *from);
 
 TVP vdmSeqConc(TVP seq,TVP seq2);
 TVP vdmSeqReverse(TVP seq);
-//TVP seqMod(TVP seq,TVP seq);
+/* TVP seqMod(TVP seq,TVP seq);  */
 TVP vdmSeqIndex(TVP seq,TVP index);
 
 void vdmSeqUpdate(TVP seq, TVP index, TVP newValue);

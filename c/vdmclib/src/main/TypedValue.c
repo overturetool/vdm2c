@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * <http:XXXwww.gnu.org/licenses/gpl-3.0.html>.
  * #~%
  */
 
@@ -47,13 +47,13 @@ TVP newTypeValue(vdmtype type, TypedValueType value)
 	TVP ptr = malloc(sizeof(struct TypedValue));
 	ptr->type = type;
 	ptr->value = value;
-	//ptr->id = 0;
 	ptr->ref_from = NULL;
+
 	return ptr;
 }
 
-//#ifndef WITH_GC
-/// Basic
+/* #ifndef WITH_GC  */
+/* / Basic  */
 TVP newInt(int x)
 {
 	return newTypeValue(VDM_INT, (TypedValueType
@@ -93,7 +93,7 @@ TVP newToken(TVP x)
 	int hashVal = 5381;
 	int c;
 
-	while (c = *str++)
+	while ((c = *str++))
 		hashVal = ((hashVal << 2) + hashVal) + c;
 
 	free(strTmp);
@@ -107,7 +107,7 @@ TVP newCollection(size_t size, vdmtype type)
 {
 	struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
 	ptr->size = size;
-	ptr->value = (TVP*) calloc(size, sizeof(TVP)); //I know this is slower than malloc but better for products
+	ptr->value = (TVP*) calloc(size, sizeof(TVP)); /* I know this is slower than malloc but better for products  */
 	return newTypeValue(type, (TypedValueType
 	)
 			{ .ptr = ptr });
@@ -117,7 +117,7 @@ TVP newCollectionGC(size_t size, vdmtype type, TVP *from)
 {
 	struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
 	ptr->size = size;
-	ptr->value = (TVP*) calloc(size, sizeof(TVP)); //I know this is slower than malloc but better for products
+	ptr->value = (TVP*) calloc(size, sizeof(TVP)); /* I know this is slower than malloc but better for products  */
 	return newTypeValueGC(type, (TypedValueType
 	)
 			{ .ptr = ptr }, from);
@@ -125,10 +125,12 @@ TVP newCollectionGC(size_t size, vdmtype type, TVP *from)
 
 TVP newCollectionWithValues(size_t size, vdmtype type, TVP* elements)
 {
+	int i;
+
 	TVP product = newCollection(size,type);
 	UNWRAP_COLLECTION(col,product);
 
-	for (int i = 0; i < size; i++)
+	for (i = 0; i < size; i++)
 	{
 		col->value[i]= vdmClone(elements[i]);
 	}
@@ -137,19 +139,18 @@ TVP newCollectionWithValues(size_t size, vdmtype type, TVP* elements)
 
 TVP newCollectionWithValuesGC(size_t size, vdmtype type, TVP* elements, TVP *from)
 {
+	int i;
+
 	TVP product = newCollectionGC(size, type, from);
 	UNWRAP_COLLECTION(col, product);
 
-	for (int i = 0; i < size; i++)
+	for (i = 0; i < size; i++)
 	{
 		col->value[i]= vdmClone(elements[i]);
 	}
 
 	return product;
 }
-//#endif /* ifndef WITH_GC */
-
-
 
 int vdmCollectionSize(TVP collection)
 {
@@ -181,10 +182,7 @@ TVP vdmClone(TVP x)
 
 	tmp = newTypeValue(x->type, x->value);
 
-	// TODO: Distribution
-	//tmp->id = x->id;
-
-	//FIXME vdmClone any pointers
+	/* FIXME vdmClone any pointers  */
 	switch (tmp->type)
 	{
 	case VDM_BOOL:
@@ -197,7 +195,7 @@ TVP vdmClone(TVP x)
 	case VDM_QUOTE:
 	case VDM_TOKEN:
 	{
-		//encoded as values so the initial copy line handles these
+		/* encoded as values so the initial copy line handles these  */
 		break;
 	}
 #ifndef NO_MAPS
@@ -212,15 +210,16 @@ TVP vdmClone(TVP x)
 #ifndef NO_PRODUCTS
 	case VDM_PRODUCT:
 	{
+		int i;
 		UNWRAP_COLLECTION(cptr, tmp);
 
 		struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
 
-		//copy (size)
+		/* copy (size)  */
 		*ptr = *cptr;
 		ptr->value = (TVP*) malloc(sizeof(TVP) * ptr->size);
 
-		for (int i = 0; i < cptr->size; i++)
+		for (i = 0; i < cptr->size; i++)
 		{
 			ptr->value[i] = vdmClone(cptr->value[i]);
 		}
@@ -232,15 +231,17 @@ TVP vdmClone(TVP x)
 #ifndef NO_SEQS
 	case VDM_SEQ:
 	{
+		int i;
+
 		UNWRAP_COLLECTION(cptr, tmp);
 
 		struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
 
-		//copy (size)
+		/* copy (size)  */
 		*ptr = *cptr;
 		ptr->value = (TVP*) malloc(sizeof(TVP) * ptr->size);
 
-		for (int i = 0; i < cptr->size; i++)
+		for (i = 0; i < cptr->size; i++)
 		{
 			ptr->value[i] = vdmClone(cptr->value[i]);
 		}
@@ -252,15 +253,17 @@ TVP vdmClone(TVP x)
 #ifndef NO_SETS
 	case VDM_SET:
 	{
+		int i;
+
 		UNWRAP_COLLECTION(cptr, tmp);
 
 		struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
 
-		//copy (size)
+		/* copy (size)  */
 		*ptr = *cptr;
 		ptr->value = (TVP*) malloc(sizeof(TVP) * ptr->size);
 
-		for (int i = 0; i < cptr->size; i++)
+		for (i = 0; i < cptr->size; i++)
 		{
 			ptr->value[i] = vdmClone(cptr->value[i]);
 		}
@@ -269,9 +272,9 @@ TVP vdmClone(TVP x)
 		break;
 	}
 #endif
-	//	case VDM_OPTIONAL:
-	//		//TODO
-	//		break;
+	/* 	case VDM_OPTIONAL:  */
+	/* 		 TODO  */
+	/* 		break;  */
 #ifndef NO_RECORDS
 	case VDM_RECORD:
 	{
@@ -281,31 +284,31 @@ TVP vdmClone(TVP x)
 		TVP tmpField = NULL;
 		int numFields;
 
-		//Create a shell for a new class and populate it with the information
-		//that can be used from the one being cloned, but all of it should be
-		//irrelevant for records.
+		/* Create a shell for a new class and populate it with the information  */
+		/* that can be used from the one being cloned, but all of it should be  */
+		/* irrelevant for records.  */
 		(tmp->value).ptr = newClassValue(((struct ClassType*)(x->value.ptr))->classId,
 				((struct ClassType*)(x->value.ptr))->refs,
 				NULL,
 				NULL);
 
-		//Generic way of accessing the number-of-fields field.  The name of the record type is
-		//hard-coded into the corresponding struct name.
+		/* Generic way of accessing the number-of-fields field.  The name of the record type is  */
+		/* hard-coded into the corresponding struct name.  */
 		numFields = (*((TVP*)((char*)(((struct ClassType*)x->value.ptr)->value) + \
 				sizeof(struct VTable*) + \
 				sizeof(int) + \
 				sizeof(unsigned int))))->value.intVal;
 
-		//Allocate memory to be populated with the pointers pointing to the cloned fields.
+		/* Allocate memory to be populated with the pointers pointing to the cloned fields.  */
 		((struct ClassType*)((tmp->value).ptr))->value = malloc(sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(TVP) + sizeof(TVP) * numFields);
 
 		for(i = 0; i <= numFields; i++)
 		{
-			//Start cloning the fields one by one, including the number-of-fields field,
-			//since it is just a TVP.
+			/* Start cloning the fields one by one, including the number-of-fields field,  */
+			/* since it is just a TVP.  */
 			tmpField = vdmClone(*((TVP*)((char*)(((struct ClassType*)x->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(TVP) * i)));
 
-			//Only copy the address stored in tmpField so that that memory is now addressed by the current field in the struct.
+			/* Only copy the address stored in tmpField so that that memory is now addressed by the current field in the struct.  */
 			memcpy(((TVP*)((char*)(((struct ClassType*)tmp->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(TVP) * i)), &tmpField, sizeof(TVP));
 		}
 
@@ -314,10 +317,10 @@ TVP vdmClone(TVP x)
 #endif /* NO_RECORDS */
 	case VDM_CLASS:
 	{
-		//handle smart pointer
+		/* handle smart pointer  */
 		struct ClassType* classTptr = (struct ClassType*) tmp->value.ptr;
 
-		//improve using memcpy
+		/* improve using memcpy  */
 		tmp->value.ptr = newClassValue(classTptr->classId, classTptr->refs, classTptr->freeClass, classTptr->value);
 		break;
 	}
@@ -334,7 +337,7 @@ bool equals(TVP a, TVP b)
 	{
 		return toDouble(a)==toDouble(b);
 	}
-	if (a->type != b->type) //is this correct for optional types too
+	if (a->type != b->type) /* is this correct for optional types too  */
 	{
 		return false;
 	}
@@ -395,10 +398,10 @@ bool equals(TVP a, TVP b)
 		return r;
 	}
 #endif
-	//	case VDM_OPTIONAL:
-	//	{
-	//		break;
-	//	}
+	/* 	case VDM_OPTIONAL:  */
+	/* 	{  */
+	/* 		break;  */
+	/* 	}  */
 #ifndef NO_RECORDS
 	case VDM_RECORD:
 	{
@@ -445,7 +448,7 @@ bool equals(TVP a, TVP b)
 		struct ClassType* ac = a->value.ptr;
 		struct ClassType* bc = b->value.ptr;
 
-		//reference compare does the pointer point to the same instance
+		/* reference compare does the pointer point to the same instance  */
 		return ac->value == bc->value;
 	}
 
@@ -455,20 +458,22 @@ bool equals(TVP a, TVP b)
 
 bool collectionEqual(TVP col1,TVP col2)
 {
-	//internal function do not call except if args points to a collection
+	/* internal function do not call except if args points to a collection  */
+
+	int i;
 
 	UNWRAP_COLLECTION(aCol,col1);
 	UNWRAP_COLLECTION(bCol,col2);
 
 	if(aCol->size!=bCol->size)
 	{
-		//wrong sizes
+		/* wrong sizes  */
 		return false;
 	}
 
 	bool match = true;
 
-	for (int i = 0; i < aCol->size; i++)
+	for (i = 0; i < aCol->size; i++)
 	{
 		match &= equals(aCol->value[i],bCol->value[i]);
 	}
@@ -506,8 +511,9 @@ void vdmFree_GCInternal(TVP ptr)
 #ifndef NO_PRODUCTS
 	case VDM_PRODUCT:
 	{
+		int i;
 		UNWRAP_COLLECTION(cptr, ptr);
-		for (int i = 0; i < cptr->size; i++)
+		for (i = 0; i < cptr->size; i++)
 		{
 			if (cptr->value[i] != NULL)
 			{
@@ -523,8 +529,10 @@ void vdmFree_GCInternal(TVP ptr)
 #ifndef NO_SEQS
 	case VDM_SEQ:
 	{
+		int i;
+
 		UNWRAP_COLLECTION(cptr, ptr);
-		for (int i = 0; i < cptr->size; i++)
+		for (i = 0; i < cptr->size; i++)
 		{
 			if (cptr->value[i] != NULL)
 			{
@@ -540,8 +548,10 @@ void vdmFree_GCInternal(TVP ptr)
 #ifndef NO_SETS
 	case VDM_SET:
 	{
+		int i;
+
 		UNWRAP_COLLECTION(cptr, ptr);
-		for (int i = 0; i < cptr->size; i++)
+		for (i = 0; i < cptr->size; i++)
 		{
 			if (cptr->value[i] != NULL)
 			{
@@ -554,9 +564,9 @@ void vdmFree_GCInternal(TVP ptr)
 		break;
 	}
 #endif
-	//	case VDM_OPTIONAL:
-	//		//TODO
-	//		break;
+	/* 	case VDM_OPTIONAL:  */
+	/* 		TODO  */
+	/* 		break;  */
 #ifndef NO_RECORDS
 	case VDM_RECORD:
 		ASSERT_CHECK_RECORD(ptr);
@@ -569,33 +579,33 @@ void vdmFree_GCInternal(TVP ptr)
 				sizeof(int) + \
 				sizeof(unsigned int))))->value.intVal;
 
-		//We include the numFields field here, since it is just a TVP.
+		/* We include the numFields field here, since it is just a TVP.  */
 		for(i = 0; i <= numFields; i++)
 		{
 			vdmFree_GCInternal(*((TVP*)((char*)(((struct ClassType*)ptr->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(TVP) * i)));
 		}
 
-		//Free the virtual function table.
+		/* Free the virtual function table.  */
 		free(((struct ClassType*)ptr->value.ptr)->value);
 
 		break;
 #endif /* NO_RECORDS */
 	case VDM_CLASS:
 	{
-		//handle smart pointer
+		/* handle smart pointer  */
 		struct ClassType* classTptr = (struct ClassType*) ptr->value.ptr;
 		classTptr->freeClass(classTptr->value);
 		classTptr->value = NULL;
 		classTptr->freeClass = NULL;
 
-		//free classtype
+		/* free classtype  */
 		free(classTptr);
 		ptr->value.ptr = NULL;
 		break;
 	}
 	}
 
-	//free typedvalue
+	/* free typedvalue  */
 	free(ptr);
 }
 
@@ -633,8 +643,10 @@ void vdmFree(TVP ptr)
 #ifndef NO_PRODUCTS
 	case VDM_PRODUCT:
 	{
+		int i;
+
 		UNWRAP_COLLECTION(cptr, ptr);
-		for (int i = 0; i < cptr->size; i++)
+		for (i = 0; i < cptr->size; i++)
 		{
 			if (cptr->value[i] != NULL)
 			{
@@ -650,8 +662,10 @@ void vdmFree(TVP ptr)
 #ifndef NO_SEQS
 	case VDM_SEQ:
 	{
+		int i;
+
 		UNWRAP_COLLECTION(cptr, ptr);
-		for (int i = 0; i < cptr->size; i++)
+		for (i = 0; i < cptr->size; i++)
 		{
 			if (cptr->value[i] != NULL)
 			{
@@ -667,8 +681,10 @@ void vdmFree(TVP ptr)
 #ifndef NO_SETS
 	case VDM_SET:
 	{
+		int i;
+
 		UNWRAP_COLLECTION(cptr, ptr);
-		for (int i = 0; i < cptr->size; i++)
+		for (i = 0; i < cptr->size; i++)
 		{
 			if (cptr->value[i] != NULL)
 			{
@@ -681,9 +697,9 @@ void vdmFree(TVP ptr)
 		break;
 	}
 #endif
-	//	case VDM_OPTIONAL:
-	//		//TODO
-	//		break;
+	/* 	case VDM_OPTIONAL:  */
+	/* 		TODO  */
+	/* 		break;  */
 #ifndef NO_RECORDS
 	case VDM_RECORD:
 		ASSERT_CHECK_RECORD(ptr);
@@ -696,33 +712,33 @@ void vdmFree(TVP ptr)
 				sizeof(int) + \
 				sizeof(unsigned int))))->value.intVal;
 
-		//We include the numFields field here, since it is just a TVP.
+		/* We include the numFields field here, since it is just a TVP.  */
 		for(i = 0; i <= numFields; i++)
 		{
 			vdmFree(*((TVP*)((char*)(((struct ClassType*)ptr->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(TVP) * i)));
 		}
 
-		//Free the virtual function table.
+		/* Free the virtual function table.  */
 		free(((struct ClassType*)ptr->value.ptr)->value);
 
 		break;
 #endif /* NO_RECORDS */
 	case VDM_CLASS:
 	{
-		//handle smart pointer
+		/* handle smart pointer  */
 		struct ClassType* classTptr = (struct ClassType*) ptr->value.ptr;
 		classTptr->freeClass(classTptr->value);
 		classTptr->value = NULL;
 		classTptr->freeClass = NULL;
 
-		//free classtype
+		/* free classtype  */
 		free(classTptr);
 		ptr->value.ptr = NULL;
 		break;
 	}
 	}
 
-	//free typedvalue
+	/* free typedvalue  */
 	remove_allocd_mem_node_by_location(ptr);
 	tmp = ptr->ref_from;
 	free(ptr);

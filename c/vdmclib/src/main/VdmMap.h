@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * <http:XXXwww.gnu.org/licenses/gpl-3.0.html>.
  * #~%
  */
 
@@ -76,7 +76,7 @@ hashtable_t *ht_create( int size );
 void freeMap(struct Map *m);
 struct Map* cloneMap(struct Map *m);
 
-//util method for adding maplets
+/* util method for adding maplets  */
 void vdmMapAdd(TVP map,TVP key, TVP value);
 void vdmMapUpdate(TVP map, TVP key, TVP value);
 
@@ -85,7 +85,7 @@ TVP newMapVarToGrowGC(size_t size, size_t expected_size, TVP *from, ...);
 void vdmMapGrow(TVP, TVP, TVP);
 void vdmMapFit(TVP);
 
-//VDM map operators
+/* VDM map operators  */
 TVP vdmMapDom(TVP map);
 TVP vdmMapDomGC(TVP map, TVP *from);
 TVP vdmMapRng(TVP map);
@@ -100,10 +100,10 @@ TVP vdmMapDomRestrictTo(TVP set,TVP map);
 TVP vdmMapDomRestrictToGC(TVP set,TVP map, TVP *from);
 TVP vdmMapDomRestrictBy(TVP set,TVP map);
 TVP vdmMapDomRestrictByGC(TVP set,TVP map, TVP *from);
-TVP vdmMapRngRestrictTo(TVP set,TVP map);
-TVP vdmMapRngRestrictToGC(TVP set,TVP map, TVP *from);
-TVP vdmMapRngRestrictBy(TVP set,TVP map);
-TVP vdmMapRngRestrictByGC(TVP set,TVP map, TVP *from);
+TVP vdmMapRngRestrictTo(TVP map, TVP set);
+TVP vdmMapRngRestrictToGC(TVP map, TVP set, TVP *from);
+TVP vdmMapRngRestrictBy(TVP map, TVP set);
+TVP vdmMapRngRestrictByGC(TVP map, TVP set, TVP *from);
 TVP vdmMapApply(TVP map, TVP key);
 TVP vdmMapApplyGC(TVP map, TVP key, TVP *from);
 TVP vdmMapInverse(TVP map);

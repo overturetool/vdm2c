@@ -1,4 +1,3 @@
-// The template for class
 #include "RecordTest.h"
 #include <stdio.h>
 #include <string.h>
@@ -142,7 +141,6 @@ void RecordTest_static_shutdown()	{
  *
  --------------------------------- */
 
-// VTable for this class
 static  struct VTable VTableArrayForRecordTest  [] ={
 
 		{0,0,((VirtualFunctionPointer) _Z5test1EV),},
@@ -152,7 +150,6 @@ static  struct VTable VTableArrayForRecordTest  [] ={
 		{0,0,((VirtualFunctionPointer) _Z5test5EV),},
 }  ;
 
-// Overload VTables
 
 
 /* -------------------------------
@@ -174,7 +171,6 @@ RecordTestCLASS RecordTest_Constructor(RecordTestCLASS this_ptr)
 	{
 
 
-		// RecordTest init
 		this_ptr->_RecordTest_id = CLASS_ID_RecordTest_ID;
 		this_ptr->_RecordTest_refs = 0;
 		this_ptr->_RecordTest_pVTable=VTableArrayForRecordTest;
@@ -184,7 +180,6 @@ RecordTestCLASS RecordTest_Constructor(RecordTestCLASS this_ptr)
 	return this_ptr;
 }
 
-// Method for creating new "class"
 static TVP new()
 						{
 	RecordTestCLASS ptr=RecordTest_Constructor(NULL);
@@ -229,7 +224,6 @@ TVP _Z10RecordTestEV(RecordTestCLASS this)	{
  *
  --------------------------------- */
 
-// initialize globals - this is done last since they are declared in the header but uses init functions which are printet in any order
 
 #endif /* NO_RECORDS */
 
