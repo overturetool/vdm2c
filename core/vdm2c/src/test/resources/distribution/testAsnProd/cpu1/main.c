@@ -60,5 +60,5 @@ vdm_gc_init();
 	TVP ret = CALL_FUNC(World, World, w, CLASS_World__Z3RunEV); // Sequential code: CALL_FUNC(World, World, w, CLASS_World__Z3RunEV);
 	printf("Value is %d \n", ret->value.intVal);
 
-	return ret->value.intVal;
+	return (ret->value.intVal==38)?0:1;
 }

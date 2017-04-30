@@ -3,6 +3,7 @@ package org.overture.codegen.vdm2c;
 import java.io.File;
 import java.io.IOException;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.overture.codegen.vdm2c.CMakeUtil.CMakeGenerateException;
 
@@ -147,7 +148,7 @@ public class DistributionTests extends DistTestBase
 
 	}
 
-	//@Test
+	@Test
 	public void TestAsnProd() throws IOException, InterruptedException,
 	CMakeGenerateException
 	{
@@ -228,8 +229,10 @@ public class DistributionTests extends DistTestBase
         //System.out.println("Current dir:"+current);
 		
 		// cpu1 -- sync call
-		cmakeUtil.run(cpu1Dir, "cpu1Exe", TEST_OUTPUT != null);
-
+		boolean cpuReturnValue = cmakeUtil.run(cpu1Dir, "cpu1Exe", TEST_OUTPUT != null);
+				
+		Assert.assertTrue("Expected return value to be 0", cpuReturnValue);
+		
 	}
 	
 	//@Test
@@ -310,10 +313,13 @@ public class DistributionTests extends DistTestBase
 		pb3.start();
 
 		// cpu1 -- sync call
-		cmakeUtil.run(cpu1Dir, "cpu1Exe", TEST_OUTPUT != null);
+		boolean cpuReturnValue = cmakeUtil.run(cpu1Dir, "cpu1Exe", TEST_OUTPUT != null);
+		
+		Assert.assertTrue("Expected return value to be 0", cpuReturnValue);
+		
 	}
 	
-	@Test
+	//@Test
 	public void TestQuotesBool() throws IOException, InterruptedException,
 	CMakeGenerateException
 	{
