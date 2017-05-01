@@ -1,3 +1,8 @@
+#set( $loopVar = "" )
+#if ( !$CFormat.isNull($node.getLoopVar()) )
+	#set( $loopVar = $CFormat.format($node.getLoopVar()) )
+#end
+##
 #set( $init = "" )
 #if ( !$CFormat.isNull($node.getInit()) )
 	#set( $init = $CFormat.format($node.getInit()) )
@@ -14,6 +19,7 @@
 #end
 ##
 #set( $body = $CFormat.format($node.getBody()) )
+${loopVar};
 for(${init}; ${cond}; ${inc})
 {
 	${body}

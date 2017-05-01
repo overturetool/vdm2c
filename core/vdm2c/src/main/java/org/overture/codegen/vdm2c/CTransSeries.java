@@ -33,6 +33,7 @@ import org.overture.codegen.trans.patterns.PatternTrans;
 import org.overture.codegen.trans.patterns.PatternVarPrefixes;
 import org.overture.codegen.trans.quantifier.Exists1CounterData;
 import org.overture.codegen.vdm2c.transformations.AddThisArgToMethodsTrans;
+import org.overture.codegen.vdm2c.transformations.C89ForLoopTrans;
 import org.overture.codegen.vdm2c.transformations.CLetBeStStmTrans;
 import org.overture.codegen.vdm2c.transformations.CallRewriteTrans;
 import org.overture.codegen.vdm2c.transformations.CompToBlockTrans;
@@ -196,6 +197,7 @@ public class CTransSeries
 		 */
 		transformations.add(new RemoveCWrappersTrans(transAssistant));
 		transformations.add(new MethodVisibilityTrans(transAssistant));
+		transformations.add(new C89ForLoopTrans(transAssistant));
 
 		if(codeGen.getCGenSettings().usesGarbageCollection())
 		{
