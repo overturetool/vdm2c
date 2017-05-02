@@ -9,4 +9,5 @@ file(GLOB SOURCES2 "/Users/Miran/Documents/C_codegen/vdm2c/c/vdmclib/src/main/*.
 add_executable(cpu2Exe ${SOURCES1} ${SOURCES2})
 
 #Include headers
+include_directories(.)
 include_directories(/Users/Miran/Documents/C_codegen/vdm2c/c/vdmclib/src/main)
