@@ -51,6 +51,8 @@ public class ForLoopTrans extends DepthFirstAnalysisCAdaptor
 	public void caseAForIndexStmIR(AForIndexStmIR node)
 			throws AnalysisException
 	{
+		super.caseAForIndexStmIR(node);
+		
 		String bindName = node.getVar();
 
 		if (node.getBy() == null)
