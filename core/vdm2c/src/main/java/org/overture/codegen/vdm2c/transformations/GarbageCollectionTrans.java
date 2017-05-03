@@ -232,8 +232,7 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 					String name = ((AIdentifierPatternIR) pat).getName();
 					AExternalExpIR reference = new AExternalExpIR();
 					reference.setSourceNode(pat.getSourceNode());
-					String referencePrefix = findReferencePrefix(exp);
-					reference.setTargetLangExp(referencePrefix + name);
+					reference.setTargetLangExp("&" + name);
 
 					return reference;
 				} else {
@@ -244,27 +243,6 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 
 		// Expression is not associated with a memory address
 		return assist.getInfo().getExpAssistant().consNullExp();
-	}
-	
-	private String findReferencePrefix(SExpIR exp)
-	{
-		if(exp instanceof AMacroApplyExpIR)
-		{
-			AMacroApplyExpIR macro = (AMacroApplyExpIR) exp;
-			
-			SExpIR root = macro.getRoot();
-			if(root instanceof AIdentifierVarExpIR)
-			{
-				if(((AIdentifierVarExpIR) root).getName().equals(SELF_GC))
-				{
-					// No prefix needed - the SELF macro only needs the name
-					return "";
-				}
-			}
-		}
-
-		// The 'address-of' operator
-		return "&";
 	}
 
 	private boolean isFieldAccessor(String name)
