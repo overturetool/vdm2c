@@ -1,10 +1,12 @@
 package org.overture.codegen.vdm2c;
 
 import java.io.File;
-import java.io.IOException;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
-import org.overture.codegen.vdm2c.CMakeUtil.CMakeGenerateException;
+import org.overture.ast.lex.Dialect;
+import org.overture.config.Release;
+import org.overture.config.Settings;
 
 /**
  * This test checks that the examples used in one of the VDM2C papers generate
