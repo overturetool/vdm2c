@@ -17,9 +17,16 @@ import org.overture.codegen.vdm2c.CMakeUtil.CMakeGenerateException;
  * 
  */
 public class PaperExampleTests extends MultiFileModelTestBase {
-
+	
+	@BeforeClass
+	public static void initVdm()
+	{
+		Settings.dialect = Dialect.VDM_PP;
+		Settings.release = Release.VDM_10;
+	}
+	
 	@Test
-	public void alarm() throws IOException, InterruptedException, CMakeGenerateException {
+	public void alarm() throws Exception {
 		runTest(new File("src/test/resources/vdmrt/paper-examples/alarm"));
 	}
 }
