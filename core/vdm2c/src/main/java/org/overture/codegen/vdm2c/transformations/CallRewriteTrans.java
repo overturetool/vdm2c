@@ -290,8 +290,7 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 			
 			//replace node.
 			staticcall.setSourceNode(node.getSourceNode());
-			assist.replaceNodeWith(node, staticcall);		
-					
+			assist.replaceNodeWithRecursively(node, staticcall, this);		
 		}
 	}
 
@@ -395,9 +394,6 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 	public void caseACallObjectExpStmIR(ACallObjectExpStmIR node)
 			throws AnalysisException
 	{
-		//Method call on an object.
-		super.caseACallObjectExpStmIR(node);
-
 		INode objectVdmType = node.getObj().getType().getSourceNode().getVdmNode();
 
 		SClassDefinition objectClass;
@@ -423,6 +419,7 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 
 		assist.replaceNodeWith(node, apple);
 
+		apple.apply(this);
 	}
 
 	@Override
