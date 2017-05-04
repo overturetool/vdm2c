@@ -30,7 +30,7 @@
 #ifndef PRETTYPRINT_H_
 #define PRETTYPRINT_H_
 
-#if !defined(NO_IO) || !defined(NO_CSV)
+#if !defined(NO_IO) || !defined(NO_CSV) || defined(CUSTOM_IO)
 
 #include <stdlib.h>
 #include <stdbool.h>
