@@ -23,6 +23,21 @@
         <artifactId>maven-antrun-plugin</artifactId>
 				<inherited>false</inherited>
         <executions>
+		<execution>
+            <id>clean</id>
+            <phase>clean</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>	
+		<exec executable="make">
+			<arg value="-j5" />
+			<arg value="clean" />
+		</exec>								
+              </target>
+            </configuration>
+          </execution>
           <execution>
             <id>copy-dependencies</id>
             <phase>test</phase>
@@ -30,10 +45,10 @@
               <goal>run</goal>
             </goals>
             <configuration>
-              <target>
-								<exec executable="cmake"><arg value="." />
-								</exec>
-								
+              <target>	
+		<exec executable="cmake">
+			<arg value="." />
+		</exec>								
               </target>
             </configuration>
           </execution>
