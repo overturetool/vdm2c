@@ -98,6 +98,31 @@ TEST(Expression_Seq, seqGrow)
 }
 
 
+TEST(Expression_Seq, SeqGrowFromZero)
+{
+	TVP seq1 = newSeqVarToGrow(0, 5);
+	TVP seq2;
+	TVP res;
+
+	vdmSeqGrow(seq1, newInt(3));
+
+
+
+	res = vdmSeqLen(seq1);
+	EXPECT_EQ(res->value.intVal, 1);
+	vdmFree(res);
+
+	seq2 = newSeqVar(1, newInt(3));
+
+	res = vdmEquals(seq1, seq2);
+	EXPECT_TRUE(res->value.boolVal);
+
+	vdmFree(res);
+	vdmFree(seq1);
+	vdmFree(seq2);
+}
+
+
 TEST(Expression_Seq, seqFit)
 {
 	TVP seq1;

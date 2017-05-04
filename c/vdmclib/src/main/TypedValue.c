@@ -107,7 +107,7 @@ TVP newCollection(size_t size, vdmtype type)
 {
 	struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
 	ptr->size = size;
-	ptr->value = (TVP*) calloc(size, sizeof(TVP)); /* I know this is slower than malloc but better for products  */
+	ptr->value = (TVP*) calloc(size != 0 ? size : 1, sizeof(TVP)); /* I know this is slower than malloc but better for products  */
 	return newTypeValue(type, (TypedValueType
 	)
 			{ .ptr = ptr });
@@ -117,7 +117,7 @@ TVP newCollectionGC(size_t size, vdmtype type, TVP *from)
 {
 	struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
 	ptr->size = size;
-	ptr->value = (TVP*) calloc(size, sizeof(TVP)); /* I know this is slower than malloc but better for products  */
+	ptr->value = (TVP*) calloc(size != 0 ? size : 1, sizeof(TVP)); /* I know this is slower than malloc but better for products  */
 	return newTypeValueGC(type, (TypedValueType
 	)
 			{ .ptr = ptr }, from);

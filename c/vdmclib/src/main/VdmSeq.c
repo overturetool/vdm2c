@@ -135,7 +135,7 @@ TVP newSeqVarToGrow(size_t size, size_t expected_size, ...)
 
 	va_end(ap);
 
-	TVP res = newCollectionWithValues(count != 0 ? count : expected_size, VDM_SEQ, value);
+	TVP res = newCollectionWithValues(count, VDM_SEQ, value);
 	free(value);
 	return res;
 }
