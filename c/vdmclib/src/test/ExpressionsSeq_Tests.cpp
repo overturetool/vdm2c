@@ -120,17 +120,6 @@ TEST(Expression_Seq, SeqGrowFromZero)
 	vdmFree(res);
 	vdmFree(seq1);
 	vdmFree(seq2);
-
-
-	seq1 = newSeqVarToGrow(0, 5);
-	UNWRAP_COLLECTION(col, seq1);
-	col->size = 5;
-	for(int i1=0; i1<col->size; i1++) {
-		col->value[i1] = newInt(3);
-	}
-
-	vdmFree(seq1);
-
 }
 
 
