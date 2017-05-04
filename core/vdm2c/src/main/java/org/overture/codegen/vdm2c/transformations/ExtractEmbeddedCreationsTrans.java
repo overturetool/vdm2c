@@ -41,7 +41,7 @@ public class ExtractEmbeddedCreationsTrans extends DepthFirstAnalysisCAdaptor
 			AIdentifierVarExpIR root = (AIdentifierVarExpIR) node.getRoot();
 
 			String name = root.getName();
-			if (CTransUtil.CALL_FUNC.equals(name))
+			if (CTransUtil.CALL_FUNC.equals(name) || CTransUtil.CALL_FUNC_PTR.equals(name))
 			{
 				// 4th id is a parameter
 				List<SExpIR> args = node.getArgs();
