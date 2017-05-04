@@ -114,11 +114,12 @@ struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction
 #define TVP_VARG_CAST_FE_4(WHAT, X, ...) TVP_VARG_CAST_FE_3(WHAT, __VA_ARGS__)WHAT(X)
 #define TVP_VARG_CAST_FE_5(WHAT, X, ...) TVP_VARG_CAST_FE_4(WHAT, __VA_ARGS__)WHAT(X)
 #define TVP_VARG_CAST_FE_6(WHAT, X, ...) TVP_VARG_CAST_FE_5(WHAT, __VA_ARGS__)WHAT(X)
+#define TVP_VARG_CAST_FE_7(WHAT, X, ...) TVP_VARG_CAST_FE_6(WHAT, __VA_ARGS__)WHAT(X)
 /* ... repeat as needed  */
 
-#define TVP_VARG_CAST_GET_MACRO(_1,_2,_3,_4,_5,_6,NAME,...) NAME
+#define TVP_VARG_CAST_GET_MACRO(_1,_2,_3,_4,_5,_6,_7,NAME,...) NAME
 #define TVP_VARG_CAST_FOR_EACH(action,...) \
-  TVP_VARG_CAST_GET_MACRO(__VA_ARGS__,TVP_VARG_CAST_FE_6,TVP_VARG_CAST_FE_5,TVP_VARG_CAST_FE_4,TVP_VARG_CAST_FE_3,TVP_VARG_CAST_FE_2,TVP_VARG_CAST_FE_1)(action,__VA_ARGS__)
+  TVP_VARG_CAST_GET_MACRO(__VA_ARGS__,TVP_VARG_CAST_FE_7,TVP_VARG_CAST_FE_6,TVP_VARG_CAST_FE_5,TVP_VARG_CAST_FE_4,TVP_VARG_CAST_FE_3,TVP_VARG_CAST_FE_2,TVP_VARG_CAST_FE_1)(action,__VA_ARGS__)
 
 /*
  * Make a FOREACH macro for call cast base argument type
