@@ -70,6 +70,8 @@ public class FieldReadToFieldGetMacroTrans extends DepthFirstAnalysisCAdaptor
 		boolean isThis = node.getObject() instanceof AIdentifierVarExpIR
 				&& ((AIdentifierVarExpIR) node.getObject()).getName().equals(THIS_ARG);
 		
+		AClassTypeIR classType = getClassTypeOfObject(node.getObject().getType());
+		
 		// Progress visitor recursively
 		node.getObject().apply(THIS);
 		
@@ -86,23 +88,20 @@ public class FieldReadToFieldGetMacroTrans extends DepthFirstAnalysisCAdaptor
 		String fieldClassName = null;
 		AFieldExpIR tmpnode = node.clone();
 		
-		//The case "inst.field", where "field" is a static field of the class of "inst".
-		for(SClassDeclIR c : assist.getInfo().getClasses())
-		{
-			for(AFieldDeclIR f : c.getFields())
-			{
-				if(NameConverter.matches(f,  node.getMemberName()))
-				{
-					if(fieldUtil.lookupField(c,  node.getMemberName()).getStatic())
-					{
-						fieldUtil.replaceWithStaticReference(c, node.getMemberName(),  node);							
-						return;
+		// The case "inst.field", where "field" is a static field of the class
+		// of "inst".
+		for (SClassDeclIR c : assist.getInfo().getClasses()) {
+			if (c.getName().equals(classType.getName())) {
+				for (AFieldDeclIR f : c.getFields()) {
+					if (NameConverter.matches(f, node.getMemberName())) {
+						if (fieldUtil.lookupField(c, node.getMemberName()).getStatic()) {
+							fieldUtil.replaceWithStaticReference(c, node.getMemberName(), node);
+							return;
+						}
 					}
 				}
 			}
 		}
-		
-		AClassTypeIR classType = getClassTypeOfObject(node.getObject().getType());
 		
 		if (classType != null)
 		{
