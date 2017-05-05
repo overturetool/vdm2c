@@ -65,6 +65,8 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 	public void caseAPlainCallStmIR(APlainCallStmIR node)
 			throws AnalysisException
 	{
+		super.caseAPlainCallStmIR(node);
+		
 		// op(a,d,f); --no root, so current class is the root.
 
 		SClassDeclIR cDef = null;
@@ -153,7 +155,6 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 			
 			if(arg != null)
 			{
-				arg.apply(THIS);
 				apply.getArgs().add(arg.clone());
 			}
 			else
@@ -178,7 +179,6 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 		apply.setType(method.getMethodType().getResult().clone());
 		for (SExpIR arg : linkedList)
 		{
-			arg.apply(THIS);
 			apply.getArgs().add(arg.clone());
 		}
 		return apply;

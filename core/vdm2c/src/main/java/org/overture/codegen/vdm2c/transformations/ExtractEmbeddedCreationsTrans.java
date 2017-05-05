@@ -36,6 +36,8 @@ public class ExtractEmbeddedCreationsTrans extends DepthFirstAnalysisCAdaptor
 	public void caseAMacroApplyExpIR(AMacroApplyExpIR node)
 			throws AnalysisException
 	{
+		super.caseAMacroApplyExpIR(node);
+		
 		if (node.getRoot() instanceof AIdentifierVarExpIR)
 		{
 			AIdentifierVarExpIR root = (AIdentifierVarExpIR) node.getRoot();
@@ -96,6 +98,7 @@ public class ExtractEmbeddedCreationsTrans extends DepthFirstAnalysisCAdaptor
 							String tmpVar = assist.getInfo().getTempVarNameGen().nextVarName(retPrefix);
 
 							AVarDeclIR decl = newDeclarationAssignment(tmpVar, exp.getType().clone(), exp, exp.getSourceNode());
+							decl.getExp().apply(this);
 
 							block.getStatements().add(nodeIndex, newLocalDefinition(decl));
 							args.add(i, createIdentifier(tmpVar, exp.getSourceNode()));
