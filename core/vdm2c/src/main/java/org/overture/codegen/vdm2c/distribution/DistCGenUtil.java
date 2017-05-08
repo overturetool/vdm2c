@@ -45,4 +45,18 @@ public class DistCGenUtil {
 		
 		return id;
 	}
+	
+	public static AIdentifierVarExpIR createIdExpTVPTyp(String name)
+	{
+		AIdentifierVarExpIR id = new AIdentifierVarExpIR();
+		id.setIsLambda(false);
+		id.setIsLocal(true);
+		id.setName(name);
+		AExternalTypeIR tyPat = new AExternalTypeIR();
+		tyPat.setName("TVP");
+		id.setType(tyPat);
+		
+		return id;
+	}
+	
 }
