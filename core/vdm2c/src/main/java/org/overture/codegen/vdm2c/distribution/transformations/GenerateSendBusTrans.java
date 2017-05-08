@@ -45,8 +45,6 @@ public class GenerateSendBusTrans extends DepthFirstAnalysisCAdaptor
 	{
 		ADefaultClassDeclIR cl = node;
 
-		//		System.out.println("Dist transformation, method name: " + node.getName());
-
 		if(node.getTag()!=null){
 
 			String cpu = cl.getTag().toString();
@@ -239,56 +237,35 @@ public class GenerateSendBusTrans extends DepthFirstAnalysisCAdaptor
 
 			body.getStatements().add(0, loc);
 
-
-			// Add function call
-			AExpStmIR expApp = new AExpStmIR();
-
-			AMacroApplyExpIR macApp = new AMacroApplyExpIR();
-
 			// Set arguments
 			LinkedList<SExpIR> args = new LinkedList<SExpIR>();
 
 			// 1. argument
-			AIdentifierVarExpIR funID = new AIdentifierVarExpIR();
-			funID.setIsLambda(false);
-			funID.setIsLocal(true);
-			funID.setName("args");
-			funID.setType(null);
+			AIdentifierVarExpIR funID = DistCGenUtil.createIdExpNullTyp("args");
 			args.add(funID);
 
 			// 2. argument
-			AIdentifierVarExpIR nrArgs = new AIdentifierVarExpIR();
-			nrArgs.setIsLambda(false);
-			nrArgs.setIsLocal(true);
-			nrArgs.setName("nrArgs");
-			nrArgs.setType(null);
+			AIdentifierVarExpIR nrArgs = DistCGenUtil.createIdExpNullTyp("nrArgs");
 			args.add(nrArgs);
 
 			// Set arguments
+			AMacroApplyExpIR macApp = new AMacroApplyExpIR();
 			macApp.setArgs(args);
 
 			// Function call to va_start generation
-			AIdentifierVarExpIR va_start = new AIdentifierVarExpIR();
-			va_start.setIsLambda(false);
-			va_start.setIsLocal(true);
-			va_start.setName("va_start");
-			va_start.setType(new AIntNumericBasicTypeIR());
+			AIdentifierVarExpIR va_start = DistCGenUtil.createIdExpIntTyp("va_start");
 			args.add(va_start);
 
 			macApp.setRoot(va_start);
 
+			// Add function call
+			AExpStmIR expApp = new AExpStmIR();
 			expApp.setExp(macApp);
-
 
 			body.getStatements().add(1,expApp);
 
 			m.setBody(body);
 			cl.getMethods().add(m);
 		}
-
-
-
 	}
-
-
 }

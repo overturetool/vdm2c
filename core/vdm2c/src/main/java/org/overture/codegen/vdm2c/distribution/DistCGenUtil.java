@@ -34,4 +34,15 @@ public class DistCGenUtil {
 		
 		return id;
 	}
+	
+	public static AIdentifierVarExpIR createIdExpNullTyp(String name)
+	{
+		AIdentifierVarExpIR id = new AIdentifierVarExpIR();
+		id.setIsLambda(false);
+		id.setIsLocal(true);
+		id.setName(name);
+		id.setType(null);
+		
+		return id;
+	}
 }
