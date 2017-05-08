@@ -185,23 +185,17 @@ public class CGen extends CodeGenBase
 
 		Boolean dist_gen = CGenMain.distGen;
 
+		
 		if(dist_gen){
-			/** Distribution Analysis **/
+			// Architecture Analysis
 			SystemArchitectureAnalysis sysAnalysis = new SystemArchitectureAnalysis();
-
 			sysAnalysis.analyseSystem(statuses);
-
-			sysAnalysis.generateDM();
-
-			sysAnalysis.generateMapStrVer();
-
-			Map<String, LinkedList<Boolean>> dm = SystemArchitectureAnalysis.DM;
 		}
 		
 		statuses = replaceSystemClassWithClass(statuses);
 
 		if(dist_gen){
-			//Add individual system definition pr. CPU
+			//1. Add individual system definition pr. CPU
 			for (IRStatus<ADefaultClassDeclIR> r : IRStatus.extract(statuses, ADefaultClassDeclIR.class))
 			{
 				for(String cpuName : SystemArchitectureAnalysis.distributionMap.keySet()){				
@@ -217,10 +211,11 @@ public class CGen extends CodeGenBase
 					}
 				}
 			}
+			
+			//2. Add initialisation function for each CPU
+			SystemArchitectureAnalysis.addCpuInitMethod(statuses);
 		}
 
-		SystemArchitectureAnalysis.addCpuInitMethod(statuses);
-		
 		statuses = ignoreVDMUnitTests(statuses);
 		List<IRStatus<PIR>> recClasses = makeRecsOuterClasses(statuses);
 		statuses.addAll(recClasses);
@@ -261,7 +256,7 @@ public class CGen extends CodeGenBase
 
 		CFormat my_formatter = consFormatter(canBeGenerated);
 
-		/** Distribution Transformations **/
+		// Distribution Transformations
 		if(dist_gen)
 			applyDistTransformations(canBeGenerated);
 
