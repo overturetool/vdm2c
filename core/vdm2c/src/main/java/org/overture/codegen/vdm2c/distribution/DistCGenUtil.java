@@ -1,8 +1,10 @@
 package org.overture.codegen.vdm2c.distribution;
 
 import org.overture.codegen.ir.declarations.AFormalParamLocalParamIR;
+import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
 import org.overture.codegen.ir.patterns.AIdentifierPatternIR;
 import org.overture.codegen.ir.types.AExternalTypeIR;
+import org.overture.codegen.ir.types.AIntNumericBasicTypeIR;
 
 public class DistCGenUtil {
 
@@ -18,8 +20,18 @@ public class DistCGenUtil {
 		AExternalTypeIR tyPat = new AExternalTypeIR();
 		tyPat.setName(type);
 		par1.setType(tyPat);
-		//par.add(par1);
 		
 		return par1;
+	}
+	
+	public static AIdentifierVarExpIR createIdExpIntTyp(String name)
+	{
+		AIdentifierVarExpIR id = new AIdentifierVarExpIR();
+		id.setIsLambda(false);
+		id.setIsLocal(true);
+		id.setName(name);
+		id.setType(new AIntNumericBasicTypeIR());
+		
+		return id;
 	}
 }

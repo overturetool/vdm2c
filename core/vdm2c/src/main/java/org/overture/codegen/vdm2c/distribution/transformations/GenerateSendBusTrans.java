@@ -113,15 +113,9 @@ public class GenerateSendBusTrans extends DepthFirstAnalysisCAdaptor
 				//**** Exp part
 				//AEqualsBinaryExpIR bin = new AEqualsBinaryExpIR();
 
-				// Left side , Always the same
-				AIdentifierVarExpIR id = new AIdentifierVarExpIR();
-				id.setIsLambda(false);
-				id.setIsLocal(true);
-				id.setName("objID");
-				id.setType(new AIntNumericBasicTypeIR());
+				AIdentifierVarExpIR id = DistCGenUtil.createIdExpIntTyp("objID");
 
 				LinkedList<AEqualsBinaryExpIR> binList = new LinkedList<AEqualsBinaryExpIR>();
-
 				Set<String> cpuList = SystemArchitectureAnalysis.connectionMapStr.get(bus);
 
 				if(cpuList.contains(cpu)){
@@ -130,7 +124,6 @@ public class GenerateSendBusTrans extends DepthFirstAnalysisCAdaptor
 
 						// get deployed objects of a given cpu
 						Set<String> depObj = SystemArchitectureAnalysis.distributionMapStr.get(c);
-
 						for(String dobj : depObj){
 							AEqualsBinaryExpIR binEq = new AEqualsBinaryExpIR();
 							// Left side: id
@@ -142,7 +135,6 @@ public class GenerateSendBusTrans extends DepthFirstAnalysisCAdaptor
 							val.setType(new ANatNumericBasicTypeIR());
 							val.setValue((long) idVal);
 							binEq.setRight(val);
-
 							binList.add(binEq);
 						}
 					}
@@ -151,9 +143,7 @@ public class GenerateSendBusTrans extends DepthFirstAnalysisCAdaptor
 				// TODO: If no bus exists we get an error
 				if(binList.size()==1) first.setIfExp(binList.get(0));
 				else{
-
 					LinkedList<AOrBoolBinaryExpIR> orBinList = new LinkedList<AOrBoolBinaryExpIR>(); 
-
 					for(AEqualsBinaryExpIR li : binList){
 						AOrBoolBinaryExpIR orb = new AOrBoolBinaryExpIR();
 						orBinList.add(orb);
@@ -162,7 +152,6 @@ public class GenerateSendBusTrans extends DepthFirstAnalysisCAdaptor
 					if(orBinList.isEmpty())
 						continue;
 						
-					
 					orBinList.remove();
 
 					int i = 0;
@@ -179,56 +168,32 @@ public class GenerateSendBusTrans extends DepthFirstAnalysisCAdaptor
 					}
 
 					first.setIfExp(orBinList.get(0));
-
-					//					AOrBoolBinaryExpIR orBin = new AOrBoolBinaryExpIR();
-					//					orBin.setLeft(binList.get(0));
-					//					orBin.setRight(binList.get(1));
-					//					first.setIfExp(orBin);
 				}
 
-				//**** Then part, e.g. call the specific BUS
+				// Then part, e.g. call the specific BUS
 				AReturnStmIR ret = new AReturnStmIR();
 				AApplyExpIR app = new AApplyExpIR();
 
 				// Set arguments
 				LinkedList<SExpIR> args = new LinkedList<SExpIR>();
-				//AIntLiteralExpIR v = new AIntLiteralExpIR();
-				//v.setValue((long) 6);
-				//args.add(v);
 
 				// 1. argument
 				args.add(id); 
 
 				// 2. argument
-				AIdentifierVarExpIR funID = new AIdentifierVarExpIR();
-				funID.setIsLambda(false);
-				funID.setIsLocal(true);
-				funID.setName("funID");
-				funID.setType(new AIntNumericBasicTypeIR());
+				AIdentifierVarExpIR funID = DistCGenUtil.createIdExpIntTyp("funID");
 				args.add(funID);
 
 				// 3. argument
-				AIdentifierVarExpIR sup = new AIdentifierVarExpIR();
-				sup.setIsLambda(false);
-				sup.setIsLocal(true);
-				sup.setName("supID");
-				sup.setType(new AIntNumericBasicTypeIR());
-				args.add(sup);
+				AIdentifierVarExpIR supID = DistCGenUtil.createIdExpIntTyp("supID");
+				args.add(supID);
 
 				// 4. argument
-				AIdentifierVarExpIR nrArgs = new AIdentifierVarExpIR();
-				nrArgs.setIsLambda(false);
-				nrArgs.setIsLocal(true);
-				nrArgs.setName("nrArgs");
-				nrArgs.setType(new AIntNumericBasicTypeIR());
+				AIdentifierVarExpIR nrArgs = DistCGenUtil.createIdExpIntTyp("nrArgs");
 				args.add(nrArgs);
 
 				// 5. argument
-				AIdentifierVarExpIR ar = new AIdentifierVarExpIR();
-				ar.setIsLambda(false);
-				ar.setIsLocal(true);
-				ar.setName("args");
-				ar.setType(new AIntNumericBasicTypeIR());
+				AIdentifierVarExpIR ar = DistCGenUtil.createIdExpIntTyp("args");
 				args.add(ar);
 
 				// Set arguments of apply expression
