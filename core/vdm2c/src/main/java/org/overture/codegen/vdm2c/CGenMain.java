@@ -275,7 +275,8 @@ public class CGenMain {
 							&& !(SystemArchitectureAnalysis.systemName.equals(st.toString())))
 						cGen.writeFile(generatedClass, outputD);
 
-				} else {
+				} else if(node instanceof AClassHeaderDeclIR) {
+					
 					AClassHeaderDeclIR st = (AClassHeaderDeclIR) node;
 
 					Object tag = st.getTag();
