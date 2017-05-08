@@ -31,7 +31,7 @@
 
 #ifndef NO_PATTERNS
 
-#define SAMETYPE(a,b) a->type ==b->type
+#define SAMETYPE(a,b) ((a->type) == (b->type))
 
 /* this is for match or bind and not for pattern identifier, this should be generated as p= value instead  */
 bool patternMatchBind(TVP patternBind, TVP value)
@@ -76,7 +76,7 @@ bool patternMatchBind(TVP patternBind, TVP value)
 			UNWRAP_PRODUCT(pc,patternBind);
 			UNWRAP_PRODUCT(pv,value);
 
-			if(!pc->size==pv->size)
+			if(!( pc->size==pv->size))
 			return false;
 
 			bool match = true;

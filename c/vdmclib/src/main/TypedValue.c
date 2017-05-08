@@ -107,7 +107,17 @@ TVP newCollection(size_t size, vdmtype type)
 {
 	struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
 	ptr->size = size;
-	ptr->value = (TVP*) calloc(size, sizeof(TVP)); /* I know this is slower than malloc but better for products  */
+	ptr->value = (TVP*) calloc(size != 0 ? size : 1, sizeof(TVP)); /* I know this is slower than malloc but better for products  */
+	return newTypeValue(type, (TypedValueType
+	)
+			{ .ptr = ptr });
+}
+
+TVP newCollectionPrealloc(size_t size, size_t expected_size, vdmtype type)
+{
+	struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
+	ptr->size = size;
+	ptr->value = (TVP*) calloc(expected_size, sizeof(TVP)); /* I know this is slower than malloc but better for products  */
 	return newTypeValue(type, (TypedValueType
 	)
 			{ .ptr = ptr });
@@ -117,7 +127,17 @@ TVP newCollectionGC(size_t size, vdmtype type, TVP *from)
 {
 	struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
 	ptr->size = size;
-	ptr->value = (TVP*) calloc(size, sizeof(TVP)); /* I know this is slower than malloc but better for products  */
+	ptr->value = (TVP*) calloc(size != 0 ? size : 1, sizeof(TVP)); /* I know this is slower than malloc but better for products  */
+	return newTypeValueGC(type, (TypedValueType
+	)
+			{ .ptr = ptr }, from);
+}
+
+TVP newCollectionPreallocGC(size_t size, size_t expected_size, vdmtype type, TVP *from)
+{
+	struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
+	ptr->size = size;
+	ptr->value = (TVP*) calloc(expected_size, sizeof(TVP)); /* I know this is slower than malloc but better for products  */
 	return newTypeValueGC(type, (TypedValueType
 	)
 			{ .ptr = ptr }, from);
@@ -128,6 +148,20 @@ TVP newCollectionWithValues(size_t size, vdmtype type, TVP* elements)
 	int i;
 
 	TVP product = newCollection(size,type);
+	UNWRAP_COLLECTION(col,product);
+
+	for (i = 0; i < size; i++)
+	{
+		col->value[i]= vdmClone(elements[i]);
+	}
+	return product;
+}
+
+TVP newCollectionWithValuesPrealloc(size_t size, size_t expected_size, vdmtype type, TVP* elements)
+{
+	int i;
+
+	TVP product = newCollectionPrealloc(size, expected_size, type);
 	UNWRAP_COLLECTION(col,product);
 
 	for (i = 0; i < size; i++)

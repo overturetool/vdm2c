@@ -12,14 +12,17 @@ import org.overture.codegen.ir.STypeIR;
 import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.declarations.AVarDeclIR;
 import org.overture.codegen.ir.expressions.ABoolLiteralExpIR;
+import org.overture.codegen.ir.expressions.ACompMapExpIR;
 import org.overture.codegen.ir.expressions.ACompSeqExpIR;
 import org.overture.codegen.ir.expressions.ACompSetExpIR;
+import org.overture.codegen.ir.expressions.AEnumMapExpIR;
 import org.overture.codegen.ir.expressions.AEnumSeqExpIR;
 import org.overture.codegen.ir.expressions.AEnumSetExpIR;
 import org.overture.codegen.ir.expressions.AExistsQuantifierExpIR;
 import org.overture.codegen.ir.expressions.AForAllQuantifierExpIR;
 import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
 import org.overture.codegen.ir.expressions.ALetBeStExpIR;
+import org.overture.codegen.ir.expressions.AMapletExpIR;
 import org.overture.codegen.ir.patterns.ASetMultipleBindIR;
 import org.overture.codegen.ir.statements.AAssignToExpStmIR;
 import org.overture.codegen.ir.statements.ABlockStmIR;
@@ -37,6 +40,7 @@ import org.overture.codegen.trans.quantifier.Exists1CounterData;
 import org.overture.codegen.trans.quantifier.OrdinaryQuantifier;
 import org.overture.codegen.trans.quantifier.OrdinaryQuantifierStrategy;
 import org.overture.codegen.vdm2c.utils.CLetBeStStrategy;
+import org.overture.codegen.vdm2c.utils.CMapCompStrategy;
 import org.overture.codegen.vdm2c.utils.COrdinaryQuantifierStrategy;
 import org.overture.codegen.vdm2c.utils.CSeqCompStrategy;
 import org.overture.codegen.vdm2c.utils.CSetCompStrategy;
@@ -257,6 +261,40 @@ public class CompToBlockTrans extends Exp2StmTrans
 
 			block.apply(this);
 		}
+	}
+	
+	@Override
+	public void caseACompMapExpIR(ACompMapExpIR node) throws AnalysisException {
+
+		SStmIR enclosingStm = transAssistant.getEnclosingStm(node, "map comprehension");
+
+		AMapletExpIR first = node.getFirst();
+		SExpIR predicate = node.getPredicate();
+		STypeIR type = node.getType();
+		ITempVarGen tempVarNameGen = transAssistant.getInfo().getTempVarNameGen();
+		String var = tempVarNameGen.nextVarName(prefixes.mapComp());
+
+		ComplexCompStrategy strategy = new CMapCompStrategy(transAssistant, first, predicate, var, type, langIterator,
+				tempVarNameGen, iteVarPrefixes);
+
+		List<SMultipleBindIR> bindings = filterBindList(node, node.getBindings());
+
+		ABlockStmIR block = transAssistant.consComplexCompIterationBlock(bindings, tempVarNameGen, strategy,
+				iteVarPrefixes);
+
+		if (block.getStatements().isEmpty()) {
+			// In case the block has no statements the result of the map
+			// comprehension is the empty map
+			AEnumMapExpIR emptyMap = new AEnumMapExpIR();
+			emptyMap.setType(type.clone());
+
+			// Replace the map comprehension with the empty map
+			transAssistant.replaceNodeWith(node, emptyMap);
+		} else {
+			replaceCompWithTransformation(enclosingStm, block, type, var, node);
+		}
+
+		block.apply(this);
 	}
 
 }

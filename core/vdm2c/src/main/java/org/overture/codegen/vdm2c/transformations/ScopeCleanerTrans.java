@@ -48,6 +48,7 @@ public class ScopeCleanerTrans extends DepthFirstAnalysisCAdaptor
 		if (node.getLocalDefs().isEmpty() && node.getStatements().isEmpty())
 		{
 			node.parent().removeChild(node);
+			return;
 		}
 
 		// one block has one other block and no decls.
@@ -70,22 +71,21 @@ public class ScopeCleanerTrans extends DepthFirstAnalysisCAdaptor
 		}
 
 		// remove unnecessary scopes
-		if (node.getLocalDefs().isEmpty()
-				&& node.parent() instanceof ABlockStmIR)
-		{
-			// merge
+		if (node.getLocalDefs().isEmpty() && node.parent() instanceof ABlockStmIR) {
 			ABlockStmIR block = (ABlockStmIR) node.parent();
-			for (int i = 0; i < block.getStatements().size(); i++)
-			{
-				if (block.getStatements().get(i) == node)
-				{
-					// this statement index is i
-					for (int j = node.getStatements().size() - 1; j >= 0; j--)
-					{
-						block.getStatements().add(i, node.getStatements().get(j));
+
+			// It's only safe to merge the blocks if the parent does not
+			// contains other block statements
+			if (block.getStatements().size() == 1) {
+				for (int i = 0; i < block.getStatements().size(); i++) {
+					if (block.getStatements().get(i) == node) {
+						// this statement index is i
+						for (int j = node.getStatements().size() - 1; j >= 0; j--) {
+							block.getStatements().add(i, node.getStatements().get(j));
+						}
+						node.parent().removeChild(node);
+						break;
 					}
-					node.parent().removeChild(node);
-					break;
 				}
 			}
 		}

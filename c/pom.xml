@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.overturetool.vdm2c</groupId>
     <artifactId>root</artifactId>
-    <version>0.1.5-SNAPSHOT</version>
+    <version>0.1.7-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -23,6 +23,21 @@
         <artifactId>maven-antrun-plugin</artifactId>
 				<inherited>false</inherited>
         <executions>
+		<execution>
+            <id>clean</id>
+            <phase>clean</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>	
+		<exec executable="make">
+			<arg value="-j5" />
+			<arg value="clean" />
+		</exec>								
+              </target>
+            </configuration>
+          </execution>
           <execution>
             <id>copy-dependencies</id>
             <phase>test</phase>
@@ -30,10 +45,10 @@
               <goal>run</goal>
             </goals>
             <configuration>
-              <target>
-								<exec executable="cmake"><arg value="." />
-								</exec>
-								
+              <target>	
+		<exec executable="cmake">
+			<arg value="." />
+		</exec>								
               </target>
             </configuration>
           </execution>

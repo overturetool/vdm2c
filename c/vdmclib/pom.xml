@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.overturetool.vdm2c</groupId>
 		<artifactId>c</artifactId>
-		<version>0.1.5-SNAPSHOT</version>
+		<version>0.1.7-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
@@ -45,7 +45,7 @@
             </goals>
             <configuration>
               <target>
-								<exec executable="make" failonerror="true"><arg value="-j4" />
+								<exec executable="make" failonerror="true"><arg value="-j5" />
 								</exec>	<exec executable="make" failonerror="true"><arg value="test" />
 							</exec>
 							</target>

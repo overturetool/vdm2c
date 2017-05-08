@@ -29,7 +29,8 @@ IR = #decl
 
 
 #stm {-> package='org.overture.codegen.vdm2c.extast.statements'}
-	= {localVariableDeclaration} [decleration]:IR.#decl.var;
+	= {localVariableDeclaration} [decleration]:IR.#decl.var
+	| {c89forLoop} [loopVar]:IR.#decl.var [init]:IR.#exp [cond]:IR.#exp [inc]:IR.#exp [body]:IR.#stm;
 	
 	
 

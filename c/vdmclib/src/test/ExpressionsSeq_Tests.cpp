@@ -67,7 +67,7 @@ TEST(Expression_Seq, seqGC)
 	vdm_gc();
 	vdm_gc_shutdown();
 }
-*/
+ */
 
 TEST(Expression_Seq, seqGrow)
 {
@@ -98,6 +98,31 @@ TEST(Expression_Seq, seqGrow)
 }
 
 
+TEST(Expression_Seq, SeqGrowFromZero)
+{
+	TVP seq1 = newSeqVarToGrow(0, 5);
+	TVP seq2;
+	TVP res;
+
+	vdmSeqGrow(seq1, newInt(3));
+
+
+
+	res = vdmSeqLen(seq1);
+	EXPECT_EQ(res->value.intVal, 1);
+	vdmFree(res);
+
+	seq2 = newSeqVar(1, newInt(3));
+
+	res = vdmEquals(seq1, seq2);
+	EXPECT_TRUE(res->value.boolVal);
+
+	vdmFree(res);
+	vdmFree(seq1);
+	vdmFree(seq2);
+}
+
+
 TEST(Expression_Seq, seqFit)
 {
 	TVP seq1;
@@ -121,7 +146,7 @@ TEST(Expression_Seq, seqFit)
 	EXPECT_FALSE(res->value.boolVal);
 	vdmFree(res);
 
-//	vdmSeqFit(seq1);
+	//	vdmSeqFit(seq1);
 
 	//vdmSeqGrow works for any sequence, but if it wasn't preallocated with
 	//vdmSeqVarToGrow it is not as efficient.
@@ -147,7 +172,7 @@ TEST(Expression_Seq, seqHd)
 	EXPECT_EQ(1, res->value.intVal);
 
 	vdmFree(res);
-//
+	//
 	vdmFree(t);
 }
 
@@ -163,7 +188,7 @@ TEST(Expression_Seq, seqTl)
 
 	EXPECT_EQ(2, col->value[0]->value.intVal);
 	vdmFree(res);
-//
+	//
 	vdmFree(t);
 }
 
@@ -177,7 +202,7 @@ TEST(Expression_Seq, seqLen)
 
 	EXPECT_EQ(2, res->value.intVal);
 	vdmFree(res);
-//
+	//
 	vdmFree(t);
 }
 
@@ -201,7 +226,7 @@ TEST(Expression_Seq, seqElems)
 	vdmFree(b);
 	vdmFree(tmp);
 	vdmFree(elems);
-//
+	//
 	vdmFree(t);
 }
 
@@ -222,7 +247,7 @@ TEST(Expression_Seq, seqInds)
 	EXPECT_TRUE(1 == col->value[0]->value.intVal || 1 == col->value[1]->value.intVal);
 
 	vdmFree(res);
-//
+	//
 	vdmFree(t);
 }
 #endif /* NO_SETS */
@@ -245,7 +270,7 @@ TEST(Expression_Seq, seqConc)
 	EXPECT_EQ(2, col->value[1]->value.intVal);
 
 	vdmFree(res);
-//
+	//
 	vdmFree(t);
 	vdmFree(t2);
 }
@@ -262,7 +287,7 @@ TEST(Expression_Seq, seqReverse)
 
 	EXPECT_EQ(2, col->value[0]->value.intVal);
 	vdmFree(res);
-//
+	//
 	vdmFree(t);
 }
 
