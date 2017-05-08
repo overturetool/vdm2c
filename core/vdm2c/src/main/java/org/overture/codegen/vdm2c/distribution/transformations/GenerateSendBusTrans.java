@@ -27,6 +27,7 @@ import org.overture.codegen.ir.types.AIntNumericBasicTypeIR;
 import org.overture.codegen.ir.types.AMethodTypeIR;
 import org.overture.codegen.ir.types.ANatNumericBasicTypeIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
+import org.overture.codegen.vdm2c.distribution.DistCGenUtil;
 import org.overture.codegen.vdm2c.distribution.SystemArchitectureAnalysis;
 import org.overture.codegen.vdm2c.extast.expressions.AMacroApplyExpIR;
 import org.overture.codegen.vdm2c.extast.statements.ALocalVariableDeclarationStmIR;
@@ -63,49 +64,21 @@ public class GenerateSendBusTrans extends DepthFirstAnalysisCAdaptor
 
 			LinkedList<AFormalParamLocalParamIR> par = new LinkedList<AFormalParamLocalParamIR>();
 
-			// First parameter
-			AFormalParamLocalParamIR par1 = new AFormalParamLocalParamIR();
-			AIdentifierPatternIR idPat1 = new AIdentifierPatternIR();
-			idPat1.setName("objID");
-			par1.setPattern(idPat1);
-			AExternalTypeIR tyPat = new AExternalTypeIR();
-			tyPat.setName("int");
-			par1.setType(tyPat);
+			// Add method arguments
+			AFormalParamLocalParamIR par1 = DistCGenUtil.addMethodParameter("objID", "int");
 			par.add(par1);
 
-			// Second parameter
-			AFormalParamLocalParamIR par2 = new AFormalParamLocalParamIR();
-			AIdentifierPatternIR idPat2 = new AIdentifierPatternIR();
-			idPat2.setName("funID");
-			par2.setPattern(idPat2);
-			par2.setType(tyPat.clone());
+			AFormalParamLocalParamIR par2 = DistCGenUtil.addMethodParameter("funID", "int");
 			par.add(par2);
-
-			// Third parameter
-			AFormalParamLocalParamIR par5 = new AFormalParamLocalParamIR();
-			AIdentifierPatternIR idPat5 = new AIdentifierPatternIR();
-			idPat5.setName("supID");
-			par5.setPattern(idPat5);
-			par5.setType(tyPat.clone());
-			par.add(par5);
-
-			// Third parameter
-			AFormalParamLocalParamIR par4 = new AFormalParamLocalParamIR();
-			AIdentifierPatternIR idPat4 = new AIdentifierPatternIR();
-			idPat4.setName("nrArgs");
-			par4.setPattern(idPat4);
-			par4.setType(tyPat.clone());
+			
+			AFormalParamLocalParamIR par3 = DistCGenUtil.addMethodParameter("supID", "int");
+			par.add(par3);
+			
+			AFormalParamLocalParamIR par4 = DistCGenUtil.addMethodParameter("nrArgs", "int");
 			par.add(par4);
 
-			// Fourth parameter
-			AFormalParamLocalParamIR par3 = new AFormalParamLocalParamIR();
-			AIdentifierPatternIR idPat3 = new AIdentifierPatternIR();
-			idPat3.setName("");
-			par3.setPattern(idPat3);
-			AExternalTypeIR tyVar = new AExternalTypeIR();
-			tyVar.setName("...");
-			par3.setType(tyVar);
-			par.add(par3);
+			AFormalParamLocalParamIR par5 = DistCGenUtil.addMethodParameter("", "...");
+			par.add(par5);
 
 			// The method return type
 			AExternalTypeIR tyRet = new AExternalTypeIR();
