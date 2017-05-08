@@ -39,22 +39,16 @@ public class TransformRemoteObject extends DepthFirstAnalysisCAdaptor
 
 		ADefaultClassDeclIR cl = node.getAncestor(ADefaultClassDeclIR.class);
 
-		// LinkedList<AMethodDeclIR> mthL = cl.getMethods();
-
-
 		if(cl.getTag()==null) return;
 
 		// Get the static initializer
 		if (node.getName().equals(SystemArchitectureAnalysis.systemName
 				+ "_static_init"))
 		{
-			//System.out.println("Dist transformation, method name: "
-			//	+ node.getName());
-
+			
 			LinkedList<String> initFunName = new LinkedList<>();
 
 			// Get body
-
 			if (node.getBody() instanceof ABlockStmIR)
 			{
 				ABlockStmIR body = (ABlockStmIR) node.getBody();
