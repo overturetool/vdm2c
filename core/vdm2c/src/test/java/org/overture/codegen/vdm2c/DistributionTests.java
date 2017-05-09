@@ -37,7 +37,12 @@ public class DistributionTests extends DistTestBase
 		/** 2. Run cmake pr. CPU  **/
 
 		String cmake = "cmake";
-		cmake = "/usr/local/bin/cmake";
+
+		if (CMakeUtil.isMac())
+		{
+			cmake = "/usr/local/bin/cmake";
+		}
+		
 		ProcessBuilder pb = new ProcessBuilder(cmake,".");
 		CMakeUtil cmakeUtil = new CMakeUtil(new File("ss"), new File("src/test/resources/CMakeLists.txt"), false);
 
@@ -146,7 +151,7 @@ public class DistributionTests extends DistTestBase
 
 		// cpu1 -- sync call
 		boolean cpuReturnValue = cmakeUtil.run(cpu1Dir, "cpu1Exe", TEST_OUTPUT != null);
-		
+
 		Assert.assertTrue("Expected return value to be 0", cpuReturnValue);
 
 	}
@@ -229,15 +234,15 @@ public class DistributionTests extends DistTestBase
 		pb3.start();
 
 		String current = new java.io.File( "." ).getCanonicalPath();
-        //System.out.println("Current dir:"+current);
-		
+		//System.out.println("Current dir:"+current);
+
 		// cpu1 -- sync call
 		boolean cpuReturnValue = cmakeUtil.run(cpu1Dir, "cpu1Exe", TEST_OUTPUT != null);
-				
+
 		Assert.assertTrue("Expected return value to be 0", cpuReturnValue);
-		
+
 	}
-	
+
 	@Test
 	public void TestSysConsInitMethod() throws IOException, InterruptedException,
 	CMakeGenerateException
@@ -317,11 +322,11 @@ public class DistributionTests extends DistTestBase
 
 		// cpu1 -- sync call
 		boolean cpuReturnValue = cmakeUtil.run(cpu1Dir, "cpu1Exe", TEST_OUTPUT != null);
-		
+
 		Assert.assertTrue("Expected return value to be 0", cpuReturnValue);
-		
+
 	}
-	
+
 	@Test
 	public void TestQuotesBool() throws IOException, InterruptedException,
 	CMakeGenerateException
@@ -401,7 +406,7 @@ public class DistributionTests extends DistTestBase
 
 		// cpu1 -- sync call
 		boolean cpuReturnValue = cmakeUtil.run(cpu1Dir, "cpu1Exe", TEST_OUTPUT != null);
-				
+
 		Assert.assertTrue("Expected return value to be 0", cpuReturnValue);
 
 	}
