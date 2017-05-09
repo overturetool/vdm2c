@@ -36,12 +36,7 @@ public class DistributionTests extends DistTestBase
 
 		/** 2. Run cmake pr. CPU  **/
 
-		String cmake = "cmake";
-
-		if (CMakeUtil.isMac())
-		{
-			cmake = "/usr/local/bin/cmake";
-		}
+		String cmake = findCMake();
 		
 		ProcessBuilder pb = new ProcessBuilder(cmake,".");
 		CMakeUtil cmakeUtil = new CMakeUtil(new File("ss"), new File("src/test/resources/CMakeLists.txt"), false);
@@ -80,6 +75,16 @@ public class DistributionTests extends DistTestBase
 
 	}
 
+	private String findCMake() {
+		String cmake = "cmake";
+
+		if (CMakeUtil.isMac())
+		{
+			cmake = "/usr/local/bin/cmake";
+		}
+		return cmake;
+	}
+
 	@Test
 	public void TestAsn() throws IOException, InterruptedException,
 	CMakeGenerateException
@@ -115,8 +120,7 @@ public class DistributionTests extends DistTestBase
 
 		/** 2. Run cmake pr. CPU  **/
 
-		String cmake = "cmake";
-		cmake = "/usr/local/bin/cmake";
+		String cmake = findCMake();
 		ProcessBuilder pb = new ProcessBuilder(cmake,".");
 		CMakeUtil cmakeUtil = new CMakeUtil(new File("ss"), new File("src/test/resources/CMakeLists.txt"), false);
 
@@ -199,8 +203,7 @@ public class DistributionTests extends DistTestBase
 
 		/** 2. Run cmake pr. CPU  **/
 
-		String cmake = "cmake";
-		cmake = "/usr/local/bin/cmake";
+		String cmake = findCMake();
 		ProcessBuilder pb = new ProcessBuilder(cmake,".");
 		CMakeUtil cmakeUtil = new CMakeUtil(new File("ss"), new File("src/test/resources/CMakeLists.txt"), false);
 
@@ -286,8 +289,7 @@ public class DistributionTests extends DistTestBase
 
 		/** 2. Run cmake pr. CPU  **/
 
-		String cmake = "cmake";
-		cmake = "/usr/local/bin/cmake";
+		String cmake = findCMake();
 		ProcessBuilder pb = new ProcessBuilder(cmake,".");
 		CMakeUtil cmakeUtil = new CMakeUtil(new File("ss"), new File("src/test/resources/CMakeLists.txt"), false);
 
@@ -370,8 +372,7 @@ public class DistributionTests extends DistTestBase
 
 		/** 2. Run cmake pr. CPU  **/
 
-		String cmake = "cmake";
-		cmake = "/usr/local/bin/cmake";
+		String cmake = findCMake();
 		ProcessBuilder pb = new ProcessBuilder(cmake,".");
 		CMakeUtil cmakeUtil = new CMakeUtil(new File("ss"), new File("src/test/resources/CMakeLists.txt"), false);
 
