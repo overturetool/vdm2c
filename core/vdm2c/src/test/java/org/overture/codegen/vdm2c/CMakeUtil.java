@@ -155,9 +155,8 @@ public class CMakeUtil
 			outThread.start();
 		}
 
+		p.waitFor();
 		
-		boolean completedBeforeTimeout = p.waitFor(5000, TimeUnit.MILLISECONDS);
-
 		List<String> errors = IOUtils.readLines(p.getErrorStream());
 
 		boolean res = p.exitValue() == 0;
