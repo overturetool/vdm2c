@@ -102,7 +102,6 @@ struct TypedValue
 	vdmtype type;
 	struct TypedValue **ref_from;
 	TypedValueType value;
-	//int id;
 };
 
 #define TVP struct TypedValue*
