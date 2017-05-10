@@ -36,12 +36,7 @@ public class DistributionTests extends DistTestBase
 
 		/** 2. Run cmake pr. CPU  **/
 
-		String cmake = "cmake";
-
-		if (CMakeUtil.isMac())
-		{
-			cmake = "/usr/local/bin/cmake";
-		}
+		String cmake = findCMake();
 		
 		//ProcessBuilder pb = new ProcessBuilder(cmake,".");
 		ProcessBuilder pb = new ProcessBuilder(cmake,"-DCMAKE_BUILD_TYPE=Debug", String.format("-DVDM_LIB_PATH=%s", (new File("../../c/vdmclib/src/main/")).getAbsolutePath()), ".");
@@ -82,6 +77,16 @@ public class DistributionTests extends DistTestBase
 
 	}
 
+	private String findCMake() {
+		String cmake = "cmake";
+
+		if (CMakeUtil.isMac())
+		{
+			cmake = "/usr/local/bin/cmake";
+		}
+		return cmake;
+	}
+
 	@Test
 	public void TestAsn() throws IOException, InterruptedException,
 	CMakeGenerateException
@@ -117,8 +122,8 @@ public class DistributionTests extends DistTestBase
 
 		/** 2. Run cmake pr. CPU  **/
 
-		String cmake = "cmake";
-		cmake = "/usr/local/bin/cmake";
+		String cmake = findCMake();
+		
 		//ProcessBuilder pb = new ProcessBuilder(cmake,".");
 		ProcessBuilder pb = new ProcessBuilder(cmake,"-DCMAKE_BUILD_TYPE=Debug", String.format("-DVDM_LIB_PATH=%s", (new File("../../c/vdmclib/src/main/")).getAbsolutePath()), ".");
 
@@ -203,12 +208,10 @@ public class DistributionTests extends DistTestBase
 
 		/** 2. Run cmake pr. CPU  **/
 
-		String cmake = "cmake";
-		cmake = "/usr/local/bin/cmake";
+		String cmake = findCMake();
 		//ProcessBuilder pb = new ProcessBuilder(cmake,".");
 		ProcessBuilder pb = new ProcessBuilder(cmake,"-DCMAKE_BUILD_TYPE=Debug", String.format("-DVDM_LIB_PATH=%s", (new File("../../c/vdmclib/src/main/")).getAbsolutePath()), ".");
 
-		
 		CMakeUtil cmakeUtil = new CMakeUtil(new File("../../c/vdmclib/src/main/"), new File("src/test/resources/CMakeLists.txt"), false);
 
 		// cpu1
@@ -293,8 +296,7 @@ public class DistributionTests extends DistTestBase
 
 		/** 2. Run cmake pr. CPU  **/
 
-		String cmake = "cmake";
-		cmake = "/usr/local/bin/cmake";
+		String cmake = findCMake();
 //		ProcessBuilder pb = new ProcessBuilder(cmake,".");
 		ProcessBuilder pb = new ProcessBuilder(cmake,"-DCMAKE_BUILD_TYPE=Debug", String.format("-DVDM_LIB_PATH=%s", (new File("../../c/vdmclib/src/main/")).getAbsolutePath()), ".");
 
@@ -379,8 +381,8 @@ public class DistributionTests extends DistTestBase
 
 		/** 2. Run cmake pr. CPU  **/
 
-		String cmake = "cmake";
-		cmake = "/usr/local/bin/cmake";
+		String cmake = findCMake();
+		
 //		ProcessBuilder pb = new ProcessBuilder(cmake,".");
 		ProcessBuilder pb = new ProcessBuilder(cmake,"-DCMAKE_BUILD_TYPE=Debug", String.format("-DVDM_LIB_PATH=%s", (new File("../../c/vdmclib/src/main/")).getAbsolutePath()), ".");
 
