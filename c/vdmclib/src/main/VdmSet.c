@@ -196,6 +196,8 @@ TVP newSetVarGC(size_t size, TVP *from, ...)
 	va_end(ap);
 
 	TVP res = newCollectionWithValuesGC(count, VDM_SET, value, from);
+	for(i = 0; i < size; i++)
+		vdmFree(value[i]);
 	free(value);
 	return res;
 }
