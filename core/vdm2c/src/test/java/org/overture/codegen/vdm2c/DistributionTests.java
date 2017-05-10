@@ -43,7 +43,9 @@ public class DistributionTests extends DistTestBase
 			cmake = "/usr/local/bin/cmake";
 		}
 		
-		ProcessBuilder pb = new ProcessBuilder(cmake,".");
+		//ProcessBuilder pb = new ProcessBuilder(cmake,".");
+		ProcessBuilder pb = new ProcessBuilder(cmake,"-DCMAKE_BUILD_TYPE=Debug", String.format("-DVDM_LIB_PATH=%s", (new File("../../c/vdmclib/src/main/")).getAbsolutePath()), ".");
+
 		CMakeUtil cmakeUtil = new CMakeUtil(new File("ss"), new File("src/test/resources/CMakeLists.txt"), false);
 
 		// cpu1
@@ -117,7 +119,9 @@ public class DistributionTests extends DistTestBase
 
 		String cmake = "cmake";
 		cmake = "/usr/local/bin/cmake";
-		ProcessBuilder pb = new ProcessBuilder(cmake,".");
+		//ProcessBuilder pb = new ProcessBuilder(cmake,".");
+		ProcessBuilder pb = new ProcessBuilder(cmake,"-DCMAKE_BUILD_TYPE=Debug", String.format("-DVDM_LIB_PATH=%s", (new File("../../c/vdmclib/src/main/")).getAbsolutePath()), ".");
+
 		CMakeUtil cmakeUtil = new CMakeUtil(new File("ss"), new File("src/test/resources/CMakeLists.txt"), false);
 
 		// cpu1
@@ -201,8 +205,11 @@ public class DistributionTests extends DistTestBase
 
 		String cmake = "cmake";
 		cmake = "/usr/local/bin/cmake";
-		ProcessBuilder pb = new ProcessBuilder(cmake,".");
-		CMakeUtil cmakeUtil = new CMakeUtil(new File("ss"), new File("src/test/resources/CMakeLists.txt"), false);
+		//ProcessBuilder pb = new ProcessBuilder(cmake,".");
+		ProcessBuilder pb = new ProcessBuilder(cmake,"-DCMAKE_BUILD_TYPE=Debug", String.format("-DVDM_LIB_PATH=%s", (new File("../../c/vdmclib/src/main/")).getAbsolutePath()), ".");
+
+		
+		CMakeUtil cmakeUtil = new CMakeUtil(new File("../../c/vdmclib/src/main/"), new File("src/test/resources/CMakeLists.txt"), false);
 
 		// cpu1
 		pb.directory(cpu1Dir);
@@ -288,7 +295,9 @@ public class DistributionTests extends DistTestBase
 
 		String cmake = "cmake";
 		cmake = "/usr/local/bin/cmake";
-		ProcessBuilder pb = new ProcessBuilder(cmake,".");
+//		ProcessBuilder pb = new ProcessBuilder(cmake,".");
+		ProcessBuilder pb = new ProcessBuilder(cmake,"-DCMAKE_BUILD_TYPE=Debug", String.format("-DVDM_LIB_PATH=%s", (new File("../../c/vdmclib/src/main/")).getAbsolutePath()), ".");
+
 		CMakeUtil cmakeUtil = new CMakeUtil(new File("ss"), new File("src/test/resources/CMakeLists.txt"), false);
 
 		// cpu1
@@ -372,7 +381,9 @@ public class DistributionTests extends DistTestBase
 
 		String cmake = "cmake";
 		cmake = "/usr/local/bin/cmake";
-		ProcessBuilder pb = new ProcessBuilder(cmake,".");
+//		ProcessBuilder pb = new ProcessBuilder(cmake,".");
+		ProcessBuilder pb = new ProcessBuilder(cmake,"-DCMAKE_BUILD_TYPE=Debug", String.format("-DVDM_LIB_PATH=%s", (new File("../../c/vdmclib/src/main/")).getAbsolutePath()), ".");
+
 		CMakeUtil cmakeUtil = new CMakeUtil(new File("ss"), new File("src/test/resources/CMakeLists.txt"), false);
 
 		// cpu1
