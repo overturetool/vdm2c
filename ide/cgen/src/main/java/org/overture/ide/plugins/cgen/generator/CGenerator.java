@@ -16,7 +16,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.overture.ast.analysis.AnalysisException;
-import org.overture.ast.definitions.SClassDefinition;
 import org.overture.ast.intf.lex.ILexLocation;
 import org.overture.ast.lex.Dialect;
 import org.overture.ast.node.INode;
@@ -33,7 +32,6 @@ import org.overture.codegen.vdm2c.extast.declarations.AClassHeaderDeclIR;
 import org.overture.codegen.vdm2c.utils.CGenUtil;
 import org.overture.codegen.vdm2c.utils.NameMangler;
 import org.overture.ide.core.IVdmModel;
-import org.overture.ide.core.ast.NotAllowedException;
 import org.overture.ide.core.resources.IVdmProject;
 import org.overture.ide.core.utility.FileUtility;
 import org.overture.ide.plugins.cgen.CodeGenConsole;
@@ -99,7 +97,7 @@ public class CGenerator
 				new File(cCodeOutputFolder + File.separator + "nativelib"));
 
 		//Emit empty main.c file so that the generated project compiles.
-		emitMainFile(new File(cCodeOutputFolder + File.separator + "main.c"));
+		emitMainFile(new File(cCodeOutputFolder + File.separator + "main.c"), vdm2c.getHeaders());
 		//Emit file containing the mapping between model names and mangled names as #defines.
 		emitMangledNamesHeaderFile(new File(cCodeOutputFolder + File.separator + "MangledNames.h"));
 
@@ -287,7 +285,7 @@ public class CGenerator
 		}
 	}
 
-	private void emitMainFile(File outfile)
+	private void emitMainFile(File outfile, List<String> headers)
 	{
 		String constInitCalls = "";
 		String staticInitCalls = "";
@@ -295,19 +293,12 @@ public class CGenerator
 		String constShutdownCalls = "";
 		String includes = "";
 
-		try
-		{
-			for(SClassDefinition dcl : vdmProject.getModel().getClassList())
-			{
-				constInitCalls = constInitCalls + "\t" + dcl.getName().getName() + "_const_init();\n";
-				constShutdownCalls = constShutdownCalls + "\t" + dcl.getName().getName() + "_const_shutdown();\n";
-				staticInitCalls = staticInitCalls + "\t" + dcl.getName().getName() + "_static_init();\n";
-				staticShutdownCalls = staticShutdownCalls + "\t" + dcl.getName().getName() + "_static_shutdown();\n";
-				includes = includes + "#include \"" + dcl.getName().getName() + ".h\"\n";
-			}
-		} catch(NotAllowedException e)
-		{
-			e.printStackTrace();
+		for (String header : headers) {
+			constInitCalls = constInitCalls + "\t" + header + "_const_init();\n";
+			constShutdownCalls = constShutdownCalls + "\t" + header + "_const_shutdown();\n";
+			staticInitCalls = staticInitCalls + "\t" + header + "_static_init();\n";
+			staticShutdownCalls = staticShutdownCalls + "\t" + header + "_static_shutdown();\n";
+			includes = includes + "#include \"" + header + ".h\"\n";
 		}
 
 		try {
