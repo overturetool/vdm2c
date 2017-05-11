@@ -175,7 +175,7 @@ public class DistributionTests extends DistTestBase
 		/** 1. Create the directory  **/
 
 		// cpu1 directory
-		File cpu1Dir = new File("target/test-cgen/DistributionTests/testAsnProd/cpu1");
+		File cpu1Dir = new File("target/test-cgen/DistributionTests/TestAsnProd/cpu1");
 		copyTestFilesDist(cpu1Dir , new File("src/test/resources/distribution/testAsnProd/cpu1/distCall.h".replace('/', File.separatorChar)),
 				new File("src/test/resources/distribution/testAsnProd/cpu1/distCall.c".replace('/', File.separatorChar)),
 				new File("src/test/resources/distribution/testAsnProd/cpu1/CMakeLists.txt".replace('/', File.separatorChar)),
@@ -191,7 +191,7 @@ public class DistributionTests extends DistTestBase
 				new File("src/test/resources/distribution/testAsnProd/cpu1/asn1vdm.h".replace('/', File.separatorChar)));
 
 		// cpu2 directory
-		File cpu2Dir = new File("target/test-cgen/DistributionTests/testAsnProd/cpu2");
+		File cpu2Dir = new File("target/test-cgen/DistributionTests/TestAsnProd/cpu2");
 		copyTestFilesDist(cpu2Dir , new File("src/test/resources/distribution/testAsnProd/cpu2/distCall.h".replace('/', File.separatorChar)),
 				new File("src/test/resources/distribution/testAsnProd/cpu2/distCall.c".replace('/', File.separatorChar)),
 				new File("src/test/resources/distribution/testAsnProd/cpu2/CMakeLists.txt".replace('/', File.separatorChar)),
@@ -263,7 +263,7 @@ public class DistributionTests extends DistTestBase
 		/** 1. Create the directory  **/
 
 		// cpu1 directory
-		File cpu1Dir = new File("target/test-cgen/DistributionTests/testSysConsInitMethod/cpu1");
+		File cpu1Dir = new File("target/test-cgen/DistributionTests/TestSysConsInitMethod/cpu1");
 		copyTestFilesDist(cpu1Dir , new File("src/test/resources/distribution/testSysConsInitMethod/cpu1/distCall.h".replace('/', File.separatorChar)),
 				new File("src/test/resources/distribution/testSysConsInitMethod/cpu1/distCall.c".replace('/', File.separatorChar)),
 				new File("src/test/resources/distribution/testSysConsInitMethod/cpu1/CMakeLists.txt".replace('/', File.separatorChar)),
@@ -279,7 +279,7 @@ public class DistributionTests extends DistTestBase
 				new File("src/test/resources/distribution/testSysConsInitMethod/cpu1/asn1vdm.h".replace('/', File.separatorChar)));
 
 		// cpu2 directory
-		File cpu2Dir = new File("target/test-cgen/DistributionTests/testSysConsInitMethod/cpu2");
+		File cpu2Dir = new File("target/test-cgen/DistributionTests/TestSysConsInitMethod/cpu2");
 		copyTestFilesDist(cpu2Dir , new File("src/test/resources/distribution/testSysConsInitMethod/cpu2/distCall.h".replace('/', File.separatorChar)),
 				new File("src/test/resources/distribution/testSysConsInitMethod/cpu2/distCall.c".replace('/', File.separatorChar)),
 				new File("src/test/resources/distribution/testSysConsInitMethod/cpu2/CMakeLists.txt".replace('/', File.separatorChar)),
@@ -348,7 +348,7 @@ public class DistributionTests extends DistTestBase
 		/** 1. Create the directory  **/
 
 		// cpu1 directory
-		File cpu1Dir = new File("target/test-cgen/DistributionTests/testQuotesBool/cpu1");
+		File cpu1Dir = new File("target/test-cgen/DistributionTests/TestQuotesBool/cpu1");
 		copyTestFilesDist(cpu1Dir , new File("src/test/resources/distribution/testQuotesBool/cpu1/distCall.h".replace('/', File.separatorChar)),
 				new File("src/test/resources/distribution/testQuotesBool/cpu1/distCall.c".replace('/', File.separatorChar)),
 				new File("src/test/resources/distribution/testQuotesBool/cpu1/CMakeLists.txt".replace('/', File.separatorChar)),
@@ -364,7 +364,7 @@ public class DistributionTests extends DistTestBase
 				new File("src/test/resources/distribution/testQuotesBool/cpu1/asn1vdm.h".replace('/', File.separatorChar)));
 
 		// cpu2 directory
-		File cpu2Dir = new File("target/test-cgen/DistributionTests/testQuotesBool/cpu2");
+		File cpu2Dir = new File("target/test-cgen/DistributionTests/TestQuotesBool/cpu2");
 		copyTestFilesDist(cpu2Dir , new File("src/test/resources/distribution/testQuotesBool/cpu2/distCall.h".replace('/', File.separatorChar)),
 				new File("src/test/resources/distribution/testQuotesBool/cpu2/distCall.c".replace('/', File.separatorChar)),
 				new File("src/test/resources/distribution/testQuotesBool/cpu2/CMakeLists.txt".replace('/', File.separatorChar)),
