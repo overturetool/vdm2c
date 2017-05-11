@@ -462,6 +462,7 @@ TVP vdmSetNotMemberOfGC(TVP set, TVP element, TVP *from)
 TVP vdmSetUnion(TVP set1, TVP set2)
 {
 	TVP *newvalues;
+	TVP resset;
 	int i;
 
 	ASSERT_CHECK(set1);
@@ -492,7 +493,13 @@ TVP vdmSetUnion(TVP set1, TVP set2)
 		newvalues[i] = vdmClone((col2->value)[i - col1->size]);
 	}
 
-	return newSetWithValues(col1->size + col2->size, newvalues);
+	resset = newSetWithValues(col1->size + col2->size, newvalues);
+
+	for(i = 0; i < col1->size + col2->size; i++)
+		vdmFree(newvalues[i]);
+	free(newvalues);
+
+	return resset;
 }
 
 TVP vdmSetUnionGC(TVP set1, TVP set2, TVP *from)
@@ -500,6 +507,7 @@ TVP vdmSetUnionGC(TVP set1, TVP set2, TVP *from)
 	int i;
 
 	TVP *newvalues;
+	TVP resset;
 
 	ASSERT_CHECK(set1);
 	ASSERT_CHECK(set2);
@@ -529,7 +537,13 @@ TVP vdmSetUnionGC(TVP set1, TVP set2, TVP *from)
 		newvalues[i] = vdmClone((col2->value)[i - col1->size]);
 	}
 
-	return newSetWithValuesGC(col1->size + col2->size, newvalues, from);
+	resset = newSetWithValuesGC(col1->size + col2->size, newvalues, from);
+
+	for(i = 0; i < col1->size + col2->size; i++)
+		vdmFree(newvalues[i]);
+	free(newvalues);
+
+	return resset;
 }
 
 
