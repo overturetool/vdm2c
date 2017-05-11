@@ -204,9 +204,7 @@ TVP deserialiseRes(byte* decFullBuff){
 
 	if(decFullBuff[0]==VDM_BOOL){
 		int errCode;
-		TVP res;
-		res->type = VDM_BOOL;
-		res->value.boolVal = decFullBuff[1];
+		TVP res = newBool(decFullBuff[1]);
 		printf("Deserialising Boolean result: %d",  res->value.boolVal);
 		return res;
 	}
