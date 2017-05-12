@@ -21,12 +21,12 @@ TEST_F(TestFlowFunctions, retSetComp)
 	CHECK(CLASS_ExpressionComprehensions__Z10retSetCompEV);
 }
 
-TEST_F(TestFlowFunctions, letVarSeqComp)
-{
-	CHECK(CLASS_ExpressionComprehensions__Z13letVarSeqCompEV);
-}
-
 TEST_F(TestFlowFunctions, retMapComp)
 {
 	CHECK(CLASS_ExpressionComprehensions__Z10retMapCompEV);
+}
+
+TEST_F(TestFlowFunctions, letVarSeqComp)
+{
+	CHECK(CLASS_ExpressionComprehensions__Z13letVarSeqCompEV);
 }
