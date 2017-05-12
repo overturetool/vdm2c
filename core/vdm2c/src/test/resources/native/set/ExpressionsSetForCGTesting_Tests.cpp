@@ -23,16 +23,6 @@ EXPECT_EQ (true,res->value.boolVal);\
 vdmFree(res);\
 vdmFree(c)
 
-//#define CLASS_ExpressionSetForCGTesting__Z13setDifferenceEV 4
-//#define CLASS_ExpressionSetForCGTesting__Z9setSubsetEV 5
-//#define CLASS_ExpressionSetForCGTesting__Z15setProperSubsetEV 6
-//#define CLASS_ExpressionSetForCGTesting__Z11setEqualityEV 7
-//#define CLASS_ExpressionSetForCGTesting__Z13setInequalityEV 8
-//#define CLASS_ExpressionSetForCGTesting__Z7setCardEV 9
-//#define CLASS_ExpressionSetForCGTesting__Z9setDunionEV 10
-//#define CLASS_ExpressionSetForCGTesting__Z9setDinterEV 11
-//#define CLASS_ExpressionSetForCGTesting__Z8setPowerEV 12
-
 TEST_F(TestFlowFunctions, setRange)
 {
 CHECK(CLASS_ExpressionSetForCGTesting__Z8setRangeEV);

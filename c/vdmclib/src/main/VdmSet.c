@@ -162,6 +162,8 @@ TVP newSetVar(size_t size, ...)
 	va_end(ap);
 
 	TVP res = newCollectionWithValues(count, VDM_SET, value);
+	for(i = 0; i < count; i++)
+		vdmFree(value[i]);
 	free(value);
 	return res;
 }
@@ -188,7 +190,7 @@ TVP newSetVarGC(size_t size, TVP *from, ...)
 		{
 			/* buffer too small add memory chunk  */
 			bufsize += DEFAULT_SET_COMP_BUFFER_STEPSIZE;
-			value = (TVP*)realloc(value,bufsize * sizeof(TVP));
+			value = (TVP*)realloc(value, bufsize * sizeof(TVP));
 		}
 		vdmSetAdd(value,&count,v);
 	}
@@ -196,7 +198,10 @@ TVP newSetVarGC(size_t size, TVP *from, ...)
 	va_end(ap);
 
 	TVP res = newCollectionWithValuesGC(count, VDM_SET, value, from);
-
+	for(i = 0; i < count; i++)
+	{
+		vdmFree(value[i]);
+	}
 	free(value);
 	return res;
 }
