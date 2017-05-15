@@ -135,14 +135,8 @@ public class VTableGenerator
 		}
 	}
 
-	static boolean excludeFromVtable(AMethodDeclIR m)
-	{
-//		return m.getIsConstructor()
-//				|| m.getTag() instanceof Vdm2cTag
-//				&& ((Vdm2cTag) m.getTag()).methodTags.contains(Vdm2cTag.MethodTag.Internal);
-		
-		return m.getTag() instanceof Vdm2cTag
-				&& ((Vdm2cTag) m.getTag()).methodTags.contains(Vdm2cTag.MethodTag.Internal);
+	static boolean excludeFromVtable(AMethodDeclIR m) {
+		return Vtables.isRecDefaultCtor(m) || (m.getTag() instanceof Vdm2cTag
+				&& ((Vdm2cTag) m.getTag()).methodTags.contains(Vdm2cTag.MethodTag.Internal));
 	}
-
 }

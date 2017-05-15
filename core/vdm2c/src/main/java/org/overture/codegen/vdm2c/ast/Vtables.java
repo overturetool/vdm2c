@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Vector;
 
+import org.overture.ast.types.ARecordInvariantType;
 import org.overture.codegen.ir.declarations.ADefaultClassDeclIR;
 import org.overture.codegen.ir.declarations.AMethodDeclIR;
 import org.overture.codegen.vdm2c.extast.declarations.AAnonymousStruct;
@@ -277,17 +278,42 @@ public class Vtables
 		{
 			AMethodDeclIR selectedMethod = aArrayDeclIR.method;
 
-			AAnonymousStruct structEntry = new AAnonymousStruct();
+			if (!isRecDefaultCtor(selectedMethod)) {
+				AAnonymousStruct structEntry = new AAnonymousStruct();
 
-			structEntry.getExp().add(createIdentifier("0", null));// sorry this should be int literal
-			structEntry.getExp().add(createIdentifier("0", null));// sorry this should be int literal
-			structEntry.getExp().add(newCast("VirtualFunctionPointer", createIdentifier(selectedMethod.getName(), null)));
-
-			arrayDcl.getInitial().add(structEntry);
-
+				// sorry this should be int literal
+				structEntry.getExp().add(createIdentifier("0", null));
+				// sorry this should be int literal
+				structEntry.getExp().add(createIdentifier("0", null));
+				structEntry.getExp()
+						.add(newCast("VirtualFunctionPointer", createIdentifier(selectedMethod.getName(), null)));
+				arrayDcl.getInitial().add(structEntry);
+			}
 		}
 
 		return arrayDcl;
+	}
+	
+	public static boolean isRecDefaultCtor(AMethodDeclIR method)
+	{
+		if(!method.getIsConstructor())
+			return false;
+		
+		if(method.getFormalParams().size() != 1)
+		{
+			return false;
+		}
+		
+		ADefaultClassDeclIR encClass = method.getAncestor(ADefaultClassDeclIR.class);
+		
+		if(encClass != null)
+		{
+			return encClass.getSourceNode() != null && encClass.getSourceNode().getVdmNode() instanceof ARecordInvariantType;
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 }

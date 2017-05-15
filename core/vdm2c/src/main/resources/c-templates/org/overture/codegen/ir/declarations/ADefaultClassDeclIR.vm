@@ -140,7 +140,13 @@ static TVP new()
 
 #foreach( $method in $node.getMethods() )
 #if($method.getIsConstructor())
-$CFormat.format($method)
+  #if($CFormat.isDefaultCtor($method) && $CFormat.isRec($node))
+  #ifdef ASN1SCC_MAPPING
+  $CFormat.format($method)
+  #endif
+  #else
+  $CFormat.format($method)
+#end
 #end
 #end
 

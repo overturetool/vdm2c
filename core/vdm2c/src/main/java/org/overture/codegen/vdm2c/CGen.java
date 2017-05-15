@@ -175,6 +175,16 @@ public class CGen extends CodeGenBase
 				}
 				
 				recClass.getMethods().add(ctor);
+				
+				AMethodDeclIR defCtor = new AMethodDeclIR();
+				defCtor.setIsConstructor(true);
+				defCtor.setAbstract(false);
+				defCtor.setAccess(IRConstants.PUBLIC);
+				defCtor.setName(recClass.getName());
+				defCtor.setMethodType(ctorMethodType.clone());
+				defCtor.setBody(new ABlockStmIR());
+				
+				recClass.getMethods().add(defCtor);
 
 				extraClasses.add(new IRStatus<PIR>(recClass.getSourceNode().getVdmNode(), recClass.getName(), recClass, new HashSet<VdmNodeInfo>()));
 			}
