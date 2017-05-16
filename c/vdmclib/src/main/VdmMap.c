@@ -48,6 +48,7 @@ guint vdm_typedvalue_hash(gconstpointer v)
 	case VDM_INT:
 	case VDM_NAT1:
 	case VDM_NAT:
+	case VDM_TOKEN:
 		return g_int_hash(&tv->value.intVal);
 	case VDM_BOOL:
 		return g_int_hash(&tv->value.boolVal);
@@ -58,11 +59,18 @@ guint vdm_typedvalue_hash(gconstpointer v)
 		return g_double_hash(&tv->value.doubleVal);
 	case VDM_QUOTE:
 		return g_int_hash(&tv->value.quoteVal);
+#ifndef NO_MAPS
 	case VDM_MAP:
 		/* todo  */
 		break;
+#endif
+#ifndef NO_PRODUCTS
 	case VDM_PRODUCT:
+#endif
+#ifndef NO_SEQS
 	case VDM_SEQ:
+#endif
+#ifndef NO_SETS
 	case VDM_SET:
 	{
 		/* 			UNWRAP_COLLECTION(cptr,tmp);  */
@@ -81,14 +89,17 @@ guint vdm_typedvalue_hash(gconstpointer v)
 		/* 			tmp->value.ptr = ptr;  */
 		break;
 	}
+#endif
 	/* 		case VDM_OPTIONAL:  */
 	/* 		TODO  */
 	/* 		break;  */
+#ifndef NO_RECORDS
 	case VDM_RECORD:
 	{
 		/* TODO duplicate (memcpy) and duplicate what ever any pointers points to except if a class  */
 		break;
 	}
+#endif
 	case VDM_CLASS:
 	{
 		break;
@@ -155,13 +166,18 @@ TVP vdmMapApply(TVP map, TVP key)
 	return (TVP) g_hash_table_lookup(m->table, key);
 }
 
+TVP vdmMapApplyGC(TVP map, TVP key, TVP *from)
+{
+	ASSERT_CHECK(map);
+	UNWRAP_MAP(m,map);
+
+	return vdmCloneGC((TVP) g_hash_table_lookup(m->table, key), from);
+}
+
 
 void print_iterator(gpointer item, gpointer prefix) {
-	TVP item2 = (TVP) item;
-	/* FIXME you cannot print a union type like this printf("%d \n", item2->value);  */
 }
 void print_iterator_short(gpointer item) {
-	printf("%s\n", item);
 }
 
 int getGreater(int a, int b){
@@ -191,7 +207,7 @@ TVP vdmMapDom(TVP map)
 	/* TODO: Free necessary variables  */
 	g_list_free(dom);
 
-	return res
+	return res;
 }
 
 TVP vdmMapDomGC(TVP map, TVP *from)
@@ -216,7 +232,7 @@ TVP vdmMapDomGC(TVP map, TVP *from)
 	/* TODO: Free necessary variables  */
 	g_list_free(dom);
 
-	return res
+	return res;
 }
 
 TVP vdmMapRng(TVP map)
@@ -241,7 +257,7 @@ TVP vdmMapRng(TVP map)
 	/* TODO: Free necessary variables  */
 	g_list_free(dom);
 
-	return newSetWithValues(set_size, arr);
+	return res;
 }
 
 TVP vdmMapRngGC(TVP map, TVP *from)
