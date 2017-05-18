@@ -5,7 +5,7 @@
  *      Author: peter
  */
 
-#include "Vdm.h"
+#include "TypedValue.h"
 
 TVP vdm_Heart_FaultyHeart(TVP transaction)
 {
