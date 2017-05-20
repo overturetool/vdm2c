@@ -18,14 +18,11 @@ import org.overture.ast.definitions.SClassDefinition;
 import org.overture.ast.lex.Dialect;
 import org.overture.ast.node.INode;
 import org.overture.codegen.ir.CodeGenBase;
-import org.overture.codegen.ir.declarations.ADefaultClassDeclIR;
 import org.overture.codegen.printer.MsgPrinter;
 import org.overture.codegen.utils.GeneralCodeGenUtils;
 import org.overture.codegen.utils.GeneralUtils;
 import org.overture.codegen.utils.GeneratedData;
 import org.overture.codegen.utils.GeneratedModule;
-import org.overture.codegen.vdm2c.distribution.SystemArchitectureAnalysis;
-import org.overture.codegen.vdm2c.extast.declarations.AClassHeaderDeclIR;
 import org.overture.codegen.vdm2c.sourceformat.ISourceFileFormatter;
 import org.overture.config.Release;
 import org.overture.config.Settings;
@@ -182,7 +179,7 @@ public class CGenMain {
 
 			if (CGen.distGen) {
 				try {
-					emitDistCode(data, cGen, outputDir);
+					cGen.emitDistCode(data, outputDir);
 				} catch (org.overture.codegen.ir.analysis.AnalysisException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -244,47 +241,6 @@ public class CGenMain {
 			e.printStackTrace();
 		}
 
-	}
-
-	private static void emitDistCode(GeneratedData data, CGen cGen, File outputDir) throws Exception {
-		for (String cpuName : SystemArchitectureAnalysis.distributionMap.keySet()) {
-			File outputD = new File(outputDir.getAbsolutePath() + "/" + cpuName);
-
-			cGen.emitFeatureFile(outputD, CGen.FEATURE_FILE_NAME);
-
-			for (GeneratedModule generatedClass : data.getClasses()) {
-
-				org.overture.codegen.ir.INode node = generatedClass.getIrNode();
-
-				if (node instanceof ADefaultClassDeclIR) {
-					ADefaultClassDeclIR st = (ADefaultClassDeclIR) node;
-
-					Object tag = st.getTag();
-
-					if (tag != null)
-						if (st.getTag().equals(cpuName))
-							cGen.writeFile(generatedClass, outputD, st.getName());
-
-					if (!(SystemArchitectureAnalysis.distributionMap.keySet().contains(st.toString()))
-							&& !(SystemArchitectureAnalysis.systemName.equals(st.toString())))
-						cGen.writeFile(generatedClass, outputD);
-
-				} else if(node instanceof AClassHeaderDeclIR) {
-					
-					AClassHeaderDeclIR st = (AClassHeaderDeclIR) node;
-
-					Object tag = st.getTag();
-
-					if (tag != null)
-						if (st.getTag().equals(cpuName))
-							cGen.writeFile(generatedClass, outputD, st.getName());
-
-					if (!(SystemArchitectureAnalysis.distributionMap.keySet().contains(st.toString()))
-							&& !(SystemArchitectureAnalysis.systemName.equals(st.toString())))
-						cGen.writeFile(generatedClass, outputD);
-				}
-			}
-		}
 	}
 
 	private static void showHelp(Options options) {

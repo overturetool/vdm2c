@@ -554,6 +554,50 @@ public class CGen extends CodeGenBase
 	}
 
 
+	public void emitDistCode(GeneratedData data, File outputDir) throws Exception {
+		for (String cpuName : SystemArchitectureAnalysis.distributionMap.keySet()) {
+			
+			CGen cGen = this;
+			
+			File outputD = new File(outputDir.getAbsolutePath() + "/" + cpuName);
+
+			cGen.emitFeatureFile(outputD, CGen.FEATURE_FILE_NAME);
+
+			for (GeneratedModule generatedClass : data.getClasses()) {
+
+				org.overture.codegen.ir.INode node = generatedClass.getIrNode();
+
+				if (node instanceof ADefaultClassDeclIR) {
+					ADefaultClassDeclIR st = (ADefaultClassDeclIR) node;
+
+					Object tag = st.getTag();
+
+					if (tag != null)
+						if (st.getTag().equals(cpuName))
+							cGen.writeFile(generatedClass, outputD, st.getName());
+
+					if (!(SystemArchitectureAnalysis.distributionMap.keySet().contains(st.toString()))
+							&& !(SystemArchitectureAnalysis.systemName.equals(st.toString())))
+						cGen.writeFile(generatedClass, outputD);
+
+				} else if(node instanceof AClassHeaderDeclIR) {
+					
+					AClassHeaderDeclIR st = (AClassHeaderDeclIR) node;
+
+					Object tag = st.getTag();
+
+					if (tag != null)
+						if (st.getTag().equals(cpuName))
+							cGen.writeFile(generatedClass, outputD, st.getName());
+
+					if (!(SystemArchitectureAnalysis.distributionMap.keySet().contains(st.toString()))
+							&& !(SystemArchitectureAnalysis.systemName.equals(st.toString())))
+						cGen.writeFile(generatedClass, outputD);
+				}
+			}
+		}
+	}
+	
 	public void setSourceCodeFormatter(ISourceFileFormatter formatter)
 	{
 		this.formatter = formatter;
