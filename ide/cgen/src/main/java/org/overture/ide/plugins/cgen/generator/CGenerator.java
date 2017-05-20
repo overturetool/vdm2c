@@ -80,9 +80,6 @@ public class CGenerator
 		// Generate user specified classes
 		GeneratedData data = vdm2c.generate(PluginVdm2CUtil.getNodes(model.getSourceUnits()));
 
-		CodeGenConsole.GetInstance().println("Value of distribution flag is: "
-				+ CGen.distGen);
-
 		if(CGen.distGen){
 			try {
 				vdm2c.emitDistCode(data, cCodeOutputFolder);
