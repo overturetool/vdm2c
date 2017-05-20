@@ -27,7 +27,7 @@ public class DistSystemAnalysisTests
 		Settings.dialect = Dialect.VDM_RT;
 		File file = new File("src/test/resources/vdmrt/dist/dG.vdmrt");
 		TypeCheckResult<List<SClassDefinition>> res = TypeCheckerUtil.typeCheckRt(file);
-		CGenMain.distGen = true;
+		//CGenMain.distGen = true;
 		List<SClassDefinition> ast = res.result;
 		CGen cGen = new CGen();
 		List<INode> filter = CodeGenBase.getNodes(ast);

@@ -34,7 +34,6 @@ import org.overture.typechecker.util.TypeCheckerUtil.TypeCheckResult;
 
 public class CGenMain {
 	private static boolean quiet = false;
-	public static boolean distGen = false;
 
 	public static void main(String[] args) {
 		Settings.release = Release.VDM_10;
@@ -46,8 +45,6 @@ public class CGenMain {
 
 		// add t option
 		Option quietOpt = Option.builder("q").longOpt("quiet").desc("Do not print processing information").build();
-		Option distGenOpt = Option.builder("dist").longOpt("distGen").desc("Do not print processing information")
-				.build();
 		Option sourceOpt = Option.builder("sf").longOpt("folder")
 				.desc("Path to a source folder containing VDM-RT files").hasArg().build();
 		Option formatOpt = Option.builder("fm").longOpt("formatter")
@@ -58,7 +55,6 @@ public class CGenMain {
 		Option gcOpt = Option.builder("gc").longOpt("garbagecollection").desc("Use garbage collection").build();
 		Option defaultArg = Option.builder("").desc("A VDM-RT file to code generate").hasArg().build();
 
-		options.addOption(distGenOpt);
 		options.addOption(quietOpt);
 		options.addOption(sourceOpt);
 		options.addOption(destOpt);
@@ -85,8 +81,6 @@ public class CGenMain {
 		ISourceFileFormatter formatter = null;
 
 		quiet = cmd.hasOption(quietOpt.getOpt());
-
-		distGen = cmd.hasOption(distGenOpt.getOpt());
 
 		if (cmd.hasOption(helpOpt.getOpt())) {
 			showHelp(options);
@@ -186,7 +180,7 @@ public class CGenMain {
 
 			GeneratedData data = cGen.generate(filter);
 
-			if (distGen) {
+			if (CGen.distGen) {
 				try {
 					emitDistCode(data, cGen, outputDir);
 				} catch (org.overture.codegen.ir.analysis.AnalysisException e1) {

@@ -101,7 +101,7 @@ public class DistTestBase extends NativeTestBase
 
 		}
 		List<String> args = new Vector<String>(Arrays.asList(new String[] {
-				"--quiet", "-gc", "-dist" ,"-dest", root.getAbsolutePath() }));
+				"--quiet", "-gc","-dest", root.getAbsolutePath() }));
 		args.addAll(Arrays.asList(paths));
 
 		if(System.getProperty(FORMATTER)!=null)

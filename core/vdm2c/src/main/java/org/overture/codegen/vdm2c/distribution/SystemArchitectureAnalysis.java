@@ -27,6 +27,7 @@ import org.overture.codegen.ir.statements.ACallObjectStmIR;
 import org.overture.codegen.ir.statements.AReturnStmIR;
 import org.overture.codegen.ir.types.AClassTypeIR;
 import org.overture.codegen.ir.types.AVoidTypeIR;
+import org.overture.codegen.vdm2c.CGen;
 
 public class SystemArchitectureAnalysis
 {
@@ -52,6 +53,56 @@ public class SystemArchitectureAnalysis
 		distributionMap.put(cpuName, set);
 	}
 
+	public static void setDistFlag(List<IRStatus<PIR>> statuses){
+		
+		CGen.distGen = false;
+		
+		IRStatus<PIR> status = null;
+		for (IRStatus<PIR> irStatus : statuses)
+		{
+			if (irStatus.getIrNode() instanceof ASystemClassDeclIR)
+			{
+				status = irStatus;
+
+			}
+		}
+
+		// If there is a system class
+		if (status != null)
+		{
+
+			ASystemClassDeclIR systemDef = (ASystemClassDeclIR) status.getIrNode().clone();
+
+			systemName = systemDef.getName();
+
+			// Analyse CPUs, and how they are connected
+			int cpuCounter = 0;
+			for (AFieldDeclIR f : systemDef.getFields())
+			{
+
+				if (f.getType() instanceof AClassTypeIR)
+				{
+					AClassTypeIR type = (AClassTypeIR) f.getType().clone();
+
+					if (type.getName().equals("CPU"))
+					{
+						cpuCounter = cpuCounter + 1;
+					}
+
+					if(cpuCounter>1){
+						CGen.distGen = true;
+						return;
+					}
+
+				}
+			}
+			//CGen.distGen = false;
+		}
+
+		//CGen.distGen = false;
+	}
+	
+	
 	public void analyseSystem(List<IRStatus<PIR>> statuses)
 	{
 
