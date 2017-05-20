@@ -29,6 +29,7 @@ import org.overture.codegen.utils.GeneratedData;
 import org.overture.codegen.utils.GeneratedModule;
 import org.overture.codegen.vdm2c.CFormat;
 import org.overture.codegen.vdm2c.CGen;
+import org.overture.codegen.vdm2c.distribution.SystemArchitectureAnalysis;
 import org.overture.codegen.vdm2c.extast.declarations.AClassHeaderDeclIR;
 import org.overture.codegen.vdm2c.utils.CGenUtil;
 import org.overture.codegen.vdm2c.utils.NameMangler;
@@ -79,13 +80,30 @@ public class CGenerator
 		// Generate user specified classes
 		GeneratedData data = vdm2c.generate(PluginVdm2CUtil.getNodes(model.getSourceUnits()));
 
-		try {
-			vdm2c.genCSourceFiles(cCodeOutputFolder, data.getClasses());
-			vdm2c.emitFeatureFile(cCodeOutputFolder, CGen.FEATURE_FILE_NAME);
-		} catch (Exception e) {
+		CodeGenConsole.GetInstance().println("Value of distribution flag is: "
+				+ CGen.distGen);
 
-			CodeGenConsole.GetInstance().printErrorln("Problems encountered while generating C sources: " + e.getMessage());
-			e.printStackTrace();
+		if(CGen.distGen){
+			try {
+				vdm2c.emitDistCode(data, cCodeOutputFolder);
+				
+				for(String cpu : SystemArchitectureAnalysis.distributionMapStr.keySet()){
+					CGenUtil.copyNativeLibFiles(Vdm2CCommand.class.getClassLoader().getResourceAsStream("jars/distributionLib.jar"),
+							new File(cCodeOutputFolder + File.separator + cpu + File.separator + "distributionLib"));
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		else{
+			try {
+				vdm2c.genCSourceFiles(cCodeOutputFolder, data.getClasses());
+				vdm2c.emitFeatureFile(cCodeOutputFolder, CGen.FEATURE_FILE_NAME);
+			} catch (Exception e) {
+
+				CodeGenConsole.GetInstance().printErrorln("Problems encountered while generating C sources: " + e.getMessage());
+				e.printStackTrace();
+			}
 		}
 
 		outputUserspecifiedModules(cCodeOutputFolder, data.getClasses());
