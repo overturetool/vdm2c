@@ -177,7 +177,7 @@ public class CGenMain {
 
 			GeneratedData data = cGen.generate(filter);
 
-			if (CGen.distGen) {
+			if (cGen.getDistGen()) {
 				try {
 					cGen.emitDistCode(data, outputDir);
 				} catch (org.overture.codegen.ir.analysis.AnalysisException e1) {

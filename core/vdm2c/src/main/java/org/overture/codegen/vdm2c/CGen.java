@@ -56,7 +56,7 @@ public class CGen extends CodeGenBase
 	
 	public static final String FEATURE_FILE_NAME = "VdmModelFeatures.h";
 	
-	public static boolean distGen = false;
+	private boolean distGen = false;
 	
 	public CGen()
 	{
@@ -203,11 +203,10 @@ public class CGen extends CodeGenBase
 	{
 		List<GeneratedModule> genModules = new LinkedList<GeneratedModule>();
 
-		SystemArchitectureAnalysis.setDistFlag(statuses);
+		SystemArchitectureAnalysis.setDistFlag(statuses, this);
 		
-		Boolean dist_gen = CGen.distGen;
+		Boolean dist_gen = getDistGen();
 
-		
 		if(dist_gen){
 			// Architecture Analysis
 			SystemArchitectureAnalysis sysAnalysis = new SystemArchitectureAnalysis();
@@ -625,5 +624,15 @@ public class CGen extends CodeGenBase
 	public void setSourceCodeFormatter(ISourceFileFormatter formatter)
 	{
 		this.formatter = formatter;
+	}
+	
+	public void setDistGen(boolean distGen)
+	{
+		this.distGen = distGen;
+	}
+	
+	public boolean getDistGen()
+	{
+		return this.distGen;
 	}
 }

@@ -53,9 +53,9 @@ public class SystemArchitectureAnalysis
 		distributionMap.put(cpuName, set);
 	}
 
-	public static void setDistFlag(List<IRStatus<PIR>> statuses){
+	public static void setDistFlag(List<IRStatus<PIR>> statuses, CGen cGen){
 		
-		CGen.distGen = false;
+		cGen.setDistGen(false);
 		
 		IRStatus<PIR> status = null;
 		for (IRStatus<PIR> irStatus : statuses)
@@ -90,7 +90,7 @@ public class SystemArchitectureAnalysis
 					}
 
 					if(cpuCounter>1){
-						CGen.distGen = true;
+						cGen.setDistGen(true);
 						return;
 					}
 
