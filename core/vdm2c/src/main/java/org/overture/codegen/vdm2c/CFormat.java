@@ -14,6 +14,7 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.overture.ast.definitions.SClassDefinition;
 import org.overture.ast.intf.lex.ILexLocation;
+import org.overture.ast.types.ARecordInvariantType;
 import org.overture.codegen.assistant.AssistantBase;
 import org.overture.codegen.ir.INode;
 import org.overture.codegen.ir.IRInfo;
@@ -263,6 +264,16 @@ public class CFormat
 	    } catch (IOException e) {
 	        return "UNKNOWN";
 	    }
+	}
+	
+	public static boolean isDefaultCtor(AMethodDeclIR method)
+	{
+		return method.getFormalParams().size() == 1;
+	}
+	
+	public static boolean isRec(PIR node)
+	{
+		return node.getSourceNode().getVdmNode() instanceof ARecordInvariantType;
 	}
 	
 	public static String getGeneratedFileComment() {

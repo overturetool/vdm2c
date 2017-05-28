@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -51,6 +52,8 @@ public class CGen extends CodeGenBase
 	
 	private FeatureAnalysisResult featureAnalysis;
 	
+	private List<String> headers = new LinkedList<>();
+	
 	public static final String FEATURE_FILE_NAME = "VdmModelFeatures.h";
 	
 	public static boolean distGen = false;
@@ -65,6 +68,11 @@ public class CGen extends CodeGenBase
 		return cGenSettings;
 	}
 
+	public List<String> getHeaders()
+	{
+		return headers;
+	}
+	
 	@Override
 	protected void preProcessAst(List<org.overture.ast.node.INode> ast)
 			throws AnalysisException
@@ -171,6 +179,16 @@ public class CGen extends CodeGenBase
 				}
 
 				recClass.getMethods().add(ctor);
+				
+				AMethodDeclIR defCtor = new AMethodDeclIR();
+				defCtor.setIsConstructor(true);
+				defCtor.setAbstract(false);
+				defCtor.setAccess(IRConstants.PUBLIC);
+				defCtor.setName(recClass.getName());
+				defCtor.setMethodType(ctorMethodType.clone());
+				defCtor.setBody(new ABlockStmIR());
+				
+				recClass.getMethods().add(defCtor);
 
 				extraClasses.add(new IRStatus<PIR>(recClass.getSourceNode().getVdmNode(), recClass.getName(), recClass, new HashSet<VdmNodeInfo>()));
 			}
@@ -470,7 +488,13 @@ public class CGen extends CodeGenBase
 	{
 		try
 		{
-			statuses.addAll(new ClassHeaderGenerator().generateClassHeaders(IRStatus.extract(statuses, ADefaultClassDeclIR.class)));
+			Collection<? extends IRStatus<PIR>> classHeaders = new ClassHeaderGenerator().generateClassHeaders(IRStatus.extract(statuses, ADefaultClassDeclIR.class));
+			
+			for (IRStatus<PIR> h : classHeaders) {
+				headers.add(h.getIrNodeName());
+			}
+			
+			statuses.addAll(classHeaders);
 		} catch (org.overture.codegen.ir.analysis.AnalysisException e)
 		{
 			log.error("Could not generate class headers: " + e.getMessage());

@@ -19,6 +19,7 @@ import org.overture.codegen.ir.declarations.ADefaultClassDeclIR;
 import org.overture.codegen.ir.declarations.AFieldDeclIR;
 import org.overture.codegen.ir.declarations.SClassDeclIR;
 import org.overture.codegen.ir.name.ATokenNameIR;
+import org.overture.codegen.ir.statements.AIdentifierStateDesignatorIR;
 import org.overture.codegen.ir.types.AClassTypeIR;
 import org.overture.codegen.ir.types.ARecordTypeIR;
 import org.overture.codegen.vdm2c.ast.CGenClonableString;
@@ -166,7 +167,20 @@ public class ClassHeaderGenerator
 			{
 				addType(node.getName().getName(), node);
 			}
-
+			
+			@Override
+			public void caseAIdentifierStateDesignatorIR(AIdentifierStateDesignatorIR node) throws AnalysisException {
+			
+				super.caseAIdentifierStateDesignatorIR(node);
+				
+				String className = node.getClassName();
+				
+				AClassTypeIR classType = new AClassTypeIR();
+				classType.setSourceNode(node.getSourceNode());
+				classType.setName(className);
+				
+				addType(className, classType);
+			}
 		});
 
 		for (ATokenNameIR s : classDef.getSuperNames())

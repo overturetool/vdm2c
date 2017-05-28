@@ -348,7 +348,7 @@ void ht_set( hashtable_t *hashtable, TVP key, TVP value ) {
 	entry_t *newpair = NULL;
 	entry_t *next = NULL;
 	entry_t *last = NULL;
-	TVP compres;
+	TVP compres = NULL;
 
 	bin = ht_hash( hashtable, key );
 
@@ -368,6 +368,9 @@ void ht_set( hashtable_t *hashtable, TVP key, TVP value ) {
 			compres = vdmEquals(key, next->key);
 		}
 	}
+
+	if(compres != NULL)
+	vdmFree(compres);
 
 	/* There's already a pair.  Let's replace that string. */
 

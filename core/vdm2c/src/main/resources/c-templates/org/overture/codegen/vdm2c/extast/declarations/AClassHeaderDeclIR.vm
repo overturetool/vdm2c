@@ -76,13 +76,20 @@ struct $cname
  *
  --------------------------------- */ 
  ]]#
-
+  
 #foreach( $method in $node.getOriginalDef().getMethods() )
-#if($method.getIsConstructor()) 
+#if($method.getIsConstructor())
+  #if($CFormat.isDefaultCtor($method) && $CFormat.isRec($node))
+  #ifdef ASN1SCC_MAPPING
 	$CFormat.formatSource($method)
 	$CFormat.format($method.getMethodType().getResult()) $method.getName()($CFormat.format($method.getFormalParams()).replace("this","this_"));
+  #endif
+  #else
+	$CFormat.formatSource($method)
+	$CFormat.format($method.getMethodType().getResult()) $method.getName()($CFormat.format($method.getFormalParams()).replace("this","this_")); 
 #end
 #end
+#end  
 
 #[[
 /* -------------------------------
