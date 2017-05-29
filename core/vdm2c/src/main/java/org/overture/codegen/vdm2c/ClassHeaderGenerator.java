@@ -48,6 +48,13 @@ public class ClassHeaderGenerator
 
 			header.setOriginalDef(classDef);
 
+			String name = irStatus.getIrNode().getName();
+			
+			if(!(classDef.getTag()==null)){
+				header.setTag(classDef.getTag().toString());
+				name = classDef.getTag().toString();
+				}
+
 			AClassStateDeclIR state = new AClassStateDeclIR();
 			for (AFieldDeclIR field : classDef.getFields())
 			{
@@ -91,11 +98,11 @@ public class ClassHeaderGenerator
 			{
 				AQuoteDeclIR qDef = new AQuoteDeclIR();
 				qDef.setName(quote);
-				qDef.setId(quote.hashCode());
+				qDef.setId(quoteCollector.getId());
 				header.getQuotes().add(qDef);
 			}
 
-			list.add(new IRStatus<PIR>(irStatus.getVdmNode(), header.getName(), header, new HashSet<VdmNodeInfo>()));
+			list.add(new IRStatus<PIR>(irStatus.getVdmNode(), name, header, new HashSet<VdmNodeInfo>()));
 			classHeaders.add(header);
 		}
 

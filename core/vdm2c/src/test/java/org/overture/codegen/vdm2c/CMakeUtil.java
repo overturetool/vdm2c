@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -155,7 +156,7 @@ public class CMakeUtil
 		}
 
 		p.waitFor();
-
+		
 		List<String> errors = IOUtils.readLines(p.getErrorStream());
 
 		boolean res = p.exitValue() == 0;
