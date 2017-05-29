@@ -98,7 +98,7 @@ public class ClassHeaderGenerator
 			{
 				AQuoteDeclIR qDef = new AQuoteDeclIR();
 				qDef.setName(quote);
-				qDef.setId(quoteCollector.getId());
+        qDef.setId(quote.hashCode());
 				header.getQuotes().add(qDef);
 			}
 

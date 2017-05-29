@@ -16,7 +16,6 @@ import org.overture.codegen.ir.types.AQuoteTypeIR;
  */
 public class QuoteNamesCollector extends DepthFirstAnalysisCAdaptor
 {
-	int id = 0;
 	Set<String> quotes = new HashSet<String>();
 
 	public Set<String> getQuotes()
@@ -42,10 +41,5 @@ public class QuoteNamesCollector extends DepthFirstAnalysisCAdaptor
 			throws AnalysisException
 	{
 		quotes.add(node.getValue());
-	}
-	
-	public int getId(){
-		id = id + 1;
-		return id;
 	}
 }
