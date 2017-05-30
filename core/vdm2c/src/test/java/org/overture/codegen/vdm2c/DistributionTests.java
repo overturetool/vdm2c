@@ -72,6 +72,8 @@ public class DistributionTests extends DistTestBase
 		pb3.directory(cpu2Dir);
 		pb3.start();
 
+		Thread.sleep(5000);
+		
 		// cpu1 -- sync call
 		cmakeUtil.run(cpu1Dir, "cpu1Exe", TEST_OUTPUT != null);
 
@@ -158,6 +160,8 @@ public class DistributionTests extends DistTestBase
 		pb3.directory(cpu2Dir);
 		pb3.start();
 
+		Thread.sleep(5000);
+		
 		// cpu1 -- sync call
 		boolean cpuReturnValue = cmakeUtil.run(cpu1Dir, "cpu1Exe", TEST_OUTPUT != null);
 
@@ -243,6 +247,8 @@ public class DistributionTests extends DistTestBase
 		pb3.directory(cpu2Dir);
 		pb3.start();
 
+		Thread.sleep(5000);
+		
 		String current = new java.io.File( "." ).getCanonicalPath();
 		//System.out.println("Current dir:"+current);
 
@@ -331,6 +337,8 @@ public class DistributionTests extends DistTestBase
 		pb3.directory(cpu2Dir);
 		pb3.start();
 
+		Thread.sleep(5000);
+		
 		// cpu1 -- sync call
 		boolean cpuReturnValue = cmakeUtil.run(cpu1Dir, "cpu1Exe", TEST_OUTPUT != null);
 
@@ -417,6 +425,8 @@ public class DistributionTests extends DistTestBase
 		pb3.directory(cpu2Dir);
 		pb3.start();
 
+		Thread.sleep(5000);
+		
 		// cpu1 -- sync call
 		boolean cpuReturnValue = cmakeUtil.run(cpu1Dir, "cpu1Exe", TEST_OUTPUT != null);
 
