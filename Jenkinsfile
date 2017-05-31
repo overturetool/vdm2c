@@ -33,17 +33,17 @@ node {
 
         step([$class: 'TasksPublisher', canComputeNew: false, defaultEncoding: '', excludePattern: '', healthy: '', high: 'FIXME', ignoreCase: true, low: '', normal: 'TODO', pattern: '', unHealthy: ''])
       }}
-
-        stage ('Clean up workspace'){
-
-            step([$class: 'WsCleanup'])
-        }
         
   } catch (any) {
     currentBuild.result = 'FAILURE'
     throw any //rethrow exception to prevent the build from proceeding
   } finally {
-  
+
+    stage ('Clean up workspace'){
+
+      step([$class: 'WsCleanup'])
+    }
+        
     stage('Reporting'){
 
       step([$class: 'GitHubCommitStatusSetter'])
