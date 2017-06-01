@@ -7,8 +7,11 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.overture.codegen.vdm2c.CMakeUtil.CMakeGenerateException;
 
+
+
 public class DistributionTests extends DistTestBase
 {
+	private int delay = 10000;
 
 	// Old test
 	//@Test
