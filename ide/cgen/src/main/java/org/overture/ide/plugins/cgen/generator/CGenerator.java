@@ -78,7 +78,7 @@ public class CGenerator
 		// Generate user specified classes
 		GeneratedData data = vdm2c.generate(PluginVdm2CUtil.getNodes(model.getSourceUnits()));
 
-		if(CGen.distGen){
+		if(vdm2c.getDistGen()){
 			try {
 				vdm2c.emitDistCode(data, cCodeOutputFolder);
 				
