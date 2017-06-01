@@ -48,6 +48,7 @@ guint vdm_typedvalue_hash(gconstpointer v)
 	case VDM_INT:
 	case VDM_NAT1:
 	case VDM_NAT:
+	case VDM_TOKEN:
 		return g_int_hash(&tv->value.intVal);
 	case VDM_BOOL:
 		return g_int_hash(&tv->value.boolVal);
@@ -58,11 +59,18 @@ guint vdm_typedvalue_hash(gconstpointer v)
 		return g_double_hash(&tv->value.doubleVal);
 	case VDM_QUOTE:
 		return g_int_hash(&tv->value.quoteVal);
+#ifndef NO_MAPS
 	case VDM_MAP:
 		/* todo  */
 		break;
+#endif
+#ifndef NO_PRODUCTS
 	case VDM_PRODUCT:
+#endif
+#ifndef NO_SEQS
 	case VDM_SEQ:
+#endif
+#ifndef NO_SETS
 	case VDM_SET:
 	{
 		/* 			UNWRAP_COLLECTION(cptr,tmp);  */
@@ -81,14 +89,17 @@ guint vdm_typedvalue_hash(gconstpointer v)
 		/* 			tmp->value.ptr = ptr;  */
 		break;
 	}
+#endif
 	/* 		case VDM_OPTIONAL:  */
 	/* 		TODO  */
 	/* 		break;  */
+#ifndef NO_RECORDS
 	case VDM_RECORD:
 	{
 		/* TODO duplicate (memcpy) and duplicate what ever any pointers points to except if a class  */
 		break;
 	}
+#endif
 	case VDM_CLASS:
 	{
 		break;
@@ -118,6 +129,7 @@ void vdm_g_free(gpointer mem)
 TVP newMap()
 {
 	struct Map* ptr = (struct Map*) malloc(sizeof(struct Map));
+	assert(ptr != NULL);
 	ptr->table = g_hash_table_new_full(vdm_typedvalue_hash, vdm_typedvalue_equal, vdm_g_free, vdm_g_free);
 
 	return newTypeValue(VDM_MAP, (TypedValueType
@@ -128,6 +140,7 @@ TVP newMap()
 TVP newMapGC(TVP *from)
 {
 	struct Map* ptr = (struct Map*) malloc(sizeof(struct Map));
+	assert(ptr != NULL);
 	ptr->table = g_hash_table_new_full(vdm_typedvalue_hash, vdm_typedvalue_equal, vdm_g_free, vdm_g_free);
 
 	return newTypeValueGC(VDM_MAP, (TypedValueType
@@ -155,13 +168,18 @@ TVP vdmMapApply(TVP map, TVP key)
 	return (TVP) g_hash_table_lookup(m->table, key);
 }
 
+TVP vdmMapApplyGC(TVP map, TVP key, TVP *from)
+{
+	ASSERT_CHECK(map);
+	UNWRAP_MAP(m,map);
+
+	return vdmCloneGC((TVP) g_hash_table_lookup(m->table, key), from);
+}
+
 
 void print_iterator(gpointer item, gpointer prefix) {
-	TVP item2 = (TVP) item;
-	/* FIXME you cannot print a union type like this printf("%d \n", item2->value);  */
 }
 void print_iterator_short(gpointer item) {
-	printf("%s\n", item);
 }
 
 int getGreater(int a, int b){
@@ -191,7 +209,7 @@ TVP vdmMapDom(TVP map)
 	/* TODO: Free necessary variables  */
 	g_list_free(dom);
 
-	return res
+	return res;
 }
 
 TVP vdmMapDomGC(TVP map, TVP *from)
@@ -216,7 +234,7 @@ TVP vdmMapDomGC(TVP map, TVP *from)
 	/* TODO: Free necessary variables  */
 	g_list_free(dom);
 
-	return res
+	return res;
 }
 
 TVP vdmMapRng(TVP map)
@@ -241,7 +259,7 @@ TVP vdmMapRng(TVP map)
 	/* TODO: Free necessary variables  */
 	g_list_free(dom);
 
-	return newSetWithValues(set_size, arr);
+	return res;
 }
 
 TVP vdmMapRngGC(TVP map, TVP *from)
@@ -280,14 +298,14 @@ hashtable_t *ht_create( int size ) {
 	if( size < 1 ) return NULL;
 
 	/* Allocate the table itself. */
-	if( ( hashtable = malloc( sizeof( hashtable_t ) ) ) == NULL ) {
-		return NULL;
-	}
+	hashtable = malloc(sizeof(hashtable_t));
+	assert(hashtable != NULL);
+
 
 	/* Allocate pointers to the head nodes. */
-	if( ( hashtable->chain = malloc( sizeof( entry_t * ) * size ) ) == NULL ) {
-		return NULL;
-	}
+	hashtable->chain = malloc(sizeof(entry_t *) * size);
+	assert(hashtable->chain != NULL);
+
 	for( i = 0; i < size; i++ ) {
 		hashtable->chain[i] = NULL;
 	}
@@ -323,9 +341,8 @@ int ht_hash( hashtable_t *hashtable, TVP key ) {
 entry_t *ht_newpair( TVP key, TVP value ) {
 	entry_t *newpair;
 
-	if( ( newpair = malloc( sizeof( entry_t ) ) ) == NULL ) {
-		return NULL;
-	}
+	newpair = malloc(sizeof(entry_t));
+	assert(newpair != NULL);
 
 	if( ( newpair->key = vdmClone(key) ) == NULL ) {
 		return NULL;
@@ -449,6 +466,8 @@ TVP ht_get( hashtable_t *hashtable, TVP key ) {
 TVP newMap()
 {
 	struct Map* ptr = (struct Map*) malloc(sizeof(struct Map));
+	assert(ptr != NULL);
+
 	/* TODO:  work out initial size.  */
 	ptr->table =  ht_create(10);
 
@@ -491,6 +510,8 @@ entry_t* cloneChain(entry_t *chain)
 		return NULL;
 
 	entry = (entry_t *)malloc(sizeof(entry_t));
+	assert(entry != NULL);
+
 	entry->key = vdmClone(chain->key);
 	entry->value = vdmClone(chain->value);
 	entry->next = cloneChain(chain->next);
@@ -503,6 +524,7 @@ struct Map* cloneMap(struct Map *m)
 	int i;
 
 	struct Map* ptr = (struct Map*) malloc(sizeof(struct Map));
+	assert(ptr != NULL);
 
 	ptr->table = ht_create(m->table->size);
 	for(i = 0; i < ptr->table->size; i++)
@@ -517,6 +539,8 @@ struct Map* cloneMap(struct Map *m)
 TVP newMapGC(TVP *from)
 {
 	struct Map* ptr = (struct Map*) malloc(sizeof(struct Map));
+	assert(ptr != NULL);
+
 	/* TODO:  work out initial size.  */
 	ptr->table =  ht_create(10);
 
@@ -541,6 +565,8 @@ TVP newMapVarToGrow(size_t size, size_t expected_size, ...)
 	}
 
 	ptr = (struct Map*) malloc(sizeof(struct Map));
+	assert(ptr != NULL);
+
 	ptr->table =  ht_create(expected_size);
 	theMap = newTypeValue(VDM_MAP, (TypedValueType){ .ptr = ptr });
 
@@ -577,6 +603,8 @@ TVP newMapVarToGrowGC(size_t size, size_t expected_size, TVP *from, ...)
 	}
 
 	ptr = (struct Map*) malloc(sizeof(struct Map));
+	assert(ptr != NULL);
+
 	ptr->table =  ht_create(expected_size);
 	theMap = newTypeValueGC(VDM_MAP, (TypedValueType){ .ptr = ptr }, from);
 
