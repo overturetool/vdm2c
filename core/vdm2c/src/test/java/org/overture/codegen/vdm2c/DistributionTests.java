@@ -11,7 +11,7 @@ import org.overture.codegen.vdm2c.CMakeUtil.CMakeGenerateException;
 
 public class DistributionTests extends DistTestBase
 {
-	private int delay = 10000;
+	private int delay = 5000;
 
 	// Old test
 	//@Test
@@ -75,7 +75,7 @@ public class DistributionTests extends DistTestBase
 		pb3.directory(cpu2Dir);
 		pb3.start();
 
-		Thread.sleep(5000);
+		Thread.sleep(delay);
 		
 		// cpu1 -- sync call
 		cmakeUtil.run(cpu1Dir, "cpu1Exe", TEST_OUTPUT != null);
@@ -163,7 +163,7 @@ public class DistributionTests extends DistTestBase
 		pb3.directory(cpu2Dir);
 		pb3.start();
 
-		Thread.sleep(5000);
+		Thread.sleep(delay);
 		
 		// cpu1 -- sync call
 		boolean cpuReturnValue = cmakeUtil.run(cpu1Dir, "cpu1Exe", TEST_OUTPUT != null);
@@ -250,7 +250,7 @@ public class DistributionTests extends DistTestBase
 		pb3.directory(cpu2Dir);
 		pb3.start();
 
-		Thread.sleep(5000);
+		Thread.sleep(delay);
 		
 		String current = new java.io.File( "." ).getCanonicalPath();
 		//System.out.println("Current dir:"+current);
@@ -340,7 +340,7 @@ public class DistributionTests extends DistTestBase
 		pb3.directory(cpu2Dir);
 		pb3.start();
 
-		Thread.sleep(5000);
+		Thread.sleep(delay);
 		
 		// cpu1 -- sync call
 		boolean cpuReturnValue = cmakeUtil.run(cpu1Dir, "cpu1Exe", TEST_OUTPUT != null);
@@ -428,7 +428,7 @@ public class DistributionTests extends DistTestBase
 		pb3.directory(cpu2Dir);
 		pb3.start();
 
-		Thread.sleep(5000);
+		Thread.sleep(delay);
 		
 		// cpu1 -- sync call
 		boolean cpuReturnValue = cmakeUtil.run(cpu1Dir, "cpu1Exe", TEST_OUTPUT != null);
