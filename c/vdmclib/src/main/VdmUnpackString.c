@@ -11,6 +11,7 @@ char* unpackString(TVP charseq)
 	UNWRAP_COLLECTION(col, charseq);
 
 	str = (char*)malloc(col->size * sizeof(char) + 1);
+	assert(str != NULL);
 	str[col->size] = 0;
 
 	for(i = 0; i < col->size; i++)
