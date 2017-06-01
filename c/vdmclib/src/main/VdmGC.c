@@ -13,6 +13,7 @@ struct alloc_list_node *allocd_mem_tail = NULL;
 void vdm_gc_init()
 {
 	allocd_mem_head = (struct alloc_list_node*)malloc(sizeof (struct alloc_list_node));
+	assert(allocd_mem_head != NULL);
 	allocd_mem_tail = allocd_mem_head;
 
 	allocd_mem_head->loc = NULL;
@@ -25,6 +26,7 @@ void add_allocd_mem_node(TVP l, TVP *from)
 	allocd_mem_tail->loc->ref_from = from;
 
 	allocd_mem_tail->next = (struct alloc_list_node*)malloc(sizeof(struct alloc_list_node));
+	assert(allocd_mem_tail->next != NULL);
 	allocd_mem_tail = allocd_mem_tail->next;
 	allocd_mem_tail->next = NULL;
 }
@@ -193,6 +195,7 @@ void vdm_gc()
 TVP newTypeValueGC(vdmtype type, TypedValueType value, TVP *ref_from)
 {
 	TVP ptr = (TVP) malloc(sizeof(struct TypedValue));
+	assert(ptr != NULL);
 	ptr->type = type;
 	ptr->value = value;
 	add_allocd_mem_node(ptr, ref_from);
@@ -296,10 +299,12 @@ TVP vdmCloneGC(TVP x, TVP *from)
 		UNWRAP_COLLECTION(cptr, tmp);
 
 		struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
+		assert(ptr != NULL);
 
 		/* copy (size)  */
 		*ptr = *cptr;
 		ptr->value = (TVP*) malloc(sizeof(TVP) * ptr->size);
+		assert(ptr->value != NULL);
 
 		for (i = 0; i < cptr->size; i++)
 		{
@@ -318,10 +323,12 @@ TVP vdmCloneGC(TVP x, TVP *from)
 		UNWRAP_COLLECTION(cptr, tmp);
 
 		struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
+		assert(ptr != NULL);
 
 		/* copy (size)  */
 		*ptr = *cptr;
 		ptr->value = (TVP*) malloc(sizeof(TVP) * ptr->size);
+		assert(ptr->value != NULL);
 
 		for (i = 0; i < cptr->size; i++)
 		{
@@ -340,10 +347,12 @@ TVP vdmCloneGC(TVP x, TVP *from)
 		UNWRAP_COLLECTION(cptr, tmp);
 
 		struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
+		assert(ptr != NULL);
 
 		/* copy (size)  */
 		*ptr = *cptr;
 		ptr->value = (TVP*) malloc(sizeof(TVP) * ptr->size);
+		assert(ptr->value != NULL);
 
 		for (i = 0; i < cptr->size; i++)
 		{
@@ -383,6 +392,7 @@ TVP vdmCloneGC(TVP x, TVP *from)
 
 		/* Allocate memory to be populated with the pointers pointing to the cloned fields.  */
 		((struct ClassType*)((tmp->value).ptr))->value = malloc(sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(TVP) + sizeof(TVP) * numFields);
+		assert(((struct ClassType*)((tmp->value).ptr))->value != NULL);
 
 		for(i = 0; i <= numFields; i++)
 		{
