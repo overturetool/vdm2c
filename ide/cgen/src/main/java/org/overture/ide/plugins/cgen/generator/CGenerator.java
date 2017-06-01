@@ -94,7 +94,7 @@ public class CGenerator
 							new File(cCodeOutputFolder + File.separator + cpu + File.separator + "nativelib"));
 
 					//Emit empty main.c file so that the generated project compiles.
-					emitMainFile(new File(cCodeOutputFolder + File.separator + cpu + File.separator + "main.c"));
+					emitMainFile(new File(cCodeOutputFolder + File.separator + cpu + File.separator + "main.c"), vdm2c.getHeaders());
 					
 					//Emit file containing the mapping between model names and mangled names as #defines.
 					emitMangledNamesHeaderFile(new File(cCodeOutputFolder + File.separator + cpu + File.separator + "MangledNames.h"));
