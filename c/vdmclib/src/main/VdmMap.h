@@ -32,14 +32,7 @@
 
 #include "Vdm.h"
 #include "VdmSet.h"
-
-#ifdef WITH_GLIB_HASH
-#include <glib.h>
-#else
 #include <limits.h>
-#endif
-
-
 #include <assert.h>
 
 #ifndef NO_MAPS
@@ -64,11 +57,7 @@ typedef struct hashtable_s hashtable_t;
 
 struct Map
 {
-#ifdef WITH_GLIB_HASH
-	GHashTable *table;
-#else
 	hashtable_t *table;
-#endif
 };
 
 hashtable_t *ht_create( int size );
@@ -110,13 +99,6 @@ TVP vdmMapInverse(TVP map);
 TVP vdmMapInverseGC(TVP map, TVP *from);
 
 TVP vdmMapEquals(TVP map1, TVP map2);
-
-#ifdef WITH_GLIB_HASH
-guint vdm_typedvalue_hash(gconstpointer v);
-gboolean vdm_typedvalue_equal(gconstpointer v1, gconstpointer v2);
-void vdm_g_free(gpointer mem);
-#endif
-
 
 #endif /* NO_MAPS */
 #endif /* LIB_VDMMAP_H_ */
