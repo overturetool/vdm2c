@@ -2,9 +2,10 @@ node {
   try
   {
     // Mark the code checkout 'stage'....
-    stage 'Checkout'
-    checkout scm
-    sh 'git submodule update --init'
+    stage ('Checkout'){
+      checkout scm
+      sh 'git submodule update --init'
+    }
 
     stage ('Clean'){
       withMaven(mavenLocalRepo: '.repository', mavenSettingsFilePath: "${env.MVN_SETTINGS_PATH}") {
