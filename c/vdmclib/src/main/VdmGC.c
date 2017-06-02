@@ -14,10 +14,11 @@ void vdm_gc_init()
 {
 	allocd_mem_head = (struct alloc_list_node*)malloc(sizeof (struct alloc_list_node));
 	assert(allocd_mem_head != NULL);
-	allocd_mem_tail = allocd_mem_head;
 
 	allocd_mem_head->loc = NULL;
 	allocd_mem_head->next = NULL;
+
+	allocd_mem_tail = allocd_mem_head;
 }
 
 void add_allocd_mem_node(TVP l, TVP *from)
@@ -28,6 +29,8 @@ void add_allocd_mem_node(TVP l, TVP *from)
 	allocd_mem_tail->next = (struct alloc_list_node*)malloc(sizeof(struct alloc_list_node));
 	assert(allocd_mem_tail->next != NULL);
 	allocd_mem_tail = allocd_mem_tail->next;
+
+	allocd_mem_tail->loc = NULL;
 	allocd_mem_tail->next = NULL;
 }
 
