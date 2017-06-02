@@ -6,8 +6,6 @@ node {
     checkout scm
     sh 'git submodule update --init'
 
-    step([$class: 'GitHubSetCommitStatusBuilder'])
-
     stage ('Clean'){
       withMaven(mavenLocalRepo: '.repository', mavenSettingsFilePath: "${env.MVN_SETTINGS_PATH}") {
 
@@ -45,8 +43,6 @@ node {
     }
         
     stage('Reporting'){
-
-      step([$class: 'GitHubCommitStatusSetter'])
 
       // Notify on build failure using the Email-ext plugin
       emailext(body: '${DEFAULT_CONTENT}', mimeType: 'text/html',
