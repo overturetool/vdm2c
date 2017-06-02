@@ -133,22 +133,24 @@ void remove_allocd_mem_node(struct alloc_list_node *node)
 
 void vdm_gc_shutdown()
 {
-	struct alloc_list_node *tmp;
+	struct alloc_list_node *tmp, *tmp2;
 
 	tmp = allocd_mem_head;
 
 	while(tmp != allocd_mem_tail)
 	{
+		tmp2 = tmp->next;
+
 		if(tmp->loc != NULL)
 		{
 			vdmFree_GCInternal(tmp->loc);
 			remove_allocd_mem_node(tmp);
 		}
-
-		tmp = tmp->next;
+		tmp = tmp2;
 	}
-	free(allocd_mem_head);
+	free(allocd_mem_tail);
 	allocd_mem_head = NULL;
+	allocd_mem_tail = NULL;
 }
 
 void vdm_gc()
