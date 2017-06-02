@@ -40,27 +40,17 @@
 #define UNWRAP_MAP(var, map) struct Map* var = (struct Map*)map->value.ptr
 
 
-struct entry_s {
+struct KVPair{
 	TVP key;
 	TVP value;
-	struct entry_s *next;
+	struct KVPair *next;
 };
-
-typedef struct entry_s entry_t;
-
-struct hashtable_s {
-	int size;
-	entry_t **chain;
-};
-
-typedef struct hashtable_s hashtable_t;
 
 struct Map
 {
-	hashtable_t *table;
+	struct KVPair *chain;
 };
 
-hashtable_t *ht_create( int size );
 
 void freeMap(struct Map *m);
 struct Map* cloneMap(struct Map *m);
