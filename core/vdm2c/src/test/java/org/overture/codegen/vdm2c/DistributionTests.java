@@ -12,6 +12,7 @@ import org.overture.codegen.vdm2c.CMakeUtil.CMakeGenerateException;
 public class DistributionTests extends DistTestBase
 {
 	private int delay = 5000;
+	private boolean deamonFlag = false;
 
 	// Old test
 	//@Test
@@ -136,10 +137,10 @@ public class DistributionTests extends DistTestBase
 
 		// cpu1
 		pb.directory(cpu1Dir);
-		cmakeUtil.runProcess(pb, true);
+		cmakeUtil.runProcess(pb, deamonFlag);
 		// cpu2
 		pb.directory(cpu2Dir);
-		cmakeUtil.runProcess(pb, true);
+		cmakeUtil.runProcess(pb, deamonFlag);
 
 		/** 3. Run make pr. CPU **/
 
@@ -148,11 +149,11 @@ public class DistributionTests extends DistTestBase
 
 		// cpu1
 		pb2.directory(cpu1Dir);
-		cmakeUtil.runProcess(pb2, false);
+		cmakeUtil.runProcess(pb2, deamonFlag);
 
 		// cpu2
 		pb2.directory(cpu2Dir);
-		cmakeUtil.runProcess(pb2, false);
+		cmakeUtil.runProcess(pb2, deamonFlag);
 
 		/** 4. Run the exetutables **/
 
@@ -223,10 +224,10 @@ public class DistributionTests extends DistTestBase
 
 		// cpu1
 		pb.directory(cpu1Dir);
-		cmakeUtil.runProcess(pb, true);
+		cmakeUtil.runProcess(pb, deamonFlag);
 		// cpu2
 		pb.directory(cpu2Dir);
-		cmakeUtil.runProcess(pb, true);
+		cmakeUtil.runProcess(pb, deamonFlag);
 
 		/** 3. Run make pr. CPU **/
 
@@ -235,11 +236,11 @@ public class DistributionTests extends DistTestBase
 
 		// cpu1
 		pb2.directory(cpu1Dir);
-		cmakeUtil.runProcess(pb2, false);
+		cmakeUtil.runProcess(pb2, deamonFlag);
 
 		// cpu2
 		pb2.directory(cpu2Dir);
-		cmakeUtil.runProcess(pb2, false);
+		cmakeUtil.runProcess(pb2, deamonFlag);
 
 		/** 4. Run the exetutables **/
 
@@ -313,10 +314,10 @@ public class DistributionTests extends DistTestBase
 
 		// cpu1
 		pb.directory(cpu1Dir);
-		cmakeUtil.runProcess(pb, true);
+		cmakeUtil.runProcess(pb, deamonFlag);
 		// cpu2
 		pb.directory(cpu2Dir);
-		cmakeUtil.runProcess(pb, true);
+		cmakeUtil.runProcess(pb, deamonFlag);
 
 		/** 3. Run make pr. CPU **/
 
@@ -325,11 +326,11 @@ public class DistributionTests extends DistTestBase
 
 		// cpu1
 		pb2.directory(cpu1Dir);
-		cmakeUtil.runProcess(pb2, false);
+		cmakeUtil.runProcess(pb2, deamonFlag);
 
 		// cpu2
 		pb2.directory(cpu2Dir);
-		cmakeUtil.runProcess(pb2, false);
+		cmakeUtil.runProcess(pb2, deamonFlag);
 
 		/** 4. Run the exetutables **/
 
@@ -401,10 +402,10 @@ public class DistributionTests extends DistTestBase
 
 		// cpu1
 		pb.directory(cpu1Dir);
-		cmakeUtil.runProcess(pb, true);
+		cmakeUtil.runProcess(pb, deamonFlag);
 		// cpu2
 		pb.directory(cpu2Dir);
-		cmakeUtil.runProcess(pb, true);
+		cmakeUtil.runProcess(pb, deamonFlag);
 
 		/** 3. Run make pr. CPU **/
 
@@ -413,11 +414,11 @@ public class DistributionTests extends DistTestBase
 
 		// cpu1
 		pb2.directory(cpu1Dir);
-		cmakeUtil.runProcess(pb2, false);
+		cmakeUtil.runProcess(pb2, deamonFlag);
 
 		// cpu2
 		pb2.directory(cpu2Dir);
-		cmakeUtil.runProcess(pb2, false);
+		cmakeUtil.runProcess(pb2, deamonFlag);
 
 		/** 4. Run the exetutables **/
 
