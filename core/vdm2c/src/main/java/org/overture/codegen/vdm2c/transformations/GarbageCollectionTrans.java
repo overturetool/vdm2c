@@ -217,30 +217,6 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 
 	private SExpIR consReference(SExpIR exp)
 	{
-		INode parent = exp.parent();
-		
-		if (parent instanceof AVarDeclIR)
-		{
-			AVarDeclIR decl = ((AVarDeclIR) parent);
-			SPatternIR pat = decl.getPattern();
-
-			// "return" variables constitute a special case where 'from' must be NULL
-			// See https://github.com/overturetool/vdm2c/issues/87#issuecomment-295776237https://github.com/overturetool/vdm2c/issues/87#issuecomment-295776237
-			if (decl.getTag() != CTags.RET_VAR_TAG) {
-				
-				if (pat instanceof AIdentifierPatternIR) {
-					String name = ((AIdentifierPatternIR) pat).getName();
-					AExternalExpIR reference = new AExternalExpIR();
-					reference.setSourceNode(pat.getSourceNode());
-					reference.setTargetLangExp("&" + name);
-
-					return reference;
-				} else {
-					logger.error("Expected identifier pattern at this point.");
-				}
-			}
-		}
-
 		// Expression is not associated with a memory address
 		return assist.getInfo().getExpAssistant().consNullExp();
 	}
