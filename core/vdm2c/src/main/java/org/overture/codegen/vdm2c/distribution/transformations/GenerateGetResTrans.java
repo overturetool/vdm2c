@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.overture.ast.intf.lex.ILexNameToken;
 import org.overture.ast.types.AClassType;
+import org.overture.ast.types.AOptionalType;
 import org.overture.cgc.extast.analysis.DepthFirstAnalysisCAdaptor;
 import org.overture.codegen.ir.SExpIR;
 import org.overture.codegen.ir.SStmIR;
@@ -125,18 +126,20 @@ public class GenerateGetResTrans extends DepthFirstAnalysisCAdaptor
 							for (String dobj : depObj)
 							{
 								// One if statement pr. deployed object
-								int idVal = SystemArchitectureAnalysis.systemDeployedObjectsStr.indexOf(dobj)
-										+ 1;
+								int idVal = SystemArchitectureAnalysis.systemDeployedObjectsStr.indexOf(dobj);
+										//+ 1;
 								LinkedList<AFieldDeclIR> va = SystemArchitectureAnalysis.systemDeployedObjects;
-								obj_id = idVal - 1; // stor current object id
+								obj_id = idVal; //- 1; // stor current object id
 								AFieldDeclIR o = va.get(obj_id);
 
 								LinkedList<ILexNameToken> classSupNames = new LinkedList<ILexNameToken>();
 
-								if (o.getType().getSourceNode().getVdmNode() instanceof AClassType)
+								if (o.getType().getSourceNode().getVdmNode() instanceof AOptionalType)
 								{
-									AClassType classN = (AClassType) o.getType().getSourceNode().getVdmNode();
+									AOptionalType classNN = (AOptionalType) o.getType().getSourceNode().getVdmNode();
 
+									AClassType classN = (AClassType) classNN.getType();
+									
 									classSupNames = classN.getClassdef().getSupernames();
 								}
 
