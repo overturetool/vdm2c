@@ -5,10 +5,12 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.overture.ast.analysis.AnalysisException;
 import org.overture.codegen.ir.CodeGenBase;
@@ -197,6 +199,25 @@ public class CGen extends CodeGenBase
 		return extraClasses;
 	}
 
+	private boolean filter(String name){
+		
+		if(name.equals("Test") ||
+				name.equals("TestCase") ||
+				name.equals("TestSuite") ||
+				name.equals("TestListener") ||
+				name.equals("TestResult") ||
+				name.equals("TestRunner") ||
+				name.equals("Throwable") ||
+				name.equals("Error") ||
+				name.equals("AssertionFailedError") ||
+				name.equals("Assert")||
+				name.equals("IO"))
+			return false;
+		
+		
+		return true;
+	}
+	
 	@Override
 	protected GeneratedData genVdmToTargetLang(List<IRStatus<PIR>> statuses)
 			throws AnalysisException
@@ -227,7 +248,8 @@ public class CGen extends CodeGenBase
 						IRStatus<PIR> stat = new IRStatus<PIR>(null, cpuName, dep, new HashSet<VdmNodeInfo>(), new HashSet<IrNodeInfo>());
 						statuses.add(stat);
 					}
-					else{
+					else if(filter(r.getIrNode().getName())){
+						//System.out.println(r.getIrNode().getName());
 						SystemArchitectureAnalysis.systemClasses.add(r.getIrNodeName().toString());
 					}
 				}
