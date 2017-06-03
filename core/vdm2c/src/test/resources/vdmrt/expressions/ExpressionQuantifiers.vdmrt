@@ -1,0 +1,21 @@
+class ExpressionQuantifiers
+
+functions
+
+public forAllFirst	 :  () -> bool
+forAllFirst () ==
+forall x in set {1,2,3} & x > 0;
+
+public forAllSecond	 :  () -> bool
+forAllSecond () ==
+not forall x in set {1,2,3} & x < 3;
+
+public existsFirst	 :  () -> bool
+existsFirst () ==
+exists x in set {1,2,3} & x = 3;
+
+public existsSecond	 :  () -> bool
+existsSecond () ==
+not exists x in set {1,2,3} & x = 4;
+
+end ExpressionQuantifiers

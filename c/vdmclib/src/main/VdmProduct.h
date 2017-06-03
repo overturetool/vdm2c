@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * <http:XXXwww.gnu.org/licenses/gpl-3.0.html>.
  * #~%
  */
 
@@ -29,14 +29,19 @@
 
 #ifndef LIB_VDMPRODUCT_H_
 #define LIB_VDMPRODUCT_H_
-#include "TypedValue.h"
+#include "Vdm.h"
 #include <assert.h>
 
-struct TypedValue* newProduct(size_t size);
-struct TypedValue* newProductWithValues(size_t size,TVP* elements);
+#ifndef NO_PRODUCTS
+
+TVP newProductVar(size_t size,...);
+TVP newProductVarGC(size_t size, TVP *from, ...);
+TVP newProductWithValues(size_t size,TVP* elements);
 
 TVP productGet(TVP product, int index);
+TVP productGetGC(TVP product, int index, TVP *from);
 void productSet(TVP product, int index, TVP val);
-//bool productEqual(TVP product,TVP product2);
+/* bool productEqual(TVP product,TVP product2);  */
 
+#endif /* NO_PRODUCTS */
 #endif /* LIB_VDMPRODUCT_H_ */

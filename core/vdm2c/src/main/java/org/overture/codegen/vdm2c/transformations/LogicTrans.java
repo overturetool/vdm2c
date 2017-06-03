@@ -11,6 +11,7 @@ import org.overture.codegen.ir.expressions.AEqualsBinaryExpIR;
 import org.overture.codegen.ir.expressions.ANotEqualsBinaryExpIR;
 import org.overture.codegen.ir.expressions.ANotUnaryExpIR;
 import org.overture.codegen.ir.expressions.AOrBoolBinaryExpIR;
+import org.overture.codegen.ir.expressions.AXorBoolBinaryExpIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.utils.IApplyAssistant;
 
@@ -22,7 +23,13 @@ import org.overture.codegen.vdm2c.utils.IApplyAssistant;
 public class LogicTrans extends DepthFirstAnalysisCAdaptor implements
 		IApplyAssistant
 {
-	public TransAssistantIR assist;
+	public static final String VDM_OR = "vdmOr";
+	public static final String VDM_NOT = "vdmNot";
+	public static final String VDM_EQUALS = "vdmEquals";
+	public static final String VDM_AND = "vdmAnd";
+	public static final String VDM_XOR = "vdmXor";
+	
+	private TransAssistantIR assist;
 
 	public LogicTrans(TransAssistantIR assist)
 	{
@@ -45,22 +52,22 @@ public class LogicTrans extends DepthFirstAnalysisCAdaptor implements
 	public void caseAAndBoolBinaryExpIR(AAndBoolBinaryExpIR node)
 			throws AnalysisException
 	{
-		rewriteToApply(this, node, "vdmAnd", node.getLeft(), node.getRight());
+		rewriteToApply(this, node, VDM_AND, node.getLeft(), node.getRight());
 	}
 
 	@Override
 	public void caseAEqualsBinaryExpIR(AEqualsBinaryExpIR node)
 			throws AnalysisException
 	{
-		rewriteToApply(this, node, "vdmEquals", node.getLeft(), node.getRight());
+		rewriteToApply(this, node, VDM_EQUALS, node.getLeft(), node.getRight());
 	}
 
 	@Override
 	public void caseANotEqualsBinaryExpIR(ANotEqualsBinaryExpIR node)
 			throws AnalysisException
 	{
-		SExpIR replacement = rewriteToApply(this, node, "vdmEquals", node.getLeft(), node.getRight());
-		rewriteToApply(this, replacement, "vdmNot", replacement).apply(THIS);;
+		SExpIR replacement = rewriteToApply(this, node, VDM_EQUALS, node.getLeft(), node.getRight());
+		rewriteToApply(this, replacement, VDM_NOT, replacement).apply(THIS);;
 //		replacement.parent().replaceChild(replacement, newApply("vdmNot", replacement.clone()));
 	}
 
@@ -68,14 +75,20 @@ public class LogicTrans extends DepthFirstAnalysisCAdaptor implements
 	public void caseANotUnaryExpIR(ANotUnaryExpIR node)
 			throws AnalysisException
 	{
-		rewriteToApply(this, node, "vdmNot", node.getExp());
+		rewriteToApply(this, node, VDM_NOT, node.getExp());
 	}
 
 	@Override
 	public void caseAOrBoolBinaryExpIR(AOrBoolBinaryExpIR node)
 			throws AnalysisException
 	{
-		rewriteToApply(this, node, "vdmOr", node.getLeft(), node.getRight());
+		rewriteToApply(this, node, VDM_OR, node.getLeft(), node.getRight());
 	}
-
+	
+	@Override
+	public void caseAXorBoolBinaryExpIR(AXorBoolBinaryExpIR node)
+			throws AnalysisException
+	{
+		rewriteToApply(this, node, VDM_XOR, node.getLeft(), node.getRight());
+	}
 }

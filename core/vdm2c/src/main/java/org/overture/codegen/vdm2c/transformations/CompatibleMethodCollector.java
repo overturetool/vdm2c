@@ -10,6 +10,8 @@ import org.overture.ast.definitions.SFunctionDefinition;
 import org.overture.ast.definitions.SFunctionDefinitionBase;
 import org.overture.ast.definitions.SOperationDefinition;
 import org.overture.ast.expressions.AApplyExp;
+import org.overture.ast.expressions.APostOpExp;
+import org.overture.ast.expressions.APreOpExp;
 import org.overture.ast.expressions.PExp;
 import org.overture.ast.node.INode;
 import org.overture.ast.statements.AApplyObjectDesignator;
@@ -20,9 +22,13 @@ import org.overture.ast.types.AOperationType;
 import org.overture.ast.types.PType;
 import org.overture.typechecker.TypeComparator;
 import org.overture.typechecker.assistant.TypeCheckerAssistantFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CompatibleMethodCollector
 {
+	protected final static Logger logger = LoggerFactory.getLogger(CompatibleMethodCollector.class);
+	
 	public List<PDefinition> collectCompatibleMethods(
 			SClassDefinition classDef, String unbMangledMethodName, INode call,
 			List<PType> methodArgTypes)
@@ -83,6 +89,22 @@ public class CompatibleMethodCollector
 		} else if (node instanceof AApplyObjectDesignator)
 		{
 			cargs = ((AApplyObjectDesignator) node).getArgs();
+		} else if (node instanceof APreOpExp)
+		{
+			PExp exp = ((APreOpExp) node).getExpression();
+			
+			if(exp instanceof AApplyExp)
+			{
+				cargs = ((AApplyExp) exp).getArgs();
+			}
+		} else if (node instanceof APostOpExp)
+		{
+			PExp exp = ((APostOpExp) node).getPostexpression();
+			
+			if(exp instanceof AApplyExp)
+			{
+				cargs = ((AApplyExp) exp).getArgs();
+			}
 		}
 
 		if (cargs != null)

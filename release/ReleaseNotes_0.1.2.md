@@ -1,0 +1,18 @@
+
+# [VDM2C 0.1.2 - Release Notes - 10 March 2017](https://github.com/overturetool/vdm2c/milestone/11)
+
+## What's New?
+
+This release contains an important fix to the CSV library that is needed in the FMU exporter.
+
+## Reporting Problems and Troubleshooting
+
+Please report bugs, problems, and other issues with VDM2C at <https://github.com/overturetool/vdm2c/issues>.
+
+## Other Resources and Links
+
+VDM2C is documented in the [Overture tool's user manual](http://overturetool.org/documentation/manuals.html).
+
+## Issues
+
+Please note that the interactive list is at <https://github.com/overturetool/vdm2c/milestone/11>

@@ -25,9 +25,10 @@ public class NewRewriteTrans extends DepthFirstAnalysisCAdaptor
 	@Override
 	public void caseANewExpIR(ANewExpIR node) throws AnalysisException
 	{
+		super.caseANewExpIR(node);
+		
 		node.getArgs().addFirst(assist.getInfo().getExpAssistant().consNullExp());
 
-		// FIXME this also need the call filtering on arguments
 		for (SClassDeclIR cDef : assist.getInfo().getClasses())
 		{
 			if (!cDef.getName().equals(node.getName().getName()))
@@ -47,6 +48,7 @@ public class NewRewriteTrans extends DepthFirstAnalysisCAdaptor
 				// FIXME: add check to make sure it is the right one
 
 				AApplyExpIR constructorCall = newApply(NameMangler.mangle(method), node.getArgs().toArray(new SExpIR[0]));
+				constructorCall.setType(node.getType().clone());
 				constructorCall.setTag(CTags.CONSTRUCTOR_CALL);
 				assist.replaceNodeWith(node, constructorCall);
 			}

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
 
@@ -17,17 +18,24 @@ import javax.xml.xpath.XPathFactory;
 import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.rules.TestName;
+import org.overture.ast.definitions.SClassDefinition;
 import org.overture.ast.lex.Dialect;
 import org.overture.codegen.vdm2c.CMakeUtil.CMakeGenerateException;
+import org.overture.config.Release;
+import org.overture.config.Settings;
+import org.overture.parser.messages.VDMError;
+import org.overture.typechecker.util.TypeCheckerUtil;
+import org.overture.typechecker.util.TypeCheckerUtil.TypeCheckResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-public class NativeTestBase extends BaseGeneratorTest
+public class NativeTestBase
 {
 	private static final String TEST_REPORT = "report.xml";
 
@@ -54,6 +62,13 @@ public class NativeTestBase extends BaseGeneratorTest
 
 	File root = null;
 
+	@BeforeClass
+	public static void initVdm()
+	{
+		Settings.dialect = Dialect.VDM_RT;
+		Settings.release = Release.VDM_10;
+	}
+	
 	protected File getTestCppFile(String pathRelativeToNative)
 	{
 		return new File(("src/test/resources/native/" + pathRelativeToNative).replace('/', File.separatorChar));
@@ -62,15 +77,20 @@ public class NativeTestBase extends BaseGeneratorTest
 	protected String[] getFilePaths(File root, FilenameFilter filter)
 	{
 		List<String> paths = new Vector<String>();
-		for (File f : root.listFiles(filter))
+		File[] fileList = root.listFiles(filter);
+		
+		if (fileList != null)
 		{
-			if (f.isDirectory())
+			for (File f : fileList)
 			{
-				paths.addAll(Arrays.asList(getFilePaths(f, filter)));
+				if (f.isDirectory())
+				{
+					paths.addAll(Arrays.asList(getFilePaths(f, filter)));
 
-			} else
-			{
-				paths.add(f.getPath());
+				} else
+				{
+					paths.add(f.getPath());
+				}
 			}
 		}
 
@@ -91,15 +111,58 @@ public class NativeTestBase extends BaseGeneratorTest
 
 	protected void generate(String... paths)
 	{
+		List<File> files = new LinkedList<>();
+		
 		for (String string : paths)
 		{
-			if (!new File(string).exists())
+			File file = new File(string);
+			
+			if (!file.exists())
 			{
 				Assert.fail("Input path does not exist: " + string);
 				return;
 			}
-			
+
+			if(CGenMain.isPpFile(file) || CGenMain.isRtFile(file))
+			{
+				files.add(file);
+			}
 		}
+		
+		Assert.assertFalse("Found no VDM sources", files.isEmpty());
+		
+		TypeCheckResult<List<SClassDefinition>> tcRes;
+		try {
+			tcRes = TypeCheckerUtil.typeCheckRt(files);
+		} catch (Exception e) {
+			
+			Assert.fail("Unexpected problem encountered when trying to type-check VDM-RT model: " + e.toString());
+			e.printStackTrace();
+			return;
+		}
+		Assert.assertTrue("Model has parse errors:\n" + errorsToStr(tcRes.parserResult.errors), tcRes.parserResult.errors.isEmpty());
+		
+		Assert.assertTrue("Model has type errors:\n" + errorsToStr(tcRes.errors), tcRes.errors.isEmpty());
+		
+		List<String> args = buildArgs(paths);
+		
+		CGenMain.main(args.toArray(new String[] {}));
+	}
+
+	public String errorsToStr(List<VDMError> errors) {
+		
+		StringBuilder sb = new StringBuilder();
+
+		for(VDMError e : errors)
+		{
+			sb.append(e + "\n");
+		}
+		
+		return sb.toString();
+	}
+
+	protected List<String> buildArgs(String... paths)
+	{
 		List<String> args = new Vector<String>(Arrays.asList(new String[] {
 				"--quiet", "-dest", root.getAbsolutePath() }));
 		args.addAll(Arrays.asList(paths));
@@ -109,8 +172,7 @@ public class NativeTestBase extends BaseGeneratorTest
 			args.add("-formatter");
 			args.add(System.getProperty(FORMATTER));
 		}
-		
-		CGenMain.main(args.toArray(new String[] {}));
+		return args;
 	}
 
 	protected void compileAndTest(File... tests) throws IOException,
@@ -179,6 +241,10 @@ public class NativeTestBase extends BaseGeneratorTest
 	}
 
 	protected void copyTestFiles(File... tests) throws IOException {
+		
+		File fixture = getFixtureFile();
+		FileUtils.copyFile(fixture, new File(root, fixture.getName()));
+		
 		for (File file : tests)
 		{
 			try
@@ -197,6 +263,11 @@ public class NativeTestBase extends BaseGeneratorTest
 				}
 			}
 		}
+	}
+
+	protected File getFixtureFile()
+	{
+		return new File("src/test/resources/TestFlowFunctions.h");
 	}
 
 	protected String getPath(String rpath)

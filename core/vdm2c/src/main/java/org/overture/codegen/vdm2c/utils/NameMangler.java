@@ -27,6 +27,7 @@ import org.overture.codegen.ir.types.ARealNumericBasicTypeIR;
 import org.overture.codegen.ir.types.ASeqSeqTypeIR;
 import org.overture.codegen.ir.types.ASetSetTypeIR;
 import org.overture.codegen.ir.types.ATemplateTypeIR;
+import org.overture.codegen.ir.types.ATokenBasicTypeIR;
 import org.overture.codegen.ir.types.AUnionTypeIR;
 import org.overture.codegen.ir.types.AUnknownTypeIR;
 import org.overture.codegen.ir.types.AVoidTypeIR;
@@ -50,6 +51,7 @@ public class NameMangler
 	static final String boolId = "B";
 	static final String voidId = "V";
 	static final String ratId = "J";
+	static final String tokenId = "T";
 
 	static final String unknownId = "U";
 
@@ -227,6 +229,12 @@ public class NameMangler
 		{
 			return ratId;
 		}
+		
+		@Override
+		public String caseATokenBasicTypeIR(ATokenBasicTypeIR node) throws AnalysisException {
+			
+			return tokenId;
+		}
 
 		@Override
 		public String caseAExternalTypeIR(AExternalTypeIR node)
@@ -285,7 +293,7 @@ public class NameMangler
 		@Override
 		public String defaultInINode(INode node) throws AnalysisException
 		{
-			logger.error("Mangling not handled: {}", node.getClass().getName());
+			logger.debug("Mangling not handled: {}", node.getClass().getName());
 			return super.defaultInINode(node);
 		}
 

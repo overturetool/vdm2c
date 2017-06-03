@@ -1,13 +1,13 @@
-// The template for class header
 #ifndef CLASSES_MyRec_H_
 #define CLASSES_MyRec_H_
 
 #define VDM_CG
 
 #include "Vdm.h"
+#include "VdmClass.h"
 
-//include types used in the class
-#include "MyRec.h"
+#ifndef NO_RECORDS
+
 
 
 /* -------------------------------
@@ -33,12 +33,10 @@
  --------------------------------- */ 
 
 
-//class id
+
 #define CLASS_ID_MyRec_ID 1
 
 #define MyRecCLASS struct MyRec*
-
-// The vtable ids
 
 struct MyRec
 {
@@ -88,3 +86,5 @@ MyRecCLASS MyRec_Constructor(MyRecCLASS);
 
 
 #endif /* CLASSES_MyRec_H_ */
+
+#endif /* NO_RECORDS */

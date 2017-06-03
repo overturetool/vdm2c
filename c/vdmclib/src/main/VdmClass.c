@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * <http:XXXwww.gnu.org/licenses/gpl-3.0.html>.
  * #~%
  */
 
@@ -33,6 +33,7 @@
 struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction freeClass, void* value)
 {
 	struct ClassType* ptr = (struct ClassType*) malloc(sizeof(struct ClassType));
+	assert(ptr != NULL);
 	ptr->classId = id;
 	ptr->value = value;
 	ptr->freeClass = freeClass;

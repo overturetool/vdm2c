@@ -7,6 +7,8 @@
 
 
 #include "gtest/gtest.h"
+#include "TestFlowFunctions.h"
+
 
 extern "C"
 {
@@ -21,12 +23,12 @@ EXPECT_EQ (true, res->value.boolVal);\
 vdmFree(res);\
 vdmFree(c)
 
-TEST(ClassOpOverrideMiddle, op)
+TEST_F(TestFlowFunctions, op)
 {
 	CHECK(CLASS_ClassOpOverrideMiddle3__Z2opEV);
 }
 
-TEST(ClassOpOverrideMiddle, op2)
+TEST_F(TestFlowFunctions, op2)
 {
 	CHECK(CLASS_ClassOpOverrideMiddle3__Z3op2EV);
 }

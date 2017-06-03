@@ -1,3 +1,0 @@
-#set( $exp = $CFormat.format($node.getExp()) )
-##
-vdmMapDom($exp)

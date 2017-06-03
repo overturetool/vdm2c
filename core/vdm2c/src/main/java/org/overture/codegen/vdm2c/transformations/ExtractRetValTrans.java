@@ -8,13 +8,14 @@ import org.overture.codegen.ir.patterns.AIdentifierPatternIR;
 import org.overture.codegen.ir.statements.ABlockStmIR;
 import org.overture.codegen.ir.statements.AReturnStmIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
+import org.overture.codegen.vdm2c.tags.CTags;
 
 //Extract return value to local variable and return that.
 public class ExtractRetValTrans extends DepthFirstAnalysisCAdaptor
 {
 	public TransAssistantIR assist;
 
-	final static String retPrefix = "ret_";
+	public final static String retPrefix = "ret_";
 
 	public ExtractRetValTrans(TransAssistantIR assist)
 	{
@@ -38,6 +39,7 @@ public class ExtractRetValTrans extends DepthFirstAnalysisCAdaptor
 		id.setName(name);
 
 		AVarDeclIR retVar = new AVarDeclIR();
+		retVar.setTag(CTags.RET_VAR_TAG);
 		retVar.setType(node.getExp().getType().clone());
 		retVar.setPattern(id);
 		retVar.setSourceNode(node.getExp().getSourceNode());

@@ -20,11 +20,13 @@
  * #~%
  */
 
+
 #include "gtest/gtest.h"
 
 extern "C"
 {
 #include "Vdm.h"
+#include "VdmSet.h"
 #include <stdio.h>
 #include <math.h>
 //Maximum values have more recognizable hex representations.
@@ -32,6 +34,7 @@ extern "C"
 }
 
 
+#ifndef NO_SETS //Sets not suppressed.
 
 //Utility functions
 //------------------------------------------------
@@ -70,20 +73,100 @@ TEST(Expression_Set, setGrow)
 
 	vdmSetGrow(set1, newInt(2));
 
-	res = vdmSetEquals(set1, set2);
+	res = vdmEquals(set1, set2);
 	EXPECT_TRUE(res->value.boolVal);
 
 	vdmSetGrow(set1, newInt(3));
 
-	UNWRAP_COLLECTION(col, set1);
 	vdmFree(res);
-	res = vdmSetEquals(set1, set2);
+	res = vdmEquals(set1, set2);
+	EXPECT_FALSE(res->value.boolVal);
+
+	vdmFree(set2);
+	vdmFree(res);
+	set2 = newSetVar(10, newInt(1), newInt(2), newInt(3), newInt(4), newInt(5), newInt(6), newInt(7), newInt(8), newInt(9), newInt(10));
+	vdmSetGrow(set1, newInt(3));
+	vdmSetGrow(set1, newInt(4));
+	vdmSetGrow(set1, newInt(5));
+	vdmSetGrow(set1, newInt(6));
+	vdmSetGrow(set1, newInt(7));
+	vdmSetGrow(set1, newInt(8));
+	vdmSetGrow(set1, newInt(9));
+	vdmSetGrow(set1, newInt(10));
+	res = vdmEquals(set1, set2);
+	EXPECT_TRUE(res->value.boolVal);
+
+	vdmFree(res);
+	vdmSetGrow(set1, newInt(11));
+	res = vdmEquals(set1, set2);
 	EXPECT_FALSE(res->value.boolVal);
 
 	//Clean up.
 	vdmFree(res);
 	vdmFree(set1);
 	vdmFree(set2);
+}
+
+TEST(Expression_Set, setGrowGC)
+{
+	TVP set1;
+	TVP set2;
+	TVP res;
+
+	vdm_gc_init();
+
+	//Create test set.
+	set1 = newSetVarToGrowGC(1, 2, NULL, newInt(1));
+	set2 = newSetVarGC(2, NULL, newInt(1), newInt(2));
+
+	vdmSetGrow(set1, newInt(2));
+
+	res = vdmEquals(set1, set2);
+	EXPECT_TRUE(res->value.boolVal);
+
+	vdmSetGrow(set1, newInt(3));
+
+	vdmFree(res);
+	res = vdmEquals(set1, set2);
+	EXPECT_FALSE(res->value.boolVal);
+
+	vdmFree(set2);
+	vdmFree(res);
+	set2 = newSetVarGC(10, NULL, newInt(1), newInt(2), newInt(3), newInt(4), newInt(5), newInt(6), newInt(7), newInt(8), newInt(9), newInt(10));
+	vdmSetGrow(set1, newInt(3));
+	vdmSetGrow(set1, newInt(4));
+	vdmSetGrow(set1, newInt(5));
+	vdmSetGrow(set1, newInt(6));
+	vdmSetGrow(set1, newInt(7));
+	vdmSetGrow(set1, newInt(8));
+	vdmSetGrow(set1, newInt(9));
+	vdmSetGrow(set1, newInt(10));
+	res = vdmEquals(set1, set2);
+	EXPECT_TRUE(res->value.boolVal);
+
+	vdmFree(res);
+	vdmSetGrow(set1, newInt(11));
+	res = vdmEquals(set1, set2);
+	EXPECT_FALSE(res->value.boolVal);
+
+	//Clean up.
+	vdmFree(res);
+//	vdmFree(set1);
+//	vdmFree(set2);
+	vdm_gc();
+
+	set1 = newSetVarToGrowGC(0, 2, NULL);
+	vdmSetGrow(set1, newInt(3));
+	vdmSetGrow(set1, newInt(4));
+	vdmSetGrow(set1, newInt(5));
+	vdmSetGrow(set1, newInt(6));
+	vdmSetGrow(set1, newInt(7));
+	vdmSetGrow(set1, newInt(8));
+	vdmSetGrow(set1, newInt(9));
+	vdmSetGrow(set1, newInt(10));
+
+	vdm_gc();
+	vdm_gc_shutdown();
 }
 
 
@@ -100,14 +183,14 @@ TEST(Expression_Set, setFit)
 
 	vdmSetGrow(set1, newInt(2));
 
-	res = vdmSetEquals(set1, set2);
+	res = vdmEquals(set1, set2);
 	EXPECT_TRUE(res->value.boolVal);
 
 	vdmSetGrow(set1, newInt(3));
 
 	UNWRAP_COLLECTION(col, set1);
 	vdmFree(res);
-	res = vdmSetEquals(set1, set2);
+	res = vdmEquals(set1, set2);
 	EXPECT_FALSE(res->value.boolVal);
 	vdmFree(res);
 
@@ -123,6 +206,30 @@ TEST(Expression_Set, setFit)
 	vdmFree(res);
 	vdmFree(set1);
 	vdmFree(set2);
+}
+
+
+TEST(Expression_Set, setCloneFree)
+{
+	TVP set1;
+	TVP set2;
+	TVP set3;
+
+	vdm_gc_init();
+
+	set1 = newSetVarToGrowGC(0, 5, &set1);
+	vdmSetGrow(set1, newInt(1));
+	vdmSetFit(set1);
+
+	set2 = vdmCloneGC(set1, &set2);
+	set3 = set2;
+	vdmFree(set1);
+
+	EXPECT_TRUE(set2 == set3);
+
+	vdm_gc_shutdown();
+
+	EXPECT_TRUE(set2 == set3);
 }
 
 
@@ -656,7 +763,7 @@ TEST(Expression_Set, setEquality)
 	set2 = newSetWithValues(numelems1, randelems1);
 
 	//Sets must be equal.
-	res = vdmSetEquals(set1, set2);
+	res = vdmEquals(set1, set2);
 	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(res);
 
@@ -665,7 +772,7 @@ TEST(Expression_Set, setEquality)
 	vdmFree(set2);
 	set1 = newSetVar(1, newInt(1));
 	set2 = newSetVar(1, newInt(2));
-	res = vdmSetEquals(set1, set2);
+	res = vdmEquals(set1, set2);
 	EXPECT_FALSE(res->value.boolVal);
 
 	//Wrap up.
@@ -704,7 +811,7 @@ TEST(Expression_Set, setEqualityDifferentOrder)
 	set2 = newSetWithValues(numelems1, randelems2);
 
 	//Sets must be equal.
-	res = vdmSetEquals(set1, set2);
+	res = vdmEquals(set1, set2);
 	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(res);
 
@@ -713,7 +820,7 @@ TEST(Expression_Set, setEqualityDifferentOrder)
 	vdmFree(set2);
 	set1 = newSetVar(1, newInt(1));
 	set2 = newSetVar(1, newInt(2));
-	res = vdmSetEquals(set1, set2);
+	res = vdmEquals(set1, set2);
 	EXPECT_FALSE(res->value.boolVal);
 
 	//Wrap up.
@@ -726,49 +833,6 @@ TEST(Expression_Set, setEqualityDifferentOrder)
 	vdmFree(set2);
 	vdmFree(res);
 }
-
-
-
-TEST(Expression_Set, setInequality)
-{
-	const int numelems1 = 101;
-	TVP randelems1[numelems1];
-	TVP set1;
-	TVP set2;
-	TVP res;
-
-	//Generate the random test value collections.
-	for(int i = 0; i < numelems1; i++)
-	{
-		randelems1[i] = newInt(i);
-	}
-
-	//Create test set.
-	set1 = newSetWithValues(numelems1, randelems1);
-	set2 = newSetWithValues(numelems1, randelems1);
-
-	//Sets must be equal.
-	res = vdmSetNotEquals(set1, set2);
-	EXPECT_FALSE(res->value.boolVal);
-	vdmFree(res);
-
-	//And a silly inequality test.
-	vdmFree(set1);
-	vdmFree(set2);
-	set1 = newSetVar(1, newInt(1));
-	set2 = newSetVar(1, newInt(2));
-	res = vdmSetNotEquals(set1, set2);
-	EXPECT_TRUE(res->value.boolVal);
-
-	for(int i = 0; i < numelems1; i++)
-	{
-		vdmFree(randelems1[i]);
-	}
-	vdmFree(set1);
-	vdmFree(set2);
-	vdmFree(res);
-}
-
 
 
 TEST(Expression_Set, setCard)
@@ -897,10 +961,10 @@ TEST(Expression_Set, setDinter)
 	set4 = vdmSetInter(set1, set2);
 	set5 = vdmSetInter(set1, set3);
 
-	res = vdmSetEquals(set1, set4);
+	res = vdmEquals(set1, set4);
 	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(res);
-	res = vdmSetEquals(set1, set5);
+	res = vdmEquals(set1, set5);
 	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(res);
 	vdmFree(set2);
@@ -912,7 +976,7 @@ TEST(Expression_Set, setDinter)
 	set2 = newSetVar(3, newInt(1), newInt(6), newInt(3));
 	set3 = vdmSetInter(set1, set2);
 
-	res = vdmSetEquals(set1, set3);
+	res = vdmEquals(set1, set3);
 	EXPECT_FALSE(res->value.boolVal);
 	vdmFree(res);
 
@@ -977,8 +1041,6 @@ TEST(Expression_Set, setPower)
 	vdmFree(set2);
 	vdmFree(res);
 }
-
-
 
 /*
 //A crude way of testing how long it takes to generate a power set.
@@ -1066,3 +1128,5 @@ TEST(Expression_SetRandom, setMemTest)
 	}
 }
  */
+
+#endif /*  NO_SETS */

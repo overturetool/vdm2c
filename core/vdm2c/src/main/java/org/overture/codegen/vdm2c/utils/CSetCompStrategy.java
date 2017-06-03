@@ -8,6 +8,7 @@ import org.overture.codegen.ir.SExpIR;
 import org.overture.codegen.ir.SPatternIR;
 import org.overture.codegen.ir.SStmIR;
 import org.overture.codegen.ir.STypeIR;
+import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
 import org.overture.codegen.trans.IterationVarPrefixes;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
@@ -16,6 +17,8 @@ import org.overture.codegen.trans.iterator.ILanguageIterator;
 
 public class CSetCompStrategy extends SetCompStrategy
 {
+
+	public static final String NEW_SET_VAR_TO_GROW = "newSetVarToGrow";
 
 	public CSetCompStrategy(TransAssistantIR transformationAssitant,
 			SExpIR first, SExpIR predicate, String var, STypeIR compType,
@@ -36,7 +39,14 @@ public class CSetCompStrategy extends SetCompStrategy
 		// useful estimate can
 		// be made of the size
 		
-		return CTransUtil.newApply("newSetVarToGrow", CTransUtil.consCInt("0"), CTransUtil.consCInt("5"));
+		return CTransUtil.newApply(NEW_SET_VAR_TO_GROW, CTransUtil.consCInt("0"), CTransUtil.consCInt("5"));
+	}
+	
+	@Override
+	public SExpIR getForLoopCond(AIdentifierVarExpIR setVar, List<SPatternIR> patterns, SPatternIR pattern)
+			throws AnalysisException {
+		
+		return CTransUtil.newApply("toBool", super.getForLoopCond(setVar, patterns, pattern));
 	}
 
 	@Override

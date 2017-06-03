@@ -1,9 +1,9 @@
 cmake_minimum_required (VERSION 2.6)
 project (Generated)
 
-include_directories(nativelib)
+include_directories(. nativelib)
 
-SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11 -lm")
+SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11 -lm -Wall")
 
 file(GLOB SRC *.c)
 file(GLOB NATIVE_SRC nativelib/*.c)

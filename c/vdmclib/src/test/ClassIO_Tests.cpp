@@ -26,11 +26,14 @@ extern "C"
 {
 #include "Vdm.h"
 #include "IOLib.h"
+#include "VdmSeq.h"
+#include "VdmSet.h"
 #include <stdio.h>
 #include <math.h>
 }
 
-
+#ifndef NO_IO
+#ifndef NO_SEQS
 TEST(ClassIO, print)
 {
 	vdm_IO_echo(newSeqVar(3, newChar('a'), newChar('b'), newChar('c')));
@@ -44,6 +47,8 @@ TEST(ClassIO, print)
 	vdm_IO_print(newChar('z'));
 	vdm_IO_print(newReal(12.34));
 	vdm_IO_print(newSetVar(2, newInt(1), newInt(2)));
+	vdm_IO_print(newProductVar(2, newInt(33), newInt(44)));
+	vdm_IO_print(newProductVar(3, newInt(33), newInt(44), newSetVar(2, newInt(55), newProductVar(2, newReal(3.2), newChar('A')))));
 
 	vdm_IO_println(newInt(1234));
 	vdm_IO_println(newInt(-1234));
@@ -55,3 +60,5 @@ TEST(ClassIO, print)
 	vdm_IO_println(newSetVar(2, newSetVar(2, newInt(3), newInt(4)), newSetVar(2, newChar('b'), newChar('z'))));
 	vdm_IO_println(newSeqVar(2, newSetVar(2, newInt(3), newInt(4)), newSeqVar(2, newChar('b'), newChar('z'))));
 }
+#endif /* NO_SEQS */
+#endif /* NO_IO */

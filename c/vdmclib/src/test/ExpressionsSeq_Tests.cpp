@@ -25,8 +25,14 @@
 extern "C"
 {
 #include "Vdm.h"
+#include "VdmSeq.h"
+#include "VdmGC.h"
 #include <stdio.h>
+
+extern TVP newSeq(size_t size);
 }
+
+#ifndef NO_SEQS
 
 #define DEFAULT_SEQ_COMP_BUFFER 1
 #define DEFAULT_SEQ_COMP_BUFFER_STEPSIZE 10
@@ -46,6 +52,22 @@ TVP newSequence(int size, int* arr)
 	return seq;
 }
 
+//This GC test is commented out for now until GC tests can be added for the entire runtime library.
+//In the meantime we rely on the integration tests from the generator proper.
+/*
+TEST(Expression_Seq, seqGC)
+{
+	vdm_gc_init();
+
+	TVP seq1 = newSeqVarGC(2, &seq1, newIntGC(1, NULL), newIntGC(2, NULL));
+	TVP seq2 = newSeqVar(2, newInt(1), newInt(2));
+	TVP res = vdmEquals(seq1, seq2);
+	EXPECT_TRUE(res->value.boolVal);
+
+	vdm_gc();
+	vdm_gc_shutdown();
+}
+ */
 
 TEST(Expression_Seq, seqGrow)
 {
@@ -59,17 +81,42 @@ TEST(Expression_Seq, seqGrow)
 
 	vdmSeqGrow(seq1, newInt(2));
 
-	res = vdmSeqEqual(seq1, seq2);
+	res = vdmEquals(seq1, seq2);
 	EXPECT_TRUE(res->value.boolVal);
 
 	vdmSeqGrow(seq1, newInt(3));
 
 	UNWRAP_COLLECTION(col, seq1);
 	vdmFree(res);
-	res = vdmSeqEqual(seq1, seq2);
+	res = vdmEquals(seq1, seq2);
 	EXPECT_FALSE(res->value.boolVal);
 
 	//Clean up.
+	vdmFree(res);
+	vdmFree(seq1);
+	vdmFree(seq2);
+}
+
+
+TEST(Expression_Seq, SeqGrowFromZero)
+{
+	TVP seq1 = newSeqVarToGrow(0, 5);
+	TVP seq2;
+	TVP res;
+
+	vdmSeqGrow(seq1, newInt(3));
+
+
+
+	res = vdmSeqLen(seq1);
+	EXPECT_EQ(res->value.intVal, 1);
+	vdmFree(res);
+
+	seq2 = newSeqVar(1, newInt(3));
+
+	res = vdmEquals(seq1, seq2);
+	EXPECT_TRUE(res->value.boolVal);
+
 	vdmFree(res);
 	vdmFree(seq1);
 	vdmFree(seq2);
@@ -88,23 +135,23 @@ TEST(Expression_Seq, seqFit)
 
 	vdmSeqGrow(seq1, newInt(2));
 
-	res = vdmSeqEqual(seq1, seq2);
+	res = vdmEquals(seq1, seq2);
 	EXPECT_TRUE(res->value.boolVal);
 
 	vdmSeqGrow(seq1, newInt(3));
 
 	UNWRAP_COLLECTION(col, seq1);
 	vdmFree(res);
-	res = vdmSeqEqual(seq1, seq2);
+	res = vdmEquals(seq1, seq2);
 	EXPECT_FALSE(res->value.boolVal);
 	vdmFree(res);
 
-//	vdmSeqFit(seq1);
+	//	vdmSeqFit(seq1);
 
 	//vdmSeqGrow works for any sequence, but if it wasn't preallocated with
 	//vdmSeqVarToGrow it is not as efficient.
 	vdmSeqGrow(seq2, newInt(3));
-	res = vdmSeqEqual(seq1, seq2);
+	res = vdmEquals(seq1, seq2);
 	EXPECT_TRUE(res->value.boolVal);
 
 	//Clean up.
@@ -125,7 +172,7 @@ TEST(Expression_Seq, seqHd)
 	EXPECT_EQ(1, res->value.intVal);
 
 	vdmFree(res);
-//
+	//
 	vdmFree(t);
 }
 
@@ -141,7 +188,7 @@ TEST(Expression_Seq, seqTl)
 
 	EXPECT_EQ(2, col->value[0]->value.intVal);
 	vdmFree(res);
-//
+	//
 	vdmFree(t);
 }
 
@@ -155,10 +202,11 @@ TEST(Expression_Seq, seqLen)
 
 	EXPECT_EQ(2, res->value.intVal);
 	vdmFree(res);
-//
+	//
 	vdmFree(t);
 }
 
+#ifndef NO_SETS
 TEST(Expression_Seq, seqElems)
 {
 	int arr[] =
@@ -178,7 +226,7 @@ TEST(Expression_Seq, seqElems)
 	vdmFree(b);
 	vdmFree(tmp);
 	vdmFree(elems);
-//
+	//
 	vdmFree(t);
 }
 
@@ -199,9 +247,10 @@ TEST(Expression_Seq, seqInds)
 	EXPECT_TRUE(1 == col->value[0]->value.intVal || 1 == col->value[1]->value.intVal);
 
 	vdmFree(res);
-//
+	//
 	vdmFree(t);
 }
+#endif /* NO_SETS */
 
 TEST(Expression_Seq, seqConc)
 {
@@ -221,7 +270,7 @@ TEST(Expression_Seq, seqConc)
 	EXPECT_EQ(2, col->value[1]->value.intVal);
 
 	vdmFree(res);
-//
+	//
 	vdmFree(t);
 	vdmFree(t2);
 }
@@ -238,7 +287,7 @@ TEST(Expression_Seq, seqReverse)
 
 	EXPECT_EQ(2, col->value[0]->value.intVal);
 	vdmFree(res);
-//
+	//
 	vdmFree(t);
 }
 
@@ -269,47 +318,9 @@ TEST(Expression_Seq, seqIndex)
 
 	EXPECT_EQ(2, res->value.intVal);
 	vdmFree(res);
-//
+
 	vdmFree(t);
 	vdmFree(index);
-}
-
-TEST(Expression_Seq, seqEqual)
-{
-	int arr[] =
-	{ 1 };
-	TVP t = newSequence(1,arr);
-
-	int arr2[] =
-	{ 1 };
-	TVP t2 = newSequence(1,arr2);
-
-	TVP res = vdmSeqEqual(t,t2);
-
-	EXPECT_TRUE(res->value.boolVal);
-	vdmFree(res);
-//
-	vdmFree(t);
-	vdmFree(t2);
-}
-
-TEST(Expression_Seq, seqInEqual)
-{
-	int arr[] =
-	{ 1 };
-	TVP t = newSequence(1,arr);
-
-	int arr2[] =
-	{ 2 };
-	TVP t2 = newSequence(1,arr2);
-
-	TVP res = vdmSeqInEqual(t,t2);
-
-	EXPECT_TRUE(res->value.boolVal);
-	vdmFree(res);
-	//
-	vdmFree(t);
-	vdmFree(t2);
 }
 
 TEST(Expression_Seq, seqUpdate)
@@ -327,3 +338,5 @@ TEST(Expression_Seq, seqUpdate)
 	vdmFree(seq);
 	vdmFree(res);
 }
+
+#endif /* NO_SEQS */

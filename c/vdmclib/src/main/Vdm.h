@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * <http:XXXwww.gnu.org/licenses/gpl-3.0.html>.
  * #~%
  */
 
@@ -39,22 +39,20 @@
 #define FATAL_ERROR(message) exit(EXIT_FAILURE)
 #endif
 
-#include <time.h>
 #include <string.h>
 #include <limits.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <assert.h>
 
+#include "VdmModelFeatures.h"
 #include "TypedValue.h"
-
-
-
 #include "VdmBasicTypes.h"
-#include "VdmClass.h"
 #include "VdmSet.h"
 #include "VdmSeq.h"
 #include "VdmMap.h"
+#include "VdmClass.h"
 #include "VdmProduct.h"
 #include "VdmRecord.h"
-#include "PatternBindMatch.h"
-#include "IOLib.h"
 
 #endif /* LIB_VDM_H_ */

@@ -25,8 +25,14 @@
 extern "C"
 {
 #include "Vdm.h"
+#include "VdmMap.h"
 #include <stdio.h>
+
+extern TVP newMap();
 }
+
+
+#ifndef NO_MAPS
 
 
 TVP createMap1()
@@ -142,6 +148,28 @@ TVP mapApply()
 	vdmFree(tmp2);
 
 	return res;
+}
+
+TEST(Expression_Map, mapClone)
+{
+	TVP map = createMap1();
+	TVP map_copy = createMap1();
+	TVP map_clone = vdmClone(map);
+	TVP TEST_TRUE = newBool(true);
+
+	TVP res = vdmMapEquals(map, map_clone);
+	EXPECT_EQ (true, equals(TEST_TRUE, res));
+
+	vdmFree(map);
+	vdmFree(res);
+
+	res = vdmMapEquals(map_copy, map_clone);
+	EXPECT_EQ (true, equals(TEST_TRUE, res));
+
+	vdmFree(map_clone);
+	vdmFree(map_copy);
+	vdmFree(TEST_TRUE);
+	vdmFree(res);
 }
 
 TEST(Expression_Map, mapApply)
@@ -297,7 +325,7 @@ TEST(Expression_Map, mapRngRestrictTo)
 	//map1: {1|->2,3|->4,6|->7}
 	TVP map = createMap1();
 
-	TVP map_res = vdmMapRngRestrictTo(set,map);
+	TVP map_res = vdmMapRngRestrictTo(map, set);
 
 	//Get domain
 	TVP map_dom = vdmMapDom(map_res);
@@ -318,7 +346,7 @@ TEST(Expression_Map, mapRngRestrictBy)
 	//map1: {1|->2,3|->4,6|->7}
 	TVP map = createMap1();
 
-	TVP map_res = vdmMapRngRestrictBy(set,map);
+	TVP map_res = vdmMapRngRestrictBy(map, set);
 
 	//Get domain
 	TVP map_dom = vdmMapDom(map_res);
@@ -396,22 +424,6 @@ TEST(Expression_Map, mapEquals2)
 }
 
 
-TEST(Expression_Map, mapInEquals)
-{
-	//map1: {1|->2,3|->4,6|->7}
-	TVP map1 = createMap1();
-	//map2: {1|->2,3|->4,6|->7}
-	TVP map2 = createMap1();
-	//map3: {6|->7,9|->11}
-	TVP map3 = createMap2();
-
-	bool map_not_eq1 = vdmMapInEquals(map1,map2);
-	EXPECT_FALSE(map_not_eq1);
-
-	bool map_not_eq2 = vdmMapInEquals(map1,map3);
-	EXPECT_TRUE(map_not_eq2);
-}
-
 
 TEST(Expression_Map, newMapVarToGrow)
 {
@@ -487,3 +499,5 @@ TEST(Expression_Map, vdmMapGrow)
 
 	vdmFree(theMap);
 }
+
+#endif /* NO_MAPS */

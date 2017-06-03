@@ -1,4 +1,0 @@
-#set( $element = $CFormat.format($node.getLeft()) )
-#set( $set = $CFormat.format($node.getRight()) )
-##
-vdmSetMemberOf(${set}, ${element})

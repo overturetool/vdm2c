@@ -37,6 +37,7 @@ import org.overture.codegen.ir.statements.AExpStmIR;
 import org.overture.codegen.ir.statements.AReturnStmIR;
 import org.overture.codegen.ir.types.AExternalTypeIR;
 import org.overture.codegen.ir.types.AMethodTypeIR;
+import org.overture.codegen.ir.types.AUnknownTypeIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.Vdm2cTag;
 import org.overture.codegen.vdm2c.Vdm2cTag.MethodTag;
@@ -162,6 +163,8 @@ public class CTransUtil
 	public static AMacroApplyExpIR newMacroApply(String name, SExpIR... args)
 	{
 		AMacroApplyExpIR apply = new AMacroApplyExpIR();
+    // TODO: Use more accurate type
+		apply.setType(new AUnknownTypeIR());
 		apply.setRoot(createIdentifier(name, null));
 		if (args != null)
 		{

@@ -21,6 +21,8 @@
  */
 
 #include "gtest/gtest.h"
+#include "TestFlowFunctions.h"
+
 
 #define FATAL_ERROR(message) fprintf (stderr, "%s\n",message);throw message
 
@@ -38,27 +40,27 @@ EXPECT_EQ (true, res->value.boolVal);\
 vdmFree(res);\
 vdmFree(a)
 
-TEST(Statements_Records, test1)
+TEST_F(TestFlowFunctions, test1)
 {
 	CHECK(CLASS_RecordTest__Z5test1EV);
 }
 
-TEST(Statements_Records, test2)
+TEST_F(TestFlowFunctions, test2)
 {
 	CHECK(CLASS_RecordTest__Z5test2EV);
 }
 
-TEST(Statements_Records, test3)
+TEST_F(TestFlowFunctions, test3)
 {
 	CHECK(CLASS_RecordTest__Z5test3EV);
 }
 
-TEST(Statements_Records, test4)
+TEST_F(TestFlowFunctions, test4)
 {
 	CHECK(CLASS_RecordTest__Z5test4EV);
 }
 
-TEST(Statements_Records, test5)
+TEST_F(TestFlowFunctions, test5)
 {
 	CHECK(CLASS_RecordTest__Z5test5EV);
 }

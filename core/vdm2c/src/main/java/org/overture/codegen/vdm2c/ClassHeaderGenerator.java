@@ -19,6 +19,7 @@ import org.overture.codegen.ir.declarations.ADefaultClassDeclIR;
 import org.overture.codegen.ir.declarations.AFieldDeclIR;
 import org.overture.codegen.ir.declarations.SClassDeclIR;
 import org.overture.codegen.ir.name.ATokenNameIR;
+import org.overture.codegen.ir.statements.AIdentifierStateDesignatorIR;
 import org.overture.codegen.ir.types.AClassTypeIR;
 import org.overture.codegen.ir.types.ARecordTypeIR;
 import org.overture.codegen.vdm2c.ast.CGenClonableString;
@@ -46,6 +47,13 @@ public class ClassHeaderGenerator
 			header.setSourceNode(classDef.getSourceNode());
 
 			header.setOriginalDef(classDef);
+
+			String name = irStatus.getIrNode().getName();
+			
+			if(!(classDef.getTag()==null)){
+				header.setTag(classDef.getTag().toString());
+				name = classDef.getTag().toString();
+				}
 
 			AClassStateDeclIR state = new AClassStateDeclIR();
 			for (AFieldDeclIR field : classDef.getFields())
@@ -90,11 +98,11 @@ public class ClassHeaderGenerator
 			{
 				AQuoteDeclIR qDef = new AQuoteDeclIR();
 				qDef.setName(quote);
-				qDef.setId(quote.hashCode());
+        qDef.setId(quote.hashCode());
 				header.getQuotes().add(qDef);
 			}
 
-			list.add(new IRStatus<PIR>(irStatus.getVdmNode(), header.getName(), header, new HashSet<VdmNodeInfo>()));
+			list.add(new IRStatus<PIR>(irStatus.getVdmNode(), name, header, new HashSet<VdmNodeInfo>()));
 			classHeaders.add(header);
 		}
 
@@ -159,7 +167,20 @@ public class ClassHeaderGenerator
 			{
 				addType(node.getName().getName(), node);
 			}
-
+			
+			@Override
+			public void caseAIdentifierStateDesignatorIR(AIdentifierStateDesignatorIR node) throws AnalysisException {
+			
+				super.caseAIdentifierStateDesignatorIR(node);
+				
+				String className = node.getClassName();
+				
+				AClassTypeIR classType = new AClassTypeIR();
+				classType.setSourceNode(node.getSourceNode());
+				classType.setName(className);
+				
+				addType(className, classType);
+			}
 		});
 
 		for (ATokenNameIR s : classDef.getSuperNames())

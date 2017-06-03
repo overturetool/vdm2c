@@ -27,6 +27,7 @@ import org.overture.codegen.ir.expressions.AApplyExpIR;
 import org.overture.codegen.ir.expressions.AExplicitVarExpIR;
 import org.overture.codegen.ir.expressions.AFieldExpIR;
 import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
+import org.overture.codegen.ir.expressions.AMethodInstantiationExpIR;
 import org.overture.codegen.ir.expressions.ANullExpIR;
 import org.overture.codegen.ir.statements.ABlockStmIR;
 import org.overture.codegen.ir.statements.ACallObjectExpStmIR;
@@ -36,6 +37,7 @@ import org.overture.codegen.ir.types.AClassTypeIR;
 import org.overture.codegen.ir.types.AMethodTypeIR;
 import org.overture.codegen.ir.types.ASeqSeqTypeIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
+import org.overture.codegen.vdm2c.ColTrans;
 import org.overture.codegen.vdm2c.extast.expressions.AMacroApplyExpIR;
 import org.overture.codegen.vdm2c.utils.CTransUtil;
 import org.overture.codegen.vdm2c.utils.NameMangler;
@@ -63,6 +65,8 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 	public void caseAPlainCallStmIR(APlainCallStmIR node)
 			throws AnalysisException
 	{
+		super.caseAPlainCallStmIR(node);
+		
 		// op(a,d,f); --no root, so current class is the root.
 
 		SClassDeclIR cDef = null;
@@ -147,8 +151,16 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 		
 		for(int i = 0; i < linkedList.size(); i++)
 		{
-			linkedList.get(i).apply(THIS);
-			apply.getArgs().add(linkedList.get(i));
+			SExpIR arg = linkedList.get(i);
+			
+			if(arg != null)
+			{
+				apply.getArgs().add(arg.clone());
+			}
+			else
+			{
+				logger.error("Did not expect method argument to be null");
+			}
 		}
 		
 		return apply;
@@ -163,11 +175,10 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 		String methodOwnerType = selectedMethod.getAncestor(SClassDeclIR.class).getName();
 		String methodId = String.format(CTransUtil.METHOD_CALL_ID_PATTERN, methodOwnerType, selectedMethod.getName());
 		// CALL_FUNC(thisTypeName,funcTname,classValue,id, args...
-		AMacroApplyExpIR apply = newMacroApply(CTransUtil.CALL_FUNC, createIdentifier(thisType, null), createIdentifier(methodOwnerType, null), classValue, createIdentifier(methodId, null));
+		AMacroApplyExpIR apply = newMacroApply(CTransUtil.CALL_FUNC, createIdentifier(thisType, null), createIdentifier(methodOwnerType, null), classValue.clone(), createIdentifier(methodId, null));
 		apply.setType(method.getMethodType().getResult().clone());
 		for (SExpIR arg : linkedList)
 		{
-			arg.apply(THIS);
 			apply.getArgs().add(arg.clone());
 		}
 		return apply;
@@ -209,6 +220,12 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 		
 		SExpIR rootNode = node.getRoot();
 
+		// TODO: Currently, VDM2C ignores the type arguments of function instantiations.
+		while (rootNode instanceof AMethodInstantiationExpIR)
+		{
+			rootNode = ((AMethodInstantiationExpIR) rootNode).getFunc();
+		}
+		
 		List<AMethodDeclIR> resolvedMethods;
 		
 		//Local map or sequence lookup.
@@ -273,8 +290,7 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 			
 			//replace node.
 			staticcall.setSourceNode(node.getSourceNode());
-			assist.replaceNodeWith(node, staticcall);		
-					
+			assist.replaceNodeWithRecursively(node, staticcall, this);		
 		}
 	}
 
@@ -352,10 +368,15 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 		} else if (applyType instanceof ASeqSeqTypeIR)
 		{
 			// sequence index
-			AApplyExpIR seqIndexApply = newApply("vdmSeqIndex", originalApply.getRoot());
-			seqIndexApply.getArgs().addAll(originalApply.getArgs());
+			AApplyExpIR seqIndexApply = newApply(ColTrans.SEQ_INDEX, originalApply.getRoot().clone());
+			
+			for(SExpIR a : originalApply.getArgs())
+			{
+				seqIndexApply.getArgs().add(a.clone());
+			}
+			
 			seqIndexApply.setSourceNode(originalApply.getSourceNode());
-			seqIndexApply.setType(originalApply.getType());
+			seqIndexApply.setType(originalApply.getType().clone());
 
 			assist.replaceNodeWith(originalApply, seqIndexApply);
 			seqIndexApply.apply(THIS);
@@ -373,9 +394,6 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 	public void caseACallObjectExpStmIR(ACallObjectExpStmIR node)
 			throws AnalysisException
 	{
-		//Method call on an object.
-		super.caseACallObjectExpStmIR(node);
-
 		INode objectVdmType = node.getObj().getType().getSourceNode().getVdmNode();
 
 		SClassDefinition objectClass;
@@ -401,6 +419,7 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 
 		assist.replaceNodeWith(node, apple);
 
+		apple.apply(this);
 	}
 
 	@Override

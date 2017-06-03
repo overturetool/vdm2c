@@ -1,0 +1,20 @@
+class CSVLib
+
+operations
+
+
+public lineCount : () ==> bool
+lineCount() ==
+(
+	dcl lc : int := CSV`flinecount("CSVTest.csv").#2;
+	return lc = 2;
+);
+
+public readLine : () ==> bool
+readLine() ==
+(
+	dcl theline : seq of real := CSV`freadval[seq of real]("CSVTest.csv", 2).#2;
+	return theline(1) = 4.4 and theline(2) = 5.5 and theline(3) = 6.6;
+);
+
+end CSVLib

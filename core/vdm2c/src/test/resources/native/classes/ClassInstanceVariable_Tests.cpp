@@ -7,6 +7,8 @@
 
 
 #include "gtest/gtest.h"
+#include "TestFlowFunctions.h"
+
 
 extern "C"
 {
@@ -22,28 +24,28 @@ vdmFree(res);\
 vdmFree(c)
 
 
-TEST(ClassInstanceVariable, getField1)
+TEST_F(TestFlowFunctions, getField1)
 {
 	CHECK(CLASS_ClassInstanceVariable__Z13getField1TestEV);
 }
 
 
-TEST(ClassInstanceVariable, getFieldSum)
+TEST_F(TestFlowFunctions, getFieldSum)
 {
 	CHECK(CLASS_ClassInstanceVariable__Z15getFieldSumTestEV);
 }
 
-TEST(ClassInstanceVariable, setField1)
+TEST_F(TestFlowFunctions, setField1)
 {
 	CHECK(CLASS_ClassInstanceVariable__Z13setField1TestEV);
 }
 
-TEST(ClassInstanceVariable, setField1UsingField2AsParam)
+TEST_F(TestFlowFunctions, setField1UsingField2AsParam)
 {
 	CHECK(CLASS_ClassInstanceVariable__Z31setField1UsingField2AsParamTestEV);
 }
 
-TEST(ClassInstanceVariable, assignField2ToField1)
+TEST_F(TestFlowFunctions, assignField2ToField1)
 {
 	CHECK(CLASS_ClassInstanceVariable__Z24assignField2ToField1TestEV);
 }

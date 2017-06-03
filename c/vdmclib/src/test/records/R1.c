@@ -29,6 +29,8 @@
 #include "R1.h"
 #include <assert.h>
 
+#ifndef NO_RECORDS
+
 #define UNWRAP_R1(var,record) struct R1* var = (struct R1*)record;
 
 void freeR1(void* ptr)
@@ -72,10 +74,8 @@ TVP vdmCloneR1(TVP self)
 	UNWRAP_R1(selfR,tmp);
 	UNWRAP_R1(vdmCloneR,tmp2);
 
-	//copy record struct
 	*vdmCloneR = *selfR;
 
-	//copy fields
 	vdmCloneR->a = vdmClone(vdmCloneR->a);
 	vdmCloneR->b = vdmClone(vdmCloneR->b);
 	vdmCloneR->c = vdmClone(vdmCloneR->c);
@@ -97,3 +97,4 @@ TVP mk_R1()
 			{	.ptr = ptr});
 }
 
+#endif /* NO_RECORDS */

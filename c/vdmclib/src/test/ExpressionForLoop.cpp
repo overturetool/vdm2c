@@ -12,6 +12,7 @@
 extern "C"
 {
 #include "Vdm.h"
+#include "VdmSet.h"
 #include <stdio.h>
 }
 
@@ -48,6 +49,7 @@ TVP forindex()
 	return ret;
 }
 
+#ifndef NO_SETS
 TVP forset()
 {
 	/*public forset : ()==>bool
@@ -105,6 +107,7 @@ TVP forset()
 	return ret;
 
 }
+#endif /* NO_SETS */
 
 TEST(ExpressionForLoop, forindex)
 {
@@ -115,6 +118,7 @@ TEST(ExpressionForLoop, forindex)
 	vdmFree (TEST_TRUE);
 }
 
+#ifndef NO_SETS
 TEST(ExpressionForLoop, forset)
 {
 	TVP TEST_TRUE = newBool(true);
@@ -123,3 +127,4 @@ TEST(ExpressionForLoop, forset)
 	vdmFree(result);
 	vdmFree (TEST_TRUE);
 }
+#endif /* NO_SETS */

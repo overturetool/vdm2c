@@ -1,4 +1,4 @@
-// The template for class header
+$CFormat.getGeneratedFileComment()
 #set( $cname = $node.getName())
 #set( $cstructname = $String.format("%sCLASS",$cname))
 #set( $cdefname = $String.format("CLASSES_%s_H_", $cname ) )
@@ -12,7 +12,7 @@
 \#include "$String.format("%s.h",$super.getName().toString())"
 #end
 
-//include types used in the class
+/*  include types used in the class */
 #foreach( $typeName in $node.getIncludes() )
 \#include "$String.format("%s.h",$typeName)"
 #end
@@ -51,12 +51,12 @@ extern TVP $val.getName();
  --------------------------------- */ 
  ]]#
 
-//class id
+/*  class id  */
 \#define $String.format("CLASS_ID_%s_ID %d",$cname, $CFormat.getClassId($cname))
 
 \#define $String.format("%s struct %s*",$cstructname,$cname)
 
-// The vtable ids
+/*  The vtable ids  */
 #foreach( $entry in $node.getVtable().getTable() )
 \#define $String.format("CLASS_%s_%s %d",$cname,$entry.getKey(), $node.getVtable().getTable().indexOf($entry))
 #end
@@ -76,13 +76,20 @@ struct $cname
  *
  --------------------------------- */ 
  ]]#
-
+  
 #foreach( $method in $node.getOriginalDef().getMethods() )
-#if($method.getIsConstructor()) 
+#if($method.getIsConstructor())
+  #if($CFormat.isDefaultCtor($method) && $CFormat.isRec($node))
+  #ifdef ASN1SCC_MAPPING
 	$CFormat.formatSource($method)
 	$CFormat.format($method.getMethodType().getResult()) $method.getName()($CFormat.format($method.getFormalParams()).replace("this","this_"));
+  #endif
+  #else
+	$CFormat.formatSource($method)
+	$CFormat.format($method.getMethodType().getResult()) $method.getName()($CFormat.format($method.getFormalParams()).replace("this","this_")); 
 #end
 #end
+#end  
 
 #[[
 /* -------------------------------
@@ -108,6 +115,6 @@ struct $cname
 void ${cname}_free_fields(${cstructname});
 $cstructname ${cname}_Constructor(${cstructname});
 
-
+##$CFormat.format($node.getArrDMinit())
 
 #endif /* $cdefname */

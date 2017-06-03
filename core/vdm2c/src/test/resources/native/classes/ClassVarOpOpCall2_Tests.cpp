@@ -7,6 +7,8 @@
 
 
 #include "gtest/gtest.h"
+#include "TestFlowFunctions.h"
+
 
 extern "C"
 {
@@ -22,7 +24,7 @@ vdmFree(res);\
 vdmFree(c)
 
 
-TEST(ClassVarOpOpCall2, check)
+TEST_F(TestFlowFunctions, check)
 {
 	CHECK(CLASS_ClassVarOpOpCall2__Z5checkEV);
 }

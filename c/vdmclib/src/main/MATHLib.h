@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * <http:XXXwww.gnu.org/licenses/gpl-3.0.html>.
  * #~%
  */
 
@@ -29,6 +29,10 @@
 
 #ifndef MATHLIB_H_
 #define MATHLIB_H_
+
+#include "Vdm.h"
+
+#ifndef NO_MATH
 
 TVP vdm_MATH_fac(TVP a);
 TVP vdm_MATH_log(TVP a);
@@ -48,4 +52,5 @@ TVP vdm_MATH_srand2(TVP a);
 TVP vdm_MATH_rand(TVP a);
 void vdm_MATH_srand(TVP a);
 
+#endif /* NO_MATH */
 #endif /* MATHLIB_H_ */

@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * <http:XXXwww.gnu.org/licenses/gpl-3.0.html>.
  * #~%
  */
 
@@ -30,13 +30,14 @@
 #ifndef LIB_VDMCLASS_H_
 #define LIB_VDMCLASS_H_
 
-#include "TypedValue.h"
 #include<stddef.h>
+
+#include "Vdm.h"
 
 typedef void (*freeVdmClassFunction)(void*);
 
 typedef TVP (*VirtualFunctionPointer)(void * self, ...);
-//typedef void (*VirtualFunctionPointer)(void * self, ...);
+/* typedef void (*VirtualFunctionPointer)(void * self, ...);  */
 
 /*
 VTable structure used by the compiler to keep
@@ -86,7 +87,7 @@ struct ClassType
 	void* value;
 	int classId;
 	unsigned int* refs;
-	freeVdmClassFunction freeClass;//TODO move to global map
+	freeVdmClassFunction freeClass;/* TODO move to global map  */
 };
 
 struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction freeClass, void* value);
@@ -99,7 +100,7 @@ struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction
  * --------------------------------------------------
  */
  
- // ############ PRIVATE INTERNAL MACROS #####################
+ /*  ############ PRIVATE INTERNAL MACROS #####################  */
  
  
 
@@ -112,11 +113,13 @@ struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction
 #define TVP_VARG_CAST_FE_3(WHAT, X, ...) TVP_VARG_CAST_FE_2(WHAT, __VA_ARGS__)WHAT(X)
 #define TVP_VARG_CAST_FE_4(WHAT, X, ...) TVP_VARG_CAST_FE_3(WHAT, __VA_ARGS__)WHAT(X)
 #define TVP_VARG_CAST_FE_5(WHAT, X, ...) TVP_VARG_CAST_FE_4(WHAT, __VA_ARGS__)WHAT(X)
-//... repeat as needed
+#define TVP_VARG_CAST_FE_6(WHAT, X, ...) TVP_VARG_CAST_FE_5(WHAT, __VA_ARGS__)WHAT(X)
+#define TVP_VARG_CAST_FE_7(WHAT, X, ...) TVP_VARG_CAST_FE_6(WHAT, __VA_ARGS__)WHAT(X)
+/* ... repeat as needed  */
 
-#define TVP_VARG_CAST_GET_MACRO(_1,_2,_3,_4,_5,NAME,...) NAME
+#define TVP_VARG_CAST_GET_MACRO(_1,_2,_3,_4,_5,_6,_7,NAME,...) NAME
 #define TVP_VARG_CAST_FOR_EACH(action,...) \
-  TVP_VARG_CAST_GET_MACRO(__VA_ARGS__,TVP_VARG_CAST_FE_5,TVP_VARG_CAST_FE_4,TVP_VARG_CAST_FE_3,TVP_VARG_CAST_FE_2,TVP_VARG_CAST_FE_1)(action,__VA_ARGS__)
+  TVP_VARG_CAST_GET_MACRO(__VA_ARGS__,TVP_VARG_CAST_FE_7,TVP_VARG_CAST_FE_6,TVP_VARG_CAST_FE_5,TVP_VARG_CAST_FE_4,TVP_VARG_CAST_FE_3,TVP_VARG_CAST_FE_2,TVP_VARG_CAST_FE_1)(action,__VA_ARGS__)
 
 /*
  * Make a FOREACH macro for call cast base argument type
@@ -128,7 +131,7 @@ struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction
  */
 #define CREATE_CALL_VARG_CAST( ...) (TVP (*)( TVP_VARG_CAST_FOR_EACH(TVP_VARG_CAST_ARG_TYPE , ##__VA_ARGS__)))
 
-// ############ PUBLIC CLASS VALUE ACCESS #####################
+/*  ############ PUBLIC CLASS VALUE ACCESS #####################  */
 /*
  * Class Value unwrap macro - TODO: How to assert inline
  */
@@ -162,6 +165,11 @@ struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction
 	vdmFree(*((fieldtype*)(((unsigned char*)ptr) + offsetof(struct tname, fieldname))));\
 	(*((fieldtype*)(((unsigned char*)ptr) + offsetof(struct tname, fieldname))) = vdmClone(newValue))
 
+#define SET_STRUCT_FIELD_GC(tname,ptr,fieldtype,fieldname,newValue)\
+	vdmFree(*((fieldtype*)(((unsigned char*)ptr) + offsetof(struct tname, fieldname))));\
+	(*((fieldtype*)(((unsigned char*)ptr) + offsetof(struct tname, fieldname))) = vdmCloneGC(newValue,\
+			(TVP *)((fieldtype*)(((unsigned char*)ptr) + offsetof(struct tname, fieldname)))))
+
 /*
  * Macro to obtain the (sub-)class specific VTable from a class struct
  */
@@ -173,11 +181,19 @@ struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction
 
 #define CALL_FUNC(thisTypeName,funcTname,classValue,id, ... )     (CREATE_CALL_VARG_CAST(struct thisTypeName*, ## __VA_ARGS__ )GET_VTABLE_FUNC( thisTypeName,funcTname,TO_CLASS_PTR(classValue,thisTypeName),id))(CLASS_CAST(TO_CLASS_PTR(classValue,thisTypeName),thisTypeName,funcTname), ##  __VA_ARGS__)
 
+
+
+/*
+ * Macro used for distribution support
+ */
+
+#define DIST_CALL(sTy, bTy, obj, supID ,nrArgs ,funID, args...) ((obj->type==VDM_CLASS) ? CALL_FUNC(sTy, bTy, obj, funID, ## args) : send_bus(obj->value.intVal, funID, supID, nrArgs, ## args))
+
 /*
  * Macro to obtain a field from a (sub-)class specific class struct. We clone to preserve value semantics and the rule of freeing
  */
-#define GET_FIELD(thisTypeName, fieldTypeName, classValue, fieldName) vdmClone(GET_STRUCT_FIELD(fieldTypeName,CLASS_CAST(TO_CLASS_PTR(classValue,thisTypeName),thisTypeName,fieldTypeName) ,struct TypedValue*,m_##fieldTypeName##_##fieldName))
-
+#define GET_FIELD(thisTypeName, fieldTypeName, classValue, fieldName) vdmClone(GET_STRUCT_FIELD(fieldTypeName,CLASS_CAST(TO_CLASS_PTR(classValue,thisTypeName),thisTypeName,fieldTypeName) ,TVP,m_##fieldTypeName##_##fieldName))
+#define GET_FIELD_GC(thisTypeName, fieldTypeName, classValue, fieldName) vdmCloneGC(GET_STRUCT_FIELD(fieldTypeName,CLASS_CAST(TO_CLASS_PTR(classValue,thisTypeName),thisTypeName,fieldTypeName) ,TVP,m_##fieldTypeName##_##fieldName), NULL)
 
 /*
  * Macro to set a field from a (sub-)class specific class struct. We clone to preserve value semantics and the rule of freeing
@@ -188,30 +204,42 @@ struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction
 																							 fieldName,\
 																							 newValue)
 
+#define SET_FIELD_GC(thisTypeName, fieldTypeName, classValue, fieldName, newValue) SET_FIELD_PTR_GC(thisTypeName,\
+																							fieldTypeName,\
+																							 TO_CLASS_PTR(classValue,thisTypeName),\
+																							 fieldName,\
+																							 newValue)
 
-// old stuff
 
-//Call function from VTable and change ptr to the correct offset. With obtional arguments
-//#define CCCALL(thisTypeName,funcTname,ptr,id,...) GET_VTABLE_FUNC( thisTypeName,funcTname,ptr,id)(CLASS_CAST(ptr,thisTypeName,funcTname), ## __VA_ARGS__)
+/*  old stuff  */
 
-// ############ PRIVATE CLASS POINTER ACCESS #####################
+/* Call function from VTable and change ptr to the correct offset. With obtional arguments  */
+
+/*  ############ PRIVATE CLASS POINTER ACCESS #####################  */
 
 /*
  * Macro to obtain a field from a (sub-)class specific class struct. We clone to preserve value semantics and the rule of freeing
  */
-#define GET_FIELD_PTR(thisTypeName, fieldTypeName, ptr, fieldName) vdmClone(GET_STRUCT_FIELD(fieldTypeName,CLASS_CAST(ptr,thisTypeName,fieldTypeName) ,struct TypedValue*,m_##fieldTypeName##_##fieldName))
+#define GET_FIELD_PTR(thisTypeName, fieldTypeName, ptr, fieldName) vdmClone(GET_STRUCT_FIELD(fieldTypeName,CLASS_CAST(ptr,thisTypeName,fieldTypeName) ,TVP,m_##fieldTypeName##_##fieldName))
+#define GET_FIELD_PTR_GC(thisTypeName, fieldTypeName, ptr, fieldName) vdmCloneGC(GET_STRUCT_FIELD(fieldTypeName,CLASS_CAST(ptr,thisTypeName,fieldTypeName) ,TVP,m_##fieldTypeName##_##fieldName), NULL)
 
 /*
  * Macro to obtain a field from a (sub-)class specific class struct. This macro is intended to be used for updating sequences and maps, which is why the field is not cloned.
  */
-#define GET_FIELD_PTR_BYREF(thisTypeName, fieldTypeName, ptr, fieldName) GET_STRUCT_FIELD(fieldTypeName,CLASS_CAST(ptr,thisTypeName,fieldTypeName) ,struct TypedValue*,m_##fieldTypeName##_##fieldName)
+#define GET_FIELD_PTR_BYREF(thisTypeName, fieldTypeName, ptr, fieldName) GET_STRUCT_FIELD(fieldTypeName,CLASS_CAST(ptr,thisTypeName,fieldTypeName) ,TVP,m_##fieldTypeName##_##fieldName)
 
 /*
  * Macro to set a field from a (sub-)class specific class struct.
  */
 #define SET_FIELD_PTR(thisTypeName, fieldTypeName, ptr, fieldName, newValue) SET_STRUCT_FIELD(fieldTypeName,\
 																							 CLASS_CAST(ptr,thisTypeName,fieldTypeName) ,\
-																							 struct TypedValue*,\
+																							 TVP,\
+																							 m_##fieldTypeName##_##fieldName,\
+																							 newValue)
+
+#define SET_FIELD_PTR_GC(thisTypeName, fieldTypeName, ptr, fieldName, newValue) SET_STRUCT_FIELD_GC(fieldTypeName,\
+																							 CLASS_CAST(ptr,thisTypeName,fieldTypeName) ,\
+																							 TVP,\
 																							 m_##fieldTypeName##_##fieldName,\
 																							 newValue)
 
@@ -221,11 +249,16 @@ struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction
 #define CALL_FUNC_PTR(thisTypeName,funcTname,ptr,id, ... )     (CREATE_CALL_VARG_CAST(struct thisTypeName*, ## __VA_ARGS__ )GET_VTABLE_FUNC( thisTypeName,funcTname,ptr,id))(CLASS_CAST(ptr,thisTypeName,funcTname), ##  __VA_ARGS__)
 
 
-// ############ UTILITIES #####################
+/*  ############ UTILITIES #####################  */
 /*
  * compare arguments. Techinically we wated: typeid(from)==typeid(to)
  * but this is not valid C. However it can be ifdeed for C++. But the name compare if ok
  */
-#define SAME_ARGS(x, y) #x==#y
+#define SAME_ARGS(x, y) !strcmp(#x, #y)
+
+#define SELF(objName) newTypeValue(VDM_CLASS, (TypedValueType){.ptr=newClassValue(this->_##objName##_id, &this->_##objName##_refs, (freeVdmClassFunction)&objName##_free, this)});
+
+
+#define SELF_GC(objName, varName) newTypeValueGC(VDM_CLASS, (TypedValueType){.ptr=newClassValue(this->_##objName##_id, &this->_##objName##_refs, (freeVdmClassFunction)&objName##_free, this)}, varName);
 
 #endif /* LIB_VDMCLASS_H_ */

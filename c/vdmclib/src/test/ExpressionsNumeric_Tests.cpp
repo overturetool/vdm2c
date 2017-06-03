@@ -25,6 +25,7 @@
 extern "C"
 {
 #include "Vdm.h"
+#include "VdmGC.h"
 #include <stdio.h>
 }
 
@@ -41,6 +42,26 @@ TEST(Expression_Numeric, minusExp)
 	vdmFree(res);
 }
 
+TEST(Expression_Numeric, minusExpGC)
+{
+	vdm_gc_init();
+
+	TVP t = newIntGC(5, &t);
+
+	assert(t->type == VDM_INT && "Value is not a integer");
+	TVP res = vdmMinusGC(t, &res);
+
+
+	EXPECT_EQ(-5,res->value.intVal);
+
+	vdm_gc();
+
+//	vdmFree(t);
+//	vdmFree(res);
+
+	vdm_gc_shutdown();
+}
+
 TEST(Expression_Numeric, absExp)
 {
 	TVP t = newInt(-5);
@@ -48,6 +69,28 @@ TEST(Expression_Numeric, absExp)
 	assert(t->type == VDM_INT && "Value is not a integer");
 	TVP res = vdmMinus(t);
 	EXPECT_EQ(5,res->value.intVal);
+
+	vdmFree(t);
+	vdmFree(res);
+}
+
+TEST(Expression_Numeric, absExpGC)
+{
+	vdm_gc_init();
+
+	TVP t = newIntGC(-5, &t);
+
+	assert(t->type == VDM_INT && "Value is not a integer");
+
+	vdm_gc();
+
+	TVP res = vdmMinusGC(t, &res);
+
+	vdm_gc();
+
+	EXPECT_EQ(5,res->value.intVal);
+
+	vdm_gc();
 
 	vdmFree(t);
 	vdmFree(res);
@@ -226,21 +269,6 @@ TEST(Expression_Numeric, equalExp)
 	assert(t1->type == VDM_REAL && "Value is not a real");
 	assert(t2->type == VDM_REAL && "Value is not a real");
 	TVP res = vdmNumericEqual(t1,t2);
-	EXPECT_EQ(true,res->value.boolVal);
-
-	vdmFree(t1);
-	vdmFree(t2);
-	vdmFree(res);
-}
-
-TEST(Expression_Numeric, notEqualExp)
-{
-	TVP t1 = newReal(8);
-	TVP t2 = newReal(9);
-
-	assert(t1->type == VDM_REAL && "Value is not a real");
-	assert(t2->type == VDM_REAL && "Value is not a real");
-	TVP res = vdmNotEqual(t1,t2);
 	EXPECT_EQ(true,res->value.boolVal);
 
 	vdmFree(t1);

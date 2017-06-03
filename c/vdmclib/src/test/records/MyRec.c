@@ -1,7 +1,8 @@
-// The template for class
 #include "MyRec.h"
 #include <stdio.h>
 #include <string.h>
+
+#ifndef NO_RECORDS
 
 
 /* -------------------------------
@@ -69,10 +70,10 @@ void MyRec_static_shutdown()	{
  *
  --------------------------------- */
 
-// VTable for this class
+
 static  struct VTable VTableArrayForMyRec  [0]  ;
 
-// Overload VTables
+
 
 
 /* -------------------------------
@@ -94,7 +95,6 @@ MyRecCLASS MyRec_Constructor(MyRecCLASS this_ptr)
 	{
 
 
-		// MyRec init
 		this_ptr->_MyRec_id = CLASS_ID_MyRec_ID;
 		this_ptr->_MyRec_refs = 0;
 		this_ptr->_MyRec_pVTable=VTableArrayForMyRec;
@@ -107,7 +107,6 @@ MyRecCLASS MyRec_Constructor(MyRecCLASS this_ptr)
 	return this_ptr;
 }
 
-// Method for creating new "class"
 static TVP new()
 		{
 	MyRecCLASS ptr=MyRec_Constructor(NULL);
@@ -166,5 +165,5 @@ TVP _Z5MyRecEIC(MyRecCLASS this, TVP param_field1, TVP param_field2)	{
  *
  --------------------------------- */
 
-// initialize globals - this is done last since they are declared in the header but uses init functions which are printet in any order
 
+#endif /* NO_RECORDS */

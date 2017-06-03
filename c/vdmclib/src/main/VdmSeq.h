@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * <http:XXXwww.gnu.org/licenses/gpl-3.0.html>.
  * #~%
  */
 
@@ -33,36 +33,49 @@
 
 #include "VdmSet.h"
 
+#ifndef NO_SEQS
+
 #define SET_SEQ(seq,index,val) {struct Collection* col =(struct Collection*) seq->value.ptr;col->value[index-1] =vdmClone(val);}
 
 /*
  * New empty sequence
  */
-struct TypedValue* newSeq(size_t size);
 /*
  * New sequence from array of elements
  */
-struct TypedValue* newSeqWithValues(size_t size,TVP* elements);
+TVP newSeqWithValues(size_t size,TVP* elements);
 /*
  * Create new seq from variadic list of elements
  */
-struct TypedValue* newSeqVar(size_t size,...);
-struct TypedValue* newSeqVarToGrow(size_t size, size_t expected_size, ...);
+TVP newSeqVar(size_t size,...);
+TVP newSeqVarGC(size_t size, TVP *from, ...);
+TVP newSeqVarToGrow(size_t size, size_t expected_size, ...);
 
 void vdmSeqGrow(TVP seq, TVP element);
 void vdmSeqFit(TVP seq);
 TVP vdmSeqHd(TVP seq);
+TVP vdmSeqHdGC(TVP seq, TVP *from);
 TVP vdmSeqTl(TVP seq);
+TVP vdmSeqTlGC(TVP seq, TVP *from);
 TVP vdmSeqLen(TVP seq);
+TVP vdmSeqLenGC(TVP seq, TVP *from);
+TVP vdmSeqConcGC(TVP seq, TVP seq2, TVP *from);
+TVP vdmSeqReverseGC(TVP seq, TVP *from);
+TVP vdmSeqIndexGC(TVP seq, TVP indexVal, TVP *from);
+
+#ifndef NO_SETS
 TVP vdmSeqElems(TVP seq);
+TVP vdmSeqElemsGC(TVP seq, TVP *from);
 TVP vdmSeqInds(TVP seq);
+TVP vdmSeqIndsGC(TVP seq, TVP *from);
+#endif
+
 TVP vdmSeqConc(TVP seq,TVP seq2);
 TVP vdmSeqReverse(TVP seq);
-//TVP seqMod(TVP seq,TVP seq);
+/* TVP seqMod(TVP seq,TVP seq);  */
 TVP vdmSeqIndex(TVP seq,TVP index);
-TVP vdmSeqEqual(TVP seq,TVP seq2);
-TVP vdmSeqInEqual(TVP seq,TVP seq2);
 
 void vdmSeqUpdate(TVP seq, TVP index, TVP newValue);
 
+#endif /* NO_SEQS */
 #endif /* LIB_VDMSEQ_H_ */

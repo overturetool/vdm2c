@@ -125,6 +125,7 @@ c/vdmclib/vdmclib
 c/vdmclib/src/main/vdmclib
 c/vdmclib/src/test/memperf/memperf
 c/vdmclib/src/test/memperf/vdmclib.a
-
+c/vdmclib/CSVTestInput.csv
+  
 # release
 repository

@@ -1,1 +1,0 @@
-vdmAbs($CFormat.format($node.getExp()))

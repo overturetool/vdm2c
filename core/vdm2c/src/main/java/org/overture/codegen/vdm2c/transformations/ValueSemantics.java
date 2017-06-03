@@ -9,9 +9,12 @@ import org.overture.codegen.vdm2c.utils.CTransUtil;
 
 public class ValueSemantics {
 
+	public static final String VDM_FREE = "vdmFree";
+	public static final String VDM_CLONE = "vdmClone";
+
 	public static SExpIR clone(SExpIR exp) {
 		if (exp instanceof SVarExpIR) {
-			AApplyExpIR vdmCloneApply = CTransUtil.newApply("vdmClone", exp);
+			AApplyExpIR vdmCloneApply = CTransUtil.newApply(VDM_CLONE, exp);
 			vdmCloneApply.setType(exp.getType().clone());
 			return vdmCloneApply;
 		} else {
@@ -23,6 +26,6 @@ public class ValueSemantics {
 	public static SExpIR free(String name, SourceNode source)
 	{
 		AIdentifierVarExpIR newIdentifier = CTransUtil.newIdentifier(name, source);
-		return CTransUtil.newApply("vdmFree", newIdentifier);
+		return CTransUtil.newApply(VDM_FREE, newIdentifier);
 	}
 }

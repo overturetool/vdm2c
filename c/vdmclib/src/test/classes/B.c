@@ -51,7 +51,7 @@ static TVP B_sum(BCLASS this)
 }
 
 
-static TVP B_A_sum(ACLASS base) //override for A
+static TVP B_A_sum(ACLASS base) /* override for A */
 {
 	BCLASS this = CLASS_DOWNCAST(A,B,base);
 
@@ -75,7 +75,7 @@ static TVP B_getField2(BCLASS this)
 
 struct VTable VTableArrayForB[] =
 {
-//{ 0, 0, (VirtualFunctionPointer) A_calc },
+/* { 0, 0, (VirtualFunctionPointer) A_calc }, */
 { 0, 0, (VirtualFunctionPointer) B_sum },
 { 0, 0, (VirtualFunctionPointer) B_sum2 },
 { 0, 0, (VirtualFunctionPointer) B_getField2 }, };
@@ -91,18 +91,18 @@ BCLASS B_Constructor(BCLASS this_ptr)
 	if(this_ptr!=NULL)
 	{
 
-		//init base A
+		/* init base A */
 		A_Constructor((ACLASS)CLASS_CAST(this_ptr,B,A));
 
-		//init base C
+		/* init base C */
 		C_Constructor((CCLASS)CLASS_CAST(this_ptr,B,C));
 
-		//replace vTable
+		/* replace vTable */
 
 		struct VTable* tmp = this_ptr->_A_pVTable;
 		this_ptr->_A_pVTable = malloc(sizeof(struct VTable)*2);
 		memcpy(this_ptr->_A_pVTable, tmp, sizeof(struct VTable)*2);
-		this_ptr->_A_pVTable[CLASS_A_sum].pFunc = (VirtualFunctionPointer)B_A_sum;//override
+		this_ptr->_A_pVTable[CLASS_A_sum].pFunc = (VirtualFunctionPointer)B_A_sum;/* override */
 
 		this_ptr->_B_pVTable = VTableArrayForB;
 
@@ -128,12 +128,12 @@ TVP B_ctor(BCLASS this)
 	TVP buf = NULL;
 	if(this ==NULL)
 	{
-		//root call i.e. not called from other constructor
+		/* root call i.e. not called from other constructor */
 		buf = new();
 		this = TO_CLASS_PTR(buf,B);
 	}
 
-	//ctor code
+	/* ctor code */
 
 	A_ctor( (ACLASS) CLASS_CAST(this,B,A) );
 	C_ctor( (CCLASS) CLASS_CAST(this,B,C));

@@ -1,0 +1,14 @@
+class CSVLibTest is subclass of TestCase, CSVLib
+
+operations
+
+public testLineCount : () ==> ()
+testLineCount() ==
+	assertTrue(lineCount());
+	
+public testReadLine : () ==> ()
+testReadLine() ==
+	assertTrue(readLine());
+	
+
+end CSVLibTest

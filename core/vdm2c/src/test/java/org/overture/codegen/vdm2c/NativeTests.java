@@ -106,6 +106,22 @@ public class NativeTests extends NativeTestBase
 	}
 
 	@Test
+	public void ExpressionQuantifiers() throws IOException, InterruptedException,
+			CMakeGenerateException
+	{
+		generate(getPath("expressions/ExpressionQuantifiers.vdmrt"));
+		compileAndTest(getTestCppFile("quantifiers/ExpressionQuantifiers_Tests.cpp"));
+	}
+
+	@Test
+	public void ExpressionToken() throws IOException, InterruptedException,
+			CMakeGenerateException
+	{
+		generate(getPath("expressions/ExpressionToken.vdmrt"));
+		compileAndTest(getTestCppFile("token/ExpressionToken_Tests.cpp"));
+	}
+	
+	@Test
 	public void SubclassResponsibility() throws IOException, InterruptedException,
 			CMakeGenerateException
 	{
@@ -119,6 +135,16 @@ public class NativeTests extends NativeTestBase
 	{
 		generate(getPath("other/IOLib.vdmrt"), getPath("lib/IO.vdmrt"));
 		compileAndTest(getTestCppFile("classes/ClassIO_Tests.cpp"));
+	}
+	
+	@Test
+	public void OtherCSVLib() throws IOException, InterruptedException,
+			CMakeGenerateException
+	{
+		generate(getPath("other/CSVLib.vdmrt"), getPath("lib/CSV.vdmrt"), getPath("lib/IO.vdmrt"));
+		
+		//Overloading getTestCppFile to copy the test CSV file as well.
+		compileAndTest(getTestCppFile("classes/ClassCSV_Tests.cpp"), getTestCppFile("classes/CSVTest.csv"));
 	}
 	
 	@Test

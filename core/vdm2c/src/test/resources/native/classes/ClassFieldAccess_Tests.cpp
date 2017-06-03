@@ -7,6 +7,8 @@
 
 
 #include "gtest/gtest.h"
+#include "TestFlowFunctions.h"
+
 
 extern "C"
 {
@@ -22,9 +24,15 @@ vdmFree(res);\
 vdmFree(c)
 
 
-TEST(ClassInstanceVariableSeqAssign, call)
+TEST_F(TestFlowFunctions, call)
 {
 	CHECK(CLASS_ClassFieldAccessAccessor__Z8setFieldEV);
+}
+
+TEST_F(TestFlowFunctions, sameFieldName)
+{
+  ClassFieldAccessAccessor_static_init();
+	CHECK(CLASS_ClassFieldAccessAccessor__Z13sameFieldNameEV);
 }
 
 

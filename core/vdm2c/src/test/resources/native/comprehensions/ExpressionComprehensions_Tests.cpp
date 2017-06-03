@@ -1,5 +1,7 @@
 
 #include "gtest/gtest.h"
+#include "TestFlowFunctions.h"
+
 
 extern "C" {
 #include "Vdm.h"
@@ -14,13 +16,17 @@ EXPECT_EQ (true,res->value.boolVal);\
 vdmFree(res);\
 vdmFree(c)
 
-TEST(ExpressionComprehensions, retSetComp)
+TEST_F(TestFlowFunctions, retSetComp)
 {
 	CHECK(CLASS_ExpressionComprehensions__Z10retSetCompEV);
 }
 
-TEST(ExpressionComprehensions, letVarSeqComp)
+TEST_F(TestFlowFunctions, retMapComp)
+{
+	CHECK(CLASS_ExpressionComprehensions__Z10retMapCompEV);
+}
+
+TEST_F(TestFlowFunctions, letVarSeqComp)
 {
 	CHECK(CLASS_ExpressionComprehensions__Z13letVarSeqCompEV);
 }
-

@@ -1,3 +1,0 @@
-#set( $exp = $CFormat.format($node.getExp()) )
-##
-vdmSetDinter($exp)

@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * <http:XXXwww.gnu.org/licenses/gpl-3.0.html>.
  * #~%
  */
 
@@ -31,6 +31,7 @@
 #define LIB_VDMBASICTYPES_H_
 
 #include "Vdm.h"
+#include "VdmGC.h"
 
 #define ASSERT_CHECK_CHAR(s) assert((s->type ==  VDM_CHAR) && "Value is not a character")
 
@@ -39,32 +40,53 @@
  */
 
 TVP vdmNot(TVP arg);
+TVP vdmNotGC(TVP arg, TVP *from);
 TVP vdmAnd(TVP a,TVP b);
+TVP vdmAndGC(TVP a, TVP b, TVP *from);
 TVP vdmOr(TVP a,TVP b);
+TVP vdmOrGC(TVP a, TVP b, TVP *from);
 TVP vdmXor(TVP a,TVP b);
+TVP vdmXorGC(TVP a, TVP b, TVP *from);
 TVP vdmImplies(TVP a,TVP b);
+TVP vdmImpliesGC(TVP a, TVP b, TVP *from);
 TVP vdmBiimplication(TVP a,TVP b);
+TVP vdmBiimplicationGC(TVP a, TVP b, TVP *from);
 
 /*
  * Numeric
  */
 TVP vdmMinus(TVP arg);
+TVP vdmMinusGC(TVP arg, TVP *from);
 TVP vdmAbs(TVP arg);
+TVP vdmAbsGC(TVP arg, TVP *from);
 TVP vdmFloor(TVP arg);
+TVP vdmFloorGC(TVP arg, TVP *from);
 TVP vdmSum(TVP a,TVP b);
+TVP vdmSumGC(TVP a,TVP b, TVP *from);
 TVP vdmDifference(TVP a,TVP b);
+TVP vdmDifferenceGC(TVP a,TVP b, TVP *from);
 TVP vdmProduct(TVP a,TVP b);
+TVP vdmProductGC(TVP a,TVP b, TVP *from);
 TVP vdmDivision(TVP a,TVP b);
+TVP vdmDivisionGC(TVP a,TVP b, TVP *from);
 TVP vdmDiv(TVP a,TVP b);
+TVP vdmDivGC(TVP a, TVP b, TVP *from);
 TVP vdmRem(TVP a,TVP b);
+TVP vdmRemGC(TVP a, TVP b, TVP *from);
 TVP vdmMod(TVP a,TVP b);
+TVP vdmModGC(TVP a, TVP b, TVP *from);
 TVP vdmPower(TVP a,TVP b);
+TVP vdmPowerGC(TVP a, TVP b, TVP *from);
 TVP vdmNumericEqual(TVP a,TVP b);
-TVP vdmNotEqual(TVP a,TVP b);
+TVP vdmNumericEqualGC(TVP a, TVP b, TVP *from);
 TVP vdmGreaterThan(TVP a,TVP b);
+TVP vdmGreaterThanGC(TVP a, TVP b, TVP *from);
 TVP vdmGreaterOrEqual(TVP a,TVP b);
+TVP vdmGreaterOrEqualGC(TVP a, TVP b, TVP *from);
 TVP vdmLessThan(TVP a,TVP b);
+TVP vdmLessThanGC(TVP a, TVP b, TVP *from);
 TVP vdmLessOrEqual(TVP a,TVP b);
+TVP vdmLessOrEqualGC(TVP a, TVP b, TVP *from);
 
 /*
  * internal use

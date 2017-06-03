@@ -27,7 +27,11 @@
 extern "C"
 {
 #include "Vdm.h"
+#include "VdmProduct.h"
+#include "PatternBindMatch.h"
 #include <stdio.h>
+
+extern TVP newProduct(size_t size);
 }
 
 TVP letIdentifierExp()
@@ -63,6 +67,7 @@ TVP letIdentifierDontExp()
 
 }
 
+
 TVP letPatternMatch1()
 {
 	//let 1 = 1 in true
@@ -81,6 +86,8 @@ TVP letPatternMatch1()
 		return ret;
 	}
 }
+
+#if !defined(NO_PATTERNS) && !defined(NO_PRODUCTS)
 
 TVP letPatternMatch3()
 {
@@ -155,6 +162,8 @@ TVP letFilter1Exp()
 	}
 }
 
+#endif /* NO_PATTERNS and NO_PRODUCTS*/
+
 TVP ifExp()
 {
 	/*if true or true
@@ -219,6 +228,8 @@ TEST(Expression, letIdentifierDontExp)
 	vdmFree (TEST_TRUE);
 }
 
+#if !defined(NO_PATTERNS) && !defined(NO_PRODUCTS)
+
 TEST(Expression, letPatternMatch1)
 {
 	TVP TEST_TRUE = newBool(true);
@@ -245,6 +256,7 @@ TEST(Expression, letPatternMatch3)
 	vdmFree (TEST_TRUE);
 }
 
+
 TEST(Expression, letFilter1Exp)
 {
 	TVP TEST_TRUE = newBool(true);
@@ -266,6 +278,8 @@ TEST(Expression, letFilter1Exp)
 	FAIL();
 	vdmFree (TEST_TRUE);
 }
+
+#endif /*  NO_PATTERNS & NO_PRODUCTS */
 
 
 TEST(Expression, ifExp)

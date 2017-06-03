@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * <http:XXXwww.gnu.org/licenses/gpl-3.0.html>.
  * #~%
  */
 
@@ -30,22 +30,20 @@
 #ifndef PRETTYPRINT_H_
 #define PRETTYPRINT_H_
 
+#if !defined(NO_IO) || !defined(NO_CSV) || defined(CUSTOM_IO)
+
 #include <stdlib.h>
 #include <stdbool.h>
 
-#include "TypedValue.h"
+#include "Vdm.h"
 
-//Eclipse hack
+/* Eclipse hack  */
 #if !defined(va_arg)
-#define va_arg(ap,TVP) NULL //just for Eclipse must not be defined
+#define va_arg(ap,TVP) NULL /* just for Eclipse must not be defined  */
 #endif
 
 
-//Pretty printing functions.
-char* printBool(TVP val);
-char* printInt(TVP val);
-char* printChar(TVP val);
-char* printDouble(TVP val);
-char* printVdmBasicValue(TVP val);
+char* toString(TVP val);
 
+#endif /* NO_IO */
 #endif /* PRETTYPRINT_H_ */
