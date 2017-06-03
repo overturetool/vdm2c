@@ -201,7 +201,7 @@ public class SystemArchitectureAnalysis
 		for (String cpu : distributionMap.keySet())
 		{ // pr. cpu
 			LinkedList<Boolean> li = new LinkedList<Boolean>();
-			li.add(true); // first value is always true
+			//li.add(true); // first value is always true
 			for (AFieldDeclIR obj : systemDeployedObjects)
 			{ // pr. deployed object
 				Set<SExpIR> deployedObjs = distributionMap.get(cpu);
