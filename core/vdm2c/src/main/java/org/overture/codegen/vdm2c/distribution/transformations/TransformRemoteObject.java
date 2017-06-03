@@ -45,7 +45,7 @@ public class TransformRemoteObject extends DepthFirstAnalysisCAdaptor
 		if (node.getName().equals(SystemArchitectureAnalysis.systemName
 				+ "_static_init"))
 		{
-			
+
 			LinkedList<String> initFunName = new LinkedList<>();
 
 			// Get body
@@ -72,13 +72,13 @@ public class TransformRemoteObject extends DepthFirstAnalysisCAdaptor
 
 			for (AMethodDeclIR m : cl.getMethods())
 			{
-
+				//obj_id = obj_id + 1;
 				LinkedList<Boolean> cpuDM = SystemArchitectureAnalysis.DM.get(cl.getTag().toString());
 
 				if (initFunName.contains(m.getName()))
 				{
-					obj_id = obj_id + 1;
-					if(!cpuDM.get(obj_id)){
+					int method_id = initFunName.indexOf(m.getName());
+					if(!cpuDM.get(method_id)){
 						ABlockStmIR bd = (ABlockStmIR) m.getBody();
 
 						ALocalVariableDeclarationStmIR fst = (ALocalVariableDeclarationStmIR) bd.getStatements().get(0);
@@ -86,12 +86,12 @@ public class TransformRemoteObject extends DepthFirstAnalysisCAdaptor
 						AApplyExpIR appExp = (AApplyExpIR) fst.getDecleration().getExp();
 
 						((AIdentifierVarExpIR) appExp.getRoot()).setName("newInt");
-						
+
 						appExp.getArgs().clear();
-						
+
 						AIntLiteralExpIR val = new AIntLiteralExpIR();
 						val.setType(new ANatNumericBasicTypeIR());
-						val.setValue((long) obj_id);
+						val.setValue((long) method_id);
 						appExp.getArgs().add(val);	
 					}
 				}
