@@ -128,7 +128,7 @@ public class GenerateSendBusTrans extends DepthFirstAnalysisCAdaptor
 							binEq.setLeft(id.clone());
 							// Right side: Add id to if for this specific bus
 							// Add 1 since we start from 1 and not 0
-							int idVal = SystemArchitectureAnalysis.systemDeployedObjectsStr.indexOf(dobj) + 1;
+							int idVal = SystemArchitectureAnalysis.systemDeployedObjectsStr.indexOf(dobj); //+ 1;
 							AIntLiteralExpIR val = new AIntLiteralExpIR();
 							val.setType(new ANatNumericBasicTypeIR());
 							val.setValue((long) idVal);
