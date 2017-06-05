@@ -226,7 +226,7 @@ public class CGen extends CodeGenBase
 
 		SystemArchitectureAnalysis.setDistFlag(statuses, this);
 		
-		Boolean dist_gen = getDistGen();
+		Boolean dist_gen = getDistGen() && this.getCGenSettings().usesDistributionCG();
 
 		if(dist_gen){
 			// Architecture Analysis
