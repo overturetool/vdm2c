@@ -18,12 +18,15 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <limits.h>
+#include <unistd.h>
 
 /** In this example this the recieve will never be true for CPU1 */
 
 // Pr. CPU main
 int main(void) {
 
+
+	sleep(5);
 	vdm_gc_init();
 
 	// Receive flag, becomes true when remote invocation need to be handled
