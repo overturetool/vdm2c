@@ -87,19 +87,20 @@ public class CGenerator
 					
 					// Copy the distribution run-time
 					CGenUtil.copyNativeLibFiles(Vdm2CCommand.class.getClassLoader().getResourceAsStream("jars/distributionLib.jar"),
-							new File(cCodeOutputFolder + File.separator + cpu + File.separator + "distributionLib"));
+							new File(cCodeOutputFolder + File.separator + cpu  /* + File.separator + "distributionLib"*/));
 					
 					// Copy files from vdmclib.jar.
 					CGenUtil.copyNativeLibFiles(Vdm2CCommand.class.getClassLoader().getResourceAsStream("jars/vdmclib.jar"),
 							new File(cCodeOutputFolder + File.separator + cpu + File.separator + "nativelib"));
 
 					//Emit empty main.c file so that the generated project compiles.
-					emitMainFile(new File(cCodeOutputFolder + File.separator + cpu + File.separator + "main.c"), vdm2c.getHeaders());
+					//emitMainFile(new File(cCodeOutputFolder + File.separator + cpu + File.separator + "main.c"), vdm2c.getHeaders());
 					
 					//Emit file containing the mapping between model names and mangled names as #defines.
 					emitMangledNamesHeaderFile(new File(cCodeOutputFolder + File.separator + cpu + File.separator + "MangledNames.h"));
 				}
 			} catch (Exception e) {
+				CodeGenConsole.GetInstance().printErrorln("Problems encountered while generating C sources for a distributed system: " + e.getMessage());
 				e.printStackTrace();
 			}
 		}
