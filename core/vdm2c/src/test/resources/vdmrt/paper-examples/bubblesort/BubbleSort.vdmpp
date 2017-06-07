@@ -1,0 +1,28 @@
+class BubbleSort
+
+instance variables
+
+numbers : seq of int;
+
+operations
+
+public BubbleSort : seq of int ==> BubbleSort
+BubbleSort (pNumbers) == numbers := pNumbers;
+
+public sort : () ==> ()
+sort () ==
+let n = len numbers
+in
+  for i = 1 to n-1 do
+    for j = 2 to (n-i+1) do
+      if numbers(j-1) > numbers(j) then
+      (
+        dcl tmp : int := numbers(j-1);
+        numbers(j-1) := numbers(j);
+        numbers(j) := tmp;
+      );
+
+public getNumbers : () ==> seq of int
+getNumbers () == return numbers;
+
+end BubbleSort
