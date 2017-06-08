@@ -198,11 +198,6 @@ struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction
 																							 fieldName,\
 																							 newValue)
 
-#define SET_FIELD_GC(thisTypeName, fieldTypeName, classValue, fieldName, newValue) SET_FIELD_PTR_GC(thisTypeName,\
-																							fieldTypeName,\
-																							 TO_CLASS_PTR(classValue,thisTypeName),\
-																							 fieldName,\
-																							 newValue)
 
 
 /*  old stuff  */
@@ -231,11 +226,6 @@ struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction
 																							 m_##fieldTypeName##_##fieldName,\
 																							 newValue)
 
-#define SET_FIELD_PTR_GC(thisTypeName, fieldTypeName, ptr, fieldName, newValue) SET_STRUCT_FIELD_GC(fieldTypeName,\
-																							 CLASS_CAST(ptr,thisTypeName,fieldTypeName) ,\
-																							 TVP,\
-																							 m_##fieldTypeName##_##fieldName,\
-																							 newValue)
 
 /*
  * Macro to obtain a function from a (sub-)class specific VTable from a class struct
