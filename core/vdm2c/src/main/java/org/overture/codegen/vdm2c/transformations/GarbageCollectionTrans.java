@@ -141,7 +141,6 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 		
 		// Setters
 		gcNames.put(CTransUtil.SET_FIELD, "SET_FIELD_GC");
-		gcNames.put(CTransUtil.SET_FIELD_PTR, "SET_FIELD_PTR_GC");
 		
 		// Others
 		gcNames.put(SelfTrans.SELF, SELF_GC);
