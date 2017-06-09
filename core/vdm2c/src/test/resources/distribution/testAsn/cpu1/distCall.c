@@ -2,8 +2,7 @@
 
 #include "distCall.h"
 #include "asn1crt.h"
-
-
+#include <unistd.h>
 
 void error(const char *msg)
 {
@@ -29,21 +28,6 @@ TVP bus(int objID, int funID, int supID, int nrArgs, va_list args){
 	int i;
 	// Loop through all arguments and serialise them
 	int b = 4;
-
-	/*
-		for (i = 3; i < nrArgs + 3; i++) {
-			TVP arg = va_arg(args, TVP);
-
-
-			// TODO: Move this in a serialization function
-			if(arg->type==VDM_QUOTE) {
-				b++;
-				sendArr[b] = (byte) VDM_QUOTE; // add type to array
-				b++;
-				sendArr[b] = (byte) arg->value.quoteVal; // add value to array
-			}
-		}
-	 */
 	byte buf_size = (byte) b + 1;
 
 	sendArr[0] = buf_size;
@@ -51,8 +35,8 @@ TVP bus(int objID, int funID, int supID, int nrArgs, va_list args){
 	printf("Buffer size is: %d \n", buf_size);
 
 	// print serialised values
-	for (i = 0; i < buf_size; i++)
-		printf("Hello UART: %d \n", sendArr[i]);
+	//for (i = 0; i < buf_size; i++)
+	//printf("Hello UART: %d \n", sendArr[i]);
 
 	// TODO: While, wait for result
 	// If we need to wait for a result
@@ -69,32 +53,41 @@ TVP bus(int objID, int funID, int supID, int nrArgs, va_list args){
 	// fprintf(stderr,"usage %s hostname port\n", argv[0]);
 	//exit(0);
 	//}
-	portno = atoi("51717");
+	//printf("Trying to connect5...\n");
 
-	sockfd = socket(AF_INET, SOCK_STREAM, 0);
+	//printf("Trying to connect...\n");
 
-	if (sockfd < 0)
-		error("ERROR opening socket");
+	int nb = -1;
 
-	server = gethostbyname("localhost");
+	while(nb<0){
+		printf("Trying to connect... %d \n", nb);
+		sleep(2);
+		portno = atoi("51717");
 
-	if (server == NULL) {
-		fprintf(stderr,"ERROR, no such host\n");
-		exit(0);
+		sockfd = socket(AF_INET, SOCK_STREAM, 0);
+
+		if (sockfd < 0)
+			error("ERROR opening socket");
+
+		server = gethostbyname("localhost");
+
+		if (server == NULL) {
+			fprintf(stderr,"ERROR, no such host\n");
+			exit(0);
+		}
+
+		bzero((char *) &serv_addr, sizeof(serv_addr));
+
+		serv_addr.sin_family = AF_INET;
+
+		bcopy((char *)server->h_addr,
+				(char *)&serv_addr.sin_addr.s_addr,
+				server->h_length);
+
+		serv_addr.sin_port = htons(portno);
+
+		nb = connect(sockfd,(struct sockaddr *) &serv_addr,sizeof(serv_addr));
 	}
-
-	bzero((char *) &serv_addr, sizeof(serv_addr));
-
-	serv_addr.sin_family = AF_INET;
-
-	bcopy((char *)server->h_addr,
-			(char *)&serv_addr.sin_addr.s_addr,
-			server->h_length);
-
-	serv_addr.sin_port = htons(portno);
-
-	if (connect(sockfd,(struct sockaddr *) &serv_addr,sizeof(serv_addr)) < 0)
-		error("ERROR connecting");
 
 	//printf("Please enter the message: ");
 
@@ -126,7 +119,7 @@ TVP bus(int objID, int funID, int supID, int nrArgs, va_list args){
 	char encBuff[IntValue_REQUIRED_BYTES_FOR_ENCODING + 1];
 	BitStream_Init(&bitStrm, encBuff, IntValue_REQUIRED_BYTES_FOR_ENCODING);
     IntValue_Encode(&iu, &bitStrm, &pErrCode, TRUE);
-    */
+	 */
 	// TODO: Receive the result, e.g. change to receive value
 	//byte res_ser = buffer[0];
 

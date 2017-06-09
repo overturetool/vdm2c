@@ -53,6 +53,11 @@ TVP bus(int objID, int funID, int supID, int nrArgs, va_list args){
 	// fprintf(stderr,"usage %s hostname port\n", argv[0]);
 	//exit(0);
 	//}
+
+	int nb = -1;
+
+	while(nb<0){
+
 	portno = atoi("51717");
 
 	sockfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -77,15 +82,9 @@ TVP bus(int objID, int funID, int supID, int nrArgs, va_list args){
 
 	serv_addr.sin_port = htons(portno);
 
-	if (connect(sockfd,(struct sockaddr *) &serv_addr,sizeof(serv_addr)) < 0)
-		error("ERROR connecting");
+	nb = connect(sockfd,(struct sockaddr *) &serv_addr,sizeof(serv_addr));
 
-	//printf("Please enter the message: ");
-
-	//bzero(buffer,256);
-
-	//fgets(buffer,255,stdin);
-
+	}
 	n = write(sockfd,sendArr,BUF_SIZE);
 
 	if (n < 0)

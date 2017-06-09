@@ -18,8 +18,6 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <limits.h>
-//#include "intVal.h"
- #include <unistd.h>
 
 /** In this example this the recieve will never be true for CPU1 */
 
@@ -44,7 +42,6 @@ int main(void) {
 	printf("decoded value is %d \n", args[0]->value.intVal);
 	 */
 
-	sleep(5);
 	vdm_gc_init();
 
 	// Receive flag, becomes true when remote invocation need to be handled

@@ -19,7 +19,6 @@
 #include <stdarg.h>
 #include <limits.h>
 #include "intVal.h"
- #include <unistd.h>
 
 /** In this example this the recieve will never be true for CPU1 */
 
@@ -28,7 +27,6 @@
 // Pr. CPU main
 int main(void) {
 
-sleep(5);
 	vdm_gc_init();
 
 	// 1. System initialization

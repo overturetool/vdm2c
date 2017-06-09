@@ -53,39 +53,39 @@ TVP bus(int objID, int funID, int supID, int nrArgs, va_list args){
 	// fprintf(stderr,"usage %s hostname port\n", argv[0]);
 	//exit(0);
 	//}
-	portno = atoi("51717");
 
-	sockfd = socket(AF_INET, SOCK_STREAM, 0);
 
-	if (sockfd < 0)
-		error("ERROR opening socket");
+	int nb = -1;
 
-	server = gethostbyname("localhost");
+	while(nb<0){
 
-	if (server == NULL) {
-		fprintf(stderr,"ERROR, no such host\n");
-		exit(0);
+		portno = atoi("51717");
+
+		sockfd = socket(AF_INET, SOCK_STREAM, 0);
+
+		if (sockfd < 0)
+			error("ERROR opening socket");
+
+		server = gethostbyname("localhost");
+
+		if (server == NULL) {
+			fprintf(stderr,"ERROR, no such host\n");
+			exit(0);
+		}
+
+		bzero((char *) &serv_addr, sizeof(serv_addr));
+
+		serv_addr.sin_family = AF_INET;
+
+		bcopy((char *)server->h_addr,
+				(char *)&serv_addr.sin_addr.s_addr,
+				server->h_length);
+
+		serv_addr.sin_port = htons(portno);
+
+		nb = connect(sockfd,(struct sockaddr *) &serv_addr,sizeof(serv_addr));
+
 	}
-
-	bzero((char *) &serv_addr, sizeof(serv_addr));
-
-	serv_addr.sin_family = AF_INET;
-
-	bcopy((char *)server->h_addr,
-			(char *)&serv_addr.sin_addr.s_addr,
-			server->h_length);
-
-	serv_addr.sin_port = htons(portno);
-
-	if (connect(sockfd,(struct sockaddr *) &serv_addr,sizeof(serv_addr)) < 0)
-		error("ERROR connecting");
-
-	//printf("Please enter the message: ");
-
-	//bzero(buffer,256);
-
-	//fgets(buffer,255,stdin);
-
 	n = write(sockfd,sendArr,BUF_SIZE);
 
 	if (n < 0)
@@ -110,7 +110,7 @@ TVP bus(int objID, int funID, int supID, int nrArgs, va_list args){
 	char encBuff[IntValue_REQUIRED_BYTES_FOR_ENCODING + 1];
 	BitStream_Init(&bitStrm, encBuff, IntValue_REQUIRED_BYTES_FOR_ENCODING);
     IntValue_Encode(&iu, &bitStrm, &pErrCode, TRUE);
-    */
+	 */
 	// TODO: Receive the result, e.g. change to receive value
 	//byte res_ser = buffer[0];
 
