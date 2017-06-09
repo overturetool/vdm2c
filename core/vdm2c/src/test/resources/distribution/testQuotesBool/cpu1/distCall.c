@@ -2,7 +2,7 @@
 
 #include "distCall.h"
 #include "asn1crt.h"
-
+#include <unistd.h>
 
 
 void error(const char *msg)
@@ -44,6 +44,7 @@ TVP bus(int objID, int funID, int supID, int nrArgs, va_list args){
 	int nb = -1;
 
 	while(nb<0){
+		sleep(2);
 		portno = atoi("51717");
 
 		sockfd = socket(AF_INET, SOCK_STREAM, 0);
