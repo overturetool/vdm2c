@@ -12,10 +12,15 @@ public class ValueSemantics {
 	public static final String VDM_FREE = "vdmFree";
 	public static final String VDM_CLONE = "vdmClone";
 
+	public static final String NO_CLONE_TAG = "NO_CLONE";
+
 	public static SExpIR clone(SExpIR exp) {
 		if (exp instanceof SVarExpIR) {
 			AApplyExpIR vdmCloneApply = CTransUtil.newApply(VDM_CLONE, exp);
-			vdmCloneApply.setType(exp.getType().clone());
+
+			if (exp.getType() != null) {
+				vdmCloneApply.setType(exp.getType().clone());
+			}
 			return vdmCloneApply;
 		} else {
 			// Don't clone literals

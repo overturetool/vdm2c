@@ -1,13 +1,5 @@
 package org.overture.codegen.vdm2c.transformations;
 
-import static org.overture.codegen.vdm2c.utils.CTransUtil.SET_FIELD_PTR;
-import static org.overture.codegen.vdm2c.utils.CTransUtil.createIdentifier;
-import static org.overture.codegen.vdm2c.utils.CTransUtil.exp2Stm;
-import static org.overture.codegen.vdm2c.utils.CTransUtil.newAssignment;
-import static org.overture.codegen.vdm2c.utils.CTransUtil.newDeclarationAssignment;
-import static org.overture.codegen.vdm2c.utils.CTransUtil.newIdentifier;
-import static org.overture.codegen.vdm2c.utils.CTransUtil.newMacroApply;
-
 import org.overture.ast.definitions.AInheritedDefinition;
 import org.overture.ast.definitions.AInstanceVariableDefinition;
 import org.overture.ast.definitions.PDefinition;
@@ -31,6 +23,8 @@ import org.overture.codegen.vdm2c.utils.GlobalFieldUtil;
 import org.overture.codegen.vdm2c.utils.NameConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.overture.codegen.vdm2c.utils.CTransUtil.*;
 
 
 //Transforms read references to fields to GET macros.
@@ -110,7 +104,7 @@ DepthFirstAnalysisCAdaptor
 
 			// process right side of assignment
 			node.getExp().apply(THIS);
-			AVarDeclIR retVar = newDeclarationAssignment(name, node.getExp().getType().clone(), ValueSemantics.clone(node.getExp().clone()), node.getExp().getSourceNode());
+			AVarDeclIR retVar = newDeclarationAssignment(name, node.getExp().getType().clone(), node.getExp().clone(), node.getExp().getSourceNode());
 
 			ABlockStmIR replBlock = new ABlockStmIR();
 			replBlock.setScoped(true);
@@ -173,7 +167,7 @@ DepthFirstAnalysisCAdaptor
 							NameConverter.getCName(fieldUtil.lookupField(cDef, node.getTarget().toString())), null),
 							newIdentifier(name, null));
 
-			AVarDeclIR retVar = newDeclarationAssignment(name, node.getExp().getType().clone(), ValueSemantics.clone(node.getExp().clone()), node.getExp().getSourceNode());
+			AVarDeclIR retVar = newDeclarationAssignment(name, node.getExp().getType().clone(), node.getExp().clone(), node.getExp().getSourceNode());
 
 			ABlockStmIR replBlock = new ABlockStmIR();
 			replBlock.setScoped(true);
@@ -221,7 +215,7 @@ DepthFirstAnalysisCAdaptor
 							NameConverter.getCName(fieldUtil.lookupField(cDef, fieldName)), null),
 							newIdentifier(name, null));
 
-			AVarDeclIR retVar = newDeclarationAssignment(name, node.getExp().getType().clone(), ValueSemantics.clone(node.getExp().clone()), node.getExp().getSourceNode());
+			AVarDeclIR retVar = newDeclarationAssignment(name, node.getExp().getType().clone(), node.getExp().clone(), node.getExp().getSourceNode());
 
 			ABlockStmIR replBlock = new ABlockStmIR();
 			replBlock.setScoped(true);

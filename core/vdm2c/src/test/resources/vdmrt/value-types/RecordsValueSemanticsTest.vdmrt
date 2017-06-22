@@ -55,4 +55,16 @@ operations
 		
 		return r1 <> r2;
 	);
+
+    public test6 : () ==> bool
+    test6() ==
+    (
+        dcl r1 : MyRec := mk_MyRec(5, 'a');
+        dcl r2 : MyRec := r1;
+
+        r1.field1 := 42;
+
+        return r2.field1 = 5;
+    );
+
 end RecordTest
