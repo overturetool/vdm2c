@@ -383,6 +383,9 @@ TVP vdmClone(TVP x)
 
 bool equals(TVP a, TVP b)
 {
+	if(a == NULL || b == NULL)
+		return false;
+
 	if(isNumber(a)&& isNumber(b))
 	{
 		return toDouble(a)==toDouble(b);
