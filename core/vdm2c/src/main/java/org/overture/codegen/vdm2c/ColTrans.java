@@ -43,6 +43,7 @@ import org.overture.codegen.ir.expressions.ASetUnionBinaryExpIR;
 import org.overture.codegen.ir.expressions.ATailUnaryExpIR;
 import org.overture.codegen.ir.types.AExternalTypeIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
+import org.overture.codegen.vdm2c.utils.CGenUtil;
 import org.overture.codegen.vdm2c.utils.CLetBeStStrategy;
 import org.overture.codegen.vdm2c.utils.IApplyAssistant;
 
@@ -324,7 +325,7 @@ public class ColTrans extends DepthFirstAnalysisCAdaptor implements IApplyAssist
 		argList.addFirst(sizeExp);
 
 		if (members.isEmpty()) {
-			argList.add(assist.getInfo().getExpAssistant().consNullExp());
+			argList.add(CGenUtil.consCNull());
 		}
 
 		SExpIR[] args = argList.toArray(new SExpIR[0]);

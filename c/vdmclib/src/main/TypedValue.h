@@ -53,6 +53,7 @@ typedef enum
 	VDM_REAL,
 	VDM_RAT,
 	VDM_CHAR,
+  VDM_UNKNOWN,
 #ifndef NO_SETS
 	VDM_SET,
 #endif
@@ -161,9 +162,7 @@ TVP newReal(double x);
 TVP newChar(char x);
 TVP newQuote(unsigned int x);
 TVP newToken(TVP x);
-
-
-
+TVP newUnknown();
 
 /*  Complex  */
 

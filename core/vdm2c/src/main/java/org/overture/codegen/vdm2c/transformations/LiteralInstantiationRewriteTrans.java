@@ -6,13 +6,7 @@ import org.overture.cgc.extast.analysis.DepthFirstAnalysisCAdaptor;
 import org.overture.codegen.ir.SExpIR;
 import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.analysis.intf.IAnalysis;
-import org.overture.codegen.ir.expressions.AApplyExpIR;
-import org.overture.codegen.ir.expressions.ABoolLiteralExpIR;
-import org.overture.codegen.ir.expressions.ACharLiteralExpIR;
-import org.overture.codegen.ir.expressions.AIntLiteralExpIR;
-import org.overture.codegen.ir.expressions.AMkBasicExpIR;
-import org.overture.codegen.ir.expressions.AQuoteLiteralExpIR;
-import org.overture.codegen.ir.expressions.AStringLiteralExpIR;
+import org.overture.codegen.ir.expressions.*;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.utils.IApplyAssistant;
 
@@ -31,7 +25,8 @@ public class LiteralInstantiationRewriteTrans extends
 	public static final String NEW_CHAR = "newChar";
 	public static final String NEW_BOOL = "newBool";
 	public static final String NEW_TOKEN = "newToken";
-	
+	public static final String NEW_UNKNOWN = "newUnknown";
+
 	public TransAssistantIR assist;
 
 	public LiteralInstantiationRewriteTrans(TransAssistantIR assist)
@@ -105,5 +100,10 @@ public class LiteralInstantiationRewriteTrans extends
 		
 		apply.getArgs().getFirst().apply(this);
 	}
-	
+
+	@Override
+	public void caseANullExpIR(ANullExpIR node) throws AnalysisException {
+
+		rewriteToApply(this, node, NEW_UNKNOWN);
+	}
 }

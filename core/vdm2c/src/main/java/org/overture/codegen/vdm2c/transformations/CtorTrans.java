@@ -24,6 +24,7 @@ import org.overture.codegen.ir.name.ATokenNameIR;
 import org.overture.codegen.ir.statements.ABlockStmIR;
 import org.overture.codegen.ir.statements.AIfStmIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
+import org.overture.codegen.vdm2c.utils.CGenUtil;
 import org.overture.codegen.vdm2c.utils.NameMangler;
 
 public class CtorTrans extends DepthFirstAnalysisCAdaptor
@@ -60,7 +61,7 @@ public class CtorTrans extends DepthFirstAnalysisCAdaptor
 
 			AAddrEqualsBinaryExpIR addrEquals = new AAddrEqualsBinaryExpIR();
 			addrEquals.setLeft(createIdentifier("this", null));
-			addrEquals.setRight(new ANullExpIR());
+			addrEquals.setRight(CGenUtil.consCNull());
 
 			ifStm.setIfExp(addrEquals);
 
@@ -73,7 +74,7 @@ public class CtorTrans extends DepthFirstAnalysisCAdaptor
 
 			ABlockStmIR replBlock = new ABlockStmIR();
 			replBlock.setScoped(true);
-			replBlock.getLocalDefs().add(newDeclarationAssignment(bufName, newTvpType(), new ANullExpIR(), null));
+			replBlock.getLocalDefs().add(newDeclarationAssignment(bufName, newTvpType(), CGenUtil.consCNull(), null));
 			replBlock.getStatements().add(ifStm);
 
 			// add constructor body

@@ -261,6 +261,12 @@ TVP newTokenGC(TVP x, TVP *from)
 			{ .intVal = hashVal }, from);
 }
 
+TVP newUnknownGC(TVP *from)
+{
+  return newTypeValueGC(VDM_UNKNOWN, (TypedValueType)
+                       {}, from);
+}
+
 TVP vdmCloneGC(TVP x, TVP *from)
 {
 	TVP tmp;
@@ -275,7 +281,11 @@ TVP vdmCloneGC(TVP x, TVP *from)
 	/* FIXME vdmClone any pointers  */
 	switch (tmp->type)
 	{
-	case VDM_BOOL:
+  case VDM_UNKNOWN:
+  {
+    return x;
+  }
+  case VDM_BOOL:
 	case VDM_CHAR:
 	case VDM_INT:
 	case VDM_NAT:

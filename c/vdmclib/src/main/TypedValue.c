@@ -104,6 +104,13 @@ TVP newToken(TVP x)
 			{ .intVal = hashVal });
 }
 
+TVP newUnknown()
+{
+  return newTypeValue(VDM_UNKNOWN, (TypedValueType
+	)
+			{});
+}
+
 TVP newCollection(size_t size, vdmtype type)
 {
 	struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
@@ -237,6 +244,7 @@ TVP vdmClone(TVP x)
 	case VDM_RAT:
 	case VDM_QUOTE:
 	case VDM_TOKEN:
+  case VDM_UNKNOWN:  
 	{
 		/* encoded as values so the initial copy line handles these  */
 		break;
@@ -394,6 +402,10 @@ bool equals(TVP a, TVP b)
 
 	switch (a->type)
 	{
+  case VDM_UNKNOWN:
+  {
+    return b->type == VDM_UNKNOWN;
+  }
 	case VDM_BOOL:
 	{
 		return a->value.boolVal == b->value.boolVal;
@@ -547,6 +559,7 @@ void vdmFree_GCInternal(TVP ptr)
 	case VDM_RAT:
 	case VDM_QUOTE:
 	case VDM_TOKEN:
+  case VDM_UNKNOWN:  
 	{
 		break;
 	}
@@ -679,6 +692,7 @@ void vdmFree(TVP ptr)
 	case VDM_RAT:
 	case VDM_QUOTE:
 	case VDM_TOKEN:
+  case VDM_UNKNOWN:  
 	{
 		break;
 	}

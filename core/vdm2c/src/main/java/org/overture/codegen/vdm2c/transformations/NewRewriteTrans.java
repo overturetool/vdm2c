@@ -11,6 +11,7 @@ import org.overture.codegen.ir.expressions.AApplyExpIR;
 import org.overture.codegen.ir.expressions.ANewExpIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.tags.CTags;
+import org.overture.codegen.vdm2c.utils.CGenUtil;
 import org.overture.codegen.vdm2c.utils.NameMangler;
 
 public class NewRewriteTrans extends DepthFirstAnalysisCAdaptor
@@ -27,7 +28,7 @@ public class NewRewriteTrans extends DepthFirstAnalysisCAdaptor
 	{
 		super.caseANewExpIR(node);
 		
-		node.getArgs().addFirst(assist.getInfo().getExpAssistant().consNullExp());
+		node.getArgs().addFirst(CGenUtil.consCNull());
 
 		for (SClassDeclIR cDef : assist.getInfo().getClasses())
 		{

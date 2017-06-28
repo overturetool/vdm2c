@@ -47,6 +47,7 @@ bool patternMatchBind(TVP patternBind, TVP value)
 		case VDM_TOKEN:
 		case VDM_REAL:
 		case VDM_RAT:
+    case VDM_UNKNOWN:
 		/* this is match value  */
 		return equals(patternBind,value);
 

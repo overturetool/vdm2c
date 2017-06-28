@@ -18,6 +18,11 @@
 #define ASSERT_CHECK_INT(s) assert((s->type ==  VDM_INT) && "Value is not integer")
 #define ASSERT_CHECK_CHAR(s) assert((s->type ==  VDM_CHAR) && "Value is not a character")
 
+char* printNil()
+{
+  return "nil";
+}
+
 char* printBool(TVP val)
 {
 	ASSERT_CHECK_BOOL(val);
@@ -140,10 +145,13 @@ char* toString(TVP val)
 	default:
 		break;
 	}
-
+  
 	/* Main operation.  */
 	switch(val->type)
 	{
+  case VDM_UNKNOWN:
+    str = printNil();
+    break;
 	case VDM_BOOL:
 		str = printBool(val);
 		break;
