@@ -129,6 +129,7 @@ TVP newCollectionPrealloc(size_t size, size_t expected_size, vdmtype type)
 	assert(ptr != NULL);
 	ptr->size = size;
 	ptr->value = (TVP*) calloc(expected_size, sizeof(TVP)); /* I know this is slower than malloc but better for products  */
+	ptr->buf_size = expected_size;
 	assert(ptr->value != NULL);
 	return newTypeValue(type, (TypedValueType
 	)

@@ -111,6 +111,7 @@ struct Collection
 {
 	TVP* value;
 	int size;
+	int buf_size;
 };
 
 int vdmCollectionSize(TVP collection);
