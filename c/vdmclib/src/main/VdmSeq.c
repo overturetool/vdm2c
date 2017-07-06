@@ -114,7 +114,8 @@ TVP newSeqVarToGrow(size_t size, size_t expected_size, ...)
 
 	int count = 0;
 
-	int bufsize = expected_size;  /* DEFAULT_SEQ_COMP_BUFFER;  */
+	int bufsize = expected_size;
+
 	TVP* value = (TVP*) calloc(bufsize, sizeof(TVP));
 	assert(value != NULL);
 
@@ -125,7 +126,7 @@ TVP newSeqVarToGrow(size_t size, size_t expected_size, ...)
 
 
 		/* Extra security measure.  Will only be true if size >= expected_size.  */
-		if(count>=bufsize)
+		if(count >= bufsize)
 		{
 			/* buffer too small add memory chunk  */
 			bufsize += DEFAULT_SEQ_COMP_BUFFER_STEPSIZE;
@@ -137,22 +138,19 @@ TVP newSeqVarToGrow(size_t size, size_t expected_size, ...)
 
 	va_end(ap);
 
-	TVP res = newCollectionWithValuesPrealloc(count, expected_size, VDM_SEQ, value);
+	TVP res = newCollectionWithValuesPrealloc(count, bufsize, VDM_SEQ, value);
 	free(value);
 	return res;
 }
 
 void vdmSeqGrow(TVP seq, TVP element)
 {
-	int bufsize = DEFAULT_SEQ_COMP_BUFFER;
-
 	UNWRAP_COLLECTION(col, seq);
 
-	if(col->size >= bufsize)
+	if(col->size >= col->buf_size)
 	{
-		/* buffer too small add memory chunk  */
-		bufsize += DEFAULT_SEQ_COMP_BUFFER_STEPSIZE;
-		col->value = (TVP*)realloc(col->value, bufsize * sizeof(TVP));
+		col->buf_size += DEFAULT_SEQ_COMP_BUFFER_STEPSIZE;
+		col->value = (TVP*)realloc(col->value, col->buf_size * sizeof(TVP));
 		assert(col->value != NULL);
 	}
 	vdmSeqAdd(col->value, &(col->size), element);

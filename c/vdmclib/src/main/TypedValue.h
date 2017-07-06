@@ -53,6 +53,7 @@ typedef enum
 	VDM_REAL,
 	VDM_RAT,
 	VDM_CHAR,
+  VDM_UNKNOWN,
 #ifndef NO_SETS
 	VDM_SET,
 #endif
@@ -110,6 +111,7 @@ struct Collection
 {
 	TVP* value;
 	int size;
+	int buf_size;
 };
 
 int vdmCollectionSize(TVP collection);
@@ -161,9 +163,7 @@ TVP newReal(double x);
 TVP newChar(char x);
 TVP newQuote(unsigned int x);
 TVP newToken(TVP x);
-
-
-
+TVP newUnknown();
 
 /*  Complex  */
 

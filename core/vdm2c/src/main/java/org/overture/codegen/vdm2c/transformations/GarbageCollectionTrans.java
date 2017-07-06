@@ -4,16 +4,11 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 import org.overture.cgc.extast.analysis.DepthFirstAnalysisCAdaptor;
-import org.overture.codegen.ir.INode;
 import org.overture.codegen.ir.SExpIR;
-import org.overture.codegen.ir.SPatternIR;
 import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.declarations.AMethodDeclIR;
-import org.overture.codegen.ir.declarations.AVarDeclIR;
 import org.overture.codegen.ir.expressions.AApplyExpIR;
-import org.overture.codegen.ir.expressions.AExternalExpIR;
 import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
-import org.overture.codegen.ir.patterns.AIdentifierPatternIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.CForIterator;
 import org.overture.codegen.vdm2c.ColTrans;
@@ -21,7 +16,7 @@ import org.overture.codegen.vdm2c.TupleTrans;
 import org.overture.codegen.vdm2c.Vdm2cTag;
 import org.overture.codegen.vdm2c.Vdm2cTag.MethodTag;
 import org.overture.codegen.vdm2c.extast.expressions.AMacroApplyExpIR;
-import org.overture.codegen.vdm2c.tags.CTags;
+import org.overture.codegen.vdm2c.utils.CGenUtil;
 import org.overture.codegen.vdm2c.utils.CLetBeStStrategy;
 import org.overture.codegen.vdm2c.utils.CSetCompStrategy;
 import org.overture.codegen.vdm2c.utils.CTransUtil;
@@ -84,7 +79,8 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 		gcNames.put(LiteralInstantiationRewriteTrans.NEW_CHAR, "newCharGC");
 		gcNames.put(LiteralInstantiationRewriteTrans.NEW_QUOTE, "newQuoteGC");
 		gcNames.put(LiteralInstantiationRewriteTrans.NEW_TOKEN, "newTokenGC");
-		
+		gcNames.put(LiteralInstantiationRewriteTrans.NEW_UNKNOWN, "newUnknownGC");
+
 		// Collections
 		gcNames.put(ColTrans.SEQ_VAR, "newSeqVarGC");
 		gcNames.put(ColTrans.SET_VAR, "newSetVarGC");
@@ -214,7 +210,7 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 	private SExpIR consReference(SExpIR exp)
 	{
 		// Expression is not associated with a memory address
-		return assist.getInfo().getExpAssistant().consNullExp();
+		return CGenUtil.consCNull();
 	}
 
 	private boolean isFieldAccessor(String name)
