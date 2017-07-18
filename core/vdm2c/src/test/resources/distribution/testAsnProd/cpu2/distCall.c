@@ -2,6 +2,8 @@
 
 #include "distCall.h"
 #include "asn1crt.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 void error(const char *msg)
 {
@@ -77,6 +79,11 @@ int busRead(byte *buffer, int len){ // Just for own testing
 			sizeof(serv_addr)) < 0)
 		error("ERROR on binding");
 
+	FILE* fptr;
+
+	fptr = fopen("../sync.txt", "w");
+	fclose(fptr);
+	
 	listen(sockfd,5);
 
 	clilen = sizeof(cli_addr);

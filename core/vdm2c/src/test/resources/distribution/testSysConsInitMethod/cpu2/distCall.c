@@ -2,6 +2,8 @@
 
 #include "distCall.h"
 #include "asn1crt.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 void error(const char *msg)
 {

@@ -3,6 +3,8 @@
 #include "distCall.h"
 #include "asn1crt.h"
 #include "basicTypes.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 void error(const char *msg)
 {
@@ -80,7 +82,14 @@ int busRead(byte *buffer, int len){ // Just for own testing
 
 	listen(sockfd,5);
 
+
+
 	clilen = sizeof(cli_addr);
+
+	FILE* fptr;
+
+	fptr = fopen("../sync.txt", "w");
+	fclose(fptr);
 
 	newsockfd = accept(sockfd,
 			(struct sockaddr *) &cli_addr,

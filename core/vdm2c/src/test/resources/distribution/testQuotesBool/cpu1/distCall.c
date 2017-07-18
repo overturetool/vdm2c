@@ -3,7 +3,8 @@
 #include "distCall.h"
 #include "asn1crt.h"
 #include <unistd.h>
-
+#include <stdio.h>
+#include <stdlib.h>
 
 void error(const char *msg)
 {
@@ -43,35 +44,42 @@ TVP bus(int objID, int funID, int supID, int nrArgs, va_list args){
 
 	int nb = -1;
 
-	while(nb<0){
+	FILE* fptr = NULL;
+
+	while(fptr == NULL){
 		sleep(2);
-		portno = atoi("51717");
+		printf("File does not exist yet baby!\n");
+		fptr = fopen("../sync.txt", "r");
 
-		sockfd = socket(AF_INET, SOCK_STREAM, 0);
+	}
+	remove("../sync.txt");
 
-		if (sockfd < 0)
-			error("ERROR opening socket");
+	portno = atoi("51717");
 
-		server = gethostbyname("localhost");
+	sockfd = socket(AF_INET, SOCK_STREAM, 0);
 
-		if (server == NULL) {
-			fprintf(stderr,"ERROR, no such host\n");
-			exit(0);
-		}
+	if (sockfd < 0)
+		error("ERROR opening socket");
 
-		bzero((char *) &serv_addr, sizeof(serv_addr));
+	server = gethostbyname("localhost");
 
-		serv_addr.sin_family = AF_INET;
+	if (server == NULL) {
+		fprintf(stderr,"ERROR, no such host\n");
+		exit(0);
+	}
 
-		bcopy((char *)server->h_addr,
+	bzero((char *) &serv_addr, sizeof(serv_addr));
+
+	serv_addr.sin_family = AF_INET;
+
+	bcopy((char *)server->h_addr,
 				(char *)&serv_addr.sin_addr.s_addr,
 				server->h_length);
 
-		serv_addr.sin_port = htons(portno);
+	serv_addr.sin_port = htons(portno);
 
-		nb = connect(sockfd,(struct sockaddr *) &serv_addr,sizeof(serv_addr));
+	nb = connect(sockfd,(struct sockaddr *) &serv_addr,sizeof(serv_addr));
 
-	}
 	n = write(sockfd,sendArr,BUF_SIZE);
 
 	if (n < 0)
