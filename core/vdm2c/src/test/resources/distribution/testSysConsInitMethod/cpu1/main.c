@@ -28,7 +28,7 @@
 // Pr. CPU main
 int main(void) {
 
-	sleep(10);
+	//sleep(10);
 
 	vdm_gc_init();
 

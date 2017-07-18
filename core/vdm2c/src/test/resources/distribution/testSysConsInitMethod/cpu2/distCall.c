@@ -81,6 +81,10 @@ int busRead(byte *buffer, int len){ // Just for own testing
 
 	listen(sockfd,5);
 
+	FILE* fptr;
+	fptr = fopen("../sync.txt", "w");
+	fclose(fptr);
+
 	clilen = sizeof(cli_addr);
 
 	newsockfd = accept(sockfd,

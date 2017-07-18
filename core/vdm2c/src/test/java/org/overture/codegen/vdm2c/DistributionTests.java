@@ -263,7 +263,7 @@ public class DistributionTests extends DistTestBase
 
 	}
 
-	//@Test
+	@Test
 	public void TestSysConsInitMethod() throws IOException, InterruptedException,
 	CMakeGenerateException
 	{
