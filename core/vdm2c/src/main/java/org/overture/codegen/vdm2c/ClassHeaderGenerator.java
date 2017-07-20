@@ -111,22 +111,20 @@ public class ClassHeaderGenerator
 				continue;
 			}
 
-			header.setFlattenedSupers(getSupers(new HeaderProvider()
-			{
+			List<AClassHeaderDeclIR> supers = getSupers(new HeaderProvider() {
 
 				@Override
-				public AClassHeaderDeclIR get(String name)
-				{
-					for (AClassHeaderDeclIR header : classHeaders)
-					{
-						if (header.getName().equals(name))
-						{
+				public AClassHeaderDeclIR get(String name) {
+					for (AClassHeaderDeclIR header : classHeaders) {
+						if (header.getName().equals(name)) {
 							return header;
 						}
 					}
 					return null;
 				}
-			}, header));
+			}, header);
+
+			header.setFlattenedSupers(supers);
 		}
 
 		return list;
@@ -207,8 +205,11 @@ public class ClassHeaderGenerator
 			for (ATokenNameIR superName : superNames)
 			{
 				AClassHeaderDeclIR super1Header = provider.get(superName.getName());
-				supers.addAll(getSupers(provider, super1Header));
-				supers.add(super1Header);
+				if(super1Header != null)
+				{
+					supers.addAll(getSupers(provider, super1Header));
+					supers.add(super1Header);
+				}
 			}
 		}
 
