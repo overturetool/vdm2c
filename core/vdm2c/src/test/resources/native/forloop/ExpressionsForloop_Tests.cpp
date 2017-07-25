@@ -43,3 +43,8 @@ TEST_F(TestFlowFunctions, testSumOneToFive)
 {
 	CHECK(CLASS_ExpressionForLoop__Z16testSumOneToFiveEV);
 }
+
+TEST_F(TestFlowFunctions, decrementingForLoop)
+{
+	CHECK(CLASS_ExpressionForLoop__Z16decrementingLoopEV);
+}

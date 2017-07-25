@@ -8,20 +8,12 @@ package org.overture.codegen.vdm2c;
 
  import static org.overture.codegen.ir.CodeGenBase;
  */
-import java.util.LinkedList;
-import java.util.List;
 
 import org.overture.codegen.ir.IRInfo;
 import org.overture.codegen.ir.analysis.DepthFirstAnalysisAdaptor;
 import org.overture.codegen.ir.expressions.AIntLiteralExpIR;
 import org.overture.codegen.ir.types.AExternalTypeIR;
-import org.overture.codegen.trans.AssignStmTrans;
-import org.overture.codegen.trans.AtomicStmTrans;
-import org.overture.codegen.trans.CallObjStmTrans;
-import org.overture.codegen.trans.DivideTrans;
-import org.overture.codegen.trans.Exp2StmVarPrefixes;
-import org.overture.codegen.trans.IterationVarPrefixes;
-import org.overture.codegen.trans.WhileStmTrans;
+import org.overture.codegen.trans.*;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.trans.funcvalues.FuncValAssistant;
 import org.overture.codegen.trans.funcvalues.FuncValPrefixes;
@@ -32,43 +24,10 @@ import org.overture.codegen.trans.letexps.IfExpTrans;
 import org.overture.codegen.trans.patterns.PatternTrans;
 import org.overture.codegen.trans.patterns.PatternVarPrefixes;
 import org.overture.codegen.trans.quantifier.Exists1CounterData;
-import org.overture.codegen.vdm2c.transformations.AddThisArgToMethodsTrans;
-import org.overture.codegen.vdm2c.transformations.C89ForLoopTrans;
-import org.overture.codegen.vdm2c.transformations.CLetBeStStmTrans;
-import org.overture.codegen.vdm2c.transformations.CallRewriteTrans;
-import org.overture.codegen.vdm2c.transformations.CompToBlockTrans;
-import org.overture.codegen.vdm2c.transformations.CreateGlobalConstInitFunctionTrans;
-import org.overture.codegen.vdm2c.transformations.CreateGlobalStaticInitFunctionTrans;
-import org.overture.codegen.vdm2c.transformations.CtorTrans;
-import org.overture.codegen.vdm2c.transformations.ExtractEmbeddedCreationsTrans;
-import org.overture.codegen.vdm2c.transformations.ExtractRetValTrans;
-import org.overture.codegen.vdm2c.transformations.FieldAssignToFieldSetMacroTrans;
-import org.overture.codegen.vdm2c.transformations.FieldExpRewriteTrans;
-import org.overture.codegen.vdm2c.transformations.FieldInitializerExtractorTrans;
-import org.overture.codegen.vdm2c.transformations.FieldReadToFieldGetMacroTrans;
-import org.overture.codegen.vdm2c.transformations.ForLoopTrans;
-import org.overture.codegen.vdm2c.transformations.GarbageCollectionTrans;
-import org.overture.codegen.vdm2c.transformations.IfTrans;
-import org.overture.codegen.vdm2c.transformations.IgnoreRenamingTrans;
-import org.overture.codegen.vdm2c.transformations.IsNotYetSpecifiedTrans;
-import org.overture.codegen.vdm2c.transformations.LetTrans;
-import org.overture.codegen.vdm2c.transformations.LiteralInstantiationRewriteTrans;
-import org.overture.codegen.vdm2c.transformations.LogicTrans;
-import org.overture.codegen.vdm2c.transformations.MangleMethodNamesTrans;
-import org.overture.codegen.vdm2c.transformations.MapSeqUpdateRewriteTrans;
-import org.overture.codegen.vdm2c.transformations.MethodReturnInsertTrans;
-import org.overture.codegen.vdm2c.transformations.MethodVisibilityTrans;
-import org.overture.codegen.vdm2c.transformations.NewRewriteTrans;
-import org.overture.codegen.vdm2c.transformations.NumericTrans;
-import org.overture.codegen.vdm2c.transformations.RecTypeToClassTypeTrans;
-import org.overture.codegen.vdm2c.transformations.RemoveCWrappersTrans;
-import org.overture.codegen.vdm2c.transformations.RemoveRTConstructs;
-import org.overture.codegen.vdm2c.transformations.RenameFieldsDeclsTrans;
-import org.overture.codegen.vdm2c.transformations.ScopeCleanerTrans;
-import org.overture.codegen.vdm2c.transformations.SelfTrans;
-import org.overture.codegen.vdm2c.transformations.StaticFieldAccessRenameTrans;
-import org.overture.codegen.vdm2c.transformations.SubClassResponsibilityMethodsTrans;
-import org.overture.codegen.vdm2c.transformations.ValueAccessRenameTrans;
+import org.overture.codegen.vdm2c.transformations.*;
+
+import java.util.LinkedList;
+import java.util.List;
 
 public class CTransSeries
 {
@@ -198,6 +157,7 @@ public class CTransSeries
 		transformations.add(new RemoveCWrappersTrans(transAssistant));
 		transformations.add(new MethodVisibilityTrans(transAssistant));
 		transformations.add(new C89ForLoopTrans(transAssistant));
+		transformations.add(new EnsureValueSemanticsTrans());
 
 		if(codeGen.getCGenSettings().usesGarbageCollection())
 		{

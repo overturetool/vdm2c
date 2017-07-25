@@ -88,6 +88,7 @@ char* URIToNativePath(const char* uri)
 	{
 		return NULL;
 	}   path = (char*)malloc(path_len + 2);
+	assert(path != NULL);
 	/* Copy the remainder of the uri and replace all percent encoded character
 	 * * by their ASCII character and translate slashes to backslashes on Windows
 	 *  * and backslashes to slashes on other OSses   */
@@ -158,6 +159,7 @@ TVP vdm_CSV_flinecount(TVP f)
 	{
 		resLoc = URIToNativePath(resourcesLocation);
 		filePath = (char*)calloc(strlen(resLoc) + strlen(fileName) + 1, sizeof(char));
+		assert(filePath != NULL);
 		strcat(filePath, resLoc);
 		strcat(filePath, fileName);
 	}
@@ -165,6 +167,7 @@ TVP vdm_CSV_flinecount(TVP f)
 	else
 	{
 		filePath = (char*)calloc(strlen(fileName) + 1, sizeof(char));
+		assert(filePath != NULL);
 		strcat(filePath, fileName);
 	}
 
@@ -227,6 +230,7 @@ TVP vdm_CSV_freadval(TVP f, TVP index)
 	{
 		resLoc = URIToNativePath(resourcesLocation);
 		filePath = (char*)calloc(strlen(resLoc) + strlen(fileName) + 1, sizeof(char));
+		assert(filePath != NULL);
 		strcat(filePath, resLoc);
 		strcat(filePath, fileName);
 	}
@@ -234,6 +238,7 @@ TVP vdm_CSV_freadval(TVP f, TVP index)
 	else
 	{
 		filePath = (char*)calloc(strlen(fileName) + 1, sizeof(char));
+		assert(filePath != NULL);
 		strcat(filePath, fileName);
 	}
 
@@ -248,6 +253,7 @@ TVP vdm_CSV_freadval(TVP f, TVP index)
 	}
 	/* For the list into which they will be stored.  */
 	values = malloc(numCols * sizeof(TVP));
+	assert(values != NULL);
 
 	/* Seek to the specified line.  */
 	rewind(file);
@@ -260,6 +266,7 @@ TVP vdm_CSV_freadval(TVP f, TVP index)
 
 	/* Read line.  */
 	lineBuf = malloc(bytesToRead);
+	assert(lineBuf != NULL);
 	tempLineBuf = lineBuf;
 
 	c = 'a';

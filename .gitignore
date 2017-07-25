@@ -129,3 +129,8 @@ c/vdmclib/CSVTestInput.csv
   
 # release
 repository
+
+# Intellij metadata #
+#####################
+*.iml
+.idea

@@ -217,8 +217,20 @@ TEST(Expression_Boolean, equalityExp)
 	assert(t1->type == VDM_BOOL && "Value is not a bool");
 	TVP res = vdmEquals(t,t1);
 	EXPECT_TRUE(res->value.boolVal);
-	vdmFree(res);
+  vdmFree(res);
 
+  vdmFree(t1);
+  t1 = newUnknown();
+	res = vdmEquals(t,t1);
+	EXPECT_FALSE(res->value.boolVal);
+  vdmFree(res);
+  
+  vdmFree(t);
+  t = newUnknown();
+	res = vdmEquals(t,t1);
+	EXPECT_TRUE(res->value.boolVal);
+
+  vdmFree(res);
 	vdmFree(t);
 	vdmFree(t1);
 }

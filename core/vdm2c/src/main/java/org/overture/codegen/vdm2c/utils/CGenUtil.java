@@ -1,5 +1,8 @@
 package org.overture.codegen.vdm2c.utils;
 
+import org.overture.codegen.ir.expressions.AExternalExpIR;
+import org.overture.codegen.ir.types.AUnknownTypeIR;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -9,6 +12,7 @@ import java.util.jar.JarInputStream;
 
 public class CGenUtil {
 
+	public static final String C_NULL = "NULL";
 	/**
 	 * Extract the native library sources to some output folder
 	 * 
@@ -77,5 +81,14 @@ public class CGenUtil {
 		{
 			e.printStackTrace();
 		}
+	}
+
+	public static AExternalExpIR consCNull()
+	{
+		AExternalExpIR cNull = new AExternalExpIR();
+		cNull.setType(new AUnknownTypeIR());
+		cNull.setTargetLangExp(C_NULL);
+
+		return  cNull;
 	}
 }

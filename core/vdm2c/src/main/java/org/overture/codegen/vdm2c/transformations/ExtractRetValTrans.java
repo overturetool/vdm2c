@@ -44,7 +44,7 @@ public class ExtractRetValTrans extends DepthFirstAnalysisCAdaptor
 		retVar.setPattern(id);
 		retVar.setSourceNode(node.getExp().getSourceNode());
 		
-		retVar.setExp(ValueSemantics.clone(node.getExp()));
+		retVar.setExp(node.getExp());
 
 		AIdentifierVarExpIR retVarOcc = new AIdentifierVarExpIR();
 		retVarOcc.setType(retVar.getType().clone());

@@ -32,6 +32,7 @@ TVP newRealGC(double x, TVP *from);
 TVP newCharGC(char x, TVP *from);
 TVP newQuoteGC(unsigned int x, TVP *from);
 TVP newTokenGC(TVP x, TVP *from);
+TVP newUnknownGC(TVP *from);
 TVP vdmEqualsGC(TVP a, TVP b, TVP *from);
 
 

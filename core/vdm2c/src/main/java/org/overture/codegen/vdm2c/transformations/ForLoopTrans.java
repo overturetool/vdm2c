@@ -20,7 +20,9 @@ import org.overture.codegen.ir.SExpIR;
 import org.overture.codegen.ir.SPatternIR;
 import org.overture.codegen.ir.SStmIR;
 import org.overture.codegen.ir.analysis.AnalysisException;
-import org.overture.codegen.ir.expressions.AIntLiteralExpIR;
+import org.overture.codegen.ir.expressions.AApplyExpIR;
+import org.overture.codegen.ir.expressions.AGreaterEqualNumericBinaryExpIR;
+import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
 import org.overture.codegen.ir.expressions.ALessEqualNumericBinaryExpIR;
 import org.overture.codegen.ir.expressions.ALessNumericBinaryExpIR;
 import org.overture.codegen.ir.expressions.APlusNumericBinaryExpIR;
@@ -30,6 +32,7 @@ import org.overture.codegen.ir.statements.ABlockStmIR;
 import org.overture.codegen.ir.statements.AForAllStmIR;
 import org.overture.codegen.ir.statements.AForIndexStmIR;
 import org.overture.codegen.ir.statements.AWhileStmIR;
+import org.overture.codegen.ir.types.ANatNumericBasicTypeIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 
 public class ForLoopTrans extends DepthFirstAnalysisCAdaptor
@@ -57,22 +60,23 @@ public class ForLoopTrans extends DepthFirstAnalysisCAdaptor
 
 		if (node.getBy() == null)
 		{
-			node.setBy(newIntLiteralExp(1));
+			AApplyExpIR newInt = new AApplyExpIR();
+			newInt.setType(new ANatNumericBasicTypeIR());
+			newInt.getArgs().add(newIntLiteralExp(1));
+			newInt.setRoot(createIdentifier(LiteralInstantiationRewriteTrans.NEW_INT, node.getSourceNode()));
+			node.setBy(newInt);
 		}
 
 		ABlockStmIR replBlock = new ABlockStmIR();
 		replBlock.setScoped(true);
 
 		String indexName = getNewName();
-		replBlock.getLocalDefs().add(newDeclarationAssignment(indexName, newExternalType("int"), newApply("toInteger", node.getFrom()), null));
+		replBlock.getLocalDefs().add(newDeclarationAssignment(indexName, newExternalType("int"), newApply("toInteger", node.getFrom().clone()), null));
 
-		SNumericBinaryExpIR less = new ALessEqualNumericBinaryExpIR();
-		less.setLeft(newIdentifier(indexName, null));
-		less.setRight(newApply("toInteger", node.getTo()));
+		SNumericBinaryExpIR less;
 
 		AWhileStmIR loop = new AWhileStmIR();
 		replBlock.getStatements().add(loop);
-		loop.setExp(newCExp(less));
 
 		ABlockStmIR whileBlock = new ABlockStmIR();
 		whileBlock.setScoped(true);
@@ -83,21 +87,41 @@ public class ForLoopTrans extends DepthFirstAnalysisCAdaptor
 
 		APlusNumericBinaryExpIR pp = new APlusNumericBinaryExpIR();
 		pp.setLeft(createIdentifier(indexName, null));
-		
-		if (!(node.getBy() instanceof AIntLiteralExpIR))
+
+		pp.setRight(newApply("toInteger", node.getBy().clone()));
+		if (isPositiveInt(node.getBy()))
 		{
-			// If the 'by' expression is a TVP convert it to an integer
-			pp.setRight(newApply("toInteger", node.getBy()));
+			less = new ALessEqualNumericBinaryExpIR();
+
 		} else
 		{
-			// If the 'by' expression is an integer literal at this
-			// point it means that the 'by' clause was omitted.
-			pp.setRight(node.getBy());
+			less = new AGreaterEqualNumericBinaryExpIR();
 		}
+		
+		less.setLeft(newIdentifier(indexName, null));
+		less.setRight(newApply("toInteger", node.getTo()));
+		loop.setExp(newCExp(less));
 
 		whileBlock.getStatements().add(newAssignment(createIdentifier(indexName, null), pp));
 
 		assist.replaceNodeWith(node, replBlock);
+	}
+
+	private boolean isPositiveInt(SExpIR by) {
+		
+		if(by instanceof AApplyExpIR)
+		{
+			AApplyExpIR apply = (AApplyExpIR) by;
+			
+			if(apply.getRoot() instanceof AIdentifierVarExpIR)
+			{
+				AIdentifierVarExpIR id = (AIdentifierVarExpIR) apply.getRoot();
+				
+				return !id.getName().equals(NumericTrans.VDM_MINUS);
+			}
+		}
+		
+		return false;
 	}
 
 	@Override

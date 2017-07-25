@@ -59,6 +59,15 @@ testSumOneToFive () ==
  return res = 15;
 );
 
+public decrementingLoop : () ==> bool
+decrementingLoop () ==
+(
+  dcl c : nat := 10;
+	for i = 10 to 5 by -1 do
+	  c := c - 1;
+	
+	return c = 4;
+);
 
 /*
 

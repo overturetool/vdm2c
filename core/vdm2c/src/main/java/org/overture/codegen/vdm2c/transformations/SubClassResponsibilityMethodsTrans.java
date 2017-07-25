@@ -15,6 +15,7 @@ import org.overture.codegen.ir.expressions.ANullExpIR;
 import org.overture.codegen.ir.statements.ABlockStmIR;
 import org.overture.codegen.ir.statements.AReturnStmIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
+import org.overture.codegen.vdm2c.utils.CGenUtil;
 
 public class SubClassResponsibilityMethodsTrans extends
 DepthFirstAnalysisCAdaptor
@@ -52,9 +53,8 @@ DepthFirstAnalysisCAdaptor
 				else
 				{
 					AReturnStmIR retstm = new AReturnStmIR();
-					ANullExpIR nullexp = new ANullExpIR();
 
-					retstm.setExp(nullexp);
+					retstm.setExp(CGenUtil.consCNull());
 					stm.getStatements().add(retstm);
 				}
 			}
@@ -67,9 +67,7 @@ DepthFirstAnalysisCAdaptor
 				else
 				{
 					AReturnStmIR retstm = new AReturnStmIR();
-					ANullExpIR nullexp = new ANullExpIR();
-
-					retstm.setExp(nullexp);
+					retstm.setExp(CGenUtil.consCNull());
 					stm.getStatements().add(retstm);
 				}
 			}

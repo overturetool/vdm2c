@@ -1,13 +1,9 @@
 package org.overture.codegen.vdm2c.transformations;
 
-import static org.overture.codegen.vdm2c.utils.CTransUtil.SET_FIELD;
-import static org.overture.codegen.vdm2c.utils.CTransUtil.createIdentifier;
-import static org.overture.codegen.vdm2c.utils.CTransUtil.newDeclarationAssignment;
-import static org.overture.codegen.vdm2c.utils.CTransUtil.newMacroApply;
-
 import org.overture.cgc.extast.analysis.DepthFirstAnalysisCAdaptor;
 import org.overture.codegen.ir.SourceNode;
 import org.overture.codegen.ir.analysis.AnalysisException;
+import org.overture.codegen.ir.declarations.AVarDeclIR;
 import org.overture.codegen.ir.declarations.SClassDeclIR;
 import org.overture.codegen.ir.expressions.AFieldExpIR;
 import org.overture.codegen.ir.statements.AAssignToExpStmIR;
@@ -20,6 +16,8 @@ import org.overture.codegen.vdm2c.utils.GlobalFieldUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.overture.codegen.vdm2c.utils.CTransUtil.*;
+
 /**
  * @author kel
  */
@@ -31,7 +29,7 @@ public class FieldExpRewriteTrans extends DepthFirstAnalysisCAdaptor
 	final CompatibleMethodCollector methodCollector = new CompatibleMethodCollector();
 	final GlobalFieldUtil fieldUtil;
 
-	final static String retPrefix = "fieldTmp_";
+	public final static String retPrefix = "fieldTmp_";
 
 	public FieldExpRewriteTrans(TransAssistantIR assist)
 	{
@@ -81,8 +79,14 @@ public class FieldExpRewriteTrans extends DepthFirstAnalysisCAdaptor
 								String fieldNameTmp = assist.getInfo().getTempVarNameGen().nextVarName(retPrefix);
 								String expNameTmp = assist.getInfo().getTempVarNameGen().nextVarName(retPrefix);
 								SourceNode objSource = target.getObject().getSourceNode();
-								block.getLocalDefs().add(newDeclarationAssignment(fieldNameTmp, target.getObject().getType().clone(), target.getObject(), objSource));
-								block.getLocalDefs().add(newDeclarationAssignment(expNameTmp, node.getExp().getType().clone(), node.getExp().clone(), node.getExp().getSourceNode()));
+								AVarDeclIR objTmp = newDeclarationAssignment(fieldNameTmp, target.getObject().getType().clone(), target.getObject(), objSource);
+								objTmp.setTag(ValueSemantics.NO_CLONE_TAG);
+
+								block.getLocalDefs().add(objTmp);
+								AVarDeclIR expTmp = newDeclarationAssignment(expNameTmp, node.getExp().getType().clone(), node.getExp().clone(), node.getExp().getSourceNode());
+								expTmp.setTag(ValueSemantics.NO_CLONE_TAG);
+
+								block.getLocalDefs().add(expTmp);
 
 								AMacroApplyExpIR apply = newMacroApply(SET_FIELD);
 								AExpStmIR wrap = new AExpStmIR();

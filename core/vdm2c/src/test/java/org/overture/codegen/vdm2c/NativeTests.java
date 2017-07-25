@@ -138,6 +138,14 @@ public class NativeTests extends NativeTestBase
 	}
 	
 	@Test
+	public void OtherMATHLib() throws IOException, InterruptedException,
+			CMakeGenerateException
+	{
+		generate(getPath("other/MATHLibTest.vdmrt"), getPath("lib/MATH.vdmrt"));
+		compileAndTest(getTestCppFile("classes/ClassMATH_Tests.cpp"));
+	}
+	
+	@Test
 	public void OtherCSVLib() throws IOException, InterruptedException,
 			CMakeGenerateException
 	{

@@ -45,6 +45,7 @@
 TVP newTypeValue(vdmtype type, TypedValueType value)
 {
 	TVP ptr = malloc(sizeof(struct TypedValue));
+	assert(ptr != NULL);
 	ptr->type = type;
 	ptr->value = value;
 	ptr->ref_from = NULL;
@@ -103,11 +104,20 @@ TVP newToken(TVP x)
 			{ .intVal = hashVal });
 }
 
+TVP newUnknown()
+{
+  return newTypeValue(VDM_UNKNOWN, (TypedValueType
+	)
+			{});
+}
+
 TVP newCollection(size_t size, vdmtype type)
 {
 	struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
+	assert(ptr != NULL);
 	ptr->size = size;
 	ptr->value = (TVP*) calloc(size != 0 ? size : 1, sizeof(TVP)); /* I know this is slower than malloc but better for products  */
+	assert(ptr->value != NULL);
 	return newTypeValue(type, (TypedValueType
 	)
 			{ .ptr = ptr });
@@ -116,8 +126,11 @@ TVP newCollection(size_t size, vdmtype type)
 TVP newCollectionPrealloc(size_t size, size_t expected_size, vdmtype type)
 {
 	struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
+	assert(ptr != NULL);
 	ptr->size = size;
 	ptr->value = (TVP*) calloc(expected_size, sizeof(TVP)); /* I know this is slower than malloc but better for products  */
+	ptr->buf_size = expected_size;
+	assert(ptr->value != NULL);
 	return newTypeValue(type, (TypedValueType
 	)
 			{ .ptr = ptr });
@@ -126,8 +139,10 @@ TVP newCollectionPrealloc(size_t size, size_t expected_size, vdmtype type)
 TVP newCollectionGC(size_t size, vdmtype type, TVP *from)
 {
 	struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
+	assert(ptr != NULL);
 	ptr->size = size;
 	ptr->value = (TVP*) calloc(size != 0 ? size : 1, sizeof(TVP)); /* I know this is slower than malloc but better for products  */
+	assert(ptr->value != NULL);
 	return newTypeValueGC(type, (TypedValueType
 	)
 			{ .ptr = ptr }, from);
@@ -136,8 +151,10 @@ TVP newCollectionGC(size_t size, vdmtype type, TVP *from)
 TVP newCollectionPreallocGC(size_t size, size_t expected_size, vdmtype type, TVP *from)
 {
 	struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
+	assert(ptr != NULL);
 	ptr->size = size;
 	ptr->value = (TVP*) calloc(expected_size, sizeof(TVP)); /* I know this is slower than malloc but better for products  */
+	assert(ptr->value != NULL);
 	return newTypeValueGC(type, (TypedValueType
 	)
 			{ .ptr = ptr }, from);
@@ -228,6 +245,7 @@ TVP vdmClone(TVP x)
 	case VDM_RAT:
 	case VDM_QUOTE:
 	case VDM_TOKEN:
+  case VDM_UNKNOWN:  
 	{
 		/* encoded as values so the initial copy line handles these  */
 		break;
@@ -248,10 +266,12 @@ TVP vdmClone(TVP x)
 		UNWRAP_COLLECTION(cptr, tmp);
 
 		struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
+		assert(ptr != NULL);
 
 		/* copy (size)  */
 		*ptr = *cptr;
 		ptr->value = (TVP*) malloc(sizeof(TVP) * ptr->size);
+		assert(ptr->value != NULL);
 
 		for (i = 0; i < cptr->size; i++)
 		{
@@ -270,10 +290,12 @@ TVP vdmClone(TVP x)
 		UNWRAP_COLLECTION(cptr, tmp);
 
 		struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
+		assert(ptr != NULL);
 
 		/* copy (size)  */
 		*ptr = *cptr;
 		ptr->value = (TVP*) malloc(sizeof(TVP) * ptr->size);
+		assert(ptr->value != NULL);
 
 		for (i = 0; i < cptr->size; i++)
 		{
@@ -292,10 +314,12 @@ TVP vdmClone(TVP x)
 		UNWRAP_COLLECTION(cptr, tmp);
 
 		struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
+		assert(ptr != NULL);
 
 		/* copy (size)  */
 		*ptr = *cptr;
 		ptr->value = (TVP*) malloc(sizeof(TVP) * ptr->size);
+		assert(ptr->value != NULL);
 
 		for (i = 0; i < cptr->size; i++)
 		{
@@ -335,6 +359,7 @@ TVP vdmClone(TVP x)
 
 		/* Allocate memory to be populated with the pointers pointing to the cloned fields.  */
 		((struct ClassType*)((tmp->value).ptr))->value = malloc(sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(TVP) + sizeof(TVP) * numFields);
+		assert(((struct ClassType*)((tmp->value).ptr))->value != NULL);
 
 		for(i = 0; i <= numFields; i++)
 		{
@@ -367,6 +392,9 @@ TVP vdmClone(TVP x)
 
 bool equals(TVP a, TVP b)
 {
+	if(a == NULL || b == NULL)
+		return false;
+
 	if(isNumber(a)&& isNumber(b))
 	{
 		return toDouble(a)==toDouble(b);
@@ -378,6 +406,10 @@ bool equals(TVP a, TVP b)
 
 	switch (a->type)
 	{
+  case VDM_UNKNOWN:
+  {
+    return b->type == VDM_UNKNOWN;
+  }
 	case VDM_BOOL:
 	{
 		return a->value.boolVal == b->value.boolVal;
@@ -531,6 +563,7 @@ void vdmFree_GCInternal(TVP ptr)
 	case VDM_RAT:
 	case VDM_QUOTE:
 	case VDM_TOKEN:
+  case VDM_UNKNOWN:  
 	{
 		break;
 	}
@@ -663,6 +696,7 @@ void vdmFree(TVP ptr)
 	case VDM_RAT:
 	case VDM_QUOTE:
 	case VDM_TOKEN:
+  case VDM_UNKNOWN:  
 	{
 		break;
 	}

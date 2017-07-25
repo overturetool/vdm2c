@@ -4,16 +4,11 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 import org.overture.cgc.extast.analysis.DepthFirstAnalysisCAdaptor;
-import org.overture.codegen.ir.INode;
 import org.overture.codegen.ir.SExpIR;
-import org.overture.codegen.ir.SPatternIR;
 import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.declarations.AMethodDeclIR;
-import org.overture.codegen.ir.declarations.AVarDeclIR;
 import org.overture.codegen.ir.expressions.AApplyExpIR;
-import org.overture.codegen.ir.expressions.AExternalExpIR;
 import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
-import org.overture.codegen.ir.patterns.AIdentifierPatternIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.CForIterator;
 import org.overture.codegen.vdm2c.ColTrans;
@@ -21,7 +16,7 @@ import org.overture.codegen.vdm2c.TupleTrans;
 import org.overture.codegen.vdm2c.Vdm2cTag;
 import org.overture.codegen.vdm2c.Vdm2cTag.MethodTag;
 import org.overture.codegen.vdm2c.extast.expressions.AMacroApplyExpIR;
-import org.overture.codegen.vdm2c.tags.CTags;
+import org.overture.codegen.vdm2c.utils.CGenUtil;
 import org.overture.codegen.vdm2c.utils.CLetBeStStrategy;
 import org.overture.codegen.vdm2c.utils.CSetCompStrategy;
 import org.overture.codegen.vdm2c.utils.CTransUtil;
@@ -84,7 +79,8 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 		gcNames.put(LiteralInstantiationRewriteTrans.NEW_CHAR, "newCharGC");
 		gcNames.put(LiteralInstantiationRewriteTrans.NEW_QUOTE, "newQuoteGC");
 		gcNames.put(LiteralInstantiationRewriteTrans.NEW_TOKEN, "newTokenGC");
-		
+		gcNames.put(LiteralInstantiationRewriteTrans.NEW_UNKNOWN, "newUnknownGC");
+
 		// Collections
 		gcNames.put(ColTrans.SEQ_VAR, "newSeqVarGC");
 		gcNames.put(ColTrans.SET_VAR, "newSetVarGC");
@@ -138,10 +134,6 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 		// Accessors
 		gcNames.put(CTransUtil.GET_FIELD, "GET_FIELD_GC");
 		gcNames.put(CTransUtil.GET_FIELD_PTR, "GET_FIELD_PTR_GC");
-		
-		// Setters
-		gcNames.put(CTransUtil.SET_FIELD, "SET_FIELD_GC");
-		gcNames.put(CTransUtil.SET_FIELD_PTR, "SET_FIELD_PTR_GC");
 		
 		// Others
 		gcNames.put(SelfTrans.SELF, SELF_GC);
@@ -217,32 +209,8 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 
 	private SExpIR consReference(SExpIR exp)
 	{
-		INode parent = exp.parent();
-		
-		if (parent instanceof AVarDeclIR)
-		{
-			AVarDeclIR decl = ((AVarDeclIR) parent);
-			SPatternIR pat = decl.getPattern();
-
-			// "return" variables constitute a special case where 'from' must be NULL
-			// See https://github.com/overturetool/vdm2c/issues/87#issuecomment-295776237https://github.com/overturetool/vdm2c/issues/87#issuecomment-295776237
-			if (decl.getTag() != CTags.RET_VAR_TAG) {
-				
-				if (pat instanceof AIdentifierPatternIR) {
-					String name = ((AIdentifierPatternIR) pat).getName();
-					AExternalExpIR reference = new AExternalExpIR();
-					reference.setSourceNode(pat.getSourceNode());
-					reference.setTargetLangExp("&" + name);
-
-					return reference;
-				} else {
-					logger.error("Expected identifier pattern at this point.");
-				}
-			}
-		}
-
 		// Expression is not associated with a memory address
-		return assist.getInfo().getExpAssistant().consNullExp();
+		return CGenUtil.consCNull();
 	}
 
 	private boolean isFieldAccessor(String name)

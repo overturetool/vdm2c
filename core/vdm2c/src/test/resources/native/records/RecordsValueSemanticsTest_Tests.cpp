@@ -65,3 +65,7 @@ TEST_F(TestFlowFunctions, test5)
 	CHECK(CLASS_RecordTest__Z5test5EV);
 }
 
+TEST_F(TestFlowFunctions, test6)
+{
+	CHECK(CLASS_RecordTest__Z5test6EV);
+}

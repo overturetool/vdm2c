@@ -18,7 +18,7 @@ TVP vdm_MATH_fac(TVP a)
 	int tmp;
 	int tmpres = 1;
 
-	if(a->type != VDM_NAT && a->type != VDM_NAT1)
+	if(a->type != VDM_NAT && a->type != VDM_NAT1 && a->type != VDM_INT)
 		return NULL;
 
 	if(a->value.intVal < 0)

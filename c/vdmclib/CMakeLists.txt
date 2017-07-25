@@ -5,10 +5,6 @@ set(CMAKE_INCLUDE_CURRENT_DIR on)
 
 enable_testing()
 
-FIND_PACKAGE(PkgConfig)
-PKG_CHECK_MODULES(GLIB2 REQUIRED glib-2.0>=2.36.0)
-
-
 
 #include(CheckCXXCompilerFlag)
 #CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)

@@ -13,10 +13,12 @@ struct alloc_list_node *allocd_mem_tail = NULL;
 void vdm_gc_init()
 {
 	allocd_mem_head = (struct alloc_list_node*)malloc(sizeof (struct alloc_list_node));
-	allocd_mem_tail = allocd_mem_head;
+	assert(allocd_mem_head != NULL);
 
 	allocd_mem_head->loc = NULL;
 	allocd_mem_head->next = NULL;
+
+	allocd_mem_tail = allocd_mem_head;
 }
 
 void add_allocd_mem_node(TVP l, TVP *from)
@@ -25,7 +27,10 @@ void add_allocd_mem_node(TVP l, TVP *from)
 	allocd_mem_tail->loc->ref_from = from;
 
 	allocd_mem_tail->next = (struct alloc_list_node*)malloc(sizeof(struct alloc_list_node));
+	assert(allocd_mem_tail->next != NULL);
 	allocd_mem_tail = allocd_mem_tail->next;
+
+	allocd_mem_tail->loc = NULL;
 	allocd_mem_tail->next = NULL;
 }
 
@@ -128,22 +133,24 @@ void remove_allocd_mem_node(struct alloc_list_node *node)
 
 void vdm_gc_shutdown()
 {
-	struct alloc_list_node *tmp;
+	struct alloc_list_node *tmp, *tmp2;
 
 	tmp = allocd_mem_head;
 
 	while(tmp != allocd_mem_tail)
 	{
+		tmp2 = tmp->next;
+
 		if(tmp->loc != NULL)
 		{
 			vdmFree_GCInternal(tmp->loc);
 			remove_allocd_mem_node(tmp);
 		}
-
-		tmp = tmp->next;
+		tmp = tmp2;
 	}
-	free(allocd_mem_head);
+	free(allocd_mem_tail);
 	allocd_mem_head = NULL;
+	allocd_mem_tail = NULL;
 }
 
 void vdm_gc()
@@ -193,6 +200,7 @@ void vdm_gc()
 TVP newTypeValueGC(vdmtype type, TypedValueType value, TVP *ref_from)
 {
 	TVP ptr = (TVP) malloc(sizeof(struct TypedValue));
+	assert(ptr != NULL);
 	ptr->type = type;
 	ptr->value = value;
 	add_allocd_mem_node(ptr, ref_from);
@@ -253,6 +261,12 @@ TVP newTokenGC(TVP x, TVP *from)
 			{ .intVal = hashVal }, from);
 }
 
+TVP newUnknownGC(TVP *from)
+{
+  return newTypeValueGC(VDM_UNKNOWN, (TypedValueType)
+                       {}, from);
+}
+
 TVP vdmCloneGC(TVP x, TVP *from)
 {
 	TVP tmp;
@@ -267,7 +281,11 @@ TVP vdmCloneGC(TVP x, TVP *from)
 	/* FIXME vdmClone any pointers  */
 	switch (tmp->type)
 	{
-	case VDM_BOOL:
+  case VDM_UNKNOWN:
+  {
+    return x;
+  }
+  case VDM_BOOL:
 	case VDM_CHAR:
 	case VDM_INT:
 	case VDM_NAT:
@@ -296,10 +314,12 @@ TVP vdmCloneGC(TVP x, TVP *from)
 		UNWRAP_COLLECTION(cptr, tmp);
 
 		struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
+		assert(ptr != NULL);
 
 		/* copy (size)  */
 		*ptr = *cptr;
 		ptr->value = (TVP*) malloc(sizeof(TVP) * ptr->size);
+		assert(ptr->value != NULL);
 
 		for (i = 0; i < cptr->size; i++)
 		{
@@ -318,10 +338,12 @@ TVP vdmCloneGC(TVP x, TVP *from)
 		UNWRAP_COLLECTION(cptr, tmp);
 
 		struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
+		assert(ptr != NULL);
 
 		/* copy (size)  */
 		*ptr = *cptr;
 		ptr->value = (TVP*) malloc(sizeof(TVP) * ptr->size);
+		assert(ptr->value != NULL);
 
 		for (i = 0; i < cptr->size; i++)
 		{
@@ -340,10 +362,12 @@ TVP vdmCloneGC(TVP x, TVP *from)
 		UNWRAP_COLLECTION(cptr, tmp);
 
 		struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
+		assert(ptr != NULL);
 
 		/* copy (size)  */
 		*ptr = *cptr;
 		ptr->value = (TVP*) malloc(sizeof(TVP) * ptr->size);
+		assert(ptr->value != NULL);
 
 		for (i = 0; i < cptr->size; i++)
 		{
@@ -383,6 +407,7 @@ TVP vdmCloneGC(TVP x, TVP *from)
 
 		/* Allocate memory to be populated with the pointers pointing to the cloned fields.  */
 		((struct ClassType*)((tmp->value).ptr))->value = malloc(sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(TVP) + sizeof(TVP) * numFields);
+		assert(((struct ClassType*)((tmp->value).ptr))->value != NULL);
 
 		for(i = 0; i <= numFields; i++)
 		{

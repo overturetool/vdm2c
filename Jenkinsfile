@@ -2,11 +2,10 @@ node {
   try
   {
     // Mark the code checkout 'stage'....
-    stage 'Checkout'
-    checkout scm
-    sh 'git submodule update --init'
-
-    step([$class: 'GitHubSetCommitStatusBuilder'])
+    stage ('Checkout'){
+      checkout scm
+      sh 'git submodule update --init'
+    }
 
     stage ('Clean'){
       withMaven(mavenLocalRepo: '.repository', mavenSettingsFilePath: "${env.MVN_SETTINGS_PATH}") {
@@ -33,14 +32,18 @@ node {
 
         step([$class: 'TasksPublisher', canComputeNew: false, defaultEncoding: '', excludePattern: '', healthy: '', high: 'FIXME', ignoreCase: true, low: '', normal: 'TODO', pattern: '', unHealthy: ''])
       }}
+        
   } catch (any) {
     currentBuild.result = 'FAILURE'
     throw any //rethrow exception to prevent the build from proceeding
   } finally {
-  
-    stage('Reporting'){
 
-      step([$class: 'GitHubCommitStatusSetter'])
+    stage ('Clean up workspace'){
+
+      step([$class: 'WsCleanup'])
+    }
+        
+    stage('Reporting'){
 
       // Notify on build failure using the Email-ext plugin
       emailext(body: '${DEFAULT_CONTENT}', mimeType: 'text/html',

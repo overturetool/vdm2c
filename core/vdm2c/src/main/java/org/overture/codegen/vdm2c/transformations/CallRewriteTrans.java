@@ -39,6 +39,7 @@ import org.overture.codegen.ir.types.ASeqSeqTypeIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.ColTrans;
 import org.overture.codegen.vdm2c.extast.expressions.AMacroApplyExpIR;
+import org.overture.codegen.vdm2c.utils.CGenUtil;
 import org.overture.codegen.vdm2c.utils.CTransUtil;
 import org.overture.codegen.vdm2c.utils.NameMangler;
 import org.slf4j.Logger;
@@ -115,7 +116,7 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 			((ABlockStmIR)enclosing.getBody()).getLocalDefs().add(newDeclarationAssignment(
 						tmpVarName,
 						newTvpType(),
-						newApply(NameMangler.mangle(constr), new ANullExpIR()),
+						newApply(NameMangler.mangle(constr), CGenUtil.consCNull()),
 						null));
 				
 			//Call static function instead.
@@ -281,7 +282,7 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 			((ABlockStmIR)enclosing.getBody()).getLocalDefs().add(newDeclarationAssignment(
 						tmpVarName,
 						newTvpType(),
-						newApply(NameMangler.mangle(constr), new ANullExpIR()),
+						newApply(NameMangler.mangle(constr), CGenUtil.consCNull()),
 						null));
 				
 			//Call static function instead.
