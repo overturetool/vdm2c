@@ -291,6 +291,27 @@ TEST(Expression_Seq, seqReverse)
 	vdmFree(t);
 }
 
+TEST(Expression_Seq, seqMod)
+{
+  int arr[] =
+    { 1, 2 };
+  
+  TVP s = newSequence(2,arr);
+
+  TVP m = newMapVarToGrow(2, 5, newInt(1), newInt(5), newInt(2), newInt(10)) ;
+
+  TVP res = vdmSeqMod(s,m);
+
+  struct Collection* col = (struct Collection*) res->value.ptr;
+
+  EXPECT_EQ(5, col->value[0]->value.intVal);
+  EXPECT_EQ(10, col->value[1]->value.intVal);
+  vdmFree(res);
+
+  vdmFree(s);
+  vdmFree(m);
+}
+
 //TEST(Expression_Seq, seqMod)
 //{
 //	int arr[] =
