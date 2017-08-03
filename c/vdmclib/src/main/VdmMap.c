@@ -34,7 +34,7 @@
 
 #define ASSERT_CHECK(s) assert(s->type == VDM_MAP && "Value is not a map")
 
-#ifndef NO_MAPS
+#if !defined(NO_MAPS) || !defined(NO_SEQS)
 
 
 TVP newMap()
@@ -1096,4 +1096,4 @@ TVP vdmMapEquals(TVP map1, TVP map2){
 	return newBool(eq);
 
 }
-#endif /* NO_MAPS */
+#endif /* NO_MAPS || NO_SEQS */

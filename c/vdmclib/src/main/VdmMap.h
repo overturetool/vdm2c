@@ -35,7 +35,7 @@
 #include <limits.h>
 #include <assert.h>
 
-#ifndef NO_MAPS
+#if !defined(NO_MAPS) || !defined(NO_SEQS)
 
 #define UNWRAP_MAP(var, map) struct Map* var = (struct Map*)map->value.ptr
 
