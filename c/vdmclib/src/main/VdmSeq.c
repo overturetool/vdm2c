@@ -119,10 +119,13 @@ TVP newSeqVarToGrow(size_t size, size_t expected_size, ...)
 	TVP* value = (TVP*) calloc(bufsize, sizeof(TVP));
 	assert(value != NULL);
 
+	TVP arg;
+	TVP v;
+
 	for(i = 0; i < size; i++)
 	{
-		TVP arg = va_arg(ap, TVP);
-		TVP v= vdmClone(arg); /*  set binding  */
+		arg = va_arg(ap, TVP);
+		v = vdmClone(arg); /*  set binding  */
 
 
 		/* Extra security measure.  Will only be true if size >= expected_size.  */
@@ -133,7 +136,7 @@ TVP newSeqVarToGrow(size_t size, size_t expected_size, ...)
 			value = (TVP*)realloc(value, bufsize * sizeof(TVP));
 			assert(value != NULL);
 		}
-		vdmSeqAdd(value,&count,v);
+		vdmSeqAdd(value, &count, v);
 	}
 
 	va_end(ap);
