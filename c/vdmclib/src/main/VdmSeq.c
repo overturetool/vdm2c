@@ -430,6 +430,44 @@ TVP vdmSeqMod(TVP seq,TVP map)
 	return res;
 }
 
+
+TVP vdmSeqModGC(TVP seq,TVP map, TVP *from)
+{
+	ASSERT_CHECK(seq);
+	assert((map->type == VDM_MAP) && "Value is not a map");
+
+	UNWRAP_COLLECTION(s,seq);
+
+	TVP res = newSeqGC(s->size, NULL);
+
+	UNWRAP_COLLECTION(r,res);
+
+	int i;
+	for (i = 0; i < s->size; i++) {
+		r->value[i] = vdmClone(s->value[i]);
+	}
+
+	TVP dom = vdmMapDom(map);
+	UNWRAP_COLLECTION(d,dom);
+
+	TVP key;
+	TVP val;
+	for (i = 0; i < d->size; i++) {
+
+		key = d->value[i];
+		assert((key->type == VDM_INT || key->type == VDM_NAT || key->type == VDM_NAT1) && "key is not an int");
+
+		val = vdmMapApply(map,key);
+		vdmFree(r->value[key->value.intVal - 1]);
+		r->value[key->value.intVal - 1] = val;
+	}
+
+	vdmFree(dom);
+
+	return res;
+}
+
+
 TVP vdmSeqIndex(TVP seq, TVP indexVal) /* VDM uses 1 based index  */
 {
 	ASSERT_CHECK(seq);
