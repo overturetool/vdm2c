@@ -410,7 +410,7 @@ TVP vdmSeqMod(TVP seq,TVP map)
 	UNWRAP_COLLECTION(r,res);
 
 	int i;
-	for (i = 0; i < s->size; ++i) {
+	for (i = 0; i < s->size; i++) {
 		r->value[i] = vdmClone(s->value[i]);
 	}
 
@@ -419,13 +419,12 @@ TVP vdmSeqMod(TVP seq,TVP map)
 
 	TVP key;
 	TVP val;
-	for (i = 0; i < d->size; ++i) {
+	for (i = 0; i < d->size; i++) {
 
 		key = d->value[i];
 		assert((key->type == VDM_INT || key->type == VDM_NAT || key->type == VDM_NAT1) && "key is not an int");
 		val = vdmMapApply(map,key);
-		int seqIdx = key->value.intVal;
-		r->value[seqIdx - 1] = val;
+		r->value[key->value.intVal - 1] = val;
 	}
 
 	return res;
