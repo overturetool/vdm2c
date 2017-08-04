@@ -49,40 +49,52 @@ TVP newProductWithValues(size_t size,TVP* elements)
 
 TVP newProductVar(size_t size, ...)
 {
-	TVP elements[size];
+	TVP *elements;
+	TVP arg;
+	TVP res;
 	int i;
+
+	elements = (TVP *)calloc(size, sizeof(TVP));
 
 	va_list ap;
 	va_start(ap, size);
 
 	for (i = 0; i < size; i++)
 	{
-		TVP arg = va_arg(ap, TVP);
+		arg = va_arg(ap, TVP);
 		elements[i]=arg;
 	}
 	va_end(ap);
 
-	return newCollectionWithValues(size, VDM_PRODUCT, elements);
+	res = newCollectionWithValues(size, VDM_PRODUCT, elements);
+	free(elements);
+	return res;
 }
 
 
 
 TVP newProductVarGC(size_t size, TVP *from, ...)
 {
-	TVP elements[size];
+	TVP *elements;
+	TVP arg;
+	TVP res;
 	int i;
+
+	elements = (TVP *)calloc(size, sizeof(TVP));
 
 	va_list ap;
 	va_start(ap, from);
 
 	for (i = 0; i < size; i++)
 	{
-		TVP arg = va_arg(ap, TVP);
+		arg = va_arg(ap, TVP);
 		elements[i]=arg;
 	}
 	va_end(ap);
 
-	return newCollectionWithValuesGC(size, VDM_PRODUCT, elements, from);
+	res = newCollectionWithValuesGC(size, VDM_PRODUCT, elements, from);
+	free(elements);
+	return res;
 }
 
 
