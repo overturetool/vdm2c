@@ -59,8 +59,8 @@ struct Map* cloneMap(struct Map *m);
 void vdmMapAdd(TVP map,TVP key, TVP value);
 void vdmMapUpdate(TVP map, TVP key, TVP value);
 
-TVP newMapVarToGrow(size_t, size_t, ...);
-TVP newMapVarToGrowGC(size_t size, size_t expected_size, TVP *from, ...);
+TVP newMapVar(size_t, size_t, ...);
+TVP newMapVarGC(size_t size, size_t expected_size, TVP *from, ...);
 void vdmMapGrow(TVP, TVP, TVP);
 void vdmMapFit(TVP);
 

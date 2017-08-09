@@ -20,7 +20,7 @@ public class ColTrans extends DepthFirstAnalysisCAdaptor implements IApplyAssist
 
 	public static final String SEQ_VAR = "newSeqVar";
 	public static final String SET_VAR = "newSetVar";
-	public static final String MAP_VAR = "newMapVarToGrow";	
+	public static final String MAP_VAR = "newMapVar";	
 	
 	// Sequence operations
 	public static final String SEQ_TAIL = "vdmSeqTl";

@@ -298,7 +298,7 @@ TEST(Expression_Seq, seqMod)
   
   TVP s = newSequence(2,arr);
 
-  TVP m = newMapVarToGrow(2, 5, newInt(1), newInt(5), newInt(2), newInt(10)) ;
+  TVP m = newMapVar(2, 5, newInt(1), newInt(5), newInt(2), newInt(10)) ;
 
   TVP res = vdmSeqMod(s,m);
 
