@@ -18,6 +18,7 @@ import org.overture.codegen.ir.IRConstants;
 import org.overture.codegen.ir.IRStatus;
 import org.overture.codegen.ir.IrNodeInfo;
 import org.overture.codegen.ir.PIR;
+import org.overture.codegen.ir.STypeIR;
 import org.overture.codegen.ir.VdmNodeInfo;
 import org.overture.codegen.ir.analysis.DepthFirstAnalysisAdaptor;
 import org.overture.codegen.ir.declarations.ADefaultClassDeclIR;
@@ -32,13 +33,17 @@ import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
 import org.overture.codegen.ir.name.ATokenNameIR;
 import org.overture.codegen.ir.statements.ABlockStmIR;
 import org.overture.codegen.ir.types.AClassTypeIR;
+import org.overture.codegen.ir.types.AExternalTypeIR;
+import org.overture.codegen.ir.types.AIntNumericBasicTypeIR;
 import org.overture.codegen.ir.types.AMethodTypeIR;
 import org.overture.codegen.utils.GeneratedData;
 import org.overture.codegen.utils.GeneratedModule;
 import org.overture.codegen.vdm2c.distribution.CDistTransSeries;
+import org.overture.codegen.vdm2c.distribution.DistCGenUtil;
 import org.overture.codegen.vdm2c.distribution.SystemArchitectureAnalysis;
 import org.overture.codegen.vdm2c.analysis.FeatureAnalysisResult;
 import org.overture.codegen.vdm2c.extast.declarations.AClassHeaderDeclIR;
+import org.overture.codegen.vdm2c.extast.declarations.ADistCallDeclIR;
 import org.overture.codegen.vdm2c.sourceformat.ISourceFileFormatter;
 import org.overture.codegen.vdm2c.transformations.AddFieldTrans;
 import org.overture.codegen.vdm2c.utils.CTransUtil;
@@ -51,20 +56,20 @@ public class CGen extends CodeGenBase
 	public static Map<String, Boolean> hasTimeMap = null;
 
 	private CGenSettings cGenSettings;
-	
+
 	private FeatureAnalysisResult featureAnalysis;
-	
+
 	private List<String> headers = new LinkedList<>();
-	
+
 	public static final String FEATURE_FILE_NAME = "VdmModelFeatures.h";
-	
+
 	private boolean distGen = false;
-	
+
 	public CGen()
 	{
 		this.cGenSettings = new CGenSettings();
 	}
-	
+
 	public CGenSettings getCGenSettings()
 	{
 		return cGenSettings;
@@ -74,7 +79,7 @@ public class CGen extends CodeGenBase
 	{
 		return headers;
 	}
-	
+
 	@Override
 	protected void preProcessAst(List<org.overture.ast.node.INode> ast)
 			throws AnalysisException
@@ -88,12 +93,12 @@ public class CGen extends CodeGenBase
 	{
 		return emittedFiles;
 	}
-	
+
 	public FeatureAnalysisResult getFeatureAnalysisResult()
 	{
 		return featureAnalysis;
 	}
-	
+
 	public List<IRStatus<PIR>> makeRecsOuterClasses(List<IRStatus<PIR>> ast)
 	{
 		List<IRStatus<PIR>> extraClasses = new LinkedList<IRStatus<PIR>>();
@@ -181,7 +186,7 @@ public class CGen extends CodeGenBase
 				}
 
 				recClass.getMethods().add(ctor);
-				
+
 				AMethodDeclIR defCtor = new AMethodDeclIR();
 				defCtor.setIsConstructor(true);
 				defCtor.setAbstract(false);
@@ -189,7 +194,7 @@ public class CGen extends CodeGenBase
 				defCtor.setName(recClass.getName());
 				defCtor.setMethodType(ctorMethodType.clone());
 				defCtor.setBody(new ABlockStmIR());
-				
+
 				recClass.getMethods().add(defCtor);
 
 				extraClasses.add(new IRStatus<PIR>(recClass.getSourceNode().getVdmNode(), recClass.getName(), recClass, new HashSet<VdmNodeInfo>()));
@@ -200,7 +205,7 @@ public class CGen extends CodeGenBase
 	}
 
 	private boolean filter(String name){
-		
+
 		if(name.equals("Test") ||
 				name.equals("TestCase") ||
 				name.equals("TestSuite") ||
@@ -213,11 +218,11 @@ public class CGen extends CodeGenBase
 				name.equals("Assert")||
 				name.equals("IO"))
 			return false;
-		
-		
+
+
 		return true;
 	}
-	
+
 	@Override
 	protected GeneratedData genVdmToTargetLang(List<IRStatus<PIR>> statuses)
 			throws AnalysisException
@@ -225,7 +230,7 @@ public class CGen extends CodeGenBase
 		List<GeneratedModule> genModules = new LinkedList<GeneratedModule>();
 
 		SystemArchitectureAnalysis.setDistFlag(statuses, this);
-		
+
 		Boolean dist_gen = getDistGen() && this.getCGenSettings().usesDistributionCG();
 
 		if(dist_gen){
@@ -233,7 +238,7 @@ public class CGen extends CodeGenBase
 			SystemArchitectureAnalysis sysAnalysis = new SystemArchitectureAnalysis();
 			sysAnalysis.analyseSystem(statuses);
 		}
-		
+
 		statuses = replaceSystemClassWithClass(statuses);
 
 		if(dist_gen){
@@ -254,7 +259,7 @@ public class CGen extends CodeGenBase
 					}
 				}
 			}
-			
+
 			//2. Add initialisation function for each CPU
 			SystemArchitectureAnalysis.addCpuInitMethod(statuses);
 		}
@@ -299,6 +304,8 @@ public class CGen extends CodeGenBase
 
 		CFormat my_formatter = consFormatter(canBeGenerated);
 
+		genDistCalls(canBeGenerated, IRStatus.extract(canBeGenerated, ADefaultClassDeclIR.class));
+
 		// Distribution Transformations
 		if(dist_gen)
 			applyDistTransformations(canBeGenerated);
@@ -314,19 +321,20 @@ public class CGen extends CodeGenBase
 				e.printStackTrace();
 			}
 		}
-		
+
 		filterHeaders(genModules);
-		
+
 		GeneratedData data = new GeneratedData();
 		data.setClasses(genModules);
 
 		return data;
 	}
 
+
 	private void filterHeaders(List<GeneratedModule> genModules) {
 
 		List<GeneratedModule> headersToRemove = new LinkedList<>();
-		
+
 		for(GeneratedModule g : genModules)
 		{
 			if(g.getIrNode() instanceof AClassHeaderDeclIR)
@@ -344,7 +352,7 @@ public class CGen extends CodeGenBase
 				}
 			}
 		}
-		
+
 		genModules.removeAll(headersToRemove);
 	}
 
@@ -510,11 +518,11 @@ public class CGen extends CodeGenBase
 		try
 		{
 			Collection<? extends IRStatus<PIR>> classHeaders = new ClassHeaderGenerator().generateClassHeaders(IRStatus.extract(statuses, ADefaultClassDeclIR.class));
-			
+
 			for (IRStatus<PIR> h : classHeaders) {
 				headers.add(h.getIrNodeName());
 			}
-			
+
 			statuses.addAll(classHeaders);
 		} catch (org.overture.codegen.ir.analysis.AnalysisException e)
 		{
@@ -571,7 +579,7 @@ public class CGen extends CodeGenBase
 			throws IOException
 	{
 		output_dir.mkdirs();
-		
+
 		File file = new File(output_dir, fileName);
 		BufferedWriter output = new BufferedWriter(new FileWriter(file));
 
@@ -584,8 +592,8 @@ public class CGen extends CodeGenBase
 			formatter.format(file);
 		}
 	}
-	
-	
+
+
 	public void emitFeatureFile(File outputDir, String featureFileName) throws Exception
 	{
 		if(featureAnalysis != null)
@@ -601,9 +609,9 @@ public class CGen extends CodeGenBase
 
 	public void emitDistCode(GeneratedData data, File outputDir) throws Exception {
 		for (String cpuName : SystemArchitectureAnalysis.distributionMap.keySet()) {
-			
+
 			CGen cGen = this;
-			
+
 			File outputD = new File(outputDir.getAbsolutePath() + "/" + cpuName);
 
 			cGen.emitFeatureFile(outputD, CGen.FEATURE_FILE_NAME);
@@ -626,7 +634,7 @@ public class CGen extends CodeGenBase
 						cGen.writeFile(generatedClass, outputD);
 
 				} else if(node instanceof AClassHeaderDeclIR) {
-					
+
 					AClassHeaderDeclIR st = (AClassHeaderDeclIR) node;
 
 					Object tag = st.getTag();
@@ -639,20 +647,140 @@ public class CGen extends CodeGenBase
 							&& !(SystemArchitectureAnalysis.systemName.equals(st.toString())))
 						cGen.writeFile(generatedClass, outputD);
 				}
+				else if (node instanceof ADistCallDeclIR){
+					ADistCallDeclIR st = (ADistCallDeclIR) node;
+					//cGen.writeFile(generatedClass, outputD);
+					
+					String bus = st.getTag().toString();
+					
+					if(SystemArchitectureAnalysis.connectionMapStr.get(bus).contains(cpuName)){
+						if(st.getIsHeader())
+							writeFile(outputD, bus + ".h", generatedClass.getContent());
+						else
+							writeFile(outputD, bus + ".c", generatedClass.getContent());
+					}
+				}
 			}
+
+			//			for(String bus : SystemArchitectureAnalysis.connectionMapStr.keySet()){
+			//				for(String currCPU : SystemArchitectureAnalysis.connectionMapStr.get(bus).contains("cpu")){
+			//					
+			//				}
+			//			}
+
 		}
 	}
-	
+
+	private void genDistCalls(List<IRStatus<PIR>> canBeGenerated, List<IRStatus<ADefaultClassDeclIR>> classes) {
+
+		IRStatus<ADefaultClassDeclIR> c = classes.get(0);
+
+		//for (IRStatus<ADefaultClassDeclIR> c: classes) {
+
+		//if(c.canBeGenerated())
+		//{
+		for (String bus : SystemArchitectureAnalysis.connectionMapStr.keySet()){
+
+			// Create C file
+			ADistCallDeclIR distCall = genDistCall(c.getIrNode(), bus + "CG", false);
+			String nodeName = bus ;// +// "_dist";
+			distCall.setTag(bus);
+			IRStatus irStatus = new IRStatus(c.getVdmNode(), nodeName, distCall, c.getUnsupportedInIr(), c.getTransformationWarnings());
+			canBeGenerated.add(irStatus);
+
+			// Create H file
+			distCall = genDistCall(c.getIrNode(), bus + "CG", true);
+			//String nodeName = bus;// +// "_dist";
+			distCall.setTag(bus);
+			irStatus = new IRStatus(c.getVdmNode(), nodeName, distCall, c.getUnsupportedInIr(), c.getTransformationWarnings());
+			canBeGenerated.add(irStatus);
+		}
+		//}
+		//}
+	}
+
+	private ADistCallDeclIR genDistCall(ADefaultClassDeclIR c, String name, Boolean isHeader) {
+
+		ADistCallDeclIR distCall = new ADistCallDeclIR();
+		distCall.setIsHeader(isHeader);
+		distCall.setSourceNode(c.getSourceNode());
+
+		// Create a new method: 
+		AMethodDeclIR m = new AMethodDeclIR();
+
+		m.setAsync(false);
+		m.setAbstract(false);
+		m.setAccess("public");
+		m.setImplicit(false);
+		m.setIsConstructor(false);
+		m.setStatic(false);
+		m.setName(name);
+
+		LinkedList<AFormalParamLocalParamIR> par = new LinkedList<AFormalParamLocalParamIR>();
+
+		// Add method arguments
+		AFormalParamLocalParamIR par1 = DistCGenUtil.addMethodParameter("objID", "int");
+		par.add(par1);
+
+		AFormalParamLocalParamIR par2 = DistCGenUtil.addMethodParameter("funID", "int");
+		par.add(par2);
+
+		AFormalParamLocalParamIR par3 = DistCGenUtil.addMethodParameter("supID", "int");
+		par.add(par3);
+
+		AFormalParamLocalParamIR par4 = DistCGenUtil.addMethodParameter("nrArgs", "int");
+		par.add(par4);
+
+		AFormalParamLocalParamIR par5 = DistCGenUtil.addMethodParameter("", "...");
+		par.add(par5);
+
+		// The method return type
+		AExternalTypeIR tyRet = new AExternalTypeIR();
+		tyRet.setName("TVP");
+
+		AMethodTypeIR mTy = new AMethodTypeIR();
+
+		LinkedList<STypeIR> paramsTy = new LinkedList<STypeIR>();
+		paramsTy.add(new AIntNumericBasicTypeIR());
+		paramsTy.add(new AIntNumericBasicTypeIR());
+
+		mTy.setParams(paramsTy);
+		mTy.setResult(tyRet);
+
+		m.setMethodType(mTy.clone());
+		m.setFormalParams(par);
+
+		// New method body
+		ABlockStmIR body = new ABlockStmIR();
+		body.setScoped(false);	
+
+		m.setBody(body);
+
+		if(isHeader)
+			m.setBody(null);
+
+		//distCall.cl
+		distCall.getMethods().add(m);
+
+		//		for(AMethodDeclIR m : c.getMethods())
+		//		{
+		//			distCall.getMethods().add(m.clone());
+		//		}
+
+		return distCall;
+	}
+
+
 	public void setSourceCodeFormatter(ISourceFileFormatter formatter)
 	{
 		this.formatter = formatter;
 	}
-	
+
 	public void setDistGen(boolean distGen)
 	{
 		this.distGen = distGen;
 	}
-	
+
 	public boolean getDistGen()
 	{
 		return this.distGen;

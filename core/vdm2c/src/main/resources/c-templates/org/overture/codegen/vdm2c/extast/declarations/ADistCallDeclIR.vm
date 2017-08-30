@@ -1,0 +1,27 @@
+
+/* This file contains generated function that enable remote communication */
+#set( $cdefname = $String.format("DISTCALL_%s_H_", $node.getTag().toString() ) )
+#set( $incdefname = $String.format("%s.h", $node.getTag().toString() ) )
+
+#if($node.getIsHeader())
+#ifndef $cdefname
+\#define $cdefname
+#end
+
+#if(!$node.getIsHeader())
+\#include "$String.format("%s.h",$node.getTag().toString() )"
+#end
+
+\#include "Vdm.h"
+
+#foreach( $method in $node.getMethods() )
+  $CFormat.format($method)
+#end
+
+#if($node.getIsHeader())
+#endif /* $cdefname */
+#end
+
+###foreach( $method in $node.getMethods() )
+##  $method.getName()
+###end
