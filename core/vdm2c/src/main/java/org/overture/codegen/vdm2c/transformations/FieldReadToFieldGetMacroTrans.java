@@ -209,7 +209,7 @@ public class FieldReadToFieldGetMacroTrans extends DepthFirstAnalysisCAdaptor
 				}
 
 			} else if (vardef instanceof ALocalDefinition
-					&& ((ALocalDefinition) vardef).getValueDefinition())
+					&& (((ALocalDefinition) vardef).getValueDefinition()) != null)
 			{
 				if (vardef.getAccess().getStatic() != null)
 				{
