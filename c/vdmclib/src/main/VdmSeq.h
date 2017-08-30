@@ -72,7 +72,8 @@ TVP vdmSeqIndsGC(TVP seq, TVP *from);
 
 TVP vdmSeqConc(TVP seq,TVP seq2);
 TVP vdmSeqReverse(TVP seq);
-/* TVP seqMod(TVP seq,TVP seq);  */
+TVP vdmSeqMod(TVP seq,TVP map);
+TVP vdmSeqModGC(TVP seq,TVP map, TVP *from);
 TVP vdmSeqIndex(TVP seq,TVP index);
 
 void vdmSeqUpdate(TVP seq, TVP index, TVP newValue);

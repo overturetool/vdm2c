@@ -119,10 +119,13 @@ TVP newSeqVarToGrow(size_t size, size_t expected_size, ...)
 	TVP* value = (TVP*) calloc(bufsize, sizeof(TVP));
 	assert(value != NULL);
 
+	TVP arg;
+	TVP v;
+
 	for(i = 0; i < size; i++)
 	{
-		TVP arg = va_arg(ap, TVP);
-		TVP v= vdmClone(arg); /*  set binding  */
+		arg = va_arg(ap, TVP);
+		v = vdmClone(arg); /*  set binding  */
 
 
 		/* Extra security measure.  Will only be true if size >= expected_size.  */
@@ -133,7 +136,7 @@ TVP newSeqVarToGrow(size_t size, size_t expected_size, ...)
 			value = (TVP*)realloc(value, bufsize * sizeof(TVP));
 			assert(value != NULL);
 		}
-		vdmSeqAdd(value,&count,v);
+		vdmSeqAdd(value, &count, v);
 	}
 
 	va_end(ap);
@@ -398,7 +401,75 @@ TVP vdmSeqReverseGC(TVP seq, TVP *from)
 	return elemsVal;
 }
 
-/* TVP seqMod(TVP seq,TVP seq);  */
+TVP vdmSeqMod(TVP seq,TVP map)
+{
+	ASSERT_CHECK(seq);
+	assert((map->type == VDM_MAP) && "Value is not a map");
+
+	UNWRAP_COLLECTION(s,seq);
+
+	TVP res = newSeq(s->size);
+
+	UNWRAP_COLLECTION(r,res);
+
+	int i;
+	for (i = 0; i < s->size; i++) {
+		r->value[i] = vdmClone(s->value[i]);
+	}
+
+	TVP dom = vdmMapDom(map);
+	UNWRAP_COLLECTION(d,dom);
+
+	TVP key;
+	TVP val;
+	for (i = 0; i < d->size; i++) {
+
+		key = d->value[i];
+		assert((key->type == VDM_INT || key->type == VDM_NAT || key->type == VDM_NAT1) && "key is not an int");
+		val = vdmMapApply(map,key);
+		r->value[key->value.intVal - 1] = val;
+	}
+
+	return res;
+}
+
+
+TVP vdmSeqModGC(TVP seq,TVP map, TVP *from)
+{
+	ASSERT_CHECK(seq);
+	assert((map->type == VDM_MAP) && "Value is not a map");
+
+	UNWRAP_COLLECTION(s,seq);
+
+	TVP res = newSeqGC(s->size, NULL);
+
+	UNWRAP_COLLECTION(r,res);
+
+	int i;
+	for (i = 0; i < s->size; i++) {
+		r->value[i] = vdmClone(s->value[i]);
+	}
+
+	TVP dom = vdmMapDom(map);
+	UNWRAP_COLLECTION(d,dom);
+
+	TVP key;
+	TVP val;
+	for (i = 0; i < d->size; i++) {
+
+		key = d->value[i];
+		assert((key->type == VDM_INT || key->type == VDM_NAT || key->type == VDM_NAT1) && "key is not an int");
+
+		val = vdmMapApply(map,key);
+		vdmFree(r->value[key->value.intVal - 1]);
+		r->value[key->value.intVal - 1] = val;
+	}
+
+	vdmFree(dom);
+
+	return res;
+}
+
 
 TVP vdmSeqIndex(TVP seq, TVP indexVal) /* VDM uses 1 based index  */
 {

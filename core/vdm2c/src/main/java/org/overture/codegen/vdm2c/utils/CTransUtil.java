@@ -326,7 +326,7 @@ public class CTransUtil
 			INode vdmNode = node.getSourceNode().getVdmNode();
 			return vdmNode instanceof AValueDefinition
 					|| vdmNode instanceof ALocalDefinition
-					&& ((ALocalDefinition) vdmNode).getValueDefinition();
+					&& (((ALocalDefinition) vdmNode).getValueDefinition() != null);
 		}
 		return false;
 	}
@@ -351,7 +351,7 @@ public class CTransUtil
 			if (def instanceof ALocalDefinition)
 			{
 				ALocalDefinition local = (ALocalDefinition) def;
-				if (local.getValueDefinition())
+				if (local.getValueDefinition() != null)
 				{
 					return true;
 				}

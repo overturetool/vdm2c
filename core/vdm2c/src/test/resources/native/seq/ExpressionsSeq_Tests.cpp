@@ -62,9 +62,10 @@ TEST_F(TestFlowFunctions, seqReverse)
 	CHECK(CLASS_ExpressionSeq_seqReverse);
 }
 
-//TEST_F(TestFlowFunctions, seqMod)
-//{
-//}
+TEST_F(TestFlowFunctions, seqMod)
+{
+    CHECK(CLASS_ExpressionSeq_seqMod);
+}
 
 TEST_F(TestFlowFunctions, seqIndex)
 {
