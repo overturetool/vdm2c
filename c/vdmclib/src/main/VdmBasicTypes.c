@@ -228,6 +228,48 @@ TVP isIntGC(TVP v, TVP *from)
 	return newBoolGC(false, from);
 }
 
+TVP isNat(TVP v)
+{
+	if(v->type == VDM_NAT)
+		return newBool(true);
+	return newBool(false);
+}
+
+TVP isNatGC(TVP v, TVP *from)
+{
+	if(v->type == VDM_NAT)
+		return newBoolGC(true, from);
+	return newBoolGC(false, from);
+}
+
+TVP isNat1(TVP v)
+{
+	if(v->type == VDM_NAT1)
+		return newBool(true);
+	return newBool(false);
+}
+
+TVP isNat1GC(TVP v, TVP *from)
+{
+	if(v->type == VDM_NAT1)
+		return newBoolGC(true, from);
+	return newBoolGC(false, from);
+}
+
+TVP isRat(TVP v)
+{
+	if(v->type == VDM_RAT)
+		return newBool(true);
+	return newBool(false);
+}
+
+TVP isRatGC(TVP v, TVP *from)
+{
+	if(v->type == VDM_RAT)
+		return newBoolGC(true, from);
+	return newBoolGC(false, from);
+}
+
 TVP isReal(TVP v)
 {
 	if(v->type == VDM_REAL)
@@ -252,6 +294,34 @@ TVP isBool(TVP v)
 TVP isBoolGC(TVP v, TVP *from)
 {
 	if(v->type == VDM_BOOL)
+		return newBoolGC(true, from);
+	return newBoolGC(false, from);
+}
+
+TVP isChar(TVP v)
+{
+	if(v->type == VDM_CHAR)
+		return newBool(true);
+	return newBool(false);
+}
+
+TVP isCharGC(TVP v, TVP *from)
+{
+	if(v->type == VDM_CHAR)
+		return newBoolGC(true, from);
+	return newBoolGC(false, from);
+}
+
+TVP isToken(TVP v)
+{
+	if(v->type == VDM_TOKEN)
+		return newBool(true);
+	return newBool(false);
+}
+
+TVP isTokenGC(TVP v, TVP *from)
+{
+	if(v->type == VDM_TOKEN)
 		return newBoolGC(true, from);
 	return newBoolGC(false, from);
 }
