@@ -294,3 +294,83 @@ TEST(Expression, ifExp)
 
 	vdmFree (TEST_TRUE);
 }
+
+TEST(Expression, isInt)
+{
+	TVP res = isInt(newInt(3));
+	EXPECT_TRUE(res->value.boolVal);
+
+	vdmFree(res);
+}
+
+TEST(Expression, isReal)
+{
+	TVP res = isReal(newReal(3));
+	EXPECT_TRUE(res->value.boolVal);
+
+	vdmFree(res);
+}
+
+TEST(Expression, isBool)
+{
+	TVP res = isBool(newBool(false));
+	EXPECT_TRUE(res->value.boolVal);
+
+	vdmFree(res);
+}
+
+
+TEST(Expression, isNat)
+{
+	TVP res = isNat(newInt(0));
+	EXPECT_TRUE(res->value.boolVal);
+
+	vdmFree(res);
+
+	res = isNat(newInt(-1));
+	EXPECT_FALSE(res->value.boolVal);
+
+	vdmFree(res);
+}
+
+TEST(Expression, isNat1)
+{
+	TVP res = isNat1(newInt(1));
+	EXPECT_TRUE(res->value.boolVal);
+
+	vdmFree(res);
+
+	res = isNat1(newInt(0));
+	EXPECT_FALSE(res->value.boolVal);
+
+	vdmFree(res);
+}
+
+TEST(Expression, isRat)
+{
+	TVP res = isRat(newReal(1));
+	EXPECT_TRUE(res->value.boolVal);
+
+	vdmFree(res);
+
+	res = isRat(newInt(0));
+	EXPECT_FALSE(res->value.boolVal);
+
+	vdmFree(res);
+}
+
+TEST(Expression, isChar)
+{
+	TVP res = isChar(newChar('a'));
+	EXPECT_TRUE(res->value.boolVal);
+
+	vdmFree(res);
+}
+
+TEST(Expression, isToken)
+{
+	TVP res = isToken(newToken(newSeqVar(1, newChar('a'))));
+	EXPECT_TRUE(res->value.boolVal);
+
+	vdmFree(res);
+}

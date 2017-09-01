@@ -92,9 +92,22 @@ TVP vdmLessOrEqualGC(TVP a, TVP b, TVP *from);
  * internal use
  */
 bool isNumber(TVP val);
-TVP isInt(TVP);
-TVP isReal(TVP);
-TVP isBool(TVP);
+TVP isInt(TVP val);
+TVP isIntGC(TVP val, TVP *from);
+TVP isReal(TVP val);
+TVP isRealGC(TVP val, TVP *from);
+TVP isBool(TVP val);
+TVP isBoolGC(TVP val, TVP *from);
+TVP isNat(TVP val);
+TVP isNatGC(TVP val, TVP *from);
+TVP isNat1(TVP val);
+TVP isNat1GC(TVP val, TVP *from);
+TVP isRat(TVP val);
+TVP isRatGC(TVP val, TVP *from);
+TVP isChar(TVP val);
+TVP isCharGC(TVP val, TVP *from);
+TVP isToken(TVP val);
+TVP isTokenGC(TVP val, TVP *from);
 int toInteger(TVP a);
 double toDouble(TVP a);
 bool toBool(TVP a);

@@ -230,44 +230,60 @@ TVP isIntGC(TVP v, TVP *from)
 
 TVP isNat(TVP v)
 {
-	if(v->type == VDM_NAT)
-		return newBool(true);
+	if(v->type == VDM_INT)
+	{
+		if(v->value.intVal >= 0)
+		{
+			return newBool(true);
+		}
+	}
 	return newBool(false);
 }
 
 TVP isNatGC(TVP v, TVP *from)
 {
-	if(v->type == VDM_NAT)
-		return newBoolGC(true, from);
-	return newBoolGC(false, from);
+	if(v->type == VDM_INT)
+		{
+			if(v->value.intVal >= 0)
+			{
+				return newBoolGC(true, from);
+			}
+		}
+		return newBoolGC(false, from);
 }
 
 TVP isNat1(TVP v)
 {
-	if(v->type == VDM_NAT1)
-		return newBool(true);
+	if(v->type == VDM_INT)
+	{
+		if(v->value.intVal > 0)
+		{
+			return newBool(true);
+		}
+	}
 	return newBool(false);
 }
 
 TVP isNat1GC(TVP v, TVP *from)
 {
-	if(v->type == VDM_NAT1)
-		return newBoolGC(true, from);
-	return newBoolGC(false, from);
+	if(v->type == VDM_INT)
+		{
+			if(v->value.intVal > 0)
+			{
+				return newBoolGC(true, from);
+			}
+		}
+		return newBoolGC(false, from);
 }
 
 TVP isRat(TVP v)
 {
-	if(v->type == VDM_RAT)
-		return newBool(true);
-	return newBool(false);
+	return isReal(v);
 }
 
 TVP isRatGC(TVP v, TVP *from)
 {
-	if(v->type == VDM_RAT)
-		return newBoolGC(true, from);
-	return newBoolGC(false, from);
+	return isRealGC(v, from);
 }
 
 TVP isReal(TVP v)
