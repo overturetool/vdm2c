@@ -136,7 +136,7 @@ TVP letFilter1Exp()
 {
 	TVP res =NULL;
 	{ //let b = 2 in
-	  // b
+		// b
 		TVP tmp1 = newInt(2);
 		{
 			//let 1 = b in
@@ -275,7 +275,7 @@ TEST(Expression, letFilter1Exp)
 	}
 
 	if(!failed)
-	FAIL();
+		FAIL();
 	vdmFree (TEST_TRUE);
 }
 
@@ -371,6 +371,21 @@ TEST(Expression, isToken)
 {
 	TVP res = isToken(newToken(newSeqVar(1, newChar('a'))));
 	EXPECT_TRUE(res->value.boolVal);
+
+	vdmFree(res);
+}
+
+TEST(Expression, isSeqOfInt)
+{
+	TVP res = isSeqOfInt(newSeqVar(1, newInt(1)));
+
+	EXPECT_TRUE(res->value.boolVal);
+
+	vdmFree(res);
+
+	res = isSeqOfInt(newSeqVar(1, newReal(1)));
+
+	EXPECT_FALSE(res->value.boolVal);
 
 	vdmFree(res);
 }

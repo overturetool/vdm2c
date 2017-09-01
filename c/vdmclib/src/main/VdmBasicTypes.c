@@ -228,6 +228,18 @@ TVP isIntGC(TVP v, TVP *from)
 	return newBoolGC(false, from);
 }
 
+TVP isSeqOfInt(TVP v)
+{
+	if(v->type == VDM_SEQ)
+	{
+		if((((struct Collection *)(v->value.ptr)))->size == 0)
+			return newBool(true);
+		if((((struct Collection *)(v->value.ptr)))->value[0]->type == VDM_INT)
+			return newBool(true);
+		return newBool(false);
+	}
+}
+
 TVP isNat(TVP v)
 {
 	if(v->type == VDM_INT)

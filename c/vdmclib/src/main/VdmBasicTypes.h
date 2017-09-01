@@ -108,6 +108,7 @@ TVP isChar(TVP val);
 TVP isCharGC(TVP val, TVP *from);
 TVP isToken(TVP val);
 TVP isTokenGC(TVP val, TVP *from);
+TVP isSeqOfInt(TVP v);
 int toInteger(TVP a);
 double toDouble(TVP a);
 bool toBool(TVP a);
