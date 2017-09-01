@@ -28,6 +28,9 @@ seqReverse()== reverse [1,2] = [2,1];
 protected seqIndex: () -> bool
 seqIndex()== [1,2](1)=1;
 
+protected seqMod: () -> bool
+seqMod()== [1, 2] ++ {1 |-> 5, 2 |-> 10} = [5,10];
+  
 protected seqEqual: () -> bool
 seqEqual()== [1,2] = [1,2];
 

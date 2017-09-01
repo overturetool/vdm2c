@@ -84,7 +84,7 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 		// Collections
 		gcNames.put(ColTrans.SEQ_VAR, "newSeqVarGC");
 		gcNames.put(ColTrans.SET_VAR, "newSetVarGC");
-		gcNames.put(ColTrans.MAP_VAR, "newMapVarToGrowGC");
+		gcNames.put(ColTrans.MAP_VAR, "newMapVarGC");
 		
 		// Sequence operations
 		gcNames.put(ColTrans.SEQ_TAIL, "vdmSeqTlGC");
@@ -95,7 +95,8 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 		gcNames.put(ColTrans.SEQ_INDEX, "vdmSeqIndexGC");
 		gcNames.put(ColTrans.SEQ_ELEMS, "vdmSeqElemsGC");
 		gcNames.put(ColTrans.SEQ_INDS, "vdmSeqIndsGC");
-		
+		gcNames.put(ColTrans.SEQ_MOD, "vdmSeqModGC");
+
 		// Set operations and utility functions
 		gcNames.put(CForIterator.VDM_SET_ELEMENT_AT, "vdmSetElementAtGC");
 		gcNames.put(ColTrans.SET_MEMBER, "vdmSetMemberOfGC");
@@ -193,8 +194,8 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 					}
 					else if(isMap(oldName) || isSetVarToGrow(oldName))
 					{
-						// The signature of 'newMapVarToGrowGC' is:
-						// TVP newMapVarToGrowGC(size_t size, size_t expected_size, TVP *from, ...);
+						// The signature of 'newMapVarGC' is:
+						// TVP newMapVarGC(size_t size, size_t expected_size, TVP *from, ...);
 						// TVP newSetVarToGrowGC(size_t size, size_t expected_size, TVP *from, ...)
 						// Therefore, 'from' is the third argument (at index 2)
 						args.add(2, consReference(node));

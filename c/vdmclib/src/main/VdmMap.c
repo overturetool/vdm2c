@@ -34,7 +34,7 @@
 
 #define ASSERT_CHECK(s) assert(s->type == VDM_MAP && "Value is not a map")
 
-#ifndef NO_MAPS
+#if !defined(NO_MAPS) || !defined(NO_SEQS)
 
 
 TVP newMap()
@@ -111,7 +111,7 @@ TVP newMapGC(TVP *from)
 
 
 /* Not a very useful function, but here to support the map comprehension mechanism.  */
-TVP newMapVarToGrow(size_t size, size_t expected_size, ...)
+TVP newMapVar(size_t size, size_t expected_size, ...)
 {
 	struct Map* ptr;
 	TVP key;
@@ -149,7 +149,7 @@ TVP newMapVarToGrow(size_t size, size_t expected_size, ...)
 }
 
 /* Not a very useful function, but here to support the map comprehension mechanism.  */
-TVP newMapVarToGrowGC(size_t size, size_t expected_size, TVP *from, ...)
+TVP newMapVarGC(size_t size, size_t expected_size, TVP *from, ...)
 {
 	struct Map* ptr;
 	TVP key;
@@ -1096,4 +1096,4 @@ TVP vdmMapEquals(TVP map1, TVP map2){
 	return newBool(eq);
 
 }
-#endif /* NO_MAPS */
+#endif /* NO_MAPS || NO_SEQS */

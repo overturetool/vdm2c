@@ -400,16 +400,16 @@ TEST(Expression_Map, mapEquals1)
 TEST(Expression_Map, mapEquals2)
 {
 	// {1 |-> 2}
-	TVP m1 = newMapVarToGrow(1, 5, newInt(1), newInt(2));
+	TVP m1 = newMapVar(1, 5, newInt(1), newInt(2));
 
 	// {3 |-> 4}
-	TVP m2 = newMapVarToGrow(1, 5, newInt(3), newInt(4));
+	TVP m2 = newMapVar(1, 5, newInt(3), newInt(4));
 
 	// m1 union m2
 	TVP mapUnionResult = vdmMapMunion(m1,m2);
 
 	// {1 |-> 2, 3 |-> 4}
-	TVP expectedResult = newMapVarToGrow(2, 5, newInt(3), newInt(4), newInt(1), newInt(2));
+	TVP expectedResult = newMapVar(2, 5, newInt(3), newInt(4), newInt(1), newInt(2));
 
 	TVP res = vdmEquals(mapUnionResult, expectedResult);
 	bool b = res->value.boolVal;
@@ -425,16 +425,16 @@ TEST(Expression_Map, mapEquals2)
 
 
 
-TEST(Expression_Map, newMapVarToGrow)
+TEST(Expression_Map, newMapVar)
 {
 	TVP theMap;
 	TVP val;
 	TVP res;
 
-	theMap = newMapVarToGrow(0, 10);
+	theMap = newMapVar(0, 10);
 	vdmFree(theMap);
 
-	theMap = newMapVarToGrow(3, 10, newChar('a'), newInt(1), newChar('b'), newInt(2), newChar('c'), newInt(3));
+	theMap = newMapVar(3, 10, newChar('a'), newInt(1), newChar('b'), newInt(2), newChar('c'), newInt(3));
 
 	val = vdmMapApply(theMap, newChar('a'));
 	res = vdmEquals(val, newInt(1));
