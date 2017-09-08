@@ -9,38 +9,7 @@ import org.overture.cgc.extast.analysis.DepthFirstAnalysisCAdaptor;
 import org.overture.codegen.ir.SExpIR;
 import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.analysis.intf.IAnalysis;
-import org.overture.codegen.ir.expressions.AApplyExpIR;
-import org.overture.codegen.ir.expressions.ACardUnaryExpIR;
-import org.overture.codegen.ir.expressions.ADistIntersectUnaryExpIR;
-import org.overture.codegen.ir.expressions.ADistMergeUnaryExpIR;
-import org.overture.codegen.ir.expressions.ADistUnionUnaryExpIR;
-import org.overture.codegen.ir.expressions.ADomainResByBinaryExpIR;
-import org.overture.codegen.ir.expressions.ADomainResToBinaryExpIR;
-import org.overture.codegen.ir.expressions.AElemsUnaryExpIR;
-import org.overture.codegen.ir.expressions.AEnumMapExpIR;
-import org.overture.codegen.ir.expressions.AEnumSeqExpIR;
-import org.overture.codegen.ir.expressions.AEnumSetExpIR;
-import org.overture.codegen.ir.expressions.AExternalExpIR;
-import org.overture.codegen.ir.expressions.AHeadUnaryExpIR;
-import org.overture.codegen.ir.expressions.AInSetBinaryExpIR;
-import org.overture.codegen.ir.expressions.AIndicesUnaryExpIR;
-import org.overture.codegen.ir.expressions.ALenUnaryExpIR;
-import org.overture.codegen.ir.expressions.AMapDomainUnaryExpIR;
-import org.overture.codegen.ir.expressions.AMapOverrideBinaryExpIR;
-import org.overture.codegen.ir.expressions.AMapRangeUnaryExpIR;
-import org.overture.codegen.ir.expressions.AMapUnionBinaryExpIR;
-import org.overture.codegen.ir.expressions.AMapletExpIR;
-import org.overture.codegen.ir.expressions.APowerSetUnaryExpIR;
-import org.overture.codegen.ir.expressions.ARangeResByBinaryExpIR;
-import org.overture.codegen.ir.expressions.ARangeResToBinaryExpIR;
-import org.overture.codegen.ir.expressions.AReverseUnaryExpIR;
-import org.overture.codegen.ir.expressions.ASeqConcatBinaryExpIR;
-import org.overture.codegen.ir.expressions.ASetDifferenceBinaryExpIR;
-import org.overture.codegen.ir.expressions.ASetIntersectBinaryExpIR;
-import org.overture.codegen.ir.expressions.ASetProperSubsetBinaryExpIR;
-import org.overture.codegen.ir.expressions.ASetSubsetBinaryExpIR;
-import org.overture.codegen.ir.expressions.ASetUnionBinaryExpIR;
-import org.overture.codegen.ir.expressions.ATailUnaryExpIR;
+import org.overture.codegen.ir.expressions.*;
 import org.overture.codegen.ir.types.AExternalTypeIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.utils.CGenUtil;
@@ -51,7 +20,7 @@ public class ColTrans extends DepthFirstAnalysisCAdaptor implements IApplyAssist
 
 	public static final String SEQ_VAR = "newSeqVar";
 	public static final String SET_VAR = "newSetVar";
-	public static final String MAP_VAR = "newMapVarToGrow";	
+	public static final String MAP_VAR = "newMapVar";	
 	
 	// Sequence operations
 	public static final String SEQ_TAIL = "vdmSeqTl";
@@ -62,7 +31,8 @@ public class ColTrans extends DepthFirstAnalysisCAdaptor implements IApplyAssist
 	public static final String SEQ_INDEX = "vdmSeqIndex";
 	public static final String SEQ_ELEMS = "vdmSeqElems";
 	public static final String SEQ_INDS = "vdmSeqInds";
-	
+	public static final String SEQ_MOD = "vdmSeqMod";
+
 	// Set operations
 	public static final String SET_MEMBER = "vdmSetMemberOf";
 	public static final String SET_UNION = "vdmSetUnion";
@@ -143,7 +113,13 @@ public class ColTrans extends DepthFirstAnalysisCAdaptor implements IApplyAssist
 		
 		rewriteToApply(this, node, SEQ_INDS, node.getExp());
 	}
-	
+
+	@Override
+	public void caseASeqModificationBinaryExpIR(ASeqModificationBinaryExpIR node) throws AnalysisException {
+
+		rewriteToApply(this, node, SEQ_MOD, node.getLeft(), node.getRight());
+	}
+
 	@Override
 	public void caseAApplyExpIR(AApplyExpIR node) throws AnalysisException {
 	

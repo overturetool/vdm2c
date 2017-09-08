@@ -60,7 +60,7 @@ typedef enum
 #ifndef NO_SEQS
 	VDM_SEQ,
 #endif
-#ifndef NO_MAPS
+#if !defined(NO_MAPS) || !defined(NO_SEQS)
 	VDM_MAP,
 #endif
 #ifndef NO_PRODUCTS
