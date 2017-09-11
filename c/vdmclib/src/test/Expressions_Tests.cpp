@@ -374,18 +374,3 @@ TEST(Expression, isToken)
 
 	vdmFree(res);
 }
-
-TEST(Expression, isSeqOfInt)
-{
-	TVP res = isSeqOfInt(newSeqVar(1, newInt(1)));
-
-	EXPECT_TRUE(res->value.boolVal);
-
-	vdmFree(res);
-
-	res = isSeqOfInt(newSeqVar(1, newReal(1)));
-
-	EXPECT_FALSE(res->value.boolVal);
-
-	vdmFree(res);
-}

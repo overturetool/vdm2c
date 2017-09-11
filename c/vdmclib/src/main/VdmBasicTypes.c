@@ -214,6 +214,20 @@ bool isNumber(TVP val)
 	}
 }
 
+TVP isSeq(TVP v)
+{
+	if(v->type == VDM_SEQ)
+		return newBool(true);
+	return newBool(false);
+}
+
+TVP isSet(TVP v)
+{
+	if(v->type == VDM_SET)
+		return newBool(true);
+	return newBool(false);
+}
+
 TVP isInt(TVP v)
 {
 	if(v->type == VDM_INT)
@@ -352,6 +366,10 @@ TVP isTokenGC(TVP v, TVP *from)
 	if(v->type == VDM_TOKEN)
 		return newBoolGC(true, from);
 	return newBoolGC(false, from);
+}
+
+TVP is(TVP v, char nt[], char it[])
+{
 }
 
 /*

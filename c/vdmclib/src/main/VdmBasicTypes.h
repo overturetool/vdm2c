@@ -93,6 +93,8 @@ TVP vdmLessOrEqualGC(TVP a, TVP b, TVP *from);
  */
 bool isNumber(TVP val);
 TVP isInt(TVP val);
+TVP isSeq(TVP val);
+TVP isSet(TVP val);
 TVP isIntGC(TVP val, TVP *from);
 TVP isReal(TVP val);
 TVP isRealGC(TVP val, TVP *from);
@@ -109,6 +111,7 @@ TVP isCharGC(TVP val, TVP *from);
 TVP isToken(TVP val);
 TVP isTokenGC(TVP val, TVP *from);
 TVP isSeqOfInt(TVP v);
+TVP is(TVP v, char nt[], char it[])
 int toInteger(TVP a);
 double toDouble(TVP a);
 bool toBool(TVP a);
