@@ -269,13 +269,13 @@ TVP isNat(TVP v)
 TVP isNatGC(TVP v, TVP *from)
 {
 	if(v->type == VDM_INT)
+	{
+		if(v->value.intVal >= 0)
 		{
-			if(v->value.intVal >= 0)
-			{
-				return newBoolGC(true, from);
-			}
+			return newBoolGC(true, from);
 		}
-		return newBoolGC(false, from);
+	}
+	return newBoolGC(false, from);
 }
 
 TVP isNat1(TVP v)
@@ -293,13 +293,13 @@ TVP isNat1(TVP v)
 TVP isNat1GC(TVP v, TVP *from)
 {
 	if(v->type == VDM_INT)
+	{
+		if(v->value.intVal > 0)
 		{
-			if(v->value.intVal > 0)
-			{
-				return newBoolGC(true, from);
-			}
+			return newBoolGC(true, from);
 		}
-		return newBoolGC(false, from);
+	}
+	return newBoolGC(false, from);
 }
 
 TVP isRat(TVP v)
@@ -368,8 +368,80 @@ TVP isTokenGC(TVP v, TVP *from)
 	return newBoolGC(false, from);
 }
 
-TVP is(TVP v, char nt[], char it[])
+
+TVP is(TVP v, char ot[], vdmtype it)
 {
+	int i;
+	bool res = true;
+	TVP isres;
+
+	/* No nesting inside seq or set. */
+	if(ot[0] == 'z')
+	{
+		switch(it)
+		{
+		case VDM_INT:
+			res = (isInt(v))->value.boolVal;
+			break;
+		case VDM_REAL:
+			res = (isReal(v))->value.boolVal;
+			break;
+		case VDM_BOOL:
+			res = (isBool(v))->value.boolVal;
+			break;
+		case VDM_NAT:
+			res = (isNat(v))->value.boolVal;
+			break;
+		case VDM_NAT1:
+			res = (isNat1(v))->value.boolVal;
+			break;
+		case VDM_RAT:
+			res = (isRat(v))->value.boolVal;
+			break;
+		case VDM_CHAR:
+			res = (isChar(v))->value.boolVal;
+			break;
+		case VDM_TOKEN:
+			res = (isToken(v))->value.boolVal;
+			break;
+		default:
+			break;
+		};
+	}
+	else if(ot[0] == 'q')
+	{
+		if(v->type == VDM_SEQ)
+		{
+			for(i = 0; i < ((struct Collection *)(v->value.ptr))->size; i++)
+			{
+				isres = is(((struct Collection *)(v->value.ptr))->value[i], &(ot[1]), it);
+				res &= isres->value.boolVal;
+				vdmFree(isres);
+			}
+		}
+		else
+		{
+			res = false;
+		}
+	}
+	else if(ot[0] == 't')
+	{
+		if(v->type == VDM_SET)
+		{
+			for(i = 0; i < ((struct Collection *)(v->value.ptr))->size; i++)
+			{
+				isres = is(((struct Collection *)(v->value.ptr))->value[i], &(ot[1]), it);
+				res &= isres->value.boolVal;
+				vdmFree(isres);
+			}
+		}
+		else
+		{
+			res = false;
+		}
+	}
+
+	return newBool(res);
 }
 
 /*
@@ -528,10 +600,10 @@ TVP vdmSumGC(TVP a,TVP b, TVP *from)
 	double bv=toDouble(b);
 
 	if((a->type == VDM_INT || a->type == VDM_NAT || a->type == VDM_NAT1) &&
-				(b->type == VDM_INT || b->type == VDM_NAT || b->type == VDM_NAT1))
-			return newIntGC((int)(av + bv), from);
+			(b->type == VDM_INT || b->type == VDM_NAT || b->type == VDM_NAT1))
+		return newIntGC((int)(av + bv), from);
 
-		return newRealGC(av+bv, from);
+	return newRealGC(av+bv, from);
 }
 
 TVP vdmDifference(TVP a,TVP b)
@@ -558,10 +630,10 @@ TVP vdmDifferenceGC(TVP a,TVP b, TVP *from)
 	double bv=toDouble(b);
 
 	if((a->type == VDM_INT || a->type == VDM_NAT || a->type == VDM_NAT1) &&
-				(b->type == VDM_INT || b->type == VDM_NAT || b->type == VDM_NAT1))
-			return newIntGC((int)(av - bv), from);
+			(b->type == VDM_INT || b->type == VDM_NAT || b->type == VDM_NAT1))
+		return newIntGC((int)(av - bv), from);
 
-		return newRealGC(av - bv, from);
+	return newRealGC(av - bv, from);
 }
 
 TVP vdmProduct(TVP a,TVP b)
@@ -588,10 +660,10 @@ TVP vdmProductGC(TVP a, TVP b, TVP *from)
 	double bv=toDouble(b);
 
 	if((a->type == VDM_INT || a->type == VDM_NAT || a->type == VDM_NAT1) &&
-				(b->type == VDM_INT || b->type == VDM_NAT || b->type == VDM_NAT1))
-			return newIntGC((int)(av * bv), from);
+			(b->type == VDM_INT || b->type == VDM_NAT || b->type == VDM_NAT1))
+		return newIntGC((int)(av * bv), from);
 
-		return newRealGC(av * bv, from);
+	return newRealGC(av * bv, from);
 }
 
 TVP vdmDivision(TVP a,TVP b)
@@ -731,10 +803,10 @@ TVP vdmModGC(TVP a, TVP b, TVP *from)
 	double rv = (int)toDouble(b);
 
 	if((a->type == VDM_INT || a->type == VDM_NAT || a->type == VDM_NAT1) &&
-				(b->type == VDM_INT || b->type == VDM_NAT || b->type == VDM_NAT1))
-			return newIntGC((int)(lv-rv*(long) floor(lv/rv)), from);
+			(b->type == VDM_INT || b->type == VDM_NAT || b->type == VDM_NAT1))
+		return newIntGC((int)(lv-rv*(long) floor(lv/rv)), from);
 
-		return newRealGC(lv-rv*(long) floor(lv/rv), from);
+	return newRealGC(lv-rv*(long) floor(lv/rv), from);
 }
 
 TVP vdmPower(TVP a,TVP b)

@@ -297,80 +297,137 @@ TEST(Expression, ifExp)
 
 TEST(Expression, isInt)
 {
-	TVP res = isInt(newInt(3));
-	EXPECT_TRUE(res->value.boolVal);
+	char ot[] = {'z'};
+	TVP res;
 
+	res = isInt(newInt(3));
+	EXPECT_TRUE(res->value.boolVal);
+	vdmFree(res);
+
+	res = is(newInt(3), ot, VDM_INT);
+	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(res);
 }
 
 TEST(Expression, isReal)
 {
-	TVP res = isReal(newReal(3));
-	EXPECT_TRUE(res->value.boolVal);
+	char ot[] = {'z'};
+	TVP res;
 
+	res = isReal(newReal(3));
+	EXPECT_TRUE(res->value.boolVal);
+	vdmFree(res);
+
+	res = is(newReal(3), ot, VDM_REAL);
+	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(res);
 }
 
 TEST(Expression, isBool)
 {
-	TVP res = isBool(newBool(false));
-	EXPECT_TRUE(res->value.boolVal);
+	char ot[] = {'z'};
+	TVP res;
 
+	res = isBool(newBool(false));
+	EXPECT_TRUE(res->value.boolVal);
+	vdmFree(res);
+
+	res = is(newBool(false), ot, VDM_BOOL);
+	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(res);
 }
 
 
 TEST(Expression, isNat)
 {
-	TVP res = isNat(newInt(0));
-	EXPECT_TRUE(res->value.boolVal);
+	char ot[] = {'z'};
+	TVP res;
 
+	res = isNat(newInt(0));
+	EXPECT_TRUE(res->value.boolVal);
+	vdmFree(res);
+
+	res = is(newInt(0), ot, VDM_NAT);
+	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(res);
 
 	res = isNat(newInt(-1));
 	EXPECT_FALSE(res->value.boolVal);
+	vdmFree(res);
 
+	res = is(newInt(-1), ot, VDM_NAT);
+	EXPECT_FALSE(res->value.boolVal);
 	vdmFree(res);
 }
 
 TEST(Expression, isNat1)
 {
-	TVP res = isNat1(newInt(1));
-	EXPECT_TRUE(res->value.boolVal);
+	char ot[] = {'z'};
+	TVP res;
 
+	res = isNat1(newInt(1));
+	EXPECT_TRUE(res->value.boolVal);
+	vdmFree(res);
+
+	res = is(newInt(1), ot, VDM_NAT1);
+	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(res);
 
 	res = isNat1(newInt(0));
 	EXPECT_FALSE(res->value.boolVal);
+	vdmFree(res);
 
+	res = is(newInt(0), ot, VDM_NAT1);
+	EXPECT_FALSE(res->value.boolVal);
 	vdmFree(res);
 }
 
 TEST(Expression, isRat)
 {
-	TVP res = isRat(newReal(1));
-	EXPECT_TRUE(res->value.boolVal);
+	char ot[] = {'z'};
+	TVP res;
 
+	res = isRat(newReal(1));
+	EXPECT_TRUE(res->value.boolVal);
+	vdmFree(res);
+
+	res = is(newReal(1), ot, VDM_RAT);
+	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(res);
 
 	res = isRat(newInt(0));
 	EXPECT_FALSE(res->value.boolVal);
+	vdmFree(res);
 
+	res = is(newInt(0), ot, VDM_RAT);
+	EXPECT_FALSE(res->value.boolVal);
 	vdmFree(res);
 }
 
 TEST(Expression, isChar)
 {
-	TVP res = isChar(newChar('a'));
-	EXPECT_TRUE(res->value.boolVal);
+	char ot[] = {'z'};
+	TVP res;
 
+	res = isChar(newChar('a'));
+	EXPECT_TRUE(res->value.boolVal);
+	vdmFree(res);
+
+	res = is(newChar('a'), ot, VDM_CHAR);
+	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(res);
 }
 
 TEST(Expression, isToken)
 {
-	TVP res = isToken(newToken(newSeqVar(1, newChar('a'))));
-	EXPECT_TRUE(res->value.boolVal);
+	char ot[] = {'z'};
+	TVP res;
 
+	res = isToken(newToken(newSeqVar(1, newChar('a'))));
+	EXPECT_TRUE(res->value.boolVal);
+	vdmFree(res);
+
+	res = is(newToken(newSeqVar(1, newChar('a'))), ot, VDM_TOKEN);
+	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(res);
 }
