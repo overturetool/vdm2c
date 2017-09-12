@@ -214,19 +214,23 @@ bool isNumber(TVP val)
 	}
 }
 
+#ifndef NO_SEQS
 TVP isSeq(TVP v)
 {
 	if(v->type == VDM_SEQ)
 		return newBool(true);
 	return newBool(false);
 }
+#endif
 
+#ifndef NO_SETS
 TVP isSet(TVP v)
 {
 	if(v->type == VDM_SET)
 		return newBool(true);
 	return newBool(false);
 }
+#endif
 
 TVP isInt(TVP v)
 {
@@ -240,18 +244,6 @@ TVP isIntGC(TVP v, TVP *from)
 	if(v->type == VDM_INT)
 		return newBoolGC(true, from);
 	return newBoolGC(false, from);
-}
-
-TVP isSeqOfInt(TVP v)
-{
-	if(v->type == VDM_SEQ)
-	{
-		if((((struct Collection *)(v->value.ptr)))->size == 0)
-			return newBool(true);
-		if((((struct Collection *)(v->value.ptr)))->value[0]->type == VDM_INT)
-			return newBool(true);
-		return newBool(false);
-	}
 }
 
 TVP isNat(TVP v)
@@ -408,6 +400,7 @@ TVP is(TVP v, char ot[], vdmtype it)
 			break;
 		};
 	}
+#ifndef NO_SEQS
 	else if(ot[0] == 'q')
 	{
 		if(v->type == VDM_SEQ)
@@ -424,6 +417,8 @@ TVP is(TVP v, char ot[], vdmtype it)
 			res = false;
 		}
 	}
+#endif
+#ifndef NO_SETS
 	else if(ot[0] == 't')
 	{
 		if(v->type == VDM_SET)
@@ -440,6 +435,7 @@ TVP is(TVP v, char ot[], vdmtype it)
 			res = false;
 		}
 	}
+#endif
 
 	return newBool(res);
 }
