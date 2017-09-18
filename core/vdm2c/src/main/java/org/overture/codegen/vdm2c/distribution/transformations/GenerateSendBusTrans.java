@@ -204,7 +204,7 @@ public class GenerateSendBusTrans extends DepthFirstAnalysisCAdaptor
 				AIdentifierVarExpIR idVar = new AIdentifierVarExpIR();
 				idVar.setIsLambda(false);
 				idVar.setIsLocal(false);
-				idVar.setName(bus);
+				idVar.setName(bus + "_send");
 				// set method type
 				idVar.setType(mTy.clone());
 				app.setRoot(idVar);

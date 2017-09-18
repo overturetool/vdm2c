@@ -3,8 +3,7 @@
 #ifndef DISTCALL_H_
 #define DISTCALL_H_
 
-//#include "intVal.h"
-#include "basicTypes.h"
+#include "intVal.h"
 #include "Vdm.h"
 #include "D.h"
 #include <stdarg.h>
@@ -23,11 +22,20 @@
 
 // Assume buffer size 100
 #define BUF_SIZE 100
-
+//#define byte char
 // TODO: Can be replaced with
 //#define byte uint8_t;
 
-//#define byte char
-TVP bus(int objID, int funID, int supID, int nrArgs, va_list args);
+// Write and Read hardware functions pr. BUS
+TVP busWrite(int objID, int funID, int supID, int nrArgs, va_list args);
+int busRead(byte *buffer, int len);
+
+TVP deconstructData(byte* data, int len);
+
+TVP bus_send(int objID, int funID, int supID, int nrArgs, va_list args);
+
+void sendRes(TVP res, int newsockfd);
+
+void handleReciever();
 
 #endif

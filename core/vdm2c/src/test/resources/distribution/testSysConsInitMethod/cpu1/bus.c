@@ -1,6 +1,6 @@
 // The Send_Bus and HandleRecieved calls
 
-#include "distCall.h"
+#include "bus.h"
 #include "asn1crt.h"
 #include <unistd.h>
 #include <stdio.h>
@@ -13,7 +13,7 @@ void error(const char *msg)
 	exit(1);
 }
 
-TVP bus(int objID, int funID, int supID, int nrArgs, va_list args){
+TVP bus_send(int objID, int funID, int supID, int nrArgs, va_list args){
 	//TVP res;
 
 	byte sendArr[BUF_SIZE]; // Array to be send
@@ -56,7 +56,6 @@ TVP bus(int objID, int funID, int supID, int nrArgs, va_list args){
 	//exit(0);
 	//}
 
-
 	int nb = -1;
 
 	FILE* fptr = NULL;
@@ -68,7 +67,7 @@ TVP bus(int objID, int funID, int supID, int nrArgs, va_list args){
 
 	}
 	remove("../sync.txt");
-
+	
 	portno = atoi("51717");
 
 	sockfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -95,7 +94,6 @@ TVP bus(int objID, int funID, int supID, int nrArgs, va_list args){
 
 	nb = connect(sockfd,(struct sockaddr *) &serv_addr,sizeof(serv_addr));
 
-	
 	n = write(sockfd,sendArr,BUF_SIZE);
 
 	if (n < 0)

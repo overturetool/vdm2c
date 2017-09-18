@@ -1,8 +1,7 @@
 // The Send_Bus and HandleRecieved calls
 
-#include "distCall.h"
+#include "bus.h"
 #include "asn1crt.h"
-#include "basicTypes.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -14,7 +13,7 @@ void error(const char *msg)
 
 
 // TODO: Implemented by user, lower-level part
-TVP deconstructData(byte* data, int len){
+TVP deconstructData(char* data, int len){
 
 	// Simple deserialisation
 	int buf_size = (int) data[0];
@@ -25,12 +24,23 @@ TVP deconstructData(byte* data, int len){
 
 	int max_args = 10;
 
-	//TVP args[max_args];
+	TVP args[max_args];
 
-	TVP args[2] = {newInt(2), newInt(2)};
+	// TODO: Miran: Move this to a de-serialisation function
+	// Reconstruct the arguments:
+	/*
+	int b = 3;
+	int i;
+	for(i=0; i<nr_args; i++){
+		// Reconstruct type
+		b++;
+		if(data[b] == VDM_QUOTE){ // Reconstruct value
+			b++;
+			args[i] = newQuote(data[b]);
+		}
 
-	deserialise(data, 2, args);
-
+	}
+	 */
 	// Obtain the result from function call
 	// The getResult function is supported by the code generator
 	// So this is the high level function
@@ -82,14 +92,12 @@ int busRead(byte *buffer, int len){ // Just for own testing
 
 	listen(sockfd,5);
 
-
-
-	clilen = sizeof(cli_addr);
-
 	FILE* fptr;
 
 	fptr = fopen("../sync.txt", "w");
 	fclose(fptr);
+
+	clilen = sizeof(cli_addr);
 
 	newsockfd = accept(sockfd,
 			(struct sockaddr *) &cli_addr,
@@ -126,90 +134,42 @@ int busRead(byte *buffer, int len){ // Just for own testing
 }
 
 /*
-VdmInteger iu = 4;
+IntValue iu = 4;
 int pErrCode;
 BitStream bitStrm;
-char encBuff[VdmInteger_REQUIRED_BYTES_FOR_ENCODING + 1];
-BitStream_Init(&bitStrm, encBuff, VdmInteger_REQUIRED_BYTES_FOR_ENCODING);
-VdmInteger_Encode(&iu, &bitStrm, &pErrCode, TRUE);
- */
+char encBuff[IntValue_REQUIRED_BYTES_FOR_ENCODING + 1];
+BitStream_Init(&bitStrm, encBuff, IntValue_REQUIRED_BYTES_FOR_ENCODING);
+IntValue_Encode(&iu, &bitStrm, &pErrCode, TRUE);
+*/
+
+void fromVdmInt2Int(TVP *s, IntValue *d){
+	*d = (*s)->value.intVal;
+}
 
 // TODO: Implement with lower send of message
 void sendRes(TVP res, int newsockfd){
 
-	if(res->type==VDM_INT){
-		byte sendBuff[VdmInteger_REQUIRED_BYTES_FOR_ENCODING + 1 + 1];
-		sendBuff[0] = VDM_INT;
-		VdmInteger val;
-		fromVdmInt2Int(&res, &val);
-		int pErrCode;
-		BitStream bitStrm;
-		char encBuff[VdmInteger_REQUIRED_BYTES_FOR_ENCODING + 1];
-		BitStream_Init(&bitStrm, encBuff, VdmInteger_REQUIRED_BYTES_FOR_ENCODING);
-		VdmInteger_Encode(&val, &bitStrm, &pErrCode, TRUE);
-		// Simple serialise value
-		//buf[0] = (byte) res->value.intVal;
-		printf("Result integer accross network is: %d \n", res->value.intVal);
-		int n;
+	// send result back
+	//char buf[1];
+	//buf[0] = (char) 5;
 
-		memcpy(sendBuff+1, encBuff, VdmInteger_REQUIRED_BYTES_FOR_ENCODING + 1);
+	//char buf[IntValue_REQUIRED_BYTES_FOR_ENCODING + 1];
 
-		n = write(newsockfd,sendBuff, VdmInteger_REQUIRED_BYTES_FOR_ENCODING + 1);
-		if (n < 0) error("ERROR writing to socket");
-	}
+	IntValue val;
+	fromVdmInt2Int(&res, &val);
 
-	if(res->type==VDM_BOOL){
-		byte sendBuff[VdmBoolean_REQUIRED_BYTES_FOR_ENCODING + 1];
-		sendBuff[0] = VDM_BOOL;
-		sendBuff[1] = res->value.boolVal;
-		printf("Result Boolean accross network is: %d \n", res->value.boolVal);
-		int n;
-		n = write(newsockfd,sendBuff, VdmBoolean_REQUIRED_BYTES_FOR_ENCODING + 1);
-		if (n < 0) error("ERROR writing to socket");
-	}
+	int pErrCode;
+	BitStream bitStrm;
+	char encBuff[IntValue_REQUIRED_BYTES_FOR_ENCODING + 1];
+	BitStream_Init(&bitStrm, encBuff, IntValue_REQUIRED_BYTES_FOR_ENCODING);
+	IntValue_Encode(&val, &bitStrm, &pErrCode, TRUE);
 
-	if(res->type==VDM_QUOTE){
-		byte sendBuff[VdmInteger_REQUIRED_BYTES_FOR_ENCODING + 1 + 1];
-		sendBuff[0] = VDM_QUOTE;
-		VdmInteger val;
-		fromVdmQuote2Quote(&res, &val);
-		int pErrCode;
-		BitStream bitStrm;
-		char encBuff[VdmInteger_REQUIRED_BYTES_FOR_ENCODING + 1];
-		BitStream_Init(&bitStrm, encBuff, VdmInteger_REQUIRED_BYTES_FOR_ENCODING);
-		VdmInteger_Encode(&val, &bitStrm, &pErrCode, TRUE);
-		// Simple serialise value
-		//buf[0] = (byte) res->value.intVal;
-		printf("Result integer accross network is: %d \n", res->value.intVal);
-		int n;
-
-		memcpy(sendBuff+1, encBuff, VdmInteger_REQUIRED_BYTES_FOR_ENCODING + 1);
-
-		n = write(newsockfd,sendBuff, VdmInteger_REQUIRED_BYTES_FOR_ENCODING + 1);
-		if (n < 0) error("ERROR writing to socket");
-	}
-
-	if(res->type==VDM_REAL){
-		byte sendBuff[VdmReal_REQUIRED_BYTES_FOR_ENCODING + 1 + 1];
-		sendBuff[0] = VDM_REAL;
-		VdmInteger val;
-		fromVdmReal2Real(&res, &val);
-		int pErrCode;
-		BitStream bitStrm;
-		char encBuff[VdmReal_REQUIRED_BYTES_FOR_ENCODING + 1];
-		BitStream_Init(&bitStrm, encBuff, VdmReal_REQUIRED_BYTES_FOR_ENCODING);
-		VdmReal_Encode(&val, &bitStrm, &pErrCode, TRUE);
-		// Simple serialise value
-		//buf[0] = (byte) res->value.intVal;
-		printf("Result integer accross network is: %f \n", res->value.doubleVal);
-		int n;
-
-		memcpy(sendBuff+1, encBuff, VdmReal_REQUIRED_BYTES_FOR_ENCODING + 1);
-
-		n = write(newsockfd,sendBuff, VdmReal_REQUIRED_BYTES_FOR_ENCODING + 1);
-		if (n < 0) error("ERROR writing to socket");
-	}
-
+	// Simple serialise value
+	//buf[0] = (byte) res->value.intVal;
+	printf("Result accross network is: %d \n", res->value.intVal);
+	int n;
+	n = write(newsockfd,encBuff, IntValue_REQUIRED_BYTES_FOR_ENCODING + 1);
+	if (n < 0) error("ERROR writing to socket");
 }
 
 void handleReciever(){
@@ -231,7 +191,118 @@ void handleReciever(){
 
 }
 
-TVP bus(int objID, int funID, int supID, int nrArgs, va_list args){
+
+TVP busWrite(int objID, int funID, int supID, int nrArgs, va_list args){
+	TVP res;
+
+	byte sendArr[BUF_SIZE]; // Array to be send
+
+	// Simple serialization of the known types
+	sendArr[1] = (byte) objID;
+	sendArr[2] = (byte) funID;
+	sendArr[3] = (byte) supID;
+	sendArr[4] = (byte) nrArgs;
+
+	int i;
+	// Loop through all arguments and serialise them
+	int b = 4;
+	/*
+		for (i = 3; i < nrArgs + 3; i++) {
+			TVP arg = va_arg(args, TVP);
+
+
+			// TODO: Move this in a serialization function
+			if(arg->type==VDM_QUOTE) {
+				b++;
+				sendArr[b] = (byte) VDM_QUOTE; // add type to array
+				b++;
+				sendArr[b] = (byte) arg->value.quoteVal; // add value to array
+			}
+		}
+	 */
+	byte buf_size = (byte) b + 1;
+
+	sendArr[0] = buf_size;
+
+	printf("Buffer size is: %d \n", buf_size);
+
+	// print serialised values
+	for (i = 0; i < buf_size; i++)
+		printf("Hello UART: %d \n", sendArr[i]);
+
+	// TODO: While, wait for result
+	// If we need to wait for a result
+
+	int sockfd, portno, n;
+	struct sockaddr_in serv_addr;
+	struct hostent *server;
+
+	char buffer[256];
+
+	//buffer = encBuf ;
+
+	//if (argc < 3) {
+	// fprintf(stderr,"usage %s hostname port\n", argv[0]);
+	//exit(0);
+	//}
+	portno = atoi("51717");
+
+	sockfd = socket(AF_INET, SOCK_STREAM, 0);
+
+	if (sockfd < 0)
+		error("ERROR opening socket");
+
+	server = gethostbyname("localhost");
+
+	if (server == NULL) {
+		fprintf(stderr,"ERROR, no such host\n");
+		exit(0);
+	}
+
+	bzero((char *) &serv_addr, sizeof(serv_addr));
+
+	serv_addr.sin_family = AF_INET;
+
+	bcopy((char *)server->h_addr,
+			(char *)&serv_addr.sin_addr.s_addr,
+			server->h_length);
+
+	serv_addr.sin_port = htons(portno);
+
+	if (connect(sockfd,(struct sockaddr *) &serv_addr,sizeof(serv_addr)) < 0)
+		error("ERROR connecting");
+
+	//printf("Please enter the message: ");
+
+	//bzero(buffer,256);
+
+	//fgets(buffer,255,stdin);
+
+	n = write(sockfd,sendArr,strlen(sendArr));
+
+	if (n < 0)
+		error("ERROR writing to socket");
+
+	bzero(buffer,256);
+
+	n = read(sockfd,buffer,255);
+
+	if (n < 0)
+		error("ERROR reading from socket");
+
+	printf("%s\n",buffer);
+
+	close(sockfd);
+
+	// TODO: Receive the result, e.g. change to receive value
+	byte res_ser = buffer[0];
+
+	res = vdmClone(newInt( (int) res_ser));
+
+	return res;
+}
+
+TVP bus_send(int objID, int funID, int supID, int nrArgs, va_list args){
 	TVP res;
 
 	byte sendArr[BUF_SIZE]; // Array to be send

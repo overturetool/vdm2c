@@ -3,7 +3,8 @@
 #ifndef DISTCALL_H_
 #define DISTCALL_H_
 
-#include "intVal.h"
+//#include "intVal.h"
+#include "basicTypes.h"
 #include "Vdm.h"
 #include "D.h"
 #include <stdarg.h>
@@ -27,6 +28,6 @@
 //#define byte uint8_t;
 
 //#define byte char
-TVP bus(int objID, int funID, int supID, int nrArgs, va_list args);
+TVP bus_send(int objID, int funID, int supID, int nrArgs, va_list args);
 
 #endif

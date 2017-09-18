@@ -32,7 +32,7 @@ int busRead(byte *buffer, int len);
 
 TVP deconstructData(byte* data, int len);
 
-TVP bus(int objID, int funID, int supID, int nrArgs, va_list args);
+TVP bus_send(int objID, int funID, int supID, int nrArgs, va_list args);
 
 void sendRes(TVP res, int newsockfd);
 

@@ -25,6 +25,6 @@
 //#define byte uint8_t;
 
 //#define byte char
-TVP bus(int objID, int funID, int supID, int nrArgs, va_list args);
+TVP bus_send(int objID, int funID, int supID, int nrArgs, va_list args);
 
 #endif

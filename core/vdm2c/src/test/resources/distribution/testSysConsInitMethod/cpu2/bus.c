@@ -1,6 +1,6 @@
 // The Send_Bus and HandleRecieved calls
 
-#include "distCall.h"
+#include "bus.h"
 #include "asn1crt.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -175,7 +175,7 @@ void handleReciever(){
 
 }
 
-TVP bus(int objID, int funID, int supID, int nrArgs, va_list args){
+TVP bus_send(int objID, int funID, int supID, int nrArgs, va_list args){
 	TVP res;
 
 	byte sendArr[BUF_SIZE]; // Array to be send
