@@ -295,6 +295,9 @@ TEST(Expression, ifExp)
 	vdmFree (TEST_TRUE);
 }
 
+
+
+/*
 TEST(Expression, isInt)
 {
 	char ot[] = {'z'};
@@ -491,3 +494,5 @@ TEST(Expression, isSetOfSeqOfToken)
 	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(res);
 }
+
+*/

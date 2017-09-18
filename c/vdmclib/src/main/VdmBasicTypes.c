@@ -368,32 +368,32 @@ TVP is(TVP v, char ot[], vdmtype it)
 	TVP isres;
 
 	/* No nesting inside seq or set. */
-	if(ot[0] == 'z')
+	if(ot[0] != 'Q' && ot[0] != 'T' && ot[0] != 'R')
 	{
-		switch(it)
+		switch(ot[0])
 		{
-		case VDM_INT:
+		case 'i':  /*  VDM_INT  */
 			res = (isInt(v))->value.boolVal;
 			break;
-		case VDM_REAL:
+		case 'd':  /*  VDM_REAL  */
 			res = (isReal(v))->value.boolVal;
 			break;
-		case VDM_BOOL:
+		case 'b':  /*  VDM_BOOL  */
 			res = (isBool(v))->value.boolVal;
 			break;
-		case VDM_NAT:
+		case 'j':  /*  VDM_NAT  */
 			res = (isNat(v))->value.boolVal;
 			break;
-		case VDM_NAT1:
+		case 'k':  /*  VDM_NAT1  */
 			res = (isNat1(v))->value.boolVal;
 			break;
-		case VDM_RAT:
+		case 'e':  /*  VDM_RAT  */
 			res = (isRat(v))->value.boolVal;
 			break;
-		case VDM_CHAR:
+		case 'c':  /*  VDM_CHAR  */
 			res = (isChar(v))->value.boolVal;
 			break;
-		case VDM_TOKEN:
+		case 't':  /*  VDM_TOKEN  */
 			res = (isToken(v))->value.boolVal;
 			break;
 		default:
