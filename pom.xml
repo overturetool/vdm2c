@@ -13,11 +13,11 @@
 	<artifactId>root</artifactId>
 	<packaging>pom</packaging>
 	<name>Overture VDM 2 C Translator Root</name>
-	<version>0.1.11-SNAPSHOT</version>
+	<version>0.1.15-SNAPSHOT</version>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<overture.version>2.5.0</overture.version>
+		<overture.version>2.5.2</overture.version>
 	</properties>
 
 
