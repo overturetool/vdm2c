@@ -85,13 +85,13 @@ public class CGenerator
 				// If distribution, these maps exist
 				for(String cpu : SystemArchitectureAnalysis.distributionMapStr.keySet()){
 					
-					// Copy the distribution run-time
-					CGenUtil.copyNativeLibFiles(Vdm2CCommand.class.getClassLoader().getResourceAsStream("jars/distributionLib.jar"),
-							new File(cCodeOutputFolder + File.separator + cpu  /* + File.separator + "distributionLib"*/));
-					
 					// Copy files from vdmclib.jar.
 					CGenUtil.copyNativeLibFiles(Vdm2CCommand.class.getClassLoader().getResourceAsStream("jars/vdmclib.jar"),
 							new File(cCodeOutputFolder + File.separator + cpu + File.separator + "nativelib"));
+					
+					// Copy the distribution run-time
+					CGenUtil.copyDistributionLibFiles(Vdm2CCommand.class.getClassLoader().getResourceAsStream("jars/distributionLib.jar"),
+							new File(cCodeOutputFolder + File.separator + cpu  + File.separator + "distributionLib"));
 
 					//Emit empty main.c file so that the generated project compiles.
 					//emitMainFile(new File(cCodeOutputFolder + File.separator + cpu + File.separator + "main.c"), vdm2c.getHeaders());
