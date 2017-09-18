@@ -56,24 +56,8 @@ public class AddIncludesTrans extends DepthFirstAnalysisCAdaptor
 			CGenClonableString sysName = new CGenClonableString(SystemArchitectureAnalysis.systemName);
 			includes.add(sysName);
 
-
 			header.setIncludes(includes);
 		}
-		/*
-		AClassHeaderDeclIR header = node.getAncestor(AClassHeaderDeclIR.class);
-
-		List<CGenClonableString> includes = (List<CGenClonableString>) header.getIncludes();
-
-		CGenClonableString std_arge = new CGenClonableString("distCall");
-		includes.add(std_arge);
-
-		if(!node.getName().equals(SystemArchitectureAnalysis.systemName)){
-			CGenClonableString sysName = new CGenClonableString(SystemArchitectureAnalysis.systemName);
-			includes.add(sysName);
-		}
-
-		header.setIncludes(includes);
-		 */
 	}
 
 
