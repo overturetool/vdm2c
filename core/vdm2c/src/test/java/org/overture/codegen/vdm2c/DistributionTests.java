@@ -164,6 +164,15 @@ public class DistributionTests extends DistTestBase
 		pb3.directory(cpu2Dir);
 		pb3.start();
 
+		Boolean b = true;
+		
+		while(b){
+			File f = new File("target/test-cgen/DistributionTests/TestAsn/sync.txt");
+			if(f.exists()) { 
+			    b = false;
+			}
+		}
+		
 		//Thread.sleep(delay);
 		
 		// cpu1 -- sync call
@@ -253,6 +262,15 @@ public class DistributionTests extends DistTestBase
 
 		//Thread.sleep(delay);
 		
+		Boolean b = true;
+		
+		while(b){
+			File f = new File("target/test-cgen/DistributionTests/TestAsnProd/sync.txt");
+			if(f.exists()) { 
+			    b = false;
+			}
+		}
+		
 		String current = new java.io.File( "." ).getCanonicalPath();
 		//System.out.println("Current dir:"+current);
 
@@ -263,7 +281,7 @@ public class DistributionTests extends DistTestBase
 
 	}
 
-	//@Test
+	@Test
 	public void TestSysConsInitMethod() throws IOException, InterruptedException,
 	CMakeGenerateException
 	{
@@ -341,6 +359,15 @@ public class DistributionTests extends DistTestBase
 		pb3.directory(cpu2Dir);
 		pb3.start();
 
+		Boolean b = true;
+		
+		while(b){
+			File f = new File("target/test-cgen/DistributionTests/TestSysConsInitMethod/sync.txt");
+			if(f.exists()) { 
+			    b = false;
+			}
+		}
+		
 		//Thread.sleep(delay);
 		
 		// cpu1 -- sync call
@@ -429,6 +456,15 @@ public class DistributionTests extends DistTestBase
 		pb3.directory(cpu2Dir);
 		pb3.start();
 
+		Boolean b = true;
+		
+		while(b){
+			File f = new File("target/test-cgen/DistributionTests/TestQuotesBool/sync.txt");
+			if(f.exists()) { 
+			    b = false;
+			}
+		}
+		
 		//Thread.sleep(delay);
 		
 		// cpu1 -- sync call
