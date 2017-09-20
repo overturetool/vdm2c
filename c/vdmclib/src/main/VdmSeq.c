@@ -70,37 +70,51 @@ TVP newSeqWithValues(size_t size, TVP* elements)
 TVP newSeqVar(size_t size, ...)
 {
 	int i;
-	TVP elements[size];
+	TVP arg;
+	TVP *elements;
+	TVP res;
+
+	elements = (TVP *)calloc(size, sizeof(TVP));
 
 	va_list ap;
 	va_start(ap, size);
 
 	for (i = 0; i < size; i++)
 	{
-		TVP arg = va_arg(ap, TVP);
-		elements[i]=arg;
+		arg = va_arg(ap, TVP);
+		elements[i] = arg;
 	}
 	va_end(ap);
 
-	return newCollectionWithValues(size, VDM_SEQ, elements);
+	res = newCollectionWithValues(size, VDM_SEQ, elements);
+	free(elements);
+
+	return res;
 }
 
 TVP newSeqVarGC(size_t size, TVP *from, ...)
 {
 	int i;
-	TVP elements[size];
+	TVP arg;
+	TVP res;
+	TVP *elements;
+
+	elements = (TVP *)calloc(size, sizeof(TVP));
 
 	va_list ap;
 	va_start(ap, from);
 
 	for (i = 0; i < size; i++)
 	{
-		TVP arg = va_arg(ap, TVP);
+		arg = va_arg(ap, TVP);
 		elements[i] = arg;
 	}
 	va_end(ap);
 
-	return newCollectionWithValuesGC(size, VDM_SEQ, elements, from);
+	res = newCollectionWithValuesGC(size, VDM_SEQ, elements, from);
+	free(elements);
+
+	return res;
 }
 
 /* Just like newSeqVar, but with memory preallocated to an expected  */
