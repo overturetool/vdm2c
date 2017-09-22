@@ -158,6 +158,8 @@ public class CTransSeries
 		transformations.add(new MethodVisibilityTrans(transAssistant));
 		transformations.add(new C89ForLoopTrans(transAssistant));
 		transformations.add(new EnsureValueSemanticsTrans());
+		
+		//transformations.add(new RenameMathLibraryTrans(transAssistant));
 
 		if(codeGen.getCGenSettings().usesGarbageCollection())
 		{
