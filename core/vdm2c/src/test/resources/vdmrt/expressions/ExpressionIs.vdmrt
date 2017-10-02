@@ -10,4 +10,13 @@ public isNatNeg : () ==> bool
 isNatNeg () ==
 return not is_nat(nil);
 
+public isNat1Pos : () ==> bool
+isNat1Pos () ==
+return is_nat1(1);
+
+public isNat1Neg : () ==> bool
+isNat1Neg () ==
+return not is_nat1(0);
+
+
 end IsTest

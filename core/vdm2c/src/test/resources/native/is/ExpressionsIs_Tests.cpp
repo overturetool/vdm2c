@@ -33,3 +33,13 @@ TEST_F(TestFlowFunctions, isNatNeg)
 {
 	CHECK(CLASS_IsTest__Z8isNatNegEV);
 }
+
+TEST_F(TestFlowFunctions, isNat1Pos)
+{
+	CHECK(CLASS_IsTest__Z9isNat1PosEV);
+}
+
+TEST_F(TestFlowFunctions, isNat1Neg)
+{
+	CHECK(CLASS_IsTest__Z9isNat1NegEV);
+}
