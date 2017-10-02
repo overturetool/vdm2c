@@ -186,6 +186,9 @@ TVP vdmSeqHd(TVP seq)
 {
 	ASSERT_CHECK(seq);
 	UNWRAP_COLLECTION(col,seq);
+
+	assert(col->size != 0 && "Can not take head of empty sequence.\n");
+
 	return vdmClone(col->value[0]);
 }
 
@@ -193,6 +196,9 @@ TVP vdmSeqHdGC(TVP seq, TVP *from)
 {
 	ASSERT_CHECK(seq);
 	UNWRAP_COLLECTION(col,seq);
+
+	assert(col->size != 0 && "Can not take head of empty sequence.\n");
+
 	return vdmCloneGC(col->value[0], from);
 }
 
@@ -202,6 +208,8 @@ TVP vdmSeqTl(TVP seq)
 
 	ASSERT_CHECK(seq);
 	UNWRAP_COLLECTION(col,seq);
+
+	assert(col->size != 0 && "Can not take tail of empty sequence.\n");
 
 	/* malloc  */
 	TVP tailVal = newSeq(col->size-1);
@@ -222,6 +230,8 @@ TVP vdmSeqTlGC(TVP seq, TVP *from)
 
 	ASSERT_CHECK(seq);
 	UNWRAP_COLLECTION(col,seq);
+
+	assert(col->size != 0 && "Can not take tail of empty sequence.\n");
 
 	/* malloc  */
 	TVP tailVal = newSeqGC(col->size - 1, from);
@@ -418,7 +428,7 @@ TVP vdmSeqReverseGC(TVP seq, TVP *from)
 TVP vdmSeqMod(TVP seq,TVP map)
 {
 	ASSERT_CHECK(seq);
-	assert((map->type == VDM_MAP) && "Value is not a map");
+	assert((map->type == VDM_MAP) && "Overriding expression is not a map.\n");
 
 	UNWRAP_COLLECTION(s,seq);
 
@@ -439,7 +449,8 @@ TVP vdmSeqMod(TVP seq,TVP map)
 	for (i = 0; i < d->size; i++) {
 
 		key = d->value[i];
-		assert((key->type == VDM_INT || key->type == VDM_NAT || key->type == VDM_NAT1) && "key is not an int");
+		assert((key->type == VDM_INT || key->type == VDM_NAT || key->type == VDM_NAT1) && "Overriding expression key is not an integer.\n");
+		assert(key->value.intVal >= 1 && key->value.intVal <= s->size && "Overriding expression key not in sequence index range.\n");
 		val = vdmMapApply(map,key);
 		r->value[key->value.intVal - 1] = val;
 	}
@@ -451,7 +462,7 @@ TVP vdmSeqMod(TVP seq,TVP map)
 TVP vdmSeqModGC(TVP seq,TVP map, TVP *from)
 {
 	ASSERT_CHECK(seq);
-	assert((map->type == VDM_MAP) && "Value is not a map");
+	assert((map->type == VDM_MAP) && "Overriding expression is not a map.\n");
 
 	UNWRAP_COLLECTION(s,seq);
 
@@ -472,7 +483,8 @@ TVP vdmSeqModGC(TVP seq,TVP map, TVP *from)
 	for (i = 0; i < d->size; i++) {
 
 		key = d->value[i];
-		assert((key->type == VDM_INT || key->type == VDM_NAT || key->type == VDM_NAT1) && "key is not an int");
+		assert((key->type == VDM_INT || key->type == VDM_NAT || key->type == VDM_NAT1) && "Overriding expression key is not an integer.\n");
+		assert(key->value.intVal >= 1 && key->value.intVal <= s->size && "Overriding expression key not in sequence index range.\n");
 
 		val = vdmMapApply(map,key);
 		vdmFree(r->value[key->value.intVal - 1]);
