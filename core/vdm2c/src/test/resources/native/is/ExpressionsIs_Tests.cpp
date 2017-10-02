@@ -24,22 +24,12 @@ EXPECT_EQ (true,res->value.boolVal);\
 vdmFree(res);\
 vdmFree(c)
 
-TEST_F(TestFlowFunctions, isInt)
+TEST_F(TestFlowFunctions, isNatPos)
 {
-	CHECK(CLASS_IsTest__Z9TestIsIntEV);
+	CHECK(CLASS_IsTest__Z8isNatPosEV);
 }
 
-TEST_F(TestFlowFunctions, isBool)
+TEST_F(TestFlowFunctions, isNatNeg)
 {
-	CHECK(CLASS_IsTest__Z10TestIsBoolEV);
-}
-
-TEST_F(TestFlowFunctions, isReal)
-{
-	CHECK(CLASS_IsTest__Z10TestIsRealEV);
-}
-
-TEST_F(TestFlowFunctions, isNotInt)
-{
-	CHECK(CLASS_IsTest__Z12TestIsNotIntEV);
+	CHECK(CLASS_IsTest__Z8isNatNegEV);
 }
