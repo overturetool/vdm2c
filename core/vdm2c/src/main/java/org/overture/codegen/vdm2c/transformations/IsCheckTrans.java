@@ -13,6 +13,7 @@ public class IsCheckTrans extends DepthFirstAnalysisCAdaptor implements IApplyAs
     public static final String VDM_IS_NAT = "isNat";
     public static final String VDM_IS_NAT1 = "isNat1";
     public static final String VDM_IS_INT = "isInt";
+    public static final String VDM_IS_REAL = "isReal";
     public static final String VDM_IS_BOOL = "isBool";
     public static final String VDM_IS_RAT = "isRat";
     public static final String VDM_IS_CHAR = "isChar";
@@ -38,6 +39,11 @@ public class IsCheckTrans extends DepthFirstAnalysisCAdaptor implements IApplyAs
     @Override
     public void caseAIntIsExpIR(AIntIsExpIR node) throws AnalysisException {
         CTransUtil.rewriteToApply(this, node, VDM_IS_INT, node.getExp());
+    }
+
+    @Override
+    public void caseARealIsExpIR(ARealIsExpIR node) throws AnalysisException {
+        CTransUtil.rewriteToApply(this, node, VDM_IS_REAL, node.getExp());
     }
 
     @Override

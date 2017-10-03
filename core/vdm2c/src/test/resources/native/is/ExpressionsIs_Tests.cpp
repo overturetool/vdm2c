@@ -54,6 +54,16 @@ TEST_F(TestFlowFunctions, isIntNeg)
 	CHECK(CLASS_IsTest__Z8isIntNegEV);
 }
 
+TEST_F(TestFlowFunctions, isRealPos)
+{
+	CHECK(CLASS_IsTest__Z9isRealPosEV);
+}
+
+TEST_F(TestFlowFunctions, isRealNeg)
+{
+	CHECK(CLASS_IsTest__Z9isRealNegEV);
+}
+
 TEST_F(TestFlowFunctions, isBoolPos)
 {
 	CHECK(CLASS_IsTest__Z9isBoolPosEV);

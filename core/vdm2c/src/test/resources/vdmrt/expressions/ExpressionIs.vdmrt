@@ -26,6 +26,14 @@ public isIntNeg : () ==> bool
 isIntNeg () ==
 return not is_int(2.5);
 
+public isRealPos : () ==> bool
+isRealPos () ==
+return is_real(5.5);
+
+public isRealNeg : () ==> bool
+isRealNeg () ==
+return not is_real('z');
+
 public isBoolPos : () ==> bool
 isBoolPos () ==
 return is_bool(true);
