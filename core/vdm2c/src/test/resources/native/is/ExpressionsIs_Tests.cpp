@@ -83,3 +83,13 @@ TEST_F(TestFlowFunctions, isCharNeg)
 {
 	CHECK(CLASS_IsTest__Z9isCharNegEV);
 }
+
+TEST_F(TestFlowFunctions, isTokenPos)
+{
+	CHECK(CLASS_IsTest__Z10isTokenPosEV);
+}
+
+TEST_F(TestFlowFunctions, isTokenNeg)
+{
+	CHECK(CLASS_IsTest__Z10isTokenNegEV);
+}

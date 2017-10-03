@@ -16,6 +16,7 @@ public class IsCheckTrans extends DepthFirstAnalysisCAdaptor implements IApplyAs
     public static final String VDM_IS_BOOL = "isBool";
     public static final String VDM_IS_RAT = "isRat";
     public static final String VDM_IS_CHAR = "isChar";
+    public static final String VDM_IS_TOKEN = "isToken";
 
     private TransAssistantIR assist;
 
@@ -52,6 +53,11 @@ public class IsCheckTrans extends DepthFirstAnalysisCAdaptor implements IApplyAs
     @Override
     public void caseACharIsExpIR(ACharIsExpIR node) throws AnalysisException {
         CTransUtil.rewriteToApply(this, node, VDM_IS_CHAR, node.getExp());
+    }
+
+    @Override
+    public void caseATokenIsExpIR(ATokenIsExpIR node) throws AnalysisException {
+        CTransUtil.rewriteToApply(this, node, VDM_IS_TOKEN, node.getExp());
     }
 
     @Override

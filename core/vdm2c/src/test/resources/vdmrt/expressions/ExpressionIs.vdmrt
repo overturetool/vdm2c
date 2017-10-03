@@ -50,4 +50,12 @@ public isCharNeg : () ==> bool
 isCharNeg () ==
 return not is_char("z");
 
+public isTokenPos : () ==> bool
+isTokenPos () ==
+return is_token(mk_token("test"));
+
+public isTokenNeg : () ==> bool
+isTokenNeg () ==
+return not is_token("test");
+
 end IsTest
