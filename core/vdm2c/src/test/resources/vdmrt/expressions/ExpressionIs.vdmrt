@@ -34,4 +34,12 @@ public isBoolNeg : () ==> bool
 isBoolNeg () ==
 return not is_bool(0);
 
+public isRatPos : () ==> bool
+isRatPos () ==
+return is_rat(2.5);
+
+public isRatNeg : () ==> bool
+isRatNeg () ==
+return not is_rat(nil);
+
 end IsTest
