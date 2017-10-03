@@ -74,12 +74,14 @@ public class DistributionTests extends DistTestBase
 		name = "./" + name;
 		ProcessBuilder pb3 = new ProcessBuilder(name);
 		pb3.directory(cpu2Dir);
-		pb3.start();
+		Process spb = pb3.start();
 
 		//Thread.sleep(delay);
 		
 		// cpu1 -- sync call
 		cmakeUtil.run(cpu1Dir, "cpu1Exe", TEST_OUTPUT != null);
+		
+		spb.destroy();
 
 	}
 
@@ -162,7 +164,7 @@ public class DistributionTests extends DistTestBase
 		name = "./" + name;
 		ProcessBuilder pb3 = new ProcessBuilder(name);
 		pb3.directory(cpu2Dir);
-		pb3.start();
+		Process spb = pb3.start();
 
 		Thread.sleep(delay);
 		Boolean b = true;
@@ -179,7 +181,7 @@ public class DistributionTests extends DistTestBase
 		
 		// cpu1 -- sync call
 		boolean cpuReturnValue = cmakeUtil.run(cpu1Dir, "cpu1Exe", TEST_OUTPUT != null);
-
+		spb.destroy();
 		Assert.assertTrue("Expected return value to be 0", cpuReturnValue);
 
 	}
@@ -260,7 +262,7 @@ public class DistributionTests extends DistTestBase
 		name = "./" + name;
 		ProcessBuilder pb3 = new ProcessBuilder(name);
 		pb3.directory(cpu2Dir);
-		pb3.start();
+		Process spb = pb3.start();
 
 		//Thread.sleep(delay);
 		
@@ -280,7 +282,7 @@ public class DistributionTests extends DistTestBase
 
 		// cpu1 -- sync call
 		boolean cpuReturnValue = cmakeUtil.run(cpu1Dir, "cpu1Exe", TEST_OUTPUT != null);
-
+		spb.destroy();
 		Assert.assertTrue("Expected return value to be 0", cpuReturnValue);
 
 	}
@@ -361,7 +363,7 @@ public class DistributionTests extends DistTestBase
 		name = "./" + name;
 		ProcessBuilder pb3 = new ProcessBuilder(name);
 		pb3.directory(cpu2Dir);
-		pb3.start();
+		Process spb = pb3.start();
 
 		Thread.sleep(delay);
 		Boolean b = true;
@@ -378,7 +380,9 @@ public class DistributionTests extends DistTestBase
 		
 		// cpu1 -- sync call
 		boolean cpuReturnValue = cmakeUtil.run(cpu1Dir, "cpu1Exe", TEST_OUTPUT != null);
-
+		
+		spb.destroy();
+		
 		Assert.assertTrue("Expected return value to be 0", cpuReturnValue);
 
 	}
@@ -460,7 +464,7 @@ public class DistributionTests extends DistTestBase
 		name = "./" + name;
 		ProcessBuilder pb3 = new ProcessBuilder(name);
 		pb3.directory(cpu2Dir);
-		pb3.start();
+		Process spb = pb3.start();
 
 		Thread.sleep(delay);
 		Boolean b = true;
@@ -478,6 +482,8 @@ public class DistributionTests extends DistTestBase
 		// cpu1 -- sync call
 		boolean cpuReturnValue = cmakeUtil.run(cpu1Dir, "cpu1Exe", TEST_OUTPUT != null);
 
+		spb.destroy();
+		
 		Assert.assertTrue("Expected return value to be 0", cpuReturnValue);
 
 	}
