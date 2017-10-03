@@ -117,10 +117,24 @@ TVP newCollection(size_t size, vdmtype type)
 	assert(ptr != NULL);
 	ptr->size = size;
 	ptr->value = (TVP*) calloc(size != 0 ? size : 1, sizeof(TVP)); /* I know this is slower than malloc but better for products  */
+	ptr->buf_size = size != 0 ? size : 1;
 	assert(ptr->value != NULL);
 	return newTypeValue(type, (TypedValueType
 	)
 			{ .ptr = ptr });
+}
+
+TVP newCollectionGC(size_t size, vdmtype type, TVP *from)
+{
+	struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
+	assert(ptr != NULL);
+	ptr->size = size;
+	ptr->value = (TVP*) calloc(size != 0 ? size : 1, sizeof(TVP)); /* I know this is slower than malloc but better for products  */
+	ptr->buf_size = size != 0 ? size : 1;
+	assert(ptr->value != NULL);
+	return newTypeValueGC(type, (TypedValueType
+	)
+			{ .ptr = ptr }, from);
 }
 
 TVP newCollectionPrealloc(size_t size, size_t expected_size, vdmtype type)
@@ -136,24 +150,13 @@ TVP newCollectionPrealloc(size_t size, size_t expected_size, vdmtype type)
 			{ .ptr = ptr });
 }
 
-TVP newCollectionGC(size_t size, vdmtype type, TVP *from)
-{
-	struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
-	assert(ptr != NULL);
-	ptr->size = size;
-	ptr->value = (TVP*) calloc(size != 0 ? size : 1, sizeof(TVP)); /* I know this is slower than malloc but better for products  */
-	assert(ptr->value != NULL);
-	return newTypeValueGC(type, (TypedValueType
-	)
-			{ .ptr = ptr }, from);
-}
-
 TVP newCollectionPreallocGC(size_t size, size_t expected_size, vdmtype type, TVP *from)
 {
 	struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
 	assert(ptr != NULL);
 	ptr->size = size;
 	ptr->value = (TVP*) calloc(expected_size, sizeof(TVP)); /* I know this is slower than malloc but better for products  */
+	ptr->buf_size = expected_size;
 	assert(ptr->value != NULL);
 	return newTypeValueGC(type, (TypedValueType
 	)
