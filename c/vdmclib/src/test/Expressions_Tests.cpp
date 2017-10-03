@@ -297,7 +297,6 @@ TEST(Expression, ifExp)
 
 
 
-/*
 TEST(Expression, isInt)
 {
 	char ot[] = {'z'};
@@ -343,7 +342,7 @@ TEST(Expression, isBool)
 
 TEST(Expression, isNat)
 {
-	char ot[] = {'z'};
+	char ot[] = {'j'};
 	TVP res;
 
 	res = isNat(newInt(0));
@@ -365,7 +364,7 @@ TEST(Expression, isNat)
 
 TEST(Expression, isNat1)
 {
-	char ot[] = {'z'};
+	char ot[] = {'k'};
 	TVP res;
 
 	res = isNat1(newInt(1));
@@ -387,7 +386,7 @@ TEST(Expression, isNat1)
 
 TEST(Expression, isRat)
 {
-	char ot[] = {'z'};
+	char ot[] = {'e'};
 	TVP res;
 
 	res = isRat(newReal(1));
@@ -409,7 +408,7 @@ TEST(Expression, isRat)
 
 TEST(Expression, isChar)
 {
-	char ot[] = {'z'};
+	char ot[] = {'c'};
 	TVP res;
 
 	res = isChar(newChar('a'));
@@ -423,7 +422,7 @@ TEST(Expression, isChar)
 
 TEST(Expression, isToken)
 {
-	char ot[] = {'z'};
+	char ot[] = {'t'};
 	TVP res;
 
 	res = isToken(newToken(newSeqVar(1, newChar('a'))));
@@ -494,5 +493,3 @@ TEST(Expression, isSetOfSeqOfToken)
 	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(res);
 }
-
-*/
