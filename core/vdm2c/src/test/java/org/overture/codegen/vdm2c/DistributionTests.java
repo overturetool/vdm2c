@@ -95,7 +95,7 @@ public class DistributionTests extends DistTestBase
 		return cmake;
 	}
 
-	@Test
+	//@Test
 	public void TestAsn() throws IOException, InterruptedException,
 	CMakeGenerateException
 	{
@@ -186,7 +186,7 @@ public class DistributionTests extends DistTestBase
 
 	}
 
-	@Test
+	//@Test
 	public void TestAsnProd() throws IOException, InterruptedException,
 	CMakeGenerateException
 	{
@@ -287,7 +287,7 @@ public class DistributionTests extends DistTestBase
 
 	}
 
-	@Test
+	//@Test
 	public void TestSysConsInitMethod() throws IOException, InterruptedException,
 	CMakeGenerateException
 	{
