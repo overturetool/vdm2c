@@ -26,4 +26,12 @@ public isIntNeg : () ==> bool
 isIntNeg () ==
 return not is_int(2.5);
 
+public isBoolPos : () ==> bool
+isBoolPos () ==
+return is_bool(true);
+
+public isBoolNeg : () ==> bool
+isBoolNeg () ==
+return not is_bool(0);
+
 end IsTest

@@ -3,10 +3,7 @@ package org.overture.codegen.vdm2c.transformations;
 import org.overture.cgc.extast.analysis.DepthFirstAnalysisCAdaptor;
 import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.analysis.intf.IAnalysis;
-import org.overture.codegen.ir.expressions.AGeneralIsExpIR;
-import org.overture.codegen.ir.expressions.AIntIsExpIR;
-import org.overture.codegen.ir.expressions.ANat1IsExpIR;
-import org.overture.codegen.ir.expressions.ANatIsExpIR;
+import org.overture.codegen.ir.expressions.*;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.utils.CTransUtil;
 import org.overture.codegen.vdm2c.utils.IApplyAssistant;
@@ -16,6 +13,7 @@ public class IsCheckTrans extends DepthFirstAnalysisCAdaptor implements IApplyAs
     public static final String VDM_IS_NAT = "isNat";
     public static final String VDM_IS_NAT1 = "isNat1";
     public static final String VDM_IS_INT = "isInt";
+    public static final String VDM_IS_BOOL = "isBool";
 
     private TransAssistantIR assist;
 
@@ -37,6 +35,11 @@ public class IsCheckTrans extends DepthFirstAnalysisCAdaptor implements IApplyAs
     @Override
     public void caseAIntIsExpIR(AIntIsExpIR node) throws AnalysisException {
         CTransUtil.rewriteToApply(this, node, VDM_IS_INT, node.getExp());
+    }
+
+    @Override
+    public void caseABoolIsExpIR(ABoolIsExpIR node) throws AnalysisException {
+        CTransUtil.rewriteToApply(this, node, VDM_IS_BOOL, node.getExp());
     }
 
     @Override
