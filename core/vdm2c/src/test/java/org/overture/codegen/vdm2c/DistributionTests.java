@@ -266,7 +266,7 @@ public class DistributionTests extends DistTestBase
 
 		//Thread.sleep(delay);
 		
-		Thread.sleep(delay);
+		//Thread.sleep(delay);
 		Boolean b = true;
 		
 //		while(b){
@@ -283,6 +283,7 @@ public class DistributionTests extends DistTestBase
 		// cpu1 -- sync call
 		boolean cpuReturnValue = cmakeUtil.run(cpu1Dir, "cpu1Exe", TEST_OUTPUT != null);
 		spb.destroy();
+		Thread.sleep(delay);
 		Assert.assertTrue("Expected return value to be 0", cpuReturnValue);
 
 	}
@@ -382,12 +383,12 @@ public class DistributionTests extends DistTestBase
 		boolean cpuReturnValue = cmakeUtil.run(cpu1Dir, "cpu1Exe", TEST_OUTPUT != null);
 		
 		spb.destroy();
-		
+		Thread.sleep(delay);
 		Assert.assertTrue("Expected return value to be 0", cpuReturnValue);
 
 	}
 
-	//@Test
+	@Test
 	public void TestQuotesBool() throws IOException, InterruptedException,
 	CMakeGenerateException
 	{
@@ -466,7 +467,6 @@ public class DistributionTests extends DistTestBase
 		pb3.directory(cpu2Dir);
 		Process spb = pb3.start();
 
-		Thread.sleep(delay);
 		Boolean b = true;
 		
 //		while(b){
@@ -483,7 +483,7 @@ public class DistributionTests extends DistTestBase
 		boolean cpuReturnValue = cmakeUtil.run(cpu1Dir, "cpu1Exe", TEST_OUTPUT != null);
 
 		spb.destroy();
-		
+		Thread.sleep(delay);
 		Assert.assertTrue("Expected return value to be 0", cpuReturnValue);
 
 	}
