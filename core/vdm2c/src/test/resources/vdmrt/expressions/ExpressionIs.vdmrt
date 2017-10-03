@@ -42,4 +42,12 @@ public isRatNeg : () ==> bool
 isRatNeg () ==
 return not is_rat(nil);
 
+public isCharPos : () ==> bool
+isCharPos () ==
+return is_char('z');
+
+public isCharNeg : () ==> bool
+isCharNeg () ==
+return not is_char("z");
+
 end IsTest

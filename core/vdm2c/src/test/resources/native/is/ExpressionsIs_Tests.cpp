@@ -73,3 +73,13 @@ TEST_F(TestFlowFunctions, isRatNeg)
 {
 	CHECK(CLASS_IsTest__Z8isRatNegEV);
 }
+
+TEST_F(TestFlowFunctions, isCharPos)
+{
+	CHECK(CLASS_IsTest__Z9isCharPosEV);
+}
+
+TEST_F(TestFlowFunctions, isCharNeg)
+{
+	CHECK(CLASS_IsTest__Z9isCharNegEV);
+}
