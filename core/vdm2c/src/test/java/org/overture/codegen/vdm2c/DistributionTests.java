@@ -93,7 +93,7 @@ public class DistributionTests extends DistTestBase
 		return cmake;
 	}
 
-	//@Test
+	@Test
 	public void TestAsn() throws IOException, InterruptedException,
 	CMakeGenerateException
 	{
@@ -166,12 +166,12 @@ public class DistributionTests extends DistTestBase
 
 		Boolean b = true;
 		
-		while(b){
-			File f = new File("target/test-cgen/DistributionTests/TestAsn/sync.txt");
-			if(f.exists()) { 
-			    b = false;
-			}
-		}
+//		while(b){
+//			File f = new File("target/test-cgen/DistributionTests/TestAsn/sync.txt");
+//			if(f.exists()) { 
+//			    b = false;
+//			}
+//		}
 		
 		//Thread.sleep(delay);
 		
@@ -182,7 +182,7 @@ public class DistributionTests extends DistTestBase
 
 	}
 
-	//@Test
+	@Test
 	public void TestAsnProd() throws IOException, InterruptedException,
 	CMakeGenerateException
 	{
@@ -263,13 +263,13 @@ public class DistributionTests extends DistTestBase
 		//Thread.sleep(delay);
 		
 		Boolean b = true;
-		
-		while(b){
-			File f = new File("target/test-cgen/DistributionTests/TestAsnProd/sync.txt");
-			if(f.exists()) { 
-			    b = false;
-			}
-		}
+//		
+//		while(b){
+//			File f = new File("target/test-cgen/DistributionTests/TestAsnProd/sync.txt");
+//			if(f.exists()) { 
+//			    b = false;
+//			}
+//		}
 		
 		String current = new java.io.File( "." ).getCanonicalPath();
 		//System.out.println("Current dir:"+current);
@@ -281,7 +281,7 @@ public class DistributionTests extends DistTestBase
 
 	}
 
-	//@Test
+	@Test
 	public void TestSysConsInitMethod() throws IOException, InterruptedException,
 	CMakeGenerateException
 	{
@@ -361,12 +361,12 @@ public class DistributionTests extends DistTestBase
 
 		Boolean b = true;
 		
-		while(b){
-			File f = new File("target/test-cgen/DistributionTests/TestSysConsInitMethod/sync.txt");
-			if(f.exists()) { 
-			    b = false;
-			}
-		}
+//		while(b){
+//			File f = new File("target/test-cgen/DistributionTests/TestSysConsInitMethod/sync.txt");
+//			if(f.exists()) { 
+//			    b = false;
+//			}
+//		}
 		
 		//Thread.sleep(delay);
 		

@@ -4,6 +4,16 @@
 #include "asn1crt.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdio.h>
+#include <errno.h>
+#include <ctype.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+
+#define HALF_DUPLEX1     "../halfduplex1"
+#define HALF_DUPLEX2     "../halfduplex2"
 
 void error(const char *msg)
 {
@@ -54,79 +64,23 @@ TVP deconstructData(char* data, int len){
 /** Read from the UART */
 // TODO: To be replaced with the real UART read
 int busRead(byte *buffer, int len){ // Just for own testing
-	/*
-	s[0] = (byte) 8; // Buffer size is 8
-	s[1] = (byte)  1; // Object ID is 1
-	s[2] = (byte)  4; // Function ID is 4
-	s[3] = (byte)  2; // Number of arguments is 2
-	s[4] = (byte)  11; // ID of type is 11 (e.g. a quote)
-	s[5] = (byte)  6; // Value of type is 6 (e.g. FREE quote)
-	s[6] = (byte)  11; // ID of type is 11 (e.g. a quote)
-	s[7] = (byte)  6; // Value of type is 6 (e.g. FREE quote)
-	 */
-	int sockfd, newsockfd, portno;
-	socklen_t clilen;
-	//byte buffer[256];
-	struct sockaddr_in serv_addr, cli_addr;
-	int n;
-	//if (argc < 2) {
-	//  fprintf(stderr,"ERROR, no port provided\n");
-	//exit(1);
-	//}
-	sockfd = socket(AF_INET, SOCK_STREAM, 0);
+	int fd, ret_val, count, numread;
+ 
+    /* Create the named - pipe */
+    ret_val = mkfifo(HALF_DUPLEX1, 0666);
+ 
+    if ((ret_val == -1) && (errno != EEXIST)) {
+        perror("Error creating the named pipe");
+        exit (1);
+    }
+ 
+    /* Open the pipe for reading */
+    fd = open(HALF_DUPLEX1, O_RDONLY);
+ 
+    /* Read from the pipe */
+    numread = read(fd, buffer, BUF_SIZE);
 
-	if (sockfd < 0)
-		error("ERROR opening socket");
-
-	bzero((char *) &serv_addr, sizeof(serv_addr));
-
-	portno = atoi("51717");
-
-	serv_addr.sin_family = AF_INET;
-	serv_addr.sin_addr.s_addr = INADDR_ANY;
-	serv_addr.sin_port = htons(portno);
-
-	if (bind(sockfd, (struct sockaddr *) &serv_addr,
-			sizeof(serv_addr)) < 0)
-		error("ERROR on binding");
-
-	listen(sockfd,5);
-
-	FILE* fptr;
-
-	fptr = fopen("../sync.txt", "w");
-	fclose(fptr);
-
-	clilen = sizeof(cli_addr);
-
-	newsockfd = accept(sockfd,
-			(struct sockaddr *) &cli_addr,
-			&clilen);
-
-	if (newsockfd < 0)
-		error("ERROR on accept");
-
-	bzero(buffer,256);
-
-	n = read(newsockfd,buffer,255);
-
-	if (n < 0) error("ERROR reading from socket");
-
-	int a = (int) buffer[0];
-
-	printf("Here is the message: %d\n", a);
-
-	/*
-	// send result back
-	char buf[1];
-	buf[0] = (char) 3;
-
-	n = write(newsockfd,buf,1);
-	if (n < 0) error("ERROR writing to socket");
-	 */
-	//close(newsockfd);
-	close(sockfd);
-	return newsockfd;
+	return 1;
 
 
 
@@ -168,8 +122,12 @@ void sendRes(TVP res, int newsockfd){
 	//buf[0] = (byte) res->value.intVal;
 	printf("Result accross network is: %d \n", res->value.intVal);
 	int n;
-	n = write(newsockfd,encBuff, IntValue_REQUIRED_BYTES_FOR_ENCODING + 1);
-	if (n < 0) error("ERROR writing to socket");
+	int fd;
+
+	fd = open(HALF_DUPLEX2, O_WRONLY, O_NONBLOCK);
+ 
+    /* Write to the pipe */
+   	write(fd, encBuff, BUF_SIZE);
 }
 
 void handleReciever(){
