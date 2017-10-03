@@ -18,5 +18,12 @@ public isNat1Neg : () ==> bool
 isNat1Neg () ==
 return not is_nat1(0);
 
+public isIntPos : () ==> bool
+isIntPos () ==
+return is_int(-4);
+
+public isIntNeg : () ==> bool
+isIntNeg () ==
+return not is_int(2.5);
 
 end IsTest
