@@ -77,6 +77,12 @@ int busRead(byte *buffer, int len){ // Just for own testing
     /* Open the pipe for reading */
     fd = open(HALF_DUPLEX1, O_RDONLY);
  
+    /*
+    FILE* fptr;
+	fptr = fopen("../sync.txt", "w");
+	fclose(fptr);
+	*/
+
     /* Read from the pipe */
     numread = read(fd, buffer, BUF_SIZE);
 

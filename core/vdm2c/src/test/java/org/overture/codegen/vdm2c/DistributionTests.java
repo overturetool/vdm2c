@@ -164,9 +164,11 @@ public class DistributionTests extends DistTestBase
 		pb3.directory(cpu2Dir);
 		pb3.start();
 
+		Thread.sleep(delay);
 		Boolean b = true;
 		
 //		while(b){
+//			Thread.sleep(delay);
 //			File f = new File("target/test-cgen/DistributionTests/TestAsn/sync.txt");
 //			if(f.exists()) { 
 //			    b = false;
@@ -262,9 +264,11 @@ public class DistributionTests extends DistTestBase
 
 		//Thread.sleep(delay);
 		
+		Thread.sleep(delay);
 		Boolean b = true;
-//		
+		
 //		while(b){
+//			Thread.sleep(delay);
 //			File f = new File("target/test-cgen/DistributionTests/TestAsnProd/sync.txt");
 //			if(f.exists()) { 
 //			    b = false;
@@ -359,9 +363,11 @@ public class DistributionTests extends DistTestBase
 		pb3.directory(cpu2Dir);
 		pb3.start();
 
+		Thread.sleep(delay);
 		Boolean b = true;
 		
 //		while(b){
+//			Thread.sleep(delay);
 //			File f = new File("target/test-cgen/DistributionTests/TestSysConsInitMethod/sync.txt");
 //			if(f.exists()) { 
 //			    b = false;
@@ -456,9 +462,11 @@ public class DistributionTests extends DistTestBase
 		pb3.directory(cpu2Dir);
 		pb3.start();
 
+		Thread.sleep(delay);
 		Boolean b = true;
 		
 //		while(b){
+//			Thread.sleep(delay);
 //			File f = new File("target/test-cgen/DistributionTests/TestQuotesBool/sync.txt");
 //			if(f.exists()) { 
 //			    b = false;
