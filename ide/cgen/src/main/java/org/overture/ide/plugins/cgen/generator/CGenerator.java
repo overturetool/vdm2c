@@ -90,7 +90,7 @@ public class CGenerator
 							new File(cCodeOutputFolder + File.separator + cpu + File.separator + "nativelib"));
 					
 					// Copy the distribution run-time
-					CGenUtil.copyDistributionLibFiles(Vdm2CCommand.class.getClassLoader().getResourceAsStream("jars/distributionLib.jar"),
+					CGenUtil.copyDistributionLibFiles(Vdm2CCommand.class.getClassLoader().getResourceAsStream("jars/vdmclibdist.jar"),
 							new File(cCodeOutputFolder + File.separator + cpu  + File.separator + "distributionLib"));
 
 					//Emit empty main.c file so that the generated project compiles.
