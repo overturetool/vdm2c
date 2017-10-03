@@ -5,6 +5,16 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdio.h>
+#include <errno.h>
+#include <ctype.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+
+#define HALF_DUPLEX1     "../halfduplex1"
+#define HALF_DUPLEX2     "../halfduplex2"
 
 void error(const char *msg)
 {
@@ -36,69 +46,37 @@ TVP bus_send(int objID, int funID, int supID, int nrArgs, va_list args){
 
 	printf("Buffer size is: %d \n", buf_size);
 
-	int sockfd, portno, n;
-	struct sockaddr_in serv_addr;
-	struct hostent *server;
 
 	char buffer[256];
+	int fd1;
 
-	int nb = -1;
+	// Write to cpu2
+	/* Open the pipe for writing */
+    fd1 = open(HALF_DUPLEX1, O_WRONLY, O_NONBLOCK);
+ 
+    /* Write to the pipe */
+    write(fd1, sendArr, BUF_SIZE);
 
-	FILE* fptr = NULL;
+    int ret_val;
+    // Get result
+    ret_val = mkfifo(HALF_DUPLEX2, 0666);
+ 
+    if ((ret_val == -1) && (errno != EEXIST)) {
+        perror("Error creating the named pipe");
+        exit (1);
+    }
+ 	
+ 	int fd2;
+    /* Open the pipe for reading */
+    fd2 = open(HALF_DUPLEX2, O_RDONLY);
+ 
+    int numread;
 
-	while(fptr == NULL){
-		sleep(2);
-		printf("File does not exist yet baby!\n");
-		fptr = fopen("../sync.txt", "r");
-
-	}
-	remove("../sync.txt");
-
-	portno = atoi("51717");
-
-	sockfd = socket(AF_INET, SOCK_STREAM, 0);
-
-	if (sockfd < 0)
-		error("ERROR opening socket");
-
-	server = gethostbyname("localhost");
-
-	if (server == NULL) {
-		fprintf(stderr,"ERROR, no such host\n");
-		exit(0);
-	}
-
-	bzero((char *) &serv_addr, sizeof(serv_addr));
-
-	serv_addr.sin_family = AF_INET;
-
-	bcopy((char *)server->h_addr,
-				(char *)&serv_addr.sin_addr.s_addr,
-				server->h_length);
-
-	serv_addr.sin_port = htons(portno);
-
-	nb = connect(sockfd,(struct sockaddr *) &serv_addr,sizeof(serv_addr));
-
-	n = write(sockfd,sendArr,BUF_SIZE);
-
-	if (n < 0)
-		error("ERROR writing to socket");
-
-	bzero(buffer,256);
-
-	n = read(sockfd,buffer,255);
-
-	if (n < 0)
-		error("ERROR reading from socket");
-
-	//printf("%s\n",buffer);
-
-	close(sockfd);
+    /* Read from the pipe */
+    numread = read(fd2, buffer, BUF_SIZE);
 
 	// Convert back to TVP
 	TVP res;
-
 	res = deserialiseRes(buffer);
 
 	printf("Result is : %d \n", res->value.boolVal);

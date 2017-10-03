@@ -93,7 +93,7 @@ public class DistributionTests extends DistTestBase
 		return cmake;
 	}
 
-	@Test
+	//@Test
 	public void TestAsn() throws IOException, InterruptedException,
 	CMakeGenerateException
 	{
@@ -182,7 +182,7 @@ public class DistributionTests extends DistTestBase
 
 	}
 
-	@Test
+	//@Test
 	public void TestAsnProd() throws IOException, InterruptedException,
 	CMakeGenerateException
 	{
@@ -281,7 +281,7 @@ public class DistributionTests extends DistTestBase
 
 	}
 
-	@Test
+	//@Test
 	public void TestSysConsInitMethod() throws IOException, InterruptedException,
 	CMakeGenerateException
 	{
@@ -458,12 +458,12 @@ public class DistributionTests extends DistTestBase
 
 		Boolean b = true;
 		
-		while(b){
-			File f = new File("target/test-cgen/DistributionTests/TestQuotesBool/sync.txt");
-			if(f.exists()) { 
-			    b = false;
-			}
-		}
+//		while(b){
+//			File f = new File("target/test-cgen/DistributionTests/TestQuotesBool/sync.txt");
+//			if(f.exists()) { 
+//			    b = false;
+//			}
+//		}
 		
 		//Thread.sleep(delay);
 		
