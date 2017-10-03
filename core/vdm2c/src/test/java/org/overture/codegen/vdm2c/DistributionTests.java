@@ -387,7 +387,7 @@ public class DistributionTests extends DistTestBase
 
 	}
 
-	@Test
+	//@Test
 	public void TestQuotesBool() throws IOException, InterruptedException,
 	CMakeGenerateException
 	{
