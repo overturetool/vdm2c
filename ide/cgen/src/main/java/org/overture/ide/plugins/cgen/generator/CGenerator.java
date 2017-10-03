@@ -108,6 +108,22 @@ public class CGenerator
 			try {
 				vdm2c.genCSourceFiles(cCodeOutputFolder, data.getClasses());
 				vdm2c.emitFeatureFile(cCodeOutputFolder, CGen.FEATURE_FILE_NAME);
+				
+				outputUserspecifiedModules(cCodeOutputFolder, data.getClasses());
+
+				CodeGenConsole.GetInstance().println("Code generation completed successfully.");
+				CodeGenConsole.GetInstance().println("Copying native library files."); // mvn install in vdm2c and
+				// mvn package here makes
+				// this work
+				// Copy files from vdmclib.jar.
+				CGenUtil.copyNativeLibFiles(Vdm2CCommand.class.getClassLoader().getResourceAsStream("jars/vdmclib.jar"),
+						new File(cCodeOutputFolder + File.separator + "nativelib"));
+
+				//Emit empty main.c file so that the generated project compiles.
+				emitMainFile(new File(cCodeOutputFolder + File.separator + "main.c"), vdm2c.getHeaders());
+				//Emit file containing the mapping between model names and mangled names as #defines.
+				emitMangledNamesHeaderFile(new File(cCodeOutputFolder + File.separator + "MangledNames.h"));
+				
 			} catch (Exception e) {
 
 				CodeGenConsole.GetInstance().printErrorln("Problems encountered while generating C sources: " + e.getMessage());
@@ -115,20 +131,7 @@ public class CGenerator
 			}
 		}
 
-		outputUserspecifiedModules(cCodeOutputFolder, data.getClasses());
 
-		CodeGenConsole.GetInstance().println("Code generation completed successfully.");
-		CodeGenConsole.GetInstance().println("Copying native library files."); // mvn install in vdm2c and
-		// mvn package here makes
-		// this work
-		// Copy files from vdmclib.jar.
-		CGenUtil.copyNativeLibFiles(Vdm2CCommand.class.getClassLoader().getResourceAsStream("jars/vdmclib.jar"),
-				new File(cCodeOutputFolder + File.separator + "nativelib"));
-
-		//Emit empty main.c file so that the generated project compiles.
-		emitMainFile(new File(cCodeOutputFolder + File.separator + "main.c"), vdm2c.getHeaders());
-		//Emit file containing the mapping between model names and mangled names as #defines.
-		emitMangledNamesHeaderFile(new File(cCodeOutputFolder + File.separator + "MangledNames.h"));
 	}
 
 	private void outputUserspecifiedModules(File outputFolder,
