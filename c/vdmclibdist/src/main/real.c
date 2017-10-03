@@ -337,7 +337,7 @@ double negpow2[] = {
 1.42404726944461E-306, 7.12023634722304E-307, 3.56011817361152E-307, 1.78005908680576E-307, 8.90029543402881E-308, 4.4501477170144E-308, 2.2250738585072E-308
 };
 
-//int GetNumberOfBitsForNonNegativeInteger(asn1SccUint v) 
+/*int GetNumberOfBitsForNonNegativeInteger(asn1SccUint v) */
 int mylog2(double v)
 {
     if (v<2) {
@@ -384,7 +384,7 @@ double pow2(double v)
 double myReal(asn1SccUint* mantissa, int exp) 
 {
     return (*mantissa) * mypow2(exp);
-//  return (*mantissa) * pow2(exp);
+/*  return (*mantissa) * pow2(exp);*/
 }
 
 

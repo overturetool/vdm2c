@@ -1,4 +1,4 @@
-// The Send_Bus and HandleRecieved calls
+/* The Send_Bus and HandleRecieved calls */
 
 #ifndef SERIALISE_H_
 #define SERIALISE_H_

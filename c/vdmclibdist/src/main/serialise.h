@@ -1,4 +1,4 @@
-// The Send_Bus and HandleRecieved calls
+/* The Send_Bus and HandleRecieved calls*/
 
 #ifndef SERIALISE_H_
 #define SERIALISE_H_
@@ -18,26 +18,24 @@
 #include <netdb.h>
 #include "asn1vdm.h"
 
-// General serialisation function
+/* General serialisation function*/
 void serialise(byte* encBuff, int size, va_list args);
 void deserialise(byte* decBuff, int size, TVP args[]);
 
 /**** Inividual Types ****/
-// Integer
+/* Integer*/
 void serialiseInt(byte* encBuff, TVP t, int pos);
 void deserialiseInt(byte* decBuff, TVP* t, int pos);
 
-// Quote
+/* Quote*/
 void serialiseQuote(byte* encBuff, TVP t, int pos);
 void deserialiseQuote(byte* decBuff, TVP* t, int pos);
 
-// Real
+/* Real*/
 void serialiseReal(byte* encBuff, TVP t, int pos);
 void deserialiseReal(byte* decBuff, TVP* t, int pos);
 
-// TODO: Add Bool maybe..
-
-// Result
+/* Result*/
 void serialiseRes(byte* encBuff, TVP t);
 TVP deserialiseRes(byte* decFullBuff);
 

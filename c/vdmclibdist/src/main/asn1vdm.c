@@ -1,4 +1,4 @@
-// The Send_Bus and HandleRecieved calls
+/* The Send_Bus and HandleRecieved calls */
 
 #include "asn1vdm.h"
 
