@@ -95,7 +95,7 @@ public class DistributionTests extends DistTestBase
 		return cmake;
 	}
 
-	@Test
+	//@Test
 	public void TestAsn() throws IOException, InterruptedException,
 	CMakeGenerateException
 	{
@@ -187,7 +187,7 @@ public class DistributionTests extends DistTestBase
 
 	}
 
-	@Test
+	//@Test
 	public void TestAsnProd() throws IOException, InterruptedException,
 	CMakeGenerateException
 	{
@@ -289,7 +289,7 @@ public class DistributionTests extends DistTestBase
 
 	}
 
-	@Test
+	//@Test
 	public void TestSysConsInitMethod() throws IOException, InterruptedException,
 	CMakeGenerateException
 	{
@@ -468,6 +468,8 @@ public class DistributionTests extends DistTestBase
 		pb3.directory(cpu2Dir);
 		Process spb = pb3.start();
 
+		Thread.sleep(delay);
+		
 		Boolean b = true;
 		
 //		while(b){
@@ -484,7 +486,7 @@ public class DistributionTests extends DistTestBase
 		boolean cpuReturnValue = cmakeUtil.run(cpu1Dir, "cpu1Exe", TEST_OUTPUT != null);
 
 		spb.destroy();
-		Thread.sleep(delay);
+		
 		Assert.assertTrue("Expected return value to be 0", cpuReturnValue);
 
 	}
