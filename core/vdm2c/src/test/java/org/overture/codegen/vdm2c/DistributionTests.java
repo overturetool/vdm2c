@@ -478,29 +478,13 @@ public class DistributionTests extends DistTestBase
 
 		Thread.sleep(delay);
 		
-		Boolean b = true;
-		
-		
-//		while(b){
-//			Thread.sleep(delay);
-//			File f = new File("target/test-cgen/DistributionTests/TestQuotesBool/sync.txt");
-//			if(f.exists()) { 
-//			    b = false;
-//			}
-//		}
-		
-		//Thread.sleep(delay);
-		
 		// cpu1 -- sync call
 		boolean cpuReturnValue = cmakeUtil.run(cpu1Dir, "cpu1Exe", TEST_OUTPUT != null);
 
 		spb.destroy();
 		
-		File testDir = new File("target/test-cgen/DistributionTests/TestQuotesBool");
-		
 		Process p1 = Runtime.getRuntime().exec("unlink target/test-cgen/DistributionTests/TestQuotesBool/halfduplex1");
 		Process p2 = Runtime.getRuntime().exec("unlink target/test-cgen/DistributionTests/TestQuotesBool/halfduplex2");
-		//Runtime.getRuntime().
 		
 		p1.waitFor();
 		p2.waitFor();
