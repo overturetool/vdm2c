@@ -59,7 +59,7 @@ public class ClassAssocAnalysisTest {
     }
 
     private void checkResult(String model, String expected) throws AnalysisException {
-        Assert.assertEquals("Got unexpected class association array", expected, buildAssocArray(model));
+        Assert.assertEquals("Got unexpected class association array", CFormat.getGeneratedFileComment() + expected, buildAssocArray(model));
     }
 
     private String buildAssocArray(String model) throws AnalysisException {

@@ -4,6 +4,7 @@ import org.overture.ast.analysis.AnalysisException;
 import org.overture.ast.analysis.DepthFirstAnalysisAdaptor;
 import org.overture.ast.definitions.AClassClassDefinition;
 import org.overture.ast.definitions.SClassDefinition;
+import org.overture.codegen.vdm2c.CFormat;
 
 import java.util.*;
 
@@ -51,6 +52,8 @@ public class ClassAssocAnalysis extends DepthFirstAnalysisAdaptor {
     public String toString() {
 
         StringBuilder sb = new StringBuilder();
+
+        sb.append(CFormat.getGeneratedFileComment());
 
         if(!childParentAssocs.isEmpty()) {
             List<String> uniqueNames = new LinkedList(new HashSet<>(childParentAssocs));
