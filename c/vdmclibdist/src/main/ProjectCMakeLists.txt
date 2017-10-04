@@ -7,7 +7,7 @@ SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11 -Wall")
 
 file(GLOB SRC *.c)
 file(GLOB NATIVE_SRC nativelib/*.c)
-file(GLOB DIST_SRC distributionlib/*.c)
+file(GLOB DIST_SRC distributionLib/*.c)
 
 add_library(Nativelib ${NATIVE_SRC})
 add_library(Distributedlib ${DIST_SRC})
