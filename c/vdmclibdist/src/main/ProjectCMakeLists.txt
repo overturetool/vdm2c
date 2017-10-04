@@ -3,7 +3,7 @@ project (Generated)
 
 include_directories(. nativelib distributionLib)
 
-SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11 -Wall")
+SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11 -Wall -D_GNU_SOURCE")
 
 file(GLOB SRC *.c)
 file(GLOB NATIVE_SRC nativelib/*.c)
