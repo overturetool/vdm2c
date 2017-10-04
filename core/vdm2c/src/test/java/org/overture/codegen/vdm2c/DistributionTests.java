@@ -515,18 +515,6 @@ public class DistributionTests extends DistTestBase
 	 String currentDir = System.getProperty("user.dir");
 	        System.out.println("Current dir using System:" +currentDir);
 		
-//		// clean up
-//		String name4 = "unlink halfduplex1";
-//		ProcessBuilder pb4 = new ProcessBuilder(name4);
-//		pb4.directory(testDir);
-//		pb4.start();
-//		
-//		// clean up
-//		String name5 = "unlink halfduplex2";
-//		ProcessBuilder pb5 = new ProcessBuilder(name5);
-//		pb5.directory(testDir);
-//		pb5.start();
-		
 		Assert.assertTrue("Expected return value to be 0", cpuReturnValue);
 
 	}
