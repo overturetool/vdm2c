@@ -33,6 +33,7 @@ import org.overture.codegen.ir.types.AClassTypeIR;
 import org.overture.codegen.ir.types.AMethodTypeIR;
 import org.overture.codegen.utils.GeneratedData;
 import org.overture.codegen.utils.GeneratedModule;
+import org.overture.codegen.vdm2c.analysis.ClassAssocAnalysis;
 import org.overture.codegen.vdm2c.analysis.FeatureAnalysisResult;
 import org.overture.codegen.vdm2c.extast.declarations.AClassHeaderDeclIR;
 import org.overture.codegen.vdm2c.sourceformat.ISourceFileFormatter;
@@ -49,10 +50,13 @@ public class CGen extends CodeGenBase
 	private CGenSettings cGenSettings;
 	
 	private FeatureAnalysisResult featureAnalysis;
+
+	private String classAssocArray;
 	
 	private List<String> headers = new LinkedList<>();
 	
 	public static final String FEATURE_FILE_NAME = "VdmModelFeatures.h";
+	public static final String CLASS_ASSOC_FILE_NAME = "VdmClassHierarchy.h";
 	
 	public CGen()
 	{
@@ -76,6 +80,7 @@ public class CGen extends CodeGenBase
 		super.preProcessAst(ast);
 		hasTimeMap = TimeFinder.computeTimeMap(getClasses(ast));
 		featureAnalysis = FeatureAnalysisResult.runAnalysis(getClasses(ast), cGenSettings.usesGarbageCollection());
+		classAssocArray = ClassAssocAnalysis.runAnalysis(getClasses(ast));
 	}
 	
 	public List<File> getEmittedFiles()
@@ -493,7 +498,18 @@ public class CGen extends CodeGenBase
 			formatter.format(file);
 		}
 	}
-	
+
+	public void emitClassAssocFile(File outputDir, String classAssocFile) throws Exception
+	{
+		if(classAssocArray != null)
+		{
+			writeFile(outputDir, classAssocFile, classAssocArray);
+		}
+		else
+		{
+			throw new Exception("No feature analysis result found! Did you run the code generator?");
+		}
+	}
 	
 	public void emitFeatureFile(File outputDir, String featureFileName) throws Exception
 	{

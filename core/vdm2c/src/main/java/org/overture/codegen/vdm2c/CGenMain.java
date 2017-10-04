@@ -240,7 +240,7 @@ public class CGenMain
 					}
 				}
 				
-				
+				cGen.emitClassAssocFile(outputDir, CGen.CLASS_ASSOC_FILE_NAME);
 				cGen.emitFeatureFile(outputDir, CGen.FEATURE_FILE_NAME);
 				if(!quiet)
 				{

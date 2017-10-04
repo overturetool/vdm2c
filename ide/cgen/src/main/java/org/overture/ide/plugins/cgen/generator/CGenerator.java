@@ -80,6 +80,7 @@ public class CGenerator
 		try {
 			vdm2c.genCSourceFiles(cCodeOutputFolder, data.getClasses());
 			vdm2c.emitFeatureFile(cCodeOutputFolder, CGen.FEATURE_FILE_NAME);
+			vdm2c.emitClassAssocFile(cCodeOutputFolder, CGen.CLASS_ASSOC_FILE_NAME);
 		} catch (Exception e) {
 
 			CodeGenConsole.GetInstance().printErrorln("Problems encountered while generating C sources: " + e.getMessage());
