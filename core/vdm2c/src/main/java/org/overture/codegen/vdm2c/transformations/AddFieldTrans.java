@@ -28,6 +28,7 @@ public class AddFieldTrans extends DepthFirstAnalysisCAdaptor
 	public void caseADefaultClassDeclIR(ADefaultClassDeclIR node)
 			throws AnalysisException
 	{
+		/*
 		if (node.getSuperNames().isEmpty())
 		{
 			AIntLiteralExpIR initExp = assist.getInfo().getExpAssistant().consIntLiteral(node.getFields().size());
@@ -43,6 +44,7 @@ public class AddFieldTrans extends DepthFirstAnalysisCAdaptor
 			
 			node.getFields().addFirst(stateField);
 		}
+		*/
 		
 		AFieldDeclIR field = new AFieldDeclIR();
 		field.setAccess(IRConstants.PRIVATE);
