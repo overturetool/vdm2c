@@ -508,11 +508,6 @@ public class DistributionTests extends DistTestBase
 		Assert.assertTrue("Could not create halfduplex1 pipe", p1.exitValue()==0);
 		Assert.assertTrue("Could not create halfduplex2 pipe", p2.exitValue()==0);
 		
-		 String current = new java.io.File( "." ).getCanonicalPath();
-	        System.out.println("Current dir:"+current);
-	 String currentDir = System.getProperty("user.dir");
-	        System.out.println("Current dir using System:" +currentDir);
-		
 		Assert.assertTrue("Expected return value to be 0", cpuReturnValue);
 
 	}
