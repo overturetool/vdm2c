@@ -468,6 +468,9 @@ public class DistributionTests extends DistTestBase
 		pp1.waitFor();
 		pp2.waitFor();
 		
+		Assert.assertTrue("Could not create halfduplex1 pipe", pp1.exitValue()==0);
+		Assert.assertTrue("Could not create halfduplex2 pipe", pp2.exitValue()==0);
+		
 		// cpu2 -- async call
 		String name = "cpu2Exe";
 		name = "./" + name;
@@ -503,6 +506,9 @@ public class DistributionTests extends DistTestBase
 		
 		p1.waitFor();
 		p2.waitFor();
+		
+		Assert.assertTrue("Could not create halfduplex1 pipe", p1.exitValue()==0);
+		Assert.assertTrue("Could not create halfduplex2 pipe", p2.exitValue()==0);
 		
 		 String current = new java.io.File( "." ).getCanonicalPath();
 	        System.out.println("Current dir:"+current);
