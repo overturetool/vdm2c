@@ -114,7 +114,7 @@ TVP isChar(TVP val);
 TVP isCharGC(TVP val, TVP *from);
 TVP isToken(TVP val);
 TVP isTokenGC(TVP val, TVP *from);
-TVP is(TVP v, char ot[], vdmtype it);
+TVP is(TVP v, char ot[]);
 int toInteger(TVP a);
 double toDouble(TVP a);
 bool toBool(TVP a);

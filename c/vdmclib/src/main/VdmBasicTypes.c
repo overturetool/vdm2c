@@ -361,7 +361,7 @@ TVP isTokenGC(TVP v, TVP *from)
 }
 
 
-TVP is(TVP v, char ot[], vdmtype it)
+TVP is(TVP v, char ot[])
 {
 	int i;
 	bool res = false;
@@ -409,7 +409,7 @@ TVP is(TVP v, char ot[], vdmtype it)
 
 			for(i = 0; i < ((struct Collection *)(v->value.ptr))->size; i++)
 			{
-				isres = is(((struct Collection *)(v->value.ptr))->value[i], &(ot[1]), it);
+				isres = is(((struct Collection *)(v->value.ptr))->value[i], &(ot[1]));
 				res &= isres->value.boolVal;
 				vdmFree(isres);
 			}
@@ -425,7 +425,7 @@ TVP is(TVP v, char ot[], vdmtype it)
 
 			for(i = 0; i < ((struct Collection *)(v->value.ptr))->size; i++)
 			{
-				isres = is(((struct Collection *)(v->value.ptr))->value[i], &(ot[1]), it);
+				isres = is(((struct Collection *)(v->value.ptr))->value[i], &(ot[1]));
 				res &= isres->value.boolVal;
 				vdmFree(isres);
 			}
