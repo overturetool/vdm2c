@@ -434,7 +434,6 @@ public class DistributionTests extends DistTestBase
 
 		String cmake = findCMake();
 		
-//		ProcessBuilder pb = new ProcessBuilder(cmake,".");
 		ProcessBuilder pb = new ProcessBuilder(cmake,"-DCMAKE_BUILD_TYPE=Debug", String.format("-DVDM_LIB_PATH=%s", (new File("../../c/vdmclib/src/main/")).getAbsolutePath()), ".");
 
 		CMakeUtil cmakeUtil = new CMakeUtil(new File("ss"), new File("src/test/resources/CMakeLists.txt"), false);
