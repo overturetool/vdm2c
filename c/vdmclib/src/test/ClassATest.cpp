@@ -116,4 +116,23 @@ TEST(ClassATest, field1)
 	vdmFree(c);
 }
 
+TEST(ClassATest, isA)
+{
+	TVP c = A._new();
+	char ot[] = {'W', CLASS_ID_A_ID};
+
+	TVP res = isOfClass(c, CLASS_ID_A_ID);
+	EXPECT_TRUE(res->value.boolVal);
+	vdmFree(res);
+
+	res = isOfClass(c, CLASS_ID_A_ID + 1);
+	EXPECT_FALSE(res->value.boolVal);
+	vdmFree(res);
+
+	res = is(c, ot);
+	EXPECT_TRUE(res->value.boolVal);
+
+	vdmFree(c);
+}
+
 }

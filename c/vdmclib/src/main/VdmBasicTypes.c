@@ -360,6 +360,39 @@ TVP isTokenGC(TVP v, TVP *from)
 	return newBoolGC(false, from);
 }
 
+TVP isOfClass(TVP val, int classID)
+{
+	if(val->type == VDM_CLASS)
+		if(((struct ClassType *)val->value.ptr)->classId == classID)
+			return newBool(true);
+	return newBool(false);
+}
+
+TVP isOfClassGC(TVP val, int classID, TVP *from)
+{
+	if(val->type == VDM_CLASS)
+		if(((struct ClassType *)val->value.ptr)->classId == classID)
+			return newBoolGC(true, from);
+	return newBoolGC(false, from);
+}
+
+#ifndef NO_RECORDS
+TVP isRecord(TVP val, int recID)
+{
+	if(val->type == VDM_RECORD)
+		if(((struct ClassType *)val->value.ptr)->classId == recID)
+			return newBool(true);
+	return newBool(false);
+}
+
+TVP isRecordGC(TVP val, int recID, TVP *from)
+{
+	if(val->type == VDM_RECORD)
+		if(((struct ClassType *)val->value.ptr)->classId == recID)
+			return newBoolGC(true, from);
+	return newBoolGC(false, from);
+}
+#endif
 
 TVP is(TVP v, char ot[])
 {
@@ -368,7 +401,7 @@ TVP is(TVP v, char ot[])
 	TVP isres;
 
 	/* No nesting inside sequence, set or record. */
-	if(ot[0] != 'Q' && ot[0] != 'T' && ot[0] != 'R')
+	if(ot[0] != 'Q' && ot[0] != 'T' && ot[0] != 'P')
 	{
 		switch(ot[0])
 		{
@@ -396,6 +429,14 @@ TVP is(TVP v, char ot[])
 		case 't':  /*  VDM_TOKEN  */
 			res = (isToken(v))->value.boolVal;
 			break;
+		case 'W':  /*  VDM_CLASS  */
+			res = (isOfClass(v, ot[1]))->value.boolVal;
+			break;
+#ifndef NO_RECORDS
+		case 'R':  /*  VDM_CLASS  */
+			res = (isRecord(v, ot[1]))->value.boolVal;
+			break;
+#endif
 		default:
 			break;
 		};
@@ -428,6 +469,33 @@ TVP is(TVP v, char ot[])
 				isres = is(((struct Collection *)(v->value.ptr))->value[i], &(ot[1]));
 				res &= isres->value.boolVal;
 				vdmFree(isres);
+			}
+		}
+	}
+#endif
+#ifndef NO_PRODUCTS
+	else if(ot[0] == 'P')
+	{
+		if(v->type == VDM_PRODUCT)
+		{
+			res = true;
+
+			char numFields = ot[1];
+			int i = 0, field = 0;
+
+			ot = &ot[2];
+
+			while(field < numFields)
+			{
+				if(ot[i] == '*')
+				{
+					isres = is(((struct Collection *)(v->value.ptr))->value[field], &(ot[i + 1]));
+					res &= isres->value.boolVal;
+					vdmFree(isres);
+					field++;
+				}
+
+				i++;
 			}
 		}
 	}

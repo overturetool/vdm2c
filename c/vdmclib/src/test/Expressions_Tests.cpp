@@ -508,14 +508,59 @@ TEST(Expression, isSeqOfSetOfToken)
 	vdmFree(res);
 }
 
-/*
-TEST(Expression, isRecIntInt)
+TEST(Expression, isProdInt)
 {
-	char ot[] = "dlk";
+	char ot[] = {'P', 1, '*', 'i','*'};
 	TVP res;
 
-	res = is(newSeqVar(2, newSetVar(2, newToken(newSeqVar(1, newChar('a'))), newToken(newSeqVar(1, newChar('a')))), newSetVar(2, newToken(newSeqVar(1, newChar('a'))), newToken(newSeqVar(1, newChar('a'))))), ot);
+	res = is(newProductVar(1, newInt(-1)), ot);
 	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(res);
 }
-*/
+
+TEST(Expression, isProdIntInt)
+{
+	char ot[] = {'P', 2, '*', 'i', '*', 'i', '*'};
+	TVP res;
+
+	res = is(newProductVar(2, newInt(-1), newInt(1)), ot);
+	EXPECT_TRUE(res->value.boolVal);
+	vdmFree(res);
+}
+
+TEST(Expression, isProdIntChar)
+{
+	char ot[] = {'P', 2, '*', 'i', '*', 'c', '*'};
+	TVP res;
+
+	res = is(newProductVar(2, newInt(-1), newChar('c')), ot);
+	EXPECT_TRUE(res->value.boolVal);
+	vdmFree(res);
+}
+
+TEST(Expression, isProdIntProdIntChar)
+{
+	char ot[] = {'P', 2, '*', 'i', '*', 'P', 2, '*', 'i', '*', 'c', '*'};
+	TVP res;
+
+
+	res = is(newProductVar(2, newInt(-1), newProductVar(2, newInt(-2), newChar('d'))), ot);
+	EXPECT_TRUE(res->value.boolVal);
+	vdmFree(res);
+
+	ot[8] = 'j';
+
+	res = is(newProductVar(2, newInt(-1), newProductVar(2, newInt(-2), newChar('d'))), ot);
+	EXPECT_FALSE(res->value.boolVal);
+	vdmFree(res);
+}
+
+TEST(Expression, isSeqProdInt)
+{
+	char ot[] = {'Q', 'P', 2, '*', 'i', '*', 'i', '*'};
+	TVP res;
+
+	res = is(newSeqVar(1, newProductVar(2, newInt(-1), newInt(1))), ot);
+	EXPECT_TRUE(res->value.boolVal);
+	vdmFree(res);
+}
