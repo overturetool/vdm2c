@@ -472,6 +472,7 @@ public class DistributionTests extends DistTestBase
 		
 		Boolean b = true;
 		
+		
 //		while(b){
 //			Thread.sleep(delay);
 //			File f = new File("target/test-cgen/DistributionTests/TestQuotesBool/sync.txt");
