@@ -68,12 +68,12 @@ int busRead(byte *buffer, int len){ // Just for own testing
 	int fd, ret_val, count, numread;
  
     /* Create the named - pipe */
-    ret_val = mkfifo(HALF_DUPLEX1, 0666);
+    // ret_val = mkfifo(HALF_DUPLEX1, 0666);
  
-    if ((ret_val == -1) && (errno != EEXIST)) {
-        perror("Error creating the named pipe");
-        exit (1);
-    }
+    // if ((ret_val == -1) && (errno != EEXIST)) {
+    //     perror("Error creating the named pipe");
+    //     exit (1);
+    // }
  
     /* Open the pipe for reading */
     fd = open(HALF_DUPLEX1, O_RDONLY);

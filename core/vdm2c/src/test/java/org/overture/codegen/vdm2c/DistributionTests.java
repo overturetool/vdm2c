@@ -461,6 +461,13 @@ public class DistributionTests extends DistTestBase
 
 		/** 4. Run the exetutables **/
 
+		Process pp1 = Runtime.getRuntime().exec("mkfifo target/test-cgen/DistributionTests/TestQuotesBool/halfduplex1");
+		Process pp2 = Runtime.getRuntime().exec("mkfifo target/test-cgen/DistributionTests/TestQuotesBool/halfduplex2");
+		//Runtime.getRuntime().
+		
+		pp1.waitFor();
+		pp2.waitFor();
+		
 		// cpu2 -- async call
 		String name = "cpu2Exe";
 		name = "./" + name;
@@ -487,6 +494,32 @@ public class DistributionTests extends DistTestBase
 		boolean cpuReturnValue = cmakeUtil.run(cpu1Dir, "cpu1Exe", TEST_OUTPUT != null);
 
 		spb.destroy();
+		
+		File testDir = new File("target/test-cgen/DistributionTests/TestQuotesBool");
+		
+		Process p1 = Runtime.getRuntime().exec("unlink target/test-cgen/DistributionTests/TestQuotesBool/halfduplex1");
+		Process p2 = Runtime.getRuntime().exec("unlink target/test-cgen/DistributionTests/TestQuotesBool/halfduplex2");
+		//Runtime.getRuntime().
+		
+		p1.waitFor();
+		p2.waitFor();
+		
+		 String current = new java.io.File( "." ).getCanonicalPath();
+	        System.out.println("Current dir:"+current);
+	 String currentDir = System.getProperty("user.dir");
+	        System.out.println("Current dir using System:" +currentDir);
+		
+//		// clean up
+//		String name4 = "unlink halfduplex1";
+//		ProcessBuilder pb4 = new ProcessBuilder(name4);
+//		pb4.directory(testDir);
+//		pb4.start();
+//		
+//		// clean up
+//		String name5 = "unlink halfduplex2";
+//		ProcessBuilder pb5 = new ProcessBuilder(name5);
+//		pb5.directory(testDir);
+//		pb5.start();
 		
 		Assert.assertTrue("Expected return value to be 0", cpuReturnValue);
 

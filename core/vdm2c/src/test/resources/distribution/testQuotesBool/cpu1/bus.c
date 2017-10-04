@@ -59,12 +59,12 @@ TVP bus_send(int objID, int funID, int supID, int nrArgs, va_list args){
 
     int ret_val;
     // Get result
-    ret_val = mkfifo(HALF_DUPLEX2, 0666);
+    // ret_val = mkfifo(HALF_DUPLEX2, 0666);
  
-    if ((ret_val == -1) && (errno != EEXIST)) {
-        perror("Error creating the named pipe");
-        exit (1);
-    }
+    // if ((ret_val == -1) && (errno != EEXIST)) {
+    //     perror("Error creating the named pipe");
+    //     exit (1);
+    // }
  	
  	int fd2;
     /* Open the pipe for reading */
