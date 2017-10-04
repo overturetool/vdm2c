@@ -394,12 +394,12 @@ TVP isRecordGC(TVP val, int recID, TVP *from)
 }
 #endif
 
-TVP isSameClass(TVP a, TVP b)
+TVP sameClass(TVP a, TVP b)
 {
 	return newBool(((struct ClassType *)a->value.ptr)->classId == ((struct ClassType *)b->value.ptr)->classId);
 }
 
-TVP isSameClassGC(TVP a, TVP b, TVP *from)
+TVP sameClassGC(TVP a, TVP b, TVP *from)
 {
 	return newBoolGC(((struct ClassType *)a->value.ptr)->classId == ((struct ClassType *)b->value.ptr)->classId, from);
 }

@@ -135,12 +135,12 @@ TEST(ClassATest, isA)
 	vdmFree(c);
 }
 
-TEST(ClassATest, isSameClass)
+TEST(ClassATest, sameClass)
 {
 	TVP c = A._new();
 	TVP res;
 
-	res = isSameClass(c, c);
+	res = sameClass(c, c);
 	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(res);
 }

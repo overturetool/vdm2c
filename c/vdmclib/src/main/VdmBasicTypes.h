@@ -120,8 +120,8 @@ TVP isOfClassGC(TVP val, int classID, TVP *from);
 TVP isRecord(TVP val, int recID);
 TVP isRecordGC(TVP val, int recID, TVP *from);
 #endif
-TVP isSameClass(TVP a, TVP b);
-TVP isSameClassGC(TVP a, TVP b, TVP *from);
+TVP sameClass(TVP a, TVP b);
+TVP sameClassGC(TVP a, TVP b, TVP *from);
 TVP is(TVP v, char ot[]);
 int toInteger(TVP a);
 double toDouble(TVP a);
