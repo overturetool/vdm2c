@@ -462,7 +462,6 @@ public class DistributionTests extends DistTestBase
 
 		Process pp1 = Runtime.getRuntime().exec("mkfifo target/test-cgen/DistributionTests/TestQuotesBool/halfduplex1");
 		Process pp2 = Runtime.getRuntime().exec("mkfifo target/test-cgen/DistributionTests/TestQuotesBool/halfduplex2");
-		//Runtime.getRuntime().
 		
 		pp1.waitFor();
 		pp2.waitFor();
