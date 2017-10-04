@@ -364,10 +364,10 @@ TVP isTokenGC(TVP v, TVP *from)
 TVP is(TVP v, char ot[], vdmtype it)
 {
 	int i;
-	bool res = true;
+	bool res = false;
 	TVP isres;
 
-	/* No nesting inside seq or set. */
+	/* No nesting inside sequence, set or record. */
 	if(ot[0] != 'Q' && ot[0] != 'T' && ot[0] != 'R')
 	{
 		switch(ot[0])
@@ -401,28 +401,28 @@ TVP is(TVP v, char ot[], vdmtype it)
 		};
 	}
 #ifndef NO_SEQS
-	else if(ot[0] == 'q')
+	else if(ot[0] == 'Q')
 	{
 		if(v->type == VDM_SEQ)
 		{
+			res = true;
+
 			for(i = 0; i < ((struct Collection *)(v->value.ptr))->size; i++)
 			{
 				isres = is(((struct Collection *)(v->value.ptr))->value[i], &(ot[1]), it);
 				res &= isres->value.boolVal;
 				vdmFree(isres);
 			}
-		}
-		else
-		{
-			res = false;
 		}
 	}
 #endif
 #ifndef NO_SETS
-	else if(ot[0] == 't')
+	else if(ot[0] == 'T')
 	{
 		if(v->type == VDM_SET)
 		{
+			res = true;
+
 			for(i = 0; i < ((struct Collection *)(v->value.ptr))->size; i++)
 			{
 				isres = is(((struct Collection *)(v->value.ptr))->value[i], &(ot[1]), it);
@@ -430,12 +430,10 @@ TVP is(TVP v, char ot[], vdmtype it)
 				vdmFree(isres);
 			}
 		}
-		else
-		{
-			res = false;
-		}
 	}
 #endif
+	else
+	{}
 
 	return newBool(res);
 }
