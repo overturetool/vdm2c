@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.overture.ast.analysis.AnalysisException;
 import org.overture.ast.definitions.SClassDefinition;
 import org.overture.ast.lex.Dialect;
+import org.overture.codegen.assistant.DeclAssistantIR;
 import org.overture.codegen.vdm2c.analysis.ClassAssocAnalysis;
 import org.overture.config.Release;
 import org.overture.config.Settings;
@@ -58,6 +59,15 @@ public class ClassAssocAnalysisTest {
         checkResult(model, expected);
     }
 
+    @Test
+    public void standardLibExcluded() throws AnalysisException {
+
+        // Error is defined in VDMUnit and is a subclass of Throwable so it should be excluded.
+        String model = "class Error is subclass of Throwable end Error class Throwable end Throwable";
+        String expected = "int assoc[] = {};";
+        checkResult(model, expected);
+    }
+
     private void checkResult(String model, String expected) throws AnalysisException {
         Assert.assertEquals("Got unexpected class association array", CFormat.getGeneratedFileComment() + expected, buildAssocArray(model));
     }
@@ -72,6 +82,6 @@ public class ClassAssocAnalysisTest {
 
         List<SClassDefinition> ast = result.result;
 
-        return ClassAssocAnalysis.runAnalysis(ast);
+        return ClassAssocAnalysis.runAnalysis(ast, new DeclAssistantIR(null));
     }
 }
