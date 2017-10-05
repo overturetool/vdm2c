@@ -555,6 +555,23 @@ TEST(Expression, isProdIntProdIntChar)
 	vdmFree(res);
 }
 
+TEST(Expression, isProdProdIntCharInt)
+{
+	char ot[] = {'P', 2, '*', 'P', 2, '*', 'i', '*', 'c', '*', '*', 'i', '*'};
+	TVP res;
+
+
+	res = is(newProductVar(2, newProductVar(2, newInt(-2), newChar('d')), newInt(-1)), ot);
+	EXPECT_TRUE(res->value.boolVal);
+	vdmFree(res);
+
+	ot[6] = 'j';
+
+	res = is(newProductVar(2, newProductVar(2, newInt(-2), newChar('d')), newInt(-1)), ot);
+	EXPECT_FALSE(res->value.boolVal);
+	vdmFree(res);
+}
+
 TEST(Expression, isSeqProdInt)
 {
 	char ot[] = {'Q', 'P', 2, '*', 'i', '*', 'i', '*'};
