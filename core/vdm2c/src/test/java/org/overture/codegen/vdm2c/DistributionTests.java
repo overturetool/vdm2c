@@ -489,8 +489,8 @@ public class DistributionTests extends DistTestBase
 		p1.waitFor();
 		p2.waitFor();
 		
-		Assert.assertTrue("Could not create halfduplex1 pipe", p1.exitValue()==0);
-		Assert.assertTrue("Could not create halfduplex2 pipe", p2.exitValue()==0);
+		Assert.assertTrue("Could not remove halfduplex1 pipe", p1.exitValue()==0);
+		Assert.assertTrue("Could not remove halfduplex2 pipe", p2.exitValue()==0);
 		
 		Assert.assertTrue("Expected return value to be 0", cpuReturnValue);
 
