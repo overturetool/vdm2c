@@ -632,6 +632,7 @@ public class CGen extends CodeGenBase
 			File outputD = new File(outputDir.getAbsolutePath() + "/" + cpuName);
 
 			cGen.emitFeatureFile(outputD, CGen.FEATURE_FILE_NAME);
+			cGen.emitClassAssocFile(outputD, CGen.CLASS_ASSOC_FILE_NAME);
 
 			for (GeneratedModule generatedClass : data.getClasses()) {
 
