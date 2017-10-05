@@ -115,6 +115,6 @@ struct $cname
 void ${cname}_free_fields(${cstructname});
 $cstructname ${cname}_Constructor(${cstructname});
 
-
+##$CFormat.format($node.getArrDMinit())
 
 #endif /* $cdefname */

@@ -269,6 +269,7 @@ TVP vdmMapApply(TVP map, TVP key)
 		pair = pair->next;
 	}
 
+	assert(false && "Key not found.");
 	return NULL;
 }
 
@@ -291,6 +292,7 @@ TVP vdmMapApplyGC(TVP map, TVP key, TVP *from)
 		pair = pair->next;
 	}
 
+	assert(false && "Key not found.");
 	return NULL;
 }
 

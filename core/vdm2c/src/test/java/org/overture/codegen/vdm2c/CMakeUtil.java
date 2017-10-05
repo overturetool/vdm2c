@@ -155,7 +155,7 @@ public class CMakeUtil
 		}
 
 		p.waitFor();
-
+		
 		List<String> errors = IOUtils.readLines(p.getErrorStream());
 
 		boolean res = p.exitValue() == 0;

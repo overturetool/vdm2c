@@ -1,0 +1,84 @@
+system D
+instance variables
+-- Architecture definition
+/*
+Computing units:
+	Priority: <FP> - Fixed priority
+	          <PP> - Priority?
+
+Speed is giving in Hz - Cycles per second
+*/
+
+	public static a1 : A := new A();
+	public static a2 : A := new A();
+	public static b : B := new B(a1,a2);
+
+  cpu1 : CPU := new CPU(<FP>, 22E6);
+  cpu2 : CPU := new CPU(<FP>, 22E6);
+/*
+Communication bus:
+ 	Modes: <CSMACD> - ?
+*/
+  bus : BUS := new BUS(<CSMACD>, 72E3,{cpu1,cpu2});
+-- TODO Define deployable objects as static instance variables
+operations
+
+public D : () ==> D
+D () == 
+(-- TODO Deploy deployable object to cpu's
+
+  cpu1.deploy(a1);
+	cpu1.deploy(b);
+
+  cpu2.deploy(a2);
+);
+end D
+
+class A is subclass of World
+
+operations
+
+public product: int * int ==> int
+product(a,b) ==
+(
+
+return a*b;
+
+);
+
+end A
+
+class B
+
+instance variables
+a_loc : A;
+a_rem : A;
+
+operations
+
+public B : A * A ==> B
+B (a1,a2) == (
+
+a_loc := a1; -- Local object
+a_rem := a2; -- Remote object
+
+);
+
+public callLoc : () ==> int
+callLoc () == return a_loc.product(2,3); -- CALLFUNC(...)
+
+public callRem : () ==> int
+callRem() == return a_rem.product(4,8); -- DISTCALL(...)
+
+end B
+
+class World
+
+operations
+
+-- The entry function, running on CPU1 in example
+public Run : () ==> int
+Run () == return D`b.callLoc() + D`b.callRem();
+
+end World
+
