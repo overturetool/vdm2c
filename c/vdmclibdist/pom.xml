@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.overturetool.vdm2c</groupId>
+		<artifactId>c</artifactId>
+		<version>0.1.16</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+
+	<groupId>org.overturetool.vdm2c.c</groupId>
+	<artifactId>vdmclibdist</artifactId>
+	<name>The C Code Generator VDM distribution library sources</name>
+
+	<build>
+		<resources>
+			<resource>
+				<directory>src</directory>
+				<targetPath>${project.build.directory}/classes/src</targetPath>
+				<filtering>false</filtering>
+				<includes>
+					<include>**/*.c</include>
+					<include>**/*.cpp</include>
+					<include>**/*.h</include>
+					<include>**/*.hpp</include>
+					<include>**/ProjectCMakeLists.txt</include>
+					<include>**/README.txt</include>
+				</includes>
+			</resource>
+		</resources>
+
+    <plugins>
+
+			<plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+				<inherited>false</inherited>
+        <executions>
+          <execution>
+            <id>copy-dependencies</id>
+            <phase>test</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+								<exec executable="make" failonerror="true"><arg value="-j5" />
+								</exec>	<exec executable="make" failonerror="true"><arg value="test" />
+							</exec>
+							</target>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+
+
+
+	</build>
+
+
+
+
+
+</project>

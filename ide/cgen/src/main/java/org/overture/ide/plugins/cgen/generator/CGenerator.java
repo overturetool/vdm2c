@@ -28,6 +28,7 @@ import org.overture.codegen.utils.GeneratedData;
 import org.overture.codegen.utils.GeneratedModule;
 import org.overture.codegen.vdm2c.CFormat;
 import org.overture.codegen.vdm2c.CGen;
+import org.overture.codegen.vdm2c.distribution.SystemArchitectureAnalysis;
 import org.overture.codegen.vdm2c.extast.declarations.AClassHeaderDeclIR;
 import org.overture.codegen.vdm2c.utils.CGenUtil;
 import org.overture.codegen.vdm2c.utils.NameMangler;
@@ -77,29 +78,58 @@ public class CGenerator
 		// Generate user specified classes
 		GeneratedData data = vdm2c.generate(PluginVdm2CUtil.getNodes(model.getSourceUnits()));
 
-		try {
-			vdm2c.genCSourceFiles(cCodeOutputFolder, data.getClasses());
-			vdm2c.emitFeatureFile(cCodeOutputFolder, CGen.FEATURE_FILE_NAME);
-		} catch (Exception e) {
+		if(vdm2c.getDistGen()){
+			try {
+				vdm2c.emitDistCode(data, cCodeOutputFolder);
+				
+				// If distribution, these maps exist
+				for(String cpu : SystemArchitectureAnalysis.distributionMapStr.keySet()){
+					
+					// Copy files from vdmclib.jar.
+					CGenUtil.copyNativeLibFiles(Vdm2CCommand.class.getClassLoader().getResourceAsStream("jars/vdmclib.jar"),
+							new File(cCodeOutputFolder + File.separator + cpu + File.separator + "nativelib"));
+					
+					// Copy the distribution run-time
+					CGenUtil.copyDistributionLibFiles(Vdm2CCommand.class.getClassLoader().getResourceAsStream("jars/vdmclibdist.jar"),
+							new File(cCodeOutputFolder + File.separator + cpu  + File.separator + "distributionLib"));
 
-			CodeGenConsole.GetInstance().printErrorln("Problems encountered while generating C sources: " + e.getMessage());
-			e.printStackTrace();
+					//Emit empty main.c file so that the generated project compiles.
+					//emitMainFile(new File(cCodeOutputFolder + File.separator + cpu + File.separator + "main.c"), vdm2c.getHeaders());
+					
+					//Emit file containing the mapping between model names and mangled names as #defines.
+					emitMangledNamesHeaderFile(new File(cCodeOutputFolder + File.separator + cpu + File.separator + "MangledNames.h"));
+				}
+			} catch (Exception e) {
+				CodeGenConsole.GetInstance().printErrorln("Problems encountered while generating C sources for a distributed system: " + e.getMessage());
+				e.printStackTrace();
+			}
 		}
+		else{
+			try {
+				vdm2c.genCSourceFiles(cCodeOutputFolder, data.getClasses());
+				vdm2c.emitFeatureFile(cCodeOutputFolder, CGen.FEATURE_FILE_NAME);
+				
+				outputUserspecifiedModules(cCodeOutputFolder, data.getClasses());
 
-		outputUserspecifiedModules(cCodeOutputFolder, data.getClasses());
+				CodeGenConsole.GetInstance().println("Code generation completed successfully.");
+				CodeGenConsole.GetInstance().println("Copying native library files."); // mvn install in vdm2c and
+				// mvn package here makes
+				// this work
+				// Copy files from vdmclib.jar.
+				CGenUtil.copyNativeLibFiles(Vdm2CCommand.class.getClassLoader().getResourceAsStream("jars/vdmclib.jar"),
+						new File(cCodeOutputFolder + File.separator + "nativelib"));
 
-		CodeGenConsole.GetInstance().println("Code generation completed successfully.");
-		CodeGenConsole.GetInstance().println("Copying native library files."); // mvn install in vdm2c and
-		// mvn package here makes
-		// this work
-		// Copy files from vdmclib.jar.
-		CGenUtil.copyNativeLibFiles(Vdm2CCommand.class.getClassLoader().getResourceAsStream("jars/vdmclib.jar"),
-				new File(cCodeOutputFolder + File.separator + "nativelib"));
+				//Emit empty main.c file so that the generated project compiles.
+				emitMainFile(new File(cCodeOutputFolder + File.separator + "main.c"), vdm2c.getHeaders());
+				//Emit file containing the mapping between model names and mangled names as #defines.
+				emitMangledNamesHeaderFile(new File(cCodeOutputFolder + File.separator + "MangledNames.h"));
+				
+			} catch (Exception e) {
 
-		//Emit empty main.c file so that the generated project compiles.
-		emitMainFile(new File(cCodeOutputFolder + File.separator + "main.c"), vdm2c.getHeaders());
-		//Emit file containing the mapping between model names and mangled names as #defines.
-		emitMangledNamesHeaderFile(new File(cCodeOutputFolder + File.separator + "MangledNames.h"));
+				CodeGenConsole.GetInstance().printErrorln("Problems encountered while generating C sources: " + e.getMessage());
+				e.printStackTrace();
+			}
+		}
 
 
 	}
