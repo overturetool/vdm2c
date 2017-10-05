@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.overturetool.vdm2c</groupId>
     <artifactId>ide</artifactId>
-		 <version>0.1.15-SNAPSHOT</version>
+		 <version>0.1.17-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
@@ -53,6 +53,11 @@
 									<artifactItem>
 									<groupId>org.overturetool.vdm2c.c</groupId>
 									<artifactId>vdmclib</artifactId>
+									<version>${project.version}</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>org.overturetool.vdm2c.c</groupId>
+									<artifactId>vdmclibdist</artifactId>
 									<version>${project.version}</version>
 								</artifactItem>
 								<artifactItem>

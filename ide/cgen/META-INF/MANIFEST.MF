@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-Vendor: Overture
 Bundle-ActivationPolicy: lazy
-Bundle-Version: 0.1.15.qualifier
+Bundle-Version: 0.1.17.qualifier
 Eclipse-BuddyPolicy: registered
 Bundle-Name: C Code Generator
 Bundle-ManifestVersion: 2
@@ -28,4 +28,5 @@ Bundle-ClassPath: .,
  jars/slf4j-api.jar,
  jars/log4j.jar,
  jars/slf4j-log4j12.jar,
- jars/vdmclib.jar
+ jars/vdmclib.jar,
+ jars/vdmclibdist.jar
