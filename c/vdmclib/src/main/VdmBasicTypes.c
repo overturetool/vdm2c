@@ -30,6 +30,8 @@
 #include "Vdm.h"
 #include <math.h>
 
+#include "VdmClassHierarchy.h"
+
 
 
 #define ASSERT_CHECK_BOOL(s) assert(s->type == VDM_BOOL && "Value is not a boolean")
@@ -360,15 +362,151 @@ TVP isTokenGC(TVP v, TVP *from)
 	return newBoolGC(false, from);
 }
 
+TVP isOfClass(TVP val, int classID)
+{
+	if(val->type == VDM_CLASS)
+		if(((struct ClassType *)val->value.ptr)->classId == classID)
+			return newBool(true);
+	return newBool(false);
+}
 
-TVP is(TVP v, char ot[], vdmtype it)
+TVP isOfClassGC(TVP val, int classID, TVP *from)
+{
+	if(val->type == VDM_CLASS)
+		if(((struct ClassType *)val->value.ptr)->classId == classID)
+			return newBoolGC(true, from);
+	return newBoolGC(false, from);
+}
+
+TVP sameClass(TVP a, TVP b)
+{
+	return newBool(((struct ClassType *)a->value.ptr)->classId == ((struct ClassType *)b->value.ptr)->classId);
+}
+
+TVP sameClassGC(TVP a, TVP b, TVP *from)
+{
+	return newBoolGC(((struct ClassType *)a->value.ptr)->classId == ((struct ClassType *)b->value.ptr)->classId, from);
+}
+
+#ifndef NO_INHERITANCE
+TVP isOfBaseClass(TVP val, int baseID)
+{
+	int searchID;
+	int i, assoclen = sizeof(assoc) / sizeof(int);
+
+	searchID = ((struct ClassType *)val->value.ptr)->classId;
+
+	for(i = 0; i < assoclen; i += 2)
+	{
+		if(assoc[i] == searchID)
+		{
+			if(assoc[i + 1] == baseID)
+				return newBool(true);
+			else
+			{
+				searchID = assoc[i + 1];
+				i = 0;
+			}
+		}
+	}
+
+	return newBool(false);
+}
+
+TVP isOfBaseClassGC(TVP val, int baseID, TVP *from)
+{
+	int searchID;
+	int i, assoclen = sizeof(assoc) / sizeof(int);
+
+	searchID = ((struct ClassType *)val->value.ptr)->classId;
+
+	for(i = 0; i < assoclen; i += 2)
+	{
+		if(assoc[i] == searchID)
+		{
+			if(assoc[i + 1] == baseID)
+				return newBoolGC(true, from);
+			else
+			{
+				searchID = assoc[i + 1];
+				i = 0;
+			}
+		}
+	}
+
+	return newBoolGC(false, from);
+}
+
+TVP sameBaseClass(TVP a, TVP b)
+{
+	int i, assoclen = sizeof(assoc) / sizeof(int);
+	TVP ares;
+	TVP bres;
+	bool res = false;
+
+	for(i = 0; i < assoclen; i += 2)
+	{
+		ares = isOfBaseClass(a, assoc[i]);
+		bres = isOfBaseClass(b, assoc[i]);
+
+		res &= ares->value.boolVal && bres->value.boolVal;
+
+		vdmFree(ares);
+		vdmFree(bres);
+	}
+
+	return newBool(res);
+}
+
+TVP sameBaseClassGC(TVP a, TVP b, TVP *from)
+{
+	int i, assoclen = sizeof(assoc) / sizeof(int);
+	TVP ares;
+	TVP bres;
+	bool res = false;
+
+	for(i = 0; i < assoclen; i += 2)
+	{
+		ares = isOfBaseClass(a, assoc[i]);
+		bres = isOfBaseClass(b, assoc[i]);
+
+		res &= ares->value.boolVal && bres->value.boolVal;
+
+		vdmFree(ares);
+		vdmFree(bres);
+	}
+
+	return newBoolGC(res, from);
+
+}
+#endif
+
+#ifndef NO_RECORDS
+TVP isRecord(TVP val, int recID)
+{
+	if(val->type == VDM_RECORD)
+		if(((struct ClassType *)val->value.ptr)->classId == recID)
+			return newBool(true);
+	return newBool(false);
+}
+
+TVP isRecordGC(TVP val, int recID, TVP *from)
+{
+	if(val->type == VDM_RECORD)
+		if(((struct ClassType *)val->value.ptr)->classId == recID)
+			return newBoolGC(true, from);
+	return newBoolGC(false, from);
+}
+#endif
+
+TVP is(TVP v, char ot[])
 {
 	int i;
-	bool res = true;
+	bool res = false;
 	TVP isres;
 
-	/* No nesting inside seq or set. */
-	if(ot[0] != 'Q' && ot[0] != 'T' && ot[0] != 'R')
+	/* No nesting inside sequence, set or record. */
+	if(ot[0] != 'Q' && ot[0] != 'T' && ot[0] != 'P')
 	{
 		switch(ot[0])
 		{
@@ -396,46 +534,79 @@ TVP is(TVP v, char ot[], vdmtype it)
 		case 't':  /*  VDM_TOKEN  */
 			res = (isToken(v))->value.boolVal;
 			break;
+		case 'W':  /*  VDM_CLASS  */
+			res = (isOfClass(v, ot[1]))->value.boolVal;
+			break;
+#ifndef NO_RECORDS
+		case 'R':  /*  VDM_CLASS  */
+			res = (isRecord(v, ot[1]))->value.boolVal;
+			break;
+#endif
 		default:
 			break;
 		};
 	}
 #ifndef NO_SEQS
-	else if(ot[0] == 'q')
+	else if(ot[0] == 'Q')
 	{
 		if(v->type == VDM_SEQ)
 		{
+			res = true;
+
 			for(i = 0; i < ((struct Collection *)(v->value.ptr))->size; i++)
 			{
-				isres = is(((struct Collection *)(v->value.ptr))->value[i], &(ot[1]), it);
+				isres = is(((struct Collection *)(v->value.ptr))->value[i], &(ot[1]));
 				res &= isres->value.boolVal;
 				vdmFree(isres);
 			}
-		}
-		else
-		{
-			res = false;
 		}
 	}
 #endif
 #ifndef NO_SETS
-	else if(ot[0] == 't')
+	else if(ot[0] == 'T')
 	{
 		if(v->type == VDM_SET)
 		{
+			res = true;
+
 			for(i = 0; i < ((struct Collection *)(v->value.ptr))->size; i++)
 			{
-				isres = is(((struct Collection *)(v->value.ptr))->value[i], &(ot[1]), it);
+				isres = is(((struct Collection *)(v->value.ptr))->value[i], &(ot[1]));
 				res &= isres->value.boolVal;
 				vdmFree(isres);
 			}
 		}
-		else
+	}
+#endif
+#ifndef NO_PRODUCTS
+	else if(ot[0] == 'P')
+	{
+		if(v->type == VDM_PRODUCT)
 		{
-			res = false;
+			res = true;
+
+			char numFields = ot[1];
+			int i = 0, field = 0;
+
+			ot = &ot[2];
+
+			while(field < numFields)
+			{
+				if(ot[i] == '*')
+				{
+					isres = is(((struct Collection *)(v->value.ptr))->value[field], &(ot[i + 1]));
+					res &= isres->value.boolVal;
+					vdmFree(isres);
+					field++;
+				}
+
+				i++;
+			}
 		}
 	}
 #endif
+	else
+	{}
 
 	return newBool(res);
 }

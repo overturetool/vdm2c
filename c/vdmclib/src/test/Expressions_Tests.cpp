@@ -297,45 +297,44 @@ TEST(Expression, ifExp)
 
 
 
-/*
 TEST(Expression, isInt)
 {
-	char ot[] = {'z'};
+	char ot[] = "i";
 	TVP res;
 
 	res = isInt(newInt(3));
 	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(res);
 
-	res = is(newInt(3), ot, VDM_INT);
+	res = is(newInt(3), ot);
 	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(res);
 }
 
 TEST(Expression, isReal)
 {
-	char ot[] = {'z'};
+	char ot[] = "d";
 	TVP res;
 
 	res = isReal(newReal(3));
 	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(res);
 
-	res = is(newReal(3), ot, VDM_REAL);
+	res = is(newReal(3), ot);
 	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(res);
 }
 
 TEST(Expression, isBool)
 {
-	char ot[] = {'z'};
+	char ot[] = "b";
 	TVP res;
 
 	res = isBool(newBool(false));
 	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(res);
 
-	res = is(newBool(false), ot, VDM_BOOL);
+	res = is(newBool(false), ot);
 	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(res);
 }
@@ -343,14 +342,14 @@ TEST(Expression, isBool)
 
 TEST(Expression, isNat)
 {
-	char ot[] = {'z'};
+	char ot[] = "j";
 	TVP res;
 
 	res = isNat(newInt(0));
 	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(res);
 
-	res = is(newInt(0), ot, VDM_NAT);
+	res = is(newInt(0), ot);
 	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(res);
 
@@ -358,21 +357,21 @@ TEST(Expression, isNat)
 	EXPECT_FALSE(res->value.boolVal);
 	vdmFree(res);
 
-	res = is(newInt(-1), ot, VDM_NAT);
+	res = is(newInt(-1), ot);
 	EXPECT_FALSE(res->value.boolVal);
 	vdmFree(res);
 }
 
 TEST(Expression, isNat1)
 {
-	char ot[] = {'z'};
+	char ot[] = "k";
 	TVP res;
 
 	res = isNat1(newInt(1));
 	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(res);
 
-	res = is(newInt(1), ot, VDM_NAT1);
+	res = is(newInt(1), ot);
 	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(res);
 
@@ -380,21 +379,21 @@ TEST(Expression, isNat1)
 	EXPECT_FALSE(res->value.boolVal);
 	vdmFree(res);
 
-	res = is(newInt(0), ot, VDM_NAT1);
+	res = is(newInt(0), ot);
 	EXPECT_FALSE(res->value.boolVal);
 	vdmFree(res);
 }
 
 TEST(Expression, isRat)
 {
-	char ot[] = {'z'};
+	char ot[] = "e";
 	TVP res;
 
 	res = isRat(newReal(1));
 	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(res);
 
-	res = is(newReal(1), ot, VDM_RAT);
+	res = is(newReal(1), ot);
 	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(res);
 
@@ -402,97 +401,183 @@ TEST(Expression, isRat)
 	EXPECT_FALSE(res->value.boolVal);
 	vdmFree(res);
 
-	res = is(newInt(0), ot, VDM_RAT);
+	res = is(newInt(0), ot);
 	EXPECT_FALSE(res->value.boolVal);
 	vdmFree(res);
 }
 
 TEST(Expression, isChar)
 {
-	char ot[] = {'z'};
+	char ot[] = "c";
 	TVP res;
 
 	res = isChar(newChar('a'));
 	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(res);
 
-	res = is(newChar('a'), ot, VDM_CHAR);
+	res = is(newChar('a'), ot);
 	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(res);
 }
 
 TEST(Expression, isToken)
 {
-	char ot[] = {'z'};
+	char ot[] = "t";
 	TVP res;
 
 	res = isToken(newToken(newSeqVar(1, newChar('a'))));
 	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(res);
 
-	res = is(newToken(newSeqVar(1, newChar('a'))), ot, VDM_TOKEN);
+	res = is(newToken(newSeqVar(1, newChar('a'))), ot);
 	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(res);
 }
 
 TEST(Expression, isSeqOfInt)
 {
-	char ot[] = {'q', 'z'};
+	char ot[] = "Qi";
 	TVP res;
 
-	res = is(newSeqVar(2, newInt(1), newInt(2)), ot, VDM_INT);
+	res = is(newSeqVar(2, newInt(1), newInt(-2)), ot);
 	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(res);
 }
 
 TEST(Expression, isSeqOfSeqOfInt)
 {
-	char ot[] = {'q', 'q', 'z'};
+	char ot[] = {'Q', 'Q', 'i'};
 	TVP res;
 
-	res = is(newSeqVar(2, newSeqVar(2, newInt(1), newInt(2)), newSeqVar(2, newInt(1), newInt(2))), ot, VDM_INT);
+	res = is(newSeqVar(2, newSeqVar(2, newInt(1), newInt(-2)), newSeqVar(2, newInt(3), newInt(-4))), ot);
 	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(res);
 }
 
 TEST(Expression, isSetOfInt)
 {
-	char ot[] = {'t', 'z'};
+	char ot[] = "Ti";
 	TVP res;
 
-	res = is(newSetVar(2, newInt(1), newInt(2)), ot, VDM_INT);
+	res = is(newSetVar(2, newInt(1), newInt(-2)), ot);
 	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(res);
 }
 
 TEST(Expression, isSetOfSetOfInt)
 {
-	char ot[] = {'t', 't', 'z'};
+	char ot[] = "TTi";
 	TVP res;
 
-	res = is(newSetVar(2, newSetVar(2, newInt(1), newInt(2)), newSetVar(2, newInt(1), newInt(2))), ot, VDM_INT);
+	res = is(newSetVar(2, newSetVar(2, newInt(1), newInt(-2)), newSetVar(2, newInt(-1), newInt(2))), ot);
 	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(res);
 }
 
 TEST(Expression, isSetOfSeqOfNat1)
 {
-	char ot[] = {'t', 'q', 'z'};
+	char ot[] = "TQk";
 	TVP res;
 
-	res = is(newSetVar(2, newSeqVar(2, newInt(1), newInt(2)), newSeqVar(2, newInt(1), newInt(2))), ot, VDM_INT);
+	res = is(newSetVar(2, newSeqVar(2, newInt(1), newInt(2)), newSeqVar(2, newInt(1), newInt(2))), ot);
 	EXPECT_TRUE(res->value.boolVal);
+	vdmFree(res);
+
+	res = is(newSetVar(2, newSeqVar(2, newInt(1), newInt(-2)), newSeqVar(2, newInt(1), newInt(2))), ot);
+	EXPECT_FALSE(res->value.boolVal);
 	vdmFree(res);
 }
 
 TEST(Expression, isSetOfSeqOfToken)
 {
-	char ot[] = {'t', 'q', 'z'};
+	char ot[] = "TQt";
 	TVP res;
 
-	res = is(newSetVar(2, newSeqVar(2, newToken(newSeqVar(1, newChar('a'))), newToken(newSeqVar(1, newChar('a')))), newSeqVar(2, newToken(newSeqVar(1, newChar('a'))), newToken(newSeqVar(1, newChar('a'))))), ot, VDM_TOKEN);
+	res = is(newSetVar(2, newSeqVar(2, newToken(newSeqVar(1, newChar('a'))), newToken(newSeqVar(1, newChar('a')))), newSeqVar(2, newToken(newSeqVar(1, newChar('a'))), newToken(newSeqVar(1, newChar('a'))))), ot);
 	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(res);
 }
 
-*/
+TEST(Expression, isSeqOfSetOfToken)
+{
+	char ot[] = "QTt";
+	TVP res;
+
+	res = is(newSeqVar(2, newSetVar(2, newToken(newSeqVar(1, newChar('a'))), newToken(newSeqVar(1, newChar('a')))), newSetVar(2, newToken(newSeqVar(1, newChar('a'))), newToken(newSeqVar(1, newChar('a'))))), ot);
+	EXPECT_TRUE(res->value.boolVal);
+	vdmFree(res);
+}
+
+TEST(Expression, isProdInt)
+{
+	char ot[] = {'P', 1, '*', 'i','*'};
+	TVP res;
+
+	res = is(newProductVar(1, newInt(-1)), ot);
+	EXPECT_TRUE(res->value.boolVal);
+	vdmFree(res);
+}
+
+TEST(Expression, isProdIntInt)
+{
+	char ot[] = {'P', 2, '*', 'i', '*', 'i', '*'};
+	TVP res;
+
+	res = is(newProductVar(2, newInt(-1), newInt(1)), ot);
+	EXPECT_TRUE(res->value.boolVal);
+	vdmFree(res);
+}
+
+TEST(Expression, isProdIntChar)
+{
+	char ot[] = {'P', 2, '*', 'i', '*', 'c', '*'};
+	TVP res;
+
+	res = is(newProductVar(2, newInt(-1), newChar('c')), ot);
+	EXPECT_TRUE(res->value.boolVal);
+	vdmFree(res);
+}
+
+TEST(Expression, isProdIntProdIntChar)
+{
+	char ot[] = {'P', 2, '*', 'i', '*', 'P', 2, '*', 'i', '*', 'c', '*'};
+	TVP res;
+
+
+	res = is(newProductVar(2, newInt(-1), newProductVar(2, newInt(-2), newChar('d'))), ot);
+	EXPECT_TRUE(res->value.boolVal);
+	vdmFree(res);
+
+	ot[8] = 'j';
+
+	res = is(newProductVar(2, newInt(-1), newProductVar(2, newInt(-2), newChar('d'))), ot);
+	EXPECT_FALSE(res->value.boolVal);
+	vdmFree(res);
+}
+
+TEST(Expression, isProdProdIntCharInt)
+{
+	char ot[] = {'P', 2, '*', 'P', 2, '*', 'i', '*', 'c', '*', '*', 'i', '*'};
+	TVP res;
+
+
+	res = is(newProductVar(2, newProductVar(2, newInt(-2), newChar('d')), newInt(-1)), ot);
+	EXPECT_TRUE(res->value.boolVal);
+	vdmFree(res);
+
+	ot[6] = 'j';
+
+	res = is(newProductVar(2, newProductVar(2, newInt(-2), newChar('d')), newInt(-1)), ot);
+	EXPECT_FALSE(res->value.boolVal);
+	vdmFree(res);
+}
+
+TEST(Expression, isSeqProdInt)
+{
+	char ot[] = {'Q', 'P', 2, '*', 'i', '*', 'i', '*'};
+	TVP res;
+
+	res = is(newSeqVar(1, newProductVar(2, newInt(-1), newInt(1))), ot);
+	EXPECT_TRUE(res->value.boolVal);
+	vdmFree(res);
+}
