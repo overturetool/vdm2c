@@ -376,6 +376,44 @@ TVP isOfClassGC(TVP val, int classID, TVP *from)
 	return newBoolGC(false, from);
 }
 
+TVP sameClass(TVP a, TVP b)
+{
+	return newBool(((struct ClassType *)a->value.ptr)->classId == ((struct ClassType *)b->value.ptr)->classId);
+}
+
+TVP sameClassGC(TVP a, TVP b, TVP *from)
+{
+	return newBoolGC(((struct ClassType *)a->value.ptr)->classId == ((struct ClassType *)b->value.ptr)->classId, from);
+}
+
+#ifndef NO_INHERITANCE
+TVP isOfBaseClass(TVP val, int classID)
+{
+	int i, assoclen = sizeof(assoc / sizeof(int));
+
+	for(i = 0; i < assoclen; i += 2)
+	{
+		if(((struct ClassType *)val->value.ptr)->classId == assoclen[i] && assoclen[i + 1] == classID)
+			return newBool(true);
+	}
+
+	return newBool(false);
+}
+
+TVP isOfBaseClassGC(TVP val, int classID, TVP *from)
+{
+	int i, assoclen = sizeof(assoc / sizeof(int));
+
+	for(i = 0; i < assoclen; i += 2)
+	{
+		if(((struct ClassType *)val->value.ptr)->classId == assoclen[i] && assoclen[i + 1] == classID)
+			return newBoolGC(true, from);
+	}
+
+	return newBoolGC(false, from);
+}
+#endif
+
 #ifndef NO_RECORDS
 TVP isRecord(TVP val, int recID)
 {
@@ -393,16 +431,6 @@ TVP isRecordGC(TVP val, int recID, TVP *from)
 	return newBoolGC(false, from);
 }
 #endif
-
-TVP sameClass(TVP a, TVP b)
-{
-	return newBool(((struct ClassType *)a->value.ptr)->classId == ((struct ClassType *)b->value.ptr)->classId);
-}
-
-TVP sameClassGC(TVP a, TVP b, TVP *from)
-{
-	return newBoolGC(((struct ClassType *)a->value.ptr)->classId == ((struct ClassType *)b->value.ptr)->classId, from);
-}
 
 TVP is(TVP v, char ot[])
 {
