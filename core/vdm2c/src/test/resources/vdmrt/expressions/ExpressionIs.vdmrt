@@ -1,23 +1,69 @@
 class IsTest
-instance variables
-intVar : int := 0;
-realVar : real := 0.0;
-boolVar : bool := false;
 
 operations
-public TestIsInt : () ==> bool
-TestIsInt() ==
-	return is_(intVar, int);
-	
-public TestIsBool : () ==> bool
-TestIsBool() ==
-	return is_(boolVar, bool);
-	
-public TestIsReal : () ==> bool
-TestIsReal() ==
-	return is_(realVar, real);
 
-public TestIsNotInt : () ==> bool
-TestIsNotInt() ==
-	return not is_(realVar, int);
+public isNatPos : () ==> bool
+isNatPos () ==
+return is_nat(5);
+
+public isNatNeg : () ==> bool
+isNatNeg () ==
+return not is_nat(nil);
+
+public isNat1Pos : () ==> bool
+isNat1Pos () ==
+return is_nat1(1);
+
+public isNat1Neg : () ==> bool
+isNat1Neg () ==
+return not is_nat1(0);
+
+public isIntPos : () ==> bool
+isIntPos () ==
+return is_int(-4);
+
+public isIntNeg : () ==> bool
+isIntNeg () ==
+return not is_int(2.5);
+
+public isRealPos : () ==> bool
+isRealPos () ==
+return is_real(5.5);
+
+public isRealNeg : () ==> bool
+isRealNeg () ==
+return not is_real('z');
+
+public isBoolPos : () ==> bool
+isBoolPos () ==
+return is_bool(true);
+
+public isBoolNeg : () ==> bool
+isBoolNeg () ==
+return not is_bool(0);
+
+public isRatPos : () ==> bool
+isRatPos () ==
+return is_rat(2.5);
+
+public isRatNeg : () ==> bool
+isRatNeg () ==
+return not is_rat(nil);
+
+public isCharPos : () ==> bool
+isCharPos () ==
+return is_char('z');
+
+public isCharNeg : () ==> bool
+isCharNeg () ==
+return not is_char("z");
+
+public isTokenPos : () ==> bool
+isTokenPos () ==
+return is_token(mk_token("test"));
+
+public isTokenNeg : () ==> bool
+isTokenNeg () ==
+return not is_token("test");
+
 end IsTest

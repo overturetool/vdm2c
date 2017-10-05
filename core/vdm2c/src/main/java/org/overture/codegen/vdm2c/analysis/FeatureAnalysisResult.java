@@ -25,7 +25,8 @@ public class FeatureAnalysisResult
 	private boolean usesIoLib;
 	private boolean usesVdmUtil;
 	private boolean usesVdmUnit;
-	
+	private boolean usesInheritance;
+
 	public static final String MATH_LIB = "MATH";
 	public static final String CSV_LIB = "CSV";
 	public static final String IO_LIB = "IO";
@@ -35,7 +36,7 @@ public class FeatureAnalysisResult
 			"VDMUnit", "Throwable", "Error", "AssertionFailedError", "Assert",
 			"Test", "TestCase", "TestSuite", "TestListener", "TestResult",
 			"TestRunner" });
-	
+
 	/**
 	 * Prevent others from instantiating this class
 	 */
@@ -53,7 +54,7 @@ public class FeatureAnalysisResult
 		an.usesPatterns = new UsesPatternsAnalysis().hasFeature(ast);
 		an.usesProducts = new UsesProductsAnalysis().hasFeature(ast);
 		an.usesRecords = new UsesRecordsAnalysis().hasFeature(ast);
-		
+
 		for(SClassDefinition c : ast)
 		{
 			String className = c.getName().getName();
@@ -79,6 +80,10 @@ public class FeatureAnalysisResult
 			else if(VDMUNIT_CLASSES.contains(className))
 			{
 				an.usesVdmUnit = true;
+			}
+			else if(!c.getSupernames().isEmpty())
+			{
+				an.usesInheritance = true;
 			}
 		}
 		
@@ -144,6 +149,8 @@ public class FeatureAnalysisResult
 	{
 		return usesVdmUnit;
 	}
+
+	public boolean usesInheritance() {return usesInheritance; }
 	
 	@Override
 	public String toString()
@@ -162,6 +169,7 @@ public class FeatureAnalysisResult
 		appendDef(sb, usesIoLib, "#define NO_IO");
 		appendDef(sb, usesVdmUtil, "#define NO_VDMUTIL");
 		appendDef(sb, usesVdmUnit, "#define NO_VDMUNIT");
+		appendDef(sb, usesInheritance, "#define NO_INHERITANCE");
 		
 		return sb.toString();
 	}

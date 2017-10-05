@@ -1,2 +1,0 @@
-#set( $exp = $CFormat.format($node.getExp()) )
-isReal(${exp})

@@ -114,6 +114,7 @@ public class CTransSeries
 		 */
 		transformations.add(new NumericTrans(transAssistant));
 		transformations.add(new LogicTrans(transAssistant));
+		transformations.add(new IsCheckTrans(transAssistant));
 		transformations.add(new ColTrans(transAssistant));
 		transformations.add(new TupleTrans(transAssistant));
 		transformations.add(new LiteralInstantiationRewriteTrans(transAssistant));
