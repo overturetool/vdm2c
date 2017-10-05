@@ -30,6 +30,8 @@
 #include "Vdm.h"
 #include <math.h>
 
+#include "VdmClassHierarchy.h"
+
 
 
 #define ASSERT_CHECK_BOOL(s) assert(s->type == VDM_BOOL && "Value is not a boolean")
@@ -387,30 +389,95 @@ TVP sameClassGC(TVP a, TVP b, TVP *from)
 }
 
 #ifndef NO_INHERITANCE
-TVP isOfBaseClass(TVP val, int classID)
+TVP isOfBaseClass(TVP val, int baseID)
 {
-	int i, assoclen = sizeof(assoc / sizeof(int));
+	int searchID;
+	int i, assoclen = sizeof(assoc) / sizeof(int);
+
+	searchID = ((struct ClassType *)val->value.ptr)->classId;
 
 	for(i = 0; i < assoclen; i += 2)
 	{
-		if(((struct ClassType *)val->value.ptr)->classId == assoclen[i] && assoclen[i + 1] == classID)
-			return newBool(true);
+		if(assoc[i] == searchID)
+		{
+			if(assoc[i + 1] == baseID)
+				return newBool(true);
+			else
+			{
+				searchID = assoc[i + 1];
+				i = 0;
+			}
+		}
 	}
 
 	return newBool(false);
 }
 
-TVP isOfBaseClassGC(TVP val, int classID, TVP *from)
+TVP isOfBaseClassGC(TVP val, int baseID, TVP *from)
 {
-	int i, assoclen = sizeof(assoc / sizeof(int));
+	int searchID;
+	int i, assoclen = sizeof(assoc) / sizeof(int);
+
+	searchID = ((struct ClassType *)val->value.ptr)->classId;
 
 	for(i = 0; i < assoclen; i += 2)
 	{
-		if(((struct ClassType *)val->value.ptr)->classId == assoclen[i] && assoclen[i + 1] == classID)
-			return newBoolGC(true, from);
+		if(assoc[i] == searchID)
+		{
+			if(assoc[i + 1] == baseID)
+				return newBoolGC(true, from);
+			else
+			{
+				searchID = assoc[i + 1];
+				i = 0;
+			}
+		}
 	}
 
 	return newBoolGC(false, from);
+}
+
+TVP sameBaseClass(TVP a, TVP b)
+{
+	int i, assoclen = sizeof(assoc) / sizeof(int);
+	TVP ares;
+	TVP bres;
+	bool res = false;
+
+	for(i = 0; i < assoclen; i += 2)
+	{
+		ares = isOfBaseClass(a, assoc[i]);
+		bres = isOfBaseClass(b, assoc[i]);
+
+		res &= ares->value.boolVal && bres->value.boolVal;
+
+		vdmFree(ares);
+		vdmFree(bres);
+	}
+
+	return newBool(res);
+}
+
+TVP sameBaseClassGC(TVP a, TVP b, TVP *from)
+{
+	int i, assoclen = sizeof(assoc) / sizeof(int);
+	TVP ares;
+	TVP bres;
+	bool res = false;
+
+	for(i = 0; i < assoclen; i += 2)
+	{
+		ares = isOfBaseClass(a, assoc[i]);
+		bres = isOfBaseClass(b, assoc[i]);
+
+		res &= ares->value.boolVal && bres->value.boolVal;
+
+		vdmFree(ares);
+		vdmFree(bres);
+	}
+
+	return newBoolGC(res, from);
+
 }
 #endif
 

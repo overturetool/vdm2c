@@ -33,11 +33,6 @@
 #include "Vdm.h"
 #include "VdmGC.h"
 
-#ifndef NO_INHERITANCE
-#include "VdmClassHierarchy.h"
-extern int assoc[];
-#endif
-
 #define ASSERT_CHECK_CHAR(s) assert((s->type ==  VDM_CHAR) && "Value is not a character")
 
 /*
@@ -128,7 +123,10 @@ TVP isRecordGC(TVP val, int recID, TVP *from);
 TVP sameClass(TVP a, TVP b);
 TVP sameClassGC(TVP a, TVP b, TVP *from);
 #ifndef NO_INHERITANCE
-TVP isOfBaseClass(TVP val, int classID);
+TVP isOfBaseClass(TVP val, int baseID);
+TVP isOfBaseClassGC(TVP val, int baseID, TVP *from);
+TVP sameBaseClass(TVP a, TVP b);
+TVP sameBaseClassGC(TVP a, TVP b, TVP *from);
 #endif
 TVP is(TVP v, char ot[]);
 int toInteger(TVP a);
