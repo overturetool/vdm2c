@@ -500,4 +500,26 @@ TEST(Expression_Map, vdmMapGrow)
 	vdmFree(theMap);
 }
 
+TEST(ExpressionMap, Composition)
+{
+	TVP a;
+	TVP b;
+	TVP res1;
+	TVP res2;
+
+	a = newMapVar(1, 1, newInt(3), newInt(4));
+	b = newMapVar(1, 1, newInt(2), newInt(3));
+
+	res1 = vdmMapCompose(a, b);
+
+	res2 = vdmMapApply(res1, newInt(2));
+
+	EXPECT_TRUE(res2->value.intVal == 4);
+
+	vdmFree(a);
+	vdmFree(b);
+	vdmFree(res1);
+	vdmFree(res2);
+}
+
 #endif /* NO_MAPS */

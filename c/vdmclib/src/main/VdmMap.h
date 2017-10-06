@@ -87,8 +87,9 @@ TVP vdmMapApply(TVP map, TVP key);
 TVP vdmMapApplyGC(TVP map, TVP key, TVP *from);
 TVP vdmMapInverse(TVP map);
 TVP vdmMapInverseGC(TVP map, TVP *from);
-
 TVP vdmMapEquals(TVP map1, TVP map2);
+TVP vdmMapCompose(TVP a, TVP b);
+TVP vdmMapComposeGC(TVP a, TVP b, TVP *from);
 
 #endif /* NO_MAPS */
 #endif /* LIB_VDMMAP_H_ */
