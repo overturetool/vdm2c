@@ -1144,4 +1144,50 @@ TVP vdmMapCompose(TVP a, TVP b)
 
 	return res;
 }
+
+TVP vdmMapComposeGC(TVP a, TVP b, TVP *from)
+{
+	TVP domB;
+	TVP rngB;
+	TVP domA;
+	TVP res;
+	TVP tmp1;
+	TVP tmp2;
+	TVP tmp3;
+	int i, numPairs;
+
+	domB = vdmMapDom(b);
+	rngB = vdmMapRng(b);
+	domA = vdmMapDom(a);
+
+	res = vdmSetSubset(rngB, domA);
+
+	assert(res->value.boolVal);
+	vdmFree(res);
+
+	tmp1 = vdmSetCard(domB);
+	numPairs = tmp1->value.intVal;
+	vdmFree(tmp1);
+
+	res = newMapGC(from);
+
+	for(i = 0; i < numPairs; i++)
+	{
+		tmp1 = vdmSetElementAt(domB, i);
+		tmp2 = vdmMapApply(b, tmp1);
+		tmp3 = vdmMapApply(a, tmp2);
+
+		vdmMapGrow(res, tmp1, tmp3);
+
+		vdmFree(tmp1);
+		vdmFree(tmp2);
+		vdmFree(tmp3);
+	}
+
+	vdmFree(domB);
+	vdmFree(domA);
+	vdmFree(rngB);
+
+	return res;
+}
 #endif /* NO_MAPS || NO_SEQS */
