@@ -1162,7 +1162,7 @@ TVP vdmMapComposeGC(TVP a, TVP b, TVP *from)
 
 	res = vdmSetSubset(rngB, domA);
 
-	assert(res->value.boolVal);
+	assert(res->value.boolVal && "Range-domain incompatibility in map composition.\n");
 	vdmFree(res);
 
 	tmp1 = vdmSetCard(domB);
@@ -1189,5 +1189,111 @@ TVP vdmMapComposeGC(TVP a, TVP b, TVP *from)
 	vdmFree(rngB);
 
 	return res;
+}
+
+TVP vdmMapIterate(TVP a, TVP num)
+{
+	TVP domA;
+	TVP rngA;
+	TVP tmp1;
+	TVP tmp2;
+	TVP res;
+	int i, iters = num->value.intVal;
+
+	domA = vdmMapDom(a);
+	rngA = vdmMapRng(a);
+	tmp1 = vdmSetCard(domA);
+
+	if(iters == 0)
+	{
+		res = newMap();
+
+		for(i = 0; i < tmp1->value.intVal; i++)
+		{
+			tmp2 = vdmSetElementAt(domA, i);
+			vdmMapGrow(res, tmp2, tmp2);
+			vdmFree(tmp2);
+		}
+
+		vdmFree(domA);
+		vdmFree(rngA);
+		vdmFree(tmp1);
+
+		return res;
+	}
+
+	if(iters == 1)
+		return vdmClone(a);
+
+	res = vdmSetSubset(rngA, domA);
+	assert(res->value.boolVal && "Range-domain incompatibility in map iteration.\n");
+	vdmFree(res);
+
+	res = vdmClone(a);
+	for(i = 0; i < iters - 1; i++)
+	{
+		tmp1 = vdmMapCompose(a, res);
+		vdmFree(res);
+		res = vdmClone(tmp1);
+		vdmFree(tmp1);
+	}
+
+	vdmFree(domA);
+	vdmFree(rngA);
+
+	return res;
+}
+
+TVP vdmMapIterateGC(TVP a, TVP num, TVP *from)
+{
+	TVP domA;
+		TVP rngA;
+		TVP tmp1;
+		TVP tmp2;
+		TVP res;
+		int i, iters = num->value.intVal;
+
+		domA = vdmMapDom(a);
+		rngA = vdmMapRng(a);
+		tmp1 = vdmSetCard(domA);
+
+		if(iters == 0)
+		{
+			res = newMapGC(from);
+
+			for(i = 0; i < tmp1->value.intVal; i++)
+			{
+				tmp2 = vdmSetElementAt(domA, i);
+				vdmMapGrow(res, tmp2, tmp2);
+				vdmFree(tmp2);
+			}
+
+			vdmFree(domA);
+			vdmFree(rngA);
+			vdmFree(tmp1);
+
+			return res;
+		}
+
+		if(iters == 1)
+			return vdmCloneGC(a, from);
+
+		res = vdmSetSubset(rngA, domA);
+		assert(res->value.boolVal && "Range-domain incompatibility in map iteration.\n");
+		vdmFree(res);
+
+		res = vdmCloneGC(a, from);
+		for(i = 0; i < iters - 1; i++)
+		{
+			tmp1 = vdmMapCompose(a, res);
+			vdmFree(res);
+			res = vdmCloneGC(tmp1, from);
+			vdmFree(tmp1);
+		}
+
+		vdmFree(domA);
+		vdmFree(rngA);
+
+		return res;
 }
 #endif /* NO_MAPS || NO_SEQS */
