@@ -1,6 +1,9 @@
 package org.overture.codegen.vdm2c.transformations;
 
+import org.apache.commons.lang.BooleanUtils;
+import org.overture.ast.types.ASet1SetType;
 import org.overture.cgc.extast.analysis.AnswerCAdaptor;
+import org.overture.codegen.assistant.AssistantBase;
 import org.overture.codegen.ir.INode;
 import org.overture.codegen.ir.STypeIR;
 import org.overture.codegen.ir.analysis.AnalysisException;
@@ -19,9 +22,12 @@ public class IsExpTypeEncoder extends AnswerCAdaptor<String> {
     public static final String RAT = "e";
     public static final String TOKEN = "t";
     public static final String SEQ_OF = "Q";
+    public static final String SEQ1_OF = "Z";
     public static final String SET_OF = "T";
+    public static final String SET1_OF = "Y";
     public static final String PRODUCT = "P";
     public static final String RECORD = "R";
+    public static final String MAP = "M";
     public static final String CLASS = "W";
 
     public static final String DEL = ",";
@@ -86,12 +92,17 @@ public class IsExpTypeEncoder extends AnswerCAdaptor<String> {
 
     @Override
     public String caseASeqSeqTypeIR(ASeqSeqTypeIR node) throws AnalysisException {
-        return quotes(SEQ_OF )+ DEL  + node.getSeqOf().apply(THIS);
+
+        return quotes(BooleanUtils.isTrue(node.getSeq1()) ? SEQ1_OF : SEQ_OF )+ DEL  + node.getSeqOf().apply(THIS);
     }
 
     @Override
     public String caseASetSetTypeIR(ASetSetTypeIR node) throws AnalysisException {
-        return quotes(SET_OF )+ DEL  + node.getSetOf().apply(THIS);
+
+        // The IR does not yet support set1
+        boolean isSet1 = AssistantBase.getVdmNode(node) instanceof ASet1SetType;
+
+        return quotes(isSet1 ? SET1_OF : SET_OF)+ DEL  + node.getSetOf().apply(THIS);
     }
 
     @Override
@@ -100,14 +111,14 @@ public class IsExpTypeEncoder extends AnswerCAdaptor<String> {
         String product = quotes(PRODUCT) + DEL;
         product += node.getTypes().size();
 
-        final String PRODUCT_DEL = "*";
-        String sep = quotes(PRODUCT_DEL);
+        final String PRODUCT_DEL = quotes("*");
+        String sep = PRODUCT_DEL;
         for(STypeIR t : node.getTypes())
         {
             product += DEL + sep  + DEL + t.apply(THIS);
         }
 
-        product += DEL + quotes(PRODUCT_DEL);
+        product += DEL + PRODUCT_DEL;
 
         return product;
     }
@@ -115,6 +126,14 @@ public class IsExpTypeEncoder extends AnswerCAdaptor<String> {
     @Override
     public String caseARecordTypeIR(ARecordTypeIR node) throws AnalysisException {
         return quotes(RECORD )+ DEL  + ClassAssocAnalysis.toClassId(node.getName().getName());
+    }
+
+    @Override
+    public String caseAMapMapTypeIR(AMapMapTypeIR node) throws AnalysisException {
+
+        final String MAP_DEL = quotes("*");
+
+        return quotes(MAP) +  DEL + MAP_DEL + DEL + node.getFrom().apply(THIS) + DEL + MAP_DEL + DEL + node.getTo().apply(THIS) + DEL + MAP_DEL;
     }
 
     @Override

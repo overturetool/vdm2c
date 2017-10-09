@@ -2,6 +2,8 @@ package org.overture.codegen.vdm2c;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.overture.ast.types.ASet1SetType;
+import org.overture.codegen.ir.SourceNode;
 import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.name.ATypeNameIR;
 import org.overture.codegen.ir.types.*;
@@ -94,6 +96,19 @@ public class IsExpTypeEncoderTest {
     }
 
     @Test
+    public void seq1Of() throws AnalysisException {
+
+        ASeqSeqTypeIR seqType = new ASeqSeqTypeIR();
+        seqType.setSeq1(true);
+        seqType.setSeqOf(new ACharBasicTypeIR());
+
+        String actual = IsExpTypeEncoder.encodeType(seqType);
+        String expected = "{'Z','c'}";
+
+        check(actual, expected);
+    }
+
+    @Test
     public void setOf() throws AnalysisException {
 
         ASetSetTypeIR setType = new ASetSetTypeIR();
@@ -101,6 +116,19 @@ public class IsExpTypeEncoderTest {
 
         String actual = IsExpTypeEncoder.encodeType(setType);
         String expected = "{'T','b'}";
+
+        check(actual, expected);
+    }
+
+    @Test
+    public void set1Of() throws AnalysisException {
+
+        ASetSetTypeIR setType = new ASetSetTypeIR();
+        setType.setSourceNode(new SourceNode(new ASet1SetType()));
+        setType.setSetOf(new ANatNumericBasicTypeIR());
+
+        String actual = IsExpTypeEncoder.encodeType(setType);
+        String expected = "{'Y','j'}";
 
         check(actual, expected);
     }
@@ -130,6 +158,19 @@ public class IsExpTypeEncoderTest {
 
         String actual = IsExpTypeEncoder.encodeType(recType);
         String expected = "{'R',CLASS_ID_Rec_ID}";
+
+        check(actual, expected);
+    }
+
+    @Test
+    public void map() throws AnalysisException {
+
+        AMapMapTypeIR mapType = new AMapMapTypeIR();
+        mapType.setFrom(new AIntNumericBasicTypeIR());
+        mapType.setTo(new ACharBasicTypeIR());
+
+        String actual = IsExpTypeEncoder.encodeType(mapType);
+        String expected = "{'M','*','i','*','c','*'}";
 
         check(actual, expected);
     }
