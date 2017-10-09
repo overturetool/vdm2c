@@ -226,24 +226,14 @@ TVP vdmSeqTl(TVP seq)
 
 TVP vdmSeqTlGC(TVP seq, TVP *from)
 {
-	int i;
+	TVP tmp;
+	TVP res;
 
-	ASSERT_CHECK(seq);
-	UNWRAP_COLLECTION(col,seq);
+	tmp = vdmSeqTl(seq);
+	res = vdmCloneGC(tmp, from);
+	vdmFree(tmp);
 
-	assert(col->size != 0 && "Can not take tail of empty sequence.\n");
-
-	/* malloc  */
-	TVP tailVal = newSeqGC(col->size - 1, from);
-	UNWRAP_COLLECTION(tail,tailVal);
-
-	/* copy tail list  */
-	for (i = 1; i < col->size; i++)
-	{
-		tail->value[i-1] = vdmClone(col->value[i]);
-	}
-
-	return tailVal;
+	return res;
 }
 
 TVP vdmSeqLen(TVP seq)
@@ -307,23 +297,14 @@ TVP vdmSeqInds(TVP seq)
 
 TVP vdmSeqIndsGC(TVP seq, TVP *from)
 {
-	int i;
+	TVP tmp;
+	TVP res;
 
-	ASSERT_CHECK(seq);
-	UNWRAP_COLLECTION(col,seq);
+	tmp = vdmSeqInds(seq);
+	res = vdmCloneGC(tmp, from);
+	vdmFree(tmp);
 
-	TVP* value = (TVP*) calloc(col->size, sizeof(TVP));
-	assert(value != NULL);
-
-	/* copy  list  */
-	for (i = 0; i < col->size; i++)
-	{
-		value[i] = newInt(i+1);
-	}
-
-	TVP indsVal = newSetWithValuesGC(col->size, value, from);
-
-	return indsVal;
+	return res;
 }
 #endif
 
@@ -357,30 +338,14 @@ TVP vdmSeqConc(TVP seq,TVP seq2)
 
 TVP vdmSeqConcGC(TVP seq, TVP seq2, TVP *from)
 {
-	int i;
+	TVP tmp;
+	TVP res;
 
-	ASSERT_CHECK(seq);
-	ASSERT_CHECK(seq2);
-	UNWRAP_COLLECTION(col,seq);
-	UNWRAP_COLLECTION(col2,seq2);
+	tmp = vdmSeqConc(seq, seq2);
+	res = vdmCloneGC(tmp, from);
+	vdmFree(tmp);
 
-	/* malloc  */
-	TVP concVal = newSeqGC(col->size+col2->size, from);
-	UNWRAP_COLLECTION(concSeq,concVal);
-
-	/* copy  list  */
-	for (i = 0; i < col->size; i++)
-	{
-		concSeq->value[i] = vdmClone(col->value[i]);
-	}
-
-	int offset = col->size;
-	for (i = 0; i < col2->size; i++)
-	{
-		concSeq->value[i+offset] = vdmClone(col2->value[i]);
-	}
-
-	return concVal;
+	return res;
 }
 
 TVP vdmSeqReverse(TVP seq)
@@ -406,23 +371,14 @@ TVP vdmSeqReverse(TVP seq)
 
 TVP vdmSeqReverseGC(TVP seq, TVP *from)
 {
-	int i;
+	TVP tmp;
+	TVP res;
 
-	ASSERT_CHECK(seq);
-	UNWRAP_COLLECTION(col,seq);
+	tmp = vdmSeqReverse(seq);
+	res = vdmCloneGC(tmp, from);
+	vdmFree(tmp);
 
-	/* malloc  */
-	TVP elemsVal = newSeqGC(col->size, from);
-	UNWRAP_COLLECTION(elems,elemsVal);
-
-	int offset = col->size-1;
-	/* copy  list  */
-	for (i = 0; i < col->size; i++)
-	{
-		elems->value[i] = vdmClone(col->value[offset - i]);
-	}
-
-	return elemsVal;
+	return res;
 }
 
 TVP vdmSeqMod(TVP seq,TVP map)
@@ -461,37 +417,12 @@ TVP vdmSeqMod(TVP seq,TVP map)
 
 TVP vdmSeqModGC(TVP seq,TVP map, TVP *from)
 {
-	ASSERT_CHECK(seq);
-	assert((map->type == VDM_MAP) && "Overriding expression is not a map.\n");
+	TVP tmp;
+	TVP res;
 
-	UNWRAP_COLLECTION(s,seq);
-
-	TVP res = newSeqGC(s->size, NULL);
-
-	UNWRAP_COLLECTION(r,res);
-
-	int i;
-	for (i = 0; i < s->size; i++) {
-		r->value[i] = vdmClone(s->value[i]);
-	}
-
-	TVP dom = vdmMapDom(map);
-	UNWRAP_COLLECTION(d,dom);
-
-	TVP key;
-	TVP val;
-	for (i = 0; i < d->size; i++) {
-
-		key = d->value[i];
-		assert((key->type == VDM_INT || key->type == VDM_NAT || key->type == VDM_NAT1) && "Overriding expression key is not an integer.\n");
-		assert(key->value.intVal >= 1 && key->value.intVal <= s->size && "Overriding expression key not in sequence index range.\n");
-
-		val = vdmMapApply(map,key);
-		vdmFree(r->value[key->value.intVal - 1]);
-		r->value[key->value.intVal - 1] = val;
-	}
-
-	vdmFree(dom);
+	tmp = vdmSeqMod(seq, map);
+	res = vdmCloneGC(tmp, from);
+	vdmFree(tmp);
 
 	return res;
 }
@@ -511,14 +442,14 @@ TVP vdmSeqIndex(TVP seq, TVP indexVal) /* VDM uses 1 based index  */
 
 TVP vdmSeqIndexGC(TVP seq, TVP indexVal, TVP *from) /* VDM uses 1 based index  */
 {
-	ASSERT_CHECK(seq);
-	assert((indexVal->type == VDM_INT||indexVal->type == VDM_NAT||indexVal->type == VDM_NAT1) && "index is not a int");
+	TVP tmp;
+	TVP res;
 
-	int index = indexVal->value.intVal;
-	UNWRAP_COLLECTION(col,seq);
+	tmp = vdmSeqIndex(seq, indexVal);
+	res = vdmCloneGC(tmp, from);
+	vdmFree(tmp);
 
-	assert(index - 1 >= 0 && index - 1 < col->size && "invalid index");
-	return vdmCloneGC(col->value[index-1], from);
+	return res;
 }
 
 void vdmSeqUpdate(TVP seq, TVP indexVal, TVP newValue)
