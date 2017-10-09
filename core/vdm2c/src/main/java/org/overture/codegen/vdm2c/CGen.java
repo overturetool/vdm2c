@@ -691,30 +691,25 @@ public class CGen extends CodeGenBase
 
 	private void genDistCalls(List<IRStatus<PIR>> canBeGenerated, List<IRStatus<ADefaultClassDeclIR>> classes) {
 
-		IRStatus<ADefaultClassDeclIR> c = classes.get(0);
+		if(!classes.isEmpty()) {
+			IRStatus<ADefaultClassDeclIR> c = classes.get(0);
 
-		//for (IRStatus<ADefaultClassDeclIR> c: classes) {
+			for (String bus : SystemArchitectureAnalysis.connectionMapStr.keySet()) {
 
-		//if(c.canBeGenerated())
-		//{
-		for (String bus : SystemArchitectureAnalysis.connectionMapStr.keySet()){
+				// Create C file
+				ADistCallDeclIR distCall = genDistCall(c.getIrNode(), bus + "CG", false);
+				String nodeName = bus;// +// "_dist";
+				distCall.setTag(bus);
+				IRStatus irStatus = new IRStatus(c.getVdmNode(), nodeName, distCall, c.getUnsupportedInIr(), c.getTransformationWarnings());
+				canBeGenerated.add(irStatus);
 
-			// Create C file
-			ADistCallDeclIR distCall = genDistCall(c.getIrNode(), bus + "CG", false);
-			String nodeName = bus ;// +// "_dist";
-			distCall.setTag(bus);
-			IRStatus irStatus = new IRStatus(c.getVdmNode(), nodeName, distCall, c.getUnsupportedInIr(), c.getTransformationWarnings());
-			canBeGenerated.add(irStatus);
-
-			// Create H file
-			distCall = genDistCall(c.getIrNode(), bus + "CG", true);
-			//String nodeName = bus;// +// "_dist";
-			distCall.setTag(bus);
-			irStatus = new IRStatus(c.getVdmNode(), nodeName, distCall, c.getUnsupportedInIr(), c.getTransformationWarnings());
-			canBeGenerated.add(irStatus);
+				// Create H file
+				distCall = genDistCall(c.getIrNode(), bus + "CG", true);
+				distCall.setTag(bus);
+				irStatus = new IRStatus(c.getVdmNode(), nodeName, distCall, c.getUnsupportedInIr(), c.getTransformationWarnings());
+				canBeGenerated.add(irStatus);
+			}
 		}
-		//}
-		//}
 	}
 
 	private ADistCallDeclIR genDistCall(ADefaultClassDeclIR c, String name, Boolean isHeader) {
