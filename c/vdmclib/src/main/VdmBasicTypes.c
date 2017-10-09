@@ -463,7 +463,7 @@ TVP is(TVP v, char ot[])
 	bool res = false;
 	TVP isres;
 
-	/* No nesting inside sequence, set or record. */
+	/* No nesting inside sequence, set, record or map. */
 	if(ot[0] != 'Q' && ot[0] != 'T' && ot[0] != 'P' && ot[0] != 'Z' && ot[0] != 'Y' && ot[0] != 'M')
 	{
 		switch(ot[0])
@@ -519,7 +519,7 @@ TVP is(TVP v, char ot[])
 			}
 		}
 	}
-	else if(ot[0] == 'Z')
+	else if(ot[0] == 'Z') /*  seq1  */
 	{
 		if(v->type == VDM_SEQ)
 		{
@@ -552,7 +552,7 @@ TVP is(TVP v, char ot[])
 			}
 		}
 	}
-	else if(ot[0] == 'Y')
+	else if(ot[0] == 'Y')  /*  set1  */
 	{
 		if(v->type == VDM_SET)
 		{
