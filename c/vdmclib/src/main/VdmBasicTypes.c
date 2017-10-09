@@ -552,6 +552,23 @@ TVP is(TVP v, char ot[])
 			}
 		}
 	}
+	else if(ot[0] == 'Y')
+	{
+		if(v->type == VDM_SET)
+		{
+			if(((struct Collection *)(v->value.ptr))->size > 0)
+			{
+				res = true;
+
+				for(i = 0; i < ((struct Collection *)(v->value.ptr))->size; i++)
+				{
+					isres = is(((struct Collection *)(v->value.ptr))->value[i], &(ot[1]));
+					res &= isres->value.boolVal;
+					vdmFree(isres);
+				}
+			}
+		}
+	}
 #endif
 #ifndef NO_PRODUCTS
 	else if(ot[0] == 'P')

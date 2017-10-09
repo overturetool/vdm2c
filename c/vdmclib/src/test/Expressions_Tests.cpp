@@ -474,6 +474,16 @@ TEST(Expression, isSeqOfSeqOfInt)
 	vdmFree(res);
 }
 
+TEST(Expression, isSeq1OfSeqOfInt)
+{
+	char ot[] = {'Z', 'Q', 'i'};
+	TVP res;
+
+	res = is(newSeqVar(2, newSeqVar(2, newInt(1), newInt(-2)), newSeqVar(2, newInt(3), newInt(-4))), ot);
+	EXPECT_TRUE(res->value.boolVal);
+	vdmFree(res);
+}
+
 TEST(Expression, isSetOfInt)
 {
 	char ot[] = "Ti";
@@ -484,9 +494,39 @@ TEST(Expression, isSetOfInt)
 	vdmFree(res);
 }
 
+TEST(Expression, isSet1OfIntNegative)
+{
+	char ot[] = "Yi";
+	TVP res;
+
+	res = is(newSetVar(0), ot);
+	EXPECT_FALSE(res->value.boolVal);
+	vdmFree(res);
+}
+
+TEST(Expression, isSet1OfInt)
+{
+	char ot[] = "Yi";
+	TVP res;
+
+	res = is(newSetVar(2, newInt(1), newInt(-2)), ot);
+	EXPECT_TRUE(res->value.boolVal);
+	vdmFree(res);
+}
+
 TEST(Expression, isSetOfSetOfInt)
 {
 	char ot[] = "TTi";
+	TVP res;
+
+	res = is(newSetVar(2, newSetVar(2, newInt(1), newInt(-2)), newSetVar(2, newInt(-1), newInt(2))), ot);
+	EXPECT_TRUE(res->value.boolVal);
+	vdmFree(res);
+}
+
+TEST(Expression, isSet1OfSetOfInt)
+{
+	char ot[] = "YTi";
 	TVP res;
 
 	res = is(newSetVar(2, newSetVar(2, newInt(1), newInt(-2)), newSetVar(2, newInt(-1), newInt(2))), ot);
