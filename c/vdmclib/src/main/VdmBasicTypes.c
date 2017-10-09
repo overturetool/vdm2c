@@ -214,24 +214,6 @@ bool isNumber(TVP val)
 	}
 }
 
-#ifndef NO_SEQS
-TVP isSeq(TVP v)
-{
-	if(v->type == VDM_SEQ)
-		return newBool(true);
-	return newBool(false);
-}
-#endif
-
-#ifndef NO_SETS
-TVP isSet(TVP v)
-{
-	if(v->type == VDM_SET)
-		return newBool(true);
-	return newBool(false);
-}
-#endif
-
 TVP isInt(TVP v)
 {
 	if(v->type == VDM_INT)
@@ -481,8 +463,8 @@ TVP is(TVP v, char ot[])
 	bool res = false;
 	TVP isres;
 
-	/* No nesting inside sequence, set or record. */
-	if(ot[0] != 'Q' && ot[0] != 'T' && ot[0] != 'P')
+	/* No nesting inside sequence, set, record or map. */
+	if(ot[0] != 'Q' && ot[0] != 'T' && ot[0] != 'P' && ot[0] != 'Z' && ot[0] != 'Y' && ot[0] != 'M')
 	{
 		switch(ot[0])
 		{
@@ -537,6 +519,23 @@ TVP is(TVP v, char ot[])
 			}
 		}
 	}
+	else if(ot[0] == 'Z') /*  seq1  */
+	{
+		if(v->type == VDM_SEQ)
+		{
+			if(((struct Collection *)(v->value.ptr))->size > 0)
+			{
+				res = true;
+
+				for(i = 0; i < ((struct Collection *)(v->value.ptr))->size; i++)
+				{
+					isres = is(((struct Collection *)(v->value.ptr))->value[i], &(ot[1]));
+					res &= isres->value.boolVal;
+					vdmFree(isres);
+				}
+			}
+		}
+	}
 #endif
 #ifndef NO_SETS
 	else if(ot[0] == 'T')
@@ -553,6 +552,23 @@ TVP is(TVP v, char ot[])
 			}
 		}
 	}
+	else if(ot[0] == 'Y')  /*  set1  */
+	{
+		if(v->type == VDM_SET)
+		{
+			if(((struct Collection *)(v->value.ptr))->size > 0)
+			{
+				res = true;
+
+				for(i = 0; i < ((struct Collection *)(v->value.ptr))->size; i++)
+				{
+					isres = is(((struct Collection *)(v->value.ptr))->value[i], &(ot[1]));
+					res &= isres->value.boolVal;
+					vdmFree(isres);
+				}
+			}
+		}
+	}
 #endif
 #ifndef NO_PRODUCTS
 	else if(ot[0] == 'P')
@@ -565,6 +581,33 @@ TVP is(TVP v, char ot[])
 			int i = 0, field = 0;
 
 			ot = &ot[2];
+
+			while(field < numFields)
+			{
+				if(ot[i] == '*')
+				{
+					isres = is(((struct Collection *)(v->value.ptr))->value[field], &(ot[i + 1]));
+					res &= isres->value.boolVal;
+					vdmFree(isres);
+					field++;
+				}
+
+				i++;
+			}
+		}
+	}
+#endif
+#ifndef NO_MAPS
+	else if(ot[0] == 'M')
+	{
+		if(v->type == VDM_MAP)
+		{
+			res = true;
+
+			char numFields = 2;
+			int i = 0, field = 0;
+
+			ot = &ot[1];
 
 			while(field < numFields)
 			{

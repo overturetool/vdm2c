@@ -444,9 +444,39 @@ TEST(Expression, isSeqOfInt)
 	vdmFree(res);
 }
 
+TEST(Expression, isSeq1OfIntNegative)
+{
+	char ot[] = "Zi";
+	TVP res;
+
+	res = is(newSeqVar(0), ot);
+	EXPECT_FALSE(res->value.boolVal);
+	vdmFree(res);
+}
+
+TEST(Expression, isSeq1OfInt)
+{
+	char ot[] = "Zi";
+	TVP res;
+
+	res = is(newSeqVar(2, newInt(1), newInt(-2)), ot);
+	EXPECT_TRUE(res->value.boolVal);
+	vdmFree(res);
+}
+
 TEST(Expression, isSeqOfSeqOfInt)
 {
 	char ot[] = {'Q', 'Q', 'i'};
+	TVP res;
+
+	res = is(newSeqVar(2, newSeqVar(2, newInt(1), newInt(-2)), newSeqVar(2, newInt(3), newInt(-4))), ot);
+	EXPECT_TRUE(res->value.boolVal);
+	vdmFree(res);
+}
+
+TEST(Expression, isSeq1OfSeqOfInt)
+{
+	char ot[] = {'Z', 'Q', 'i'};
 	TVP res;
 
 	res = is(newSeqVar(2, newSeqVar(2, newInt(1), newInt(-2)), newSeqVar(2, newInt(3), newInt(-4))), ot);
@@ -464,9 +494,39 @@ TEST(Expression, isSetOfInt)
 	vdmFree(res);
 }
 
+TEST(Expression, isSet1OfIntNegative)
+{
+	char ot[] = "Yi";
+	TVP res;
+
+	res = is(newSetVar(0), ot);
+	EXPECT_FALSE(res->value.boolVal);
+	vdmFree(res);
+}
+
+TEST(Expression, isSet1OfInt)
+{
+	char ot[] = "Yi";
+	TVP res;
+
+	res = is(newSetVar(2, newInt(1), newInt(-2)), ot);
+	EXPECT_TRUE(res->value.boolVal);
+	vdmFree(res);
+}
+
 TEST(Expression, isSetOfSetOfInt)
 {
 	char ot[] = "TTi";
+	TVP res;
+
+	res = is(newSetVar(2, newSetVar(2, newInt(1), newInt(-2)), newSetVar(2, newInt(-1), newInt(2))), ot);
+	EXPECT_TRUE(res->value.boolVal);
+	vdmFree(res);
+}
+
+TEST(Expression, isSet1OfSetOfInt)
+{
+	char ot[] = "YTi";
 	TVP res;
 
 	res = is(newSetVar(2, newSetVar(2, newInt(1), newInt(-2)), newSetVar(2, newInt(-1), newInt(2))), ot);
@@ -578,6 +638,16 @@ TEST(Expression, isSeqProdInt)
 	TVP res;
 
 	res = is(newSeqVar(1, newProductVar(2, newInt(-1), newInt(1))), ot);
+	EXPECT_TRUE(res->value.boolVal);
+	vdmFree(res);
+}
+
+TEST(Expression, isMapIntToInt)
+{
+	char ot[] = "M*i*i*";
+	TVP res;
+
+	res = is(newMapVar(3, 3, newInt(3), newInt(4), newInt(4), newInt(6), newInt(6), newInt(3)), ot);
 	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(res);
 }
