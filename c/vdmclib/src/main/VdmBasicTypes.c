@@ -464,7 +464,7 @@ TVP is(TVP v, char ot[])
 	TVP isres;
 
 	/* No nesting inside sequence, set or record. */
-	if(ot[0] != 'Q' && ot[0] != 'T' && ot[0] != 'P' && ot[0] != 'Z' && ot[0] != 'Y')
+	if(ot[0] != 'Q' && ot[0] != 'T' && ot[0] != 'P' && ot[0] != 'Z' && ot[0] != 'Y' && ot[0] != 'M')
 	{
 		switch(ot[0])
 		{
@@ -581,6 +581,33 @@ TVP is(TVP v, char ot[])
 			int i = 0, field = 0;
 
 			ot = &ot[2];
+
+			while(field < numFields)
+			{
+				if(ot[i] == '*')
+				{
+					isres = is(((struct Collection *)(v->value.ptr))->value[field], &(ot[i + 1]));
+					res &= isres->value.boolVal;
+					vdmFree(isres);
+					field++;
+				}
+
+				i++;
+			}
+		}
+	}
+#endif
+#ifndef NO_MAPS
+	else if(ot[0] == 'M')
+	{
+		if(v->type == VDM_MAP)
+		{
+			res = true;
+
+			char numFields = 2;
+			int i = 0, field = 0;
+
+			ot = &ot[1];
 
 			while(field < numFields)
 			{

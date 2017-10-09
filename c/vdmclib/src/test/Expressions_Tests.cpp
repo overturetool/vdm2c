@@ -641,3 +641,13 @@ TEST(Expression, isSeqProdInt)
 	EXPECT_TRUE(res->value.boolVal);
 	vdmFree(res);
 }
+
+TEST(Expression, isMapIntToInt)
+{
+	char ot[] = "M*i*i*";
+	TVP res;
+
+	res = is(newMapVar(3, 3, newInt(3), newInt(4), newInt(4), newInt(6), newInt(6), newInt(3)), ot);
+	EXPECT_TRUE(res->value.boolVal);
+	vdmFree(res);
+}
