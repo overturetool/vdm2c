@@ -444,6 +444,26 @@ TEST(Expression, isSeqOfInt)
 	vdmFree(res);
 }
 
+TEST(Expression, isSeq1OfIntNegative)
+{
+	char ot[] = "Zi";
+	TVP res;
+
+	res = is(newSeqVar(0), ot);
+	EXPECT_FALSE(res->value.boolVal);
+	vdmFree(res);
+}
+
+TEST(Expression, isSeq1OfInt)
+{
+	char ot[] = "Zi";
+	TVP res;
+
+	res = is(newSeqVar(2, newInt(1), newInt(-2)), ot);
+	EXPECT_TRUE(res->value.boolVal);
+	vdmFree(res);
+}
+
 TEST(Expression, isSeqOfSeqOfInt)
 {
 	char ot[] = {'Q', 'Q', 'i'};

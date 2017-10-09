@@ -93,12 +93,6 @@ TVP vdmLessOrEqualGC(TVP a, TVP b, TVP *from);
  */
 bool isNumber(TVP val);
 TVP isInt(TVP val);
-#ifndef NO_SEQS
-TVP isSeq(TVP val);
-#endif
-#ifndef NO_SETS
-TVP isSet(TVP val);
-#endif
 TVP isIntGC(TVP val, TVP *from);
 TVP isReal(TVP val);
 TVP isRealGC(TVP val, TVP *from);

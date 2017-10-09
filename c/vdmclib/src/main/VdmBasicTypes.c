@@ -214,24 +214,6 @@ bool isNumber(TVP val)
 	}
 }
 
-#ifndef NO_SEQS
-TVP isSeq(TVP v)
-{
-	if(v->type == VDM_SEQ)
-		return newBool(true);
-	return newBool(false);
-}
-#endif
-
-#ifndef NO_SETS
-TVP isSet(TVP v)
-{
-	if(v->type == VDM_SET)
-		return newBool(true);
-	return newBool(false);
-}
-#endif
-
 TVP isInt(TVP v)
 {
 	if(v->type == VDM_INT)
@@ -482,7 +464,7 @@ TVP is(TVP v, char ot[])
 	TVP isres;
 
 	/* No nesting inside sequence, set or record. */
-	if(ot[0] != 'Q' && ot[0] != 'T' && ot[0] != 'P')
+	if(ot[0] != 'Q' && ot[0] != 'T' && ot[0] != 'P' && ot[0] != 'Z' && ot[0] != 'Y')
 	{
 		switch(ot[0])
 		{
@@ -534,6 +516,23 @@ TVP is(TVP v, char ot[])
 				isres = is(((struct Collection *)(v->value.ptr))->value[i], &(ot[1]));
 				res &= isres->value.boolVal;
 				vdmFree(isres);
+			}
+		}
+	}
+	else if(ot[0] == 'Z')
+	{
+		if(v->type == VDM_SEQ)
+		{
+			if(((struct Collection *)(v->value.ptr))->size > 0)
+			{
+				res = true;
+
+				for(i = 0; i < ((struct Collection *)(v->value.ptr))->size; i++)
+				{
+					isres = is(((struct Collection *)(v->value.ptr))->value[i], &(ot[1]));
+					res &= isres->value.boolVal;
+					vdmFree(isres);
+				}
 			}
 		}
 	}
