@@ -773,8 +773,8 @@ TVP vdmMapInverseGC(TVP map, TVP *from)
 	TVP tmp;
 	TVP res;
 
-	tmp =
-			res = vdmCloneGC(tmp, from);
+	tmp = vdmMapInverse(map);
+	res = vdmCloneGC(tmp, from);
 	vdmFree(tmp);
 
 	return res;

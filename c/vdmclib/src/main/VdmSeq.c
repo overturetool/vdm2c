@@ -57,11 +57,6 @@ TVP newSeq(size_t size)
 	return newCollection(size, VDM_SEQ);
 }
 
-static TVP newSeqGC(size_t size, TVP *from)
-{
-	return newCollectionGC(size, VDM_SEQ, from);
-}
-
 TVP newSeqWithValues(size_t size, TVP* elements)
 {
 	return newCollectionWithValues(size, VDM_SEQ,elements);
