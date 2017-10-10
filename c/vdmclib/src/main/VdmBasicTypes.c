@@ -471,8 +471,11 @@ TVP is(TVP v, char ot[])
 		}
 		else
 		{
+			res = true;
 			ot[0] = '1';
 			isres = is(v, ot);
+			res &= isres->value.boolVal;
+			vdmFree(isres);
 		}
 	}
 	else
@@ -600,7 +603,7 @@ TVP is(TVP v, char ot[])
 				{
 					if(ot[i] == '*')
 					{
-						isres = is(((struct Collection *)(v->value.ptr))->value[field], &(ot[i + 2]));
+						isres = is(((struct Collection *)(v->value.ptr))->value[field], &(ot[i + 1]));
 						res &= isres->value.boolVal;
 						vdmFree(isres);
 						field++;
@@ -627,7 +630,7 @@ TVP is(TVP v, char ot[])
 				{
 					if(ot[i] == '*')
 					{
-						isres = is(((struct Collection *)(v->value.ptr))->value[field], &(ot[i + 2]));
+						isres = is(((struct Collection *)(v->value.ptr))->value[field], &(ot[i + 1]));
 						res &= isres->value.boolVal;
 						vdmFree(isres);
 						field++;
