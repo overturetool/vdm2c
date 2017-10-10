@@ -2,6 +2,7 @@
 
 #include "serialise.h"
 #include "asn1crt.h"
+#include "asn1vdm.h"
 
 /** Serialisation functions **/
 void serialise(byte* encBuff, int size, va_list args){
@@ -59,7 +60,7 @@ void deserialise(byte* decBuff, int size, TVP args[]){
 		if(type==VDM_REAL){
 			size_t offset = VdmReal_REQUIRED_BYTES_FOR_ENCODING + 1;
 			deserialiseReal(decBuff, &args[i], b);
-			printf("Deserialised real value is %d \n", args[i]->value.doubleVal);
+			printf("Deserialised real value is %f \n", args[i]->value.doubleVal);
 			b = b + offset;
 		}
 		if(type==VDM_BOOL){
@@ -183,11 +184,10 @@ void serialiseRes(byte* encBuff, TVP t){
 		fromVdmInt2Int(&t, &val);
 		int pErrCode;
 		BitStream bitStrm;
-		char intBuff[VdmInteger_REQUIRED_BYTES_FOR_ENCODING + 1];
+		byte intBuff[VdmInteger_REQUIRED_BYTES_FOR_ENCODING + 1];
 		BitStream_Init(&bitStrm, intBuff, VdmInteger_REQUIRED_BYTES_FOR_ENCODING);
 		VdmInteger_Encode(&val, &bitStrm, &pErrCode, TRUE);
 		printf("Serialised Integer is: %d \n", t->value.intVal);
-		int n;
 		memcpy(encBuff+1, intBuff, VdmInteger_REQUIRED_BYTES_FOR_ENCODING + 1);
 	}
 
@@ -197,7 +197,7 @@ void serialiseRes(byte* encBuff, TVP t){
 		fromVdmQuote2Quote(&t, &val);
 		int pErrCode;
 		BitStream bitStrm;
-		char intBuff[VdmInteger_REQUIRED_BYTES_FOR_ENCODING + 1];
+		byte intBuff[VdmInteger_REQUIRED_BYTES_FOR_ENCODING + 1];
 		BitStream_Init(&bitStrm, intBuff, VdmInteger_REQUIRED_BYTES_FOR_ENCODING);
 		VdmInteger_Encode(&val, &bitStrm, &pErrCode, TRUE);
 		printf("Serialised Quote is: %d \n", t->value.quoteVal);
@@ -210,11 +210,10 @@ void serialiseRes(byte* encBuff, TVP t){
 		fromVdmReal2Real(&t, &val);
 		int pErrCode;
 		BitStream bitStrm;
-		char intBuff[VdmReal_REQUIRED_BYTES_FOR_ENCODING + 1];
+		byte intBuff[VdmReal_REQUIRED_BYTES_FOR_ENCODING + 1];
 		BitStream_Init(&bitStrm, intBuff, VdmReal_REQUIRED_BYTES_FOR_ENCODING);
 		VdmReal_Encode(&val, &bitStrm, &pErrCode, TRUE);
 		printf("Serialised Real is: %f \n", t->value.doubleVal);
-		int n;
 		memcpy(encBuff+1, intBuff, VdmReal_REQUIRED_BYTES_FOR_ENCODING + 1);
 	}
 
@@ -251,7 +250,6 @@ TVP deserialiseRes(byte* decFullBuff){
 	}
 
 	if(decFullBuff[0]==VDM_BOOL){
-		int errCode;
 		TVP res = newBool(decFullBuff[1]);
 		printf("Deserialising Boolean result: %d",  res->value.boolVal);
 		return res;
