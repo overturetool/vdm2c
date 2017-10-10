@@ -463,169 +463,184 @@ TVP is(TVP v, char ot[])
 	bool res = false;
 	TVP isres;
 
-	/* No nesting inside sequence, set, record or map. */
-	if(ot[0] != 'Q' && ot[0] != 'T' && ot[0] != 'P' && ot[0] != 'Z' && ot[0] != 'Y' && ot[0] != 'M')
+	if(ot[0] == '0')
 	{
-		switch(ot[0])
-		{
-		case 'i':  /*  VDM_INT  */
-			res = (isInt(v))->value.boolVal;
-			break;
-		case 'd':  /*  VDM_REAL  */
-			res = (isReal(v))->value.boolVal;
-			break;
-		case 'b':  /*  VDM_BOOL  */
-			res = (isBool(v))->value.boolVal;
-			break;
-		case 'j':  /*  VDM_NAT  */
-			res = (isNat(v))->value.boolVal;
-			break;
-		case 'k':  /*  VDM_NAT1  */
-			res = (isNat1(v))->value.boolVal;
-			break;
-		case 'e':  /*  VDM_RAT  */
-			res = (isRat(v))->value.boolVal;
-			break;
-		case 'c':  /*  VDM_CHAR  */
-			res = (isChar(v))->value.boolVal;
-			break;
-		case 't':  /*  VDM_TOKEN  */
-			res = (isToken(v))->value.boolVal;
-			break;
-		case 'W':  /*  VDM_CLASS  */
-			res = (isOfClass(v, ot[1]))->value.boolVal;
-			break;
-#ifndef NO_RECORDS
-		case 'R':  /*  VDM_CLASS  */
-			res = (isRecord(v, ot[1]))->value.boolVal;
-			break;
-#endif
-		default:
-			break;
-		};
-	}
-#ifndef NO_SEQS
-	else if(ot[0] == 'Q')
-	{
-		if(v->type == VDM_SEQ)
+		if(v == NULL)
 		{
 			res = true;
-
-			for(i = 0; i < ((struct Collection *)(v->value.ptr))->size; i++)
-			{
-				isres = is(((struct Collection *)(v->value.ptr))->value[i], &(ot[1]));
-				res &= isres->value.boolVal;
-				vdmFree(isres);
-			}
+		}
+		else
+		{
+			ot[0] = '1';
+			isres = is(v, ot);
 		}
 	}
-	else if(ot[0] == 'Z') /*  seq1  */
+	else
 	{
-		if(v->type == VDM_SEQ)
+		/* No nesting inside sequence, set, record or map. */
+		if(ot[1] != 'Q' && ot[1] != 'T' && ot[1] != 'P' && ot[1] != 'Z' && ot[1] != 'Y' && ot[1] != 'M')
 		{
-			if(((struct Collection *)(v->value.ptr))->size > 0)
+			switch(ot[1])
+			{
+			case 'i':  /*  VDM_INT  */
+				res = (isInt(v))->value.boolVal;
+				break;
+			case 'd':  /*  VDM_REAL  */
+				res = (isReal(v))->value.boolVal;
+				break;
+			case 'b':  /*  VDM_BOOL  */
+				res = (isBool(v))->value.boolVal;
+				break;
+			case 'j':  /*  VDM_NAT  */
+				res = (isNat(v))->value.boolVal;
+				break;
+			case 'k':  /*  VDM_NAT1  */
+				res = (isNat1(v))->value.boolVal;
+				break;
+			case 'e':  /*  VDM_RAT  */
+				res = (isRat(v))->value.boolVal;
+				break;
+			case 'c':  /*  VDM_CHAR  */
+				res = (isChar(v))->value.boolVal;
+				break;
+			case 't':  /*  VDM_TOKEN  */
+				res = (isToken(v))->value.boolVal;
+				break;
+			case 'W':  /*  VDM_CLASS  */
+				res = (isOfClass(v, ot[2]))->value.boolVal;
+				break;
+#ifndef NO_RECORDS
+			case 'R':  /*  VDM_CLASS  */
+				res = (isRecord(v, ot[2]))->value.boolVal;
+				break;
+#endif
+			default:
+				break;
+			};
+		}
+#ifndef NO_SEQS
+		else if(ot[1] == 'Q')
+		{
+			if(v->type == VDM_SEQ)
 			{
 				res = true;
 
 				for(i = 0; i < ((struct Collection *)(v->value.ptr))->size; i++)
 				{
-					isres = is(((struct Collection *)(v->value.ptr))->value[i], &(ot[1]));
+					isres = is(((struct Collection *)(v->value.ptr))->value[i], &(ot[2]));
 					res &= isres->value.boolVal;
 					vdmFree(isres);
 				}
 			}
 		}
-	}
+		else if(ot[1] == 'Z') /*  seq1  */
+		{
+			if(v->type == VDM_SEQ)
+			{
+				if(((struct Collection *)(v->value.ptr))->size > 0)
+				{
+					res = true;
+
+					for(i = 0; i < ((struct Collection *)(v->value.ptr))->size; i++)
+					{
+						isres = is(((struct Collection *)(v->value.ptr))->value[i], &(ot[2]));
+						res &= isres->value.boolVal;
+						vdmFree(isres);
+					}
+				}
+			}
+		}
 #endif
 #ifndef NO_SETS
-	else if(ot[0] == 'T')
-	{
-		if(v->type == VDM_SET)
+		else if(ot[1] == 'T')
 		{
-			res = true;
-
-			for(i = 0; i < ((struct Collection *)(v->value.ptr))->size; i++)
-			{
-				isres = is(((struct Collection *)(v->value.ptr))->value[i], &(ot[1]));
-				res &= isres->value.boolVal;
-				vdmFree(isres);
-			}
-		}
-	}
-	else if(ot[0] == 'Y')  /*  set1  */
-	{
-		if(v->type == VDM_SET)
-		{
-			if(((struct Collection *)(v->value.ptr))->size > 0)
+			if(v->type == VDM_SET)
 			{
 				res = true;
 
 				for(i = 0; i < ((struct Collection *)(v->value.ptr))->size; i++)
 				{
-					isres = is(((struct Collection *)(v->value.ptr))->value[i], &(ot[1]));
+					isres = is(((struct Collection *)(v->value.ptr))->value[i], &(ot[2]));
 					res &= isres->value.boolVal;
 					vdmFree(isres);
 				}
 			}
 		}
-	}
+		else if(ot[1] == 'Y')  /*  set1  */
+		{
+			if(v->type == VDM_SET)
+			{
+				if(((struct Collection *)(v->value.ptr))->size > 0)
+				{
+					res = true;
+
+					for(i = 0; i < ((struct Collection *)(v->value.ptr))->size; i++)
+					{
+						isres = is(((struct Collection *)(v->value.ptr))->value[i], &(ot[2]));
+						res &= isres->value.boolVal;
+						vdmFree(isres);
+					}
+				}
+			}
+		}
 #endif
 #ifndef NO_PRODUCTS
-	else if(ot[0] == 'P')
-	{
-		if(v->type == VDM_PRODUCT)
+		else if(ot[1] == 'P')
 		{
-			res = true;
-
-			char numFields = ot[1];
-			int i = 0, field = 0;
-
-			ot = &ot[2];
-
-			while(field < numFields)
+			if(v->type == VDM_PRODUCT)
 			{
-				if(ot[i] == '*')
-				{
-					isres = is(((struct Collection *)(v->value.ptr))->value[field], &(ot[i + 1]));
-					res &= isres->value.boolVal;
-					vdmFree(isres);
-					field++;
-				}
+				res = true;
 
-				i++;
+				char numFields = ot[2];
+				int i = 0, field = 0;
+
+				ot = &ot[3];
+
+				while(field < numFields)
+				{
+					if(ot[i] == '*')
+					{
+						isres = is(((struct Collection *)(v->value.ptr))->value[field], &(ot[i + 2]));
+						res &= isres->value.boolVal;
+						vdmFree(isres);
+						field++;
+					}
+
+					i++;
+				}
 			}
 		}
-	}
 #endif
 #ifndef NO_MAPS
-	else if(ot[0] == 'M')
-	{
-		if(v->type == VDM_MAP)
+		else if(ot[1] == 'M')
 		{
-			res = true;
-
-			char numFields = 2;
-			int i = 0, field = 0;
-
-			ot = &ot[1];
-
-			while(field < numFields)
+			if(v->type == VDM_MAP)
 			{
-				if(ot[i] == '*')
-				{
-					isres = is(((struct Collection *)(v->value.ptr))->value[field], &(ot[i + 1]));
-					res &= isres->value.boolVal;
-					vdmFree(isres);
-					field++;
-				}
+				res = true;
 
-				i++;
+				char numFields = 2;
+				int i = 0, field = 0;
+
+				ot = &ot[2];
+
+				while(field < numFields)
+				{
+					if(ot[i] == '*')
+					{
+						isres = is(((struct Collection *)(v->value.ptr))->value[field], &(ot[i + 2]));
+						res &= isres->value.boolVal;
+						vdmFree(isres);
+						field++;
+					}
+
+					i++;
+				}
 			}
 		}
-	}
 #endif
-	else
-	{}
+		else
+		{}
+	}
 
 	return newBool(res);
 }

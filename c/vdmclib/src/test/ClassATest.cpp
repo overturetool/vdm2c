@@ -119,7 +119,7 @@ TEST(ClassATest, field1)
 TEST(ClassATest, isA)
 {
 	TVP c = A._new();
-	char ot[] = {'W', CLASS_ID_A_ID};
+	char ot[] = {'1', 'W', CLASS_ID_A_ID};
 
 	TVP res = isOfClass(c, CLASS_ID_A_ID);
 	EXPECT_TRUE(res->value.boolVal);
