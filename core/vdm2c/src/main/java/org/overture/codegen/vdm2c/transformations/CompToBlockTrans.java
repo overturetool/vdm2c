@@ -11,22 +11,12 @@ import org.overture.codegen.ir.SStmIR;
 import org.overture.codegen.ir.STypeIR;
 import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.declarations.AVarDeclIR;
-import org.overture.codegen.ir.expressions.ABoolLiteralExpIR;
-import org.overture.codegen.ir.expressions.ACompMapExpIR;
-import org.overture.codegen.ir.expressions.ACompSeqExpIR;
-import org.overture.codegen.ir.expressions.ACompSetExpIR;
-import org.overture.codegen.ir.expressions.AEnumMapExpIR;
-import org.overture.codegen.ir.expressions.AEnumSeqExpIR;
-import org.overture.codegen.ir.expressions.AEnumSetExpIR;
-import org.overture.codegen.ir.expressions.AExistsQuantifierExpIR;
-import org.overture.codegen.ir.expressions.AForAllQuantifierExpIR;
-import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
-import org.overture.codegen.ir.expressions.ALetBeStExpIR;
-import org.overture.codegen.ir.expressions.AMapletExpIR;
+import org.overture.codegen.ir.expressions.*;
 import org.overture.codegen.ir.patterns.ASetMultipleBindIR;
 import org.overture.codegen.ir.statements.AAssignToExpStmIR;
 import org.overture.codegen.ir.statements.ABlockStmIR;
 import org.overture.codegen.ir.types.ABoolBasicTypeIR;
+import org.overture.codegen.ir.types.AIntNumericBasicTypeIR;
 import org.overture.codegen.ir.types.SSetTypeIR;
 import org.overture.codegen.ir.utils.AHeaderLetBeStIR;
 import org.overture.codegen.trans.Exp2StmTrans;
@@ -39,11 +29,7 @@ import org.overture.codegen.trans.iterator.ILanguageIterator;
 import org.overture.codegen.trans.quantifier.Exists1CounterData;
 import org.overture.codegen.trans.quantifier.OrdinaryQuantifier;
 import org.overture.codegen.trans.quantifier.OrdinaryQuantifierStrategy;
-import org.overture.codegen.vdm2c.utils.CLetBeStStrategy;
-import org.overture.codegen.vdm2c.utils.CMapCompStrategy;
-import org.overture.codegen.vdm2c.utils.COrdinaryQuantifierStrategy;
-import org.overture.codegen.vdm2c.utils.CSeqCompStrategy;
-import org.overture.codegen.vdm2c.utils.CSetCompStrategy;
+import org.overture.codegen.vdm2c.utils.*;
 
 /**
  * This must only be used before any C nodes are introduced. It runs of the base DepthFirst Visitor
@@ -122,7 +108,43 @@ public class CompToBlockTrans extends Exp2StmTrans
 			block.apply(this);
 		}
 	}
-	
+
+	@Override
+	public void caseAExists1QuantifierExpIR(AExists1QuantifierExpIR node) throws AnalysisException {
+
+		SStmIR enclosingStm = transAssistant.getEnclosingStm(node, "exists1 expression");
+
+		SExpIR predicate = node.getPredicate();
+		ITempVarGen tempVarNameGen = transAssistant.getInfo().getTempVarNameGen();
+		String var = tempVarNameGen.nextVarName(prefixes.exists1());
+
+		CExists1QuantifierStrategy strategy = new CExists1QuantifierStrategy(transAssistant, predicate, var, langIterator, tempVarNameGen, iteVarPrefixes, counterData);
+
+		List<SMultipleBindIR> multipleSetBinds = filterBindList(node, node.getBindList());
+
+		ABlockStmIR block = transAssistant.consComplexCompIterationBlock(multipleSetBinds, tempVarNameGen, strategy, iteVarPrefixes);
+
+		if (multipleSetBinds.isEmpty())
+		{
+			ABoolLiteralExpIR exists1Result = transAssistant.getInfo().getExpAssistant().consBoolLiteral(false);
+			transAssistant.replaceNodeWith(node, exists1Result);
+		} else
+		{
+			AIdentifierVarExpIR counter = new AIdentifierVarExpIR();
+			counter.setType(new AIntNumericBasicTypeIR());
+			counter.setIsLocal(true);
+			counter.setName(var);
+
+			AEqualsBinaryExpIR exists1Result = new AEqualsBinaryExpIR();
+			exists1Result.setType(new ABoolBasicTypeIR());
+			exists1Result.setLeft(counter);
+			exists1Result.setRight(transAssistant.getInfo().getExpAssistant().consIntLiteral(1));
+
+			transform(enclosingStm, block, exists1Result, node);
+			block.apply(this);
+		}
+	}
+
 	@Override
 	public void caseALetBeStExpIR(ALetBeStExpIR node) throws AnalysisException {
 

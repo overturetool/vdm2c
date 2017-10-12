@@ -42,7 +42,7 @@ public class CTransSeries
 	private Exists1CounterData consExists1CounterData()
 	{
 		AExternalTypeIR type = new AExternalTypeIR();
-		type.setName("Long");
+		type.setName("TVP");
 
 		IRInfo irInfo = codeGen.getIRGenerator().getIRInfo();
 		AIntLiteralExpIR initExp = irInfo.getExpAssistant().consIntLiteral(0);
