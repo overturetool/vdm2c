@@ -82,6 +82,11 @@ TVP newSeqVar(size_t size, ...)
 	va_end(ap);
 
 	res = newCollectionWithValues(size, VDM_SEQ, elements);
+
+	for (i = 0; i < size; i++)
+	{
+		vdmFree(elements[i]);
+	}
 	free(elements);
 
 	return res;
