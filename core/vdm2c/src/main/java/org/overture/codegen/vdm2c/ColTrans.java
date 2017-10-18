@@ -55,6 +55,7 @@ public class ColTrans extends DepthFirstAnalysisCAdaptor implements IApplyAssist
 	public static final String MAP_RES_DOM_BY = "vdmMapDomRestrictBy";
 	public static final String MAP_RES_RNG_TO = "vdmMapRngRestrictTo";
 	public static final String MAP_RES_RNG_BY = "vdmMapRngRestrictBy";
+	public static final String MAP_ITERATE = "vdmMapIterate";
 
 	private TransAssistantIR assist;
 
@@ -284,7 +285,13 @@ public class ColTrans extends DepthFirstAnalysisCAdaptor implements IApplyAssist
 		
 		rewriteToApply(this, node, MAP_RES_RNG_BY, node.getLeft(), node.getRight());
 	}
-	
+
+	@Override
+	public void caseAMapIterationBinaryExpIR(AMapIterationBinaryExpIR node) throws AnalysisException {
+
+		rewriteToApply(this, node, MAP_ITERATE, node.getLeft(), node.getRight());
+	}
+
 	private void rewriteColEnumToApply(SExpIR node, String seqVar, List<SExpIR> members)
 			throws AnalysisException {
 		AExternalTypeIR extType = new AExternalTypeIR();
