@@ -1,9 +1,11 @@
 package org.overture.codegen.vdm2c.transformations;
 
 import org.overture.cgc.extast.analysis.DepthFirstAnalysisCAdaptor;
+import org.overture.codegen.ir.STypeIR;
 import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.analysis.intf.IAnalysis;
 import org.overture.codegen.ir.expressions.*;
+import org.overture.codegen.ir.types.*;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.utils.CTransUtil;
 import org.overture.codegen.vdm2c.utils.IApplyAssistant;
@@ -27,43 +29,42 @@ public class IsCheckTrans extends DepthFirstAnalysisCAdaptor implements IApplyAs
     }
 
     @Override
-    public void caseANatIsExpIR(ANatIsExpIR node) throws AnalysisException {
-        CTransUtil.rewriteToApply(this, node, VDM_IS_NAT, node.getExp());
-    }
+    public void caseAGeneralIsExpIR(AGeneralIsExpIR node) throws AnalysisException {
 
-    @Override
-    public void caseANat1IsExpIR(ANat1IsExpIR node) throws AnalysisException {
-        CTransUtil.rewriteToApply(this, node, VDM_IS_NAT1, node.getExp());
-    }
+        STypeIR type = node.getCheckedType();
 
-    @Override
-    public void caseAIntIsExpIR(AIntIsExpIR node) throws AnalysisException {
-        CTransUtil.rewriteToApply(this, node, VDM_IS_INT, node.getExp());
-    }
-
-    @Override
-    public void caseARealIsExpIR(ARealIsExpIR node) throws AnalysisException {
-        CTransUtil.rewriteToApply(this, node, VDM_IS_REAL, node.getExp());
-    }
-
-    @Override
-    public void caseABoolIsExpIR(ABoolIsExpIR node) throws AnalysisException {
-        CTransUtil.rewriteToApply(this, node, VDM_IS_BOOL, node.getExp());
-    }
-
-    @Override
-    public void caseARatIsExpIR(ARatIsExpIR node) throws AnalysisException {
-        CTransUtil.rewriteToApply(this, node, VDM_IS_RAT, node.getExp());
-    }
-
-    @Override
-    public void caseACharIsExpIR(ACharIsExpIR node) throws AnalysisException {
-        CTransUtil.rewriteToApply(this, node, VDM_IS_CHAR, node.getExp());
-    }
-
-    @Override
-    public void caseATokenIsExpIR(ATokenIsExpIR node) throws AnalysisException {
-        CTransUtil.rewriteToApply(this, node, VDM_IS_TOKEN, node.getExp());
+        if(type instanceof ANatNumericBasicTypeIR)
+        {
+            CTransUtil.rewriteToApply(this, node, VDM_IS_NAT, node.getExp());
+        }
+        else if(type instanceof ANat1NumericBasicTypeIR)
+        {
+            CTransUtil.rewriteToApply(this, node, VDM_IS_NAT1, node.getExp());
+        }
+        else if(type instanceof AIntNumericBasicTypeIR)
+        {
+            CTransUtil.rewriteToApply(this, node, VDM_IS_INT, node.getExp());
+        }
+        else if(type instanceof ARealNumericBasicTypeIR)
+        {
+            CTransUtil.rewriteToApply(this, node, VDM_IS_REAL, node.getExp());
+        }
+        else if(type instanceof ABoolBasicTypeIR)
+        {
+            CTransUtil.rewriteToApply(this, node, VDM_IS_BOOL, node.getExp());
+        }
+        else if(type instanceof ARatNumericBasicTypeIR)
+        {
+            CTransUtil.rewriteToApply(this, node, VDM_IS_RAT, node.getExp());
+        }
+        else if(type instanceof ACharBasicTypeIR)
+        {
+            CTransUtil.rewriteToApply(this, node, VDM_IS_CHAR, node.getExp());
+        }
+        else if(type instanceof ATokenBasicTypeIR)
+        {
+            CTransUtil.rewriteToApply(this, node, VDM_IS_TOKEN, node.getExp());
+        }
     }
 
     @Override

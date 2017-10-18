@@ -26,7 +26,7 @@ import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.trans.comp.ComplexCompStrategy;
 import org.overture.codegen.trans.comp.SeqCompStrategy;
 import org.overture.codegen.trans.iterator.ILanguageIterator;
-import org.overture.codegen.trans.quantifier.Exists1CounterData;
+import org.overture.codegen.trans.quantifier.CounterData;
 import org.overture.codegen.trans.quantifier.OrdinaryQuantifier;
 import org.overture.codegen.trans.quantifier.OrdinaryQuantifierStrategy;
 import org.overture.codegen.vdm2c.utils.*;
@@ -40,7 +40,7 @@ public class CompToBlockTrans extends Exp2StmTrans
 {
 
 	public CompToBlockTrans(IterationVarPrefixes iteVarPrefixes,
-			TransAssistantIR transAssistant, Exists1CounterData counterData,
+			TransAssistantIR transAssistant, CounterData counterData,
 			ILanguageIterator langIterator, Exp2StmVarPrefixes prefixes)
 	{
 		super(iteVarPrefixes, transAssistant, counterData, langIterator, prefixes);

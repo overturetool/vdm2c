@@ -23,7 +23,7 @@ import org.overture.codegen.trans.letexps.FuncTrans;
 import org.overture.codegen.trans.letexps.IfExpTrans;
 import org.overture.codegen.trans.patterns.PatternTrans;
 import org.overture.codegen.trans.patterns.PatternVarPrefixes;
-import org.overture.codegen.trans.quantifier.Exists1CounterData;
+import org.overture.codegen.trans.quantifier.CounterData;
 import org.overture.codegen.vdm2c.transformations.*;
 
 import java.util.LinkedList;
@@ -39,7 +39,7 @@ public class CTransSeries
 		this.codeGen = codeGen;
 	}
 
-	private Exists1CounterData consExists1CounterData()
+	private CounterData consExists1CounterData()
 	{
 		AExternalTypeIR type = new AExternalTypeIR();
 		type.setName("TVP");
@@ -47,7 +47,7 @@ public class CTransSeries
 		IRInfo irInfo = codeGen.getIRGenerator().getIRInfo();
 		AIntLiteralExpIR initExp = irInfo.getExpAssistant().consIntLiteral(0);
 
-		return new Exists1CounterData(type, initExp);
+		return new CounterData(type, initExp);
 	}
 
 	public List<DepthFirstAnalysisAdaptor> consAnalyses()

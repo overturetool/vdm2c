@@ -15,7 +15,7 @@ import org.overture.codegen.ir.types.ABoolBasicTypeIR;
 import org.overture.codegen.trans.IterationVarPrefixes;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.trans.iterator.ILanguageIterator;
-import org.overture.codegen.trans.quantifier.Exists1CounterData;
+import org.overture.codegen.trans.quantifier.CounterData;
 import org.overture.codegen.trans.quantifier.OrdinaryQuantifier;
 import org.overture.codegen.trans.quantifier.QuantifierBaseStrategy;
 
@@ -23,9 +23,9 @@ import java.util.List;
 
 public class CExists1QuantifierStrategy extends QuantifierBaseStrategy {
 
-    protected Exists1CounterData counterData;
+    protected CounterData counterData;
 
-    public CExists1QuantifierStrategy(TransAssistantIR transformationAssistant, SExpIR predicate, String resultVarName, ILanguageIterator langIterator, ITempVarGen tempGen, IterationVarPrefixes iteVarPrefixes, Exists1CounterData counterData) {
+    public CExists1QuantifierStrategy(TransAssistantIR transformationAssistant, SExpIR predicate, String resultVarName, ILanguageIterator langIterator, ITempVarGen tempGen, IterationVarPrefixes iteVarPrefixes, CounterData counterData) {
         super(transformationAssistant, predicate, resultVarName, langIterator, tempGen, iteVarPrefixes);
         this.counterData = counterData;
     }
