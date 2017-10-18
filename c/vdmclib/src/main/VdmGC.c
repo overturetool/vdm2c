@@ -255,6 +255,7 @@ TVP newTokenGC(TVP x, TVP *from)
 		hashVal = ((hashVal << 2) + hashVal) + c;
 
 	free(strTmp);
+	vdmFree(x);
 
 	return newTypeValueGC(VDM_TOKEN, (TypedValueType
 	)

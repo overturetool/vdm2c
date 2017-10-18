@@ -98,6 +98,7 @@ TVP newToken(TVP x)
 		hashVal = ((hashVal << 2) + hashVal) + c;
 
 	free(strTmp);
+	vdmFree(x);
 
 	return newTypeValue(VDM_TOKEN, (TypedValueType
 	)
