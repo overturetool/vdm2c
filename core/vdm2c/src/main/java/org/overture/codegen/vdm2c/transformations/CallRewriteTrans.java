@@ -138,14 +138,14 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 
 	}
 
-	AMacroApplyExpIR createLocalPtrApply(AMethodDeclIR method, String thisName,
+	public static AMacroApplyExpIR createLocalPtrApply(AMethodDeclIR method, String thisName,
 			List<SExpIR> linkedList) throws AnalysisException
 	{
 		AMethodDeclIR selectedMethod = method;
 		String thisType = thisName;
 		String methodOwnerType = selectedMethod.getAncestor(SClassDeclIR.class).getName();
 		String thisArgs = "this";
-		String methodId = String.format(CTransUtil.METHOD_CALL_ID_PATTERN, methodOwnerType, selectedMethod.getName());
+		String methodId = CTransUtil.getMethodId(selectedMethod, methodOwnerType);
 
 		AMacroApplyExpIR apply = newMacroApply(CTransUtil.CALL_FUNC_PTR, createIdentifier(thisType, null), createIdentifier(methodOwnerType, null), createIdentifier(thisArgs, null), createIdentifier(methodId, null));
 		apply.setType(method.getMethodType().getResult().clone());
@@ -174,7 +174,7 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 		AMethodDeclIR selectedMethod = method;
 		String thisType = thisName;
 		String methodOwnerType = selectedMethod.getAncestor(SClassDeclIR.class).getName();
-		String methodId = String.format(CTransUtil.METHOD_CALL_ID_PATTERN, methodOwnerType, selectedMethod.getName());
+		String methodId = CTransUtil.getMethodId(selectedMethod, methodOwnerType);
 		// CALL_FUNC(thisTypeName,funcTname,classValue,id, args...
 		AMacroApplyExpIR apply = newMacroApply(CTransUtil.CALL_FUNC, createIdentifier(thisType, null), createIdentifier(methodOwnerType, null), classValue.clone(), createIdentifier(methodId, null));
 		apply.setType(method.getMethodType().getResult().clone());

@@ -70,6 +70,7 @@ public class CTransSeries
 		// Construct the transformations
 		transformations.add(new RecTypeToClassTypeTrans(transAssistant));
 		transformations.add(new FuncTrans(transAssistant));
+		transformations.add(new PrePostTrans(transAssistant.getInfo()));
 		transformations.add(new FieldInitializerExtractorTrans(transAssistant));
 		transformations.add(new RemoveRTConstructs(transAssistant));
 
@@ -159,7 +160,9 @@ public class CTransSeries
 		transformations.add(new MethodVisibilityTrans(transAssistant));
 		transformations.add(new C89ForLoopTrans(transAssistant));
 		transformations.add(new EnsureValueSemanticsTrans());
-		
+		transformations.add(new CPreCheckTrans(transAssistant));
+		transformations.add(new ScopeCleanerTrans(transAssistant));
+
 		//transformations.add(new RenameMathLibraryTrans(transAssistant));
 
 		if(codeGen.getCGenSettings().usesGarbageCollection())
