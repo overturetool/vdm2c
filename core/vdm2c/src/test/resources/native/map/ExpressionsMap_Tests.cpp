@@ -87,3 +87,8 @@ TEST_F(TestFlowFunctions, mapIterate)
 {
 	CHECK(CLASS_ExpressionMap__Z12mapIterationEV);
 }
+
+TEST_F(TestFlowFunctions, mapComp)
+{
+	CHECK(CLASS_ExpressionMap__Z7mapCompEV);
+}
