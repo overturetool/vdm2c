@@ -102,3 +102,21 @@ TEST_F(TestFlowFunctions, samebaseclass_Fifth)
 {
   CHECK(CLASS_ExpressionOOChecks__Z19samebaseclass_FifthEV);
 }
+
+// sameclass
+
+/*
+TEST_F(TestFlowFunctions, sameclass_First)
+{
+  CHECK(CLASS_ExpressionOOChecks__Z15sameclass_FirstEV);
+}
+
+TEST_F(TestFlowFunctions, sameclass_Second)
+{
+  CHECK(CLASS_ExpressionOOChecks__Z16sameclass_SecondEV);
+}
+
+TEST_F(TestFlowFunctions, sameclass_Third)
+{
+  CHECK(CLASS_ExpressionOOChecks__Z15sameclass_ThirdEV);
+}*/

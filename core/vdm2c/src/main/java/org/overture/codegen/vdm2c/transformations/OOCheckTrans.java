@@ -6,10 +6,7 @@ import org.overture.codegen.ir.SExpIR;
 import org.overture.codegen.ir.STypeIR;
 import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.analysis.intf.IAnalysis;
-import org.overture.codegen.ir.expressions.AExternalExpIR;
-import org.overture.codegen.ir.expressions.AIsOfBaseClassExpIR;
-import org.overture.codegen.ir.expressions.AIsOfClassExpIR;
-import org.overture.codegen.ir.expressions.ASameBaseClassExpIR;
+import org.overture.codegen.ir.expressions.*;
 import org.overture.codegen.ir.types.AClassTypeIR;
 import org.overture.codegen.ir.types.AExternalTypeIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
@@ -24,6 +21,7 @@ public class OOCheckTrans extends DepthFirstAnalysisCAdaptor implements IApplyAs
     public static final String IS_OF_BASE_CLASS = "isOfBaseClass";
     public static final String IS_OF_CLASS = "isOfClass";
     public static final String SAME_BASE_CLASS = "sameBaseClass";
+    public static final String SAME_CLASS = "sameClass";
 
     public static final String C_INT = "int";
 
@@ -76,6 +74,12 @@ public class OOCheckTrans extends DepthFirstAnalysisCAdaptor implements IApplyAs
     public void caseASameBaseClassExpIR(ASameBaseClassExpIR node) throws AnalysisException {
 
         CTransUtil.rewriteToApply(this, node, SAME_BASE_CLASS, node.getLeft(), node.getRight());
+    }
+
+    @Override
+    public void caseASameClassExpIR(ASameClassExpIR node) throws AnalysisException {
+
+        CTransUtil.rewriteToApply(this, node, SAME_CLASS, node.getLeft(), node.getRight());
     }
 
     private SExpIR consClassExp(String classId) {

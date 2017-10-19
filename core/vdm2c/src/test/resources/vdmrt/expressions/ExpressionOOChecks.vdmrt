@@ -22,6 +22,7 @@ b = new BinarySearchTree();
 q = new Queue();
 a = new AVLTree();
 bb = new BalancedBST();
+bMark = new BinarySearchTree();
 
 functions
 
@@ -81,5 +82,18 @@ samebaseclass_Fourth () == samebaseclass(t,bb);
 
 public samebaseclass_Fifth :  () -> bool
 samebaseclass_Fifth () == not samebaseclass(q,a);
+
+--
+-- sameclass
+--
+--public sameclass_First :  () -> bool
+--sameclass_First () == not sameclass(b,t);
+--
+--public sameclass_Second :  () -> bool
+--sameclass_Second () == sameclass(b,bMark) ;
+--
+--public sameclass_Third :  () -> bool
+--sameclass_Third () == not sameclass(q,t);
+
 
 end ExpressionOOChecks
