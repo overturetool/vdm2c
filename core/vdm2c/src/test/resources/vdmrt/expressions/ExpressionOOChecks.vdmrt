@@ -18,6 +18,9 @@ q = new Queue();
 
 functions
 
+--
+-- isofbaseclass
+--
 public isofbaseclass_First :  () -> bool
 isofbaseclass_First () == isofbaseclass(Tree, t);
 
@@ -32,5 +35,26 @@ isofbaseclass_Fourth () == isofbaseclass(Tree, b);
 
 public isofbaseclass_Fifth :  () -> bool
 isofbaseclass_Fifth () == not isofbaseclass(Tree, q);
+
+--
+-- isofclass
+--
+--public isofclass_First :  () -> bool
+--isofclass_First () == isofclass(Tree,t);
+--
+--public isofclass_Second :  () -> bool
+--isofclass_Second () == isofclass(Tree,b);
+--
+--public isofclass_Third :  () -> bool
+--isofclass_Third () == not isofclass(Tree,q);
+--
+--public isofclass_Fourth :  () -> bool
+--isofclass_Fourth () == isofclass(Queue,q);
+--
+--public isofclass_Fifth :  () -> bool
+--isofclass_Fifth () == not isofclass(BinarySearchTree,t);
+-- 
+--public isofclass_Sixth :  () -> bool
+--isofclass_Sixth () == isofclass(BinarySearchTree,b); 
 
 end ExpressionOOChecks

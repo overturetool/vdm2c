@@ -139,6 +139,7 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 
 		// OO checks
 		gcNames.put(OOCheckTrans.IS_OF_BASE_CLASS, "isOfBaseClassGC");
+		gcNames.put(OOCheckTrans.IS_OF_CLASS, "isOfClassGC");
 
 		// Tuples
 		gcNames.put(TupleTrans.TUPLE_EXP, "newProductVarGC");

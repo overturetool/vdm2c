@@ -44,3 +44,34 @@ TEST_F(TestFlowFunctions, isofbaseclass_Fifth)
   CHECK(CLASS_ExpressionOOChecks__Z19isofbaseclass_FifthEV);
 }
 
+// isofclass tests
+
+/*TEST_F(TestFlowFunctions, isofclass_First)
+{
+  CHECK(CLASS_ExpressionOOChecks__Z15isofclass_FirstEV);
+}
+
+TEST_F(TestFlowFunctions, isofclass_Second)
+{
+  CHECK(CLASS_ExpressionOOChecks__Z16isofclass_SecondEV);
+}
+
+TEST_F(TestFlowFunctions, isofclass_Third)
+{
+  CHECK(CLASS_ExpressionOOChecks__Z15isofclass_ThirdEV);
+}
+
+TEST_F(TestFlowFunctions, isofclass_Fourth)
+{
+  CHECK(CLASS_ExpressionOOChecks__Z16isofclass_FourthEV);
+}
+
+TEST_F(TestFlowFunctions, isofclass_Fifth)
+{
+  CHECK(CLASS_ExpressionOOChecks__Z15isofclass_FifthEV);
+}
+
+TEST_F(TestFlowFunctions, isofclass_Sixth)
+{
+  CHECK(CLASS_ExpressionOOChecks__Z15isofclass_SixthEV);
+}*/
