@@ -24,6 +24,7 @@ import org.overture.codegen.trans.letexps.IfExpTrans;
 import org.overture.codegen.trans.patterns.PatternTrans;
 import org.overture.codegen.trans.patterns.PatternVarPrefixes;
 import org.overture.codegen.trans.quantifier.CounterData;
+import org.overture.codegen.trans.uniontypes.NonDetStmTrans;
 import org.overture.codegen.vdm2c.transformations.*;
 
 import java.util.LinkedList;
@@ -70,6 +71,7 @@ public class CTransSeries
 		// Construct the transformations
 		transformations.add(new RecTypeToClassTypeTrans(transAssistant));
 		transformations.add(new FuncTrans(transAssistant));
+		transformations.add(new NonDetStmTrans(transAssistant));
 		transformations.add(new PrePostTrans(transAssistant.getInfo()));
 		transformations.add(new FieldInitializerExtractorTrans(transAssistant));
 		transformations.add(new RemoveRTConstructs(transAssistant));

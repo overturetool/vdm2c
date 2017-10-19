@@ -186,4 +186,12 @@ public class NativeTests extends NativeTestBase
 		generate(getPath("expressions/ExpressionIs.vdmrt"));
 		compileAndTest(getTestCppFile("is/ExpressionsIs_Tests.cpp"));
 	}
+
+	@Test
+	public void NonDet() throws IOException, InterruptedException,
+			CMakeGenerateException
+	{
+		generate(getPath("nondet/NonDet.vdmrt"));
+		compileAndTest(getTestCppFile("nondet/NonDet_Tests.cpp"));
+	}
 }

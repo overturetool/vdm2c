@@ -1,0 +1,9 @@
+class NonDet
+
+operations
+
+public nonDetStm : () ==> bool
+nonDetStm () ==
+  || (return true, return true);
+
+end NonDet
