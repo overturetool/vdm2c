@@ -1,0 +1,36 @@
+
+-- isofbaseclass 
+class Tree
+end Tree
+
+class BinarySearchTree is subclass of Tree
+end BinarySearchTree
+
+class Queue
+end Queue
+
+class ExpressionOOChecks
+values
+
+t = new Tree();
+b = new BinarySearchTree();
+q = new Queue();
+
+functions
+
+public isofbaseclass_First :  () -> bool
+isofbaseclass_First () == isofbaseclass(Tree, t);
+
+public isofbaseclass_Second :  () -> bool
+isofbaseclass_Second () == not isofbaseclass(BinarySearchTree, b);
+
+public isofbaseclass_Third :  () -> bool
+isofbaseclass_Third () == isofbaseclass(Queue, q);
+
+public isofbaseclass_Fourth :  () -> bool
+isofbaseclass_Fourth () == isofbaseclass(Tree, b);
+
+public isofbaseclass_Fifth :  () -> bool
+isofbaseclass_Fifth () == not isofbaseclass(Tree, q);
+
+end ExpressionOOChecks

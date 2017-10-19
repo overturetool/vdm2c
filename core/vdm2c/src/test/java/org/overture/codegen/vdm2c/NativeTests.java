@@ -194,4 +194,12 @@ public class NativeTests extends NativeTestBase
 		generate(getPath("nondet/NonDet.vdmrt"));
 		compileAndTest(getTestCppFile("nondet/NonDet_Tests.cpp"));
 	}
+
+	@Test
+	public void OOChecks() throws IOException, InterruptedException,
+			CMakeGenerateException
+	{
+		generate(getPath("expressions/ExpressionOOChecks.vdmrt"));
+		compileAndTest(getTestCppFile("oo-checks/ExpressionOOChecks_Tests.cpp"));
+	}
 }

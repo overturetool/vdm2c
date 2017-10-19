@@ -137,6 +137,9 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 		gcNames.put(ColTrans.MAP_ITERATE, "vdmMapIterateGC");
 		gcNames.put(ColTrans.MAP_COMP, "vdmMapComposeGC");
 
+		// OO checks
+		gcNames.put(OOCheckTrans.IS_OF_BASE_CLASS, "isOfBaseClassGC");
+
 		// Tuples
 		gcNames.put(TupleTrans.TUPLE_EXP, "newProductVarGC");
 		gcNames.put(TupleTrans.TUPLE_FIELD_NUMBER_EXP, "productGetGC");

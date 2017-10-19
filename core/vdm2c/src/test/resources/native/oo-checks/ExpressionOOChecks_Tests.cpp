@@ -1,0 +1,46 @@
+
+#include "gtest/gtest.h"
+#include "TestFlowFunctions.h"
+
+extern "C"
+{
+#include "Vdm.h"
+#include <stdio.h>
+#include "ExpressionOOChecks.h"
+}
+
+#define CHECK(methodId) ExpressionOOChecks_const_init();\
+TVP c = _Z18ExpressionOOChecksEV(NULL);\
+TVP res=CALL_FUNC(ExpressionOOChecks,ExpressionOOChecks,c,methodId);\
+EXPECT_EQ (true,res->value.boolVal);\
+vdmFree(res);\
+vdmFree(c);\
+ExpressionOOChecks_const_init();
+
+// isofbaseclass tests
+
+/*TEST_F(TestFlowFunctions, isofbaseclass_First)
+{
+  CHECK(CLASS_ExpressionOOChecks__Z19isofbaseclass_FirstEV);
+}*/
+
+TEST_F(TestFlowFunctions, isofbaseclass_Second)
+{
+  CHECK(CLASS_ExpressionOOChecks__Z20isofbaseclass_SecondEV);
+}
+
+/*TEST_F(TestFlowFunctions, isofbaseclass_Third)
+{
+  CHECK(CLASS_ExpressionOOChecks__Z19isofbaseclass_ThirdEV);
+}*/
+
+TEST_F(TestFlowFunctions, isofbaseclass_Fourth)
+{
+  CHECK(CLASS_ExpressionOOChecks__Z20isofbaseclass_FourthEV);
+}
+
+TEST_F(TestFlowFunctions, isofbaseclass_Fifth)
+{
+  CHECK(CLASS_ExpressionOOChecks__Z19isofbaseclass_FifthEV);
+}
+
