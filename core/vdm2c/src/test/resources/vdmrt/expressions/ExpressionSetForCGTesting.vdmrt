@@ -82,4 +82,9 @@ setPower() ==
 	({3} in set power {1, 2, 3, 4}) and
 	({2, 3} in set power {1, 2, 3, 4}) and
 	(not ({2, 5} in set power {1, 2, 3, 4}));
+
+protected setIota : () ->  bool
+setIota () ==
+	(iota x in set {1,2,3} & x > 2) = 3;
+
 end ExpressionSetForCGTesting

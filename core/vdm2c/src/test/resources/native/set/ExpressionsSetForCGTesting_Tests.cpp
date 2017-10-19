@@ -92,3 +92,8 @@ TEST_F(TestFlowFunctions, powerset)
 {
 	CHECK(CLASS_ExpressionSetForCGTesting__Z8setPowerEV);
 }
+
+TEST_F(TestFlowFunctions, iotaset)
+{
+	CHECK(CLASS_ExpressionSetForCGTesting__Z7setIotaEV);
+}

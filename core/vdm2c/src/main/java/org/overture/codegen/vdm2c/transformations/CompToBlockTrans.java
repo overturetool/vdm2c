@@ -146,6 +146,37 @@ public class CompToBlockTrans extends Exp2StmTrans
 	}
 
 	@Override
+	public void caseAIotaExpIR(AIotaExpIR node) throws AnalysisException {
+
+		SStmIR enclosingStm = transAssistant.getEnclosingStm(node, "iota expression");
+
+		SExpIR predicate = node.getPredicate();
+		ITempVarGen tempVarNameGen = transAssistant.getInfo().getTempVarNameGen();
+		String resVarName = tempVarNameGen.nextVarName(prefixes.iota());
+		String counterName = tempVarNameGen.nextVarName(prefixes.iotaCounter());
+
+		CIotaStrategy strategy = new CIotaStrategy(transAssistant, predicate, resVarName, counterName, langIterator, tempVarNameGen, iteVarPrefixes, counterData);
+
+		List<SMultipleBindIR> multipleSetBinds = filterBindList(node, node.getBindList());
+
+		ABlockStmIR block = transAssistant.consComplexCompIterationBlock(multipleSetBinds, tempVarNameGen, strategy, iteVarPrefixes);
+
+		if (multipleSetBinds.isEmpty())
+		{
+			transAssistant.replaceNodeWith(node, transAssistant.getInfo().getExpAssistant().consUndefinedExp());
+		} else
+		{
+			AIdentifierVarExpIR iotaResult = new AIdentifierVarExpIR();
+			iotaResult.setIsLocal(true);
+			iotaResult.setType(node.getType().clone());
+			iotaResult.setName(resVarName);
+
+			transform(enclosingStm, block, iotaResult, node);
+			block.apply(this);
+		}
+	}
+
+	@Override
 	public void caseALetBeStExpIR(ALetBeStExpIR node) throws AnalysisException {
 
 		SStmIR enclosingStm = transAssistant.getEnclosingStm(node, "let be st expressions");
