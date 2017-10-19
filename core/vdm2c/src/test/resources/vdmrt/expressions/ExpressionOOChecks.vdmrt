@@ -1,5 +1,4 @@
 
--- isofbaseclass 
 class Tree
 end Tree
 
@@ -9,12 +8,20 @@ end BinarySearchTree
 class Queue
 end Queue
 
+class AVLTree is subclass of Tree
+end AVLTree
+
+class BalancedBST is subclass of BinarySearchTree
+end BalancedBST
+
 class ExpressionOOChecks
 values
 
 t = new Tree();
 b = new BinarySearchTree();
 q = new Queue();
+a = new AVLTree();
+bb = new BalancedBST();
 
 functions
 
@@ -56,5 +63,23 @@ isofbaseclass_Fifth () == not isofbaseclass(Tree, q);
 -- 
 --public isofclass_Sixth :  () -> bool
 --isofclass_Sixth () == isofclass(BinarySearchTree,b); 
+
+--
+-- samebaseclass
+--
+public samebaseclass_First :  () -> bool
+samebaseclass_First () == samebaseclass(a,b);
+
+public samebaseclass_Second :  () -> bool
+samebaseclass_Second () == samebaseclass(a,bb);
+
+public samebaseclass_Third :  () -> bool
+samebaseclass_Third () == samebaseclass(b,bb);
+
+public samebaseclass_Fourth :  () -> bool
+samebaseclass_Fourth () == samebaseclass(t,bb);
+
+public samebaseclass_Fifth :  () -> bool
+samebaseclass_Fifth () == not samebaseclass(q,a);
 
 end ExpressionOOChecks

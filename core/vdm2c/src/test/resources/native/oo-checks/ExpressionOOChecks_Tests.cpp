@@ -75,3 +75,30 @@ TEST_F(TestFlowFunctions, isofclass_Sixth)
 {
   CHECK(CLASS_ExpressionOOChecks__Z15isofclass_SixthEV);
 }*/
+
+// samebaseclass
+
+/*TEST_F(TestFlowFunctions, samebaseclass_First)
+{
+  CHECK(CLASS_ExpressionOOChecks__Z19samebaseclass_FirstEV);
+}
+
+TEST_F(TestFlowFunctions, samebaseclass_Second)
+{
+  CHECK(CLASS_ExpressionOOChecks__Z20samebaseclass_SecondEV);
+}
+
+TEST_F(TestFlowFunctions, samebaseclass_Third)
+{
+  CHECK(CLASS_ExpressionOOChecks__Z19samebaseclass_ThirdEV);
+}
+
+TEST_F(TestFlowFunctions, samebaseclass_Fourth)
+{
+  CHECK(CLASS_ExpressionOOChecks__Z20samebaseclass_FourthEV);
+}*/
+
+TEST_F(TestFlowFunctions, samebaseclass_Fifth)
+{
+  CHECK(CLASS_ExpressionOOChecks__Z19samebaseclass_FifthEV);
+}
