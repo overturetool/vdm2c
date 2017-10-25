@@ -622,7 +622,7 @@ TEST(Expression, isProdIntChar)
 
 TEST(Expression, isProdIntProdIntChar)
 {
-	char ot[] = {'1', 'P', 2, '*', '1', 'i', '*', '0', 'P', 2, '*', '1', 'i', '*', '1', 'c', '*'};
+	char ot[] = {'1', 'P', 2, '*', '1', 'i', '*', '0', 'P', 2, '*', '1', 'i', '*', '1', 'c', '*', '*'};
 	TVP res;
 
 
