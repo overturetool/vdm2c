@@ -113,3 +113,23 @@ TEST_F(TestFlowFunctions, isNatCharTupleNeg)
 {
 	CHECK(CLASS_IsTest__Z17isNatCharTupleNegEV);
 }
+
+TEST_F(TestFlowFunctions, isNatOrCharPos)
+{
+	CHECK(CLASS_IsTest__Z14isNatOrCharPosEV);
+}
+
+TEST_F(TestFlowFunctions, isNatOrCharNeg)
+{
+	CHECK(CLASS_IsTest__Z14isNatOrCharNegEV);
+}
+
+TEST_F(TestFlowFunctions, isTupPos)
+{
+	CHECK(CLASS_IsTest__Z8isTupPosEV);
+}
+
+TEST_F(TestFlowFunctions, isTupNeg)
+{
+	CHECK(CLASS_IsTest__Z8isTupNegEV);
+}

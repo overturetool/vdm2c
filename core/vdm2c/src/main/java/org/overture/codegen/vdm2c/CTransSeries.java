@@ -115,9 +115,10 @@ public class CTransSeries
 		 * Phase #1 - Rewrite all standard C nodes to match C 1-to-1<br/>
 		 * - Rewrite e.g. 1 + 2 to vdmSum(1,2) instead.
 		 */
+		transformations.add(new IsExpUnionTypeTrans(transAssistant));
+		transformations.add(new IsCheckTrans(transAssistant));
 		transformations.add(new NumericTrans(transAssistant));
 		transformations.add(new LogicTrans(transAssistant));
-		transformations.add(new IsCheckTrans(transAssistant));
 		transformations.add(new ColTrans(transAssistant));
 		transformations.add(new OOCheckTrans(transAssistant));
 		transformations.add(new TupleTrans(transAssistant));

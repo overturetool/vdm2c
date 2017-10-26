@@ -74,4 +74,20 @@ public isNatCharTupleNeg : () ==> bool
 isNatCharTupleNeg () ==
 return not is_(mk_(-1,'a'), nat * char);
 
+public isNatOrCharPos : () ==> bool
+isNatOrCharPos () ==
+return is_('a', nat | char);
+
+public isNatOrCharNeg : () ==> bool
+isNatOrCharNeg () ==
+return not is_(true, nat | char);
+
+public isTupPos : () ==> bool
+isTupPos () ==
+return is_(mk_(1, 'a'), nat * (bool | char));
+
+public isTupNeg : () ==> bool
+isTupNeg () ==
+return not is_(mk_(1, 6), nat * (bool | char));
+
 end IsTest
