@@ -103,3 +103,13 @@ TEST_F(TestFlowFunctions, isTokenNeg)
 {
 	CHECK(CLASS_IsTest__Z10isTokenNegEV);
 }
+
+TEST_F(TestFlowFunctions, isNatCharTuplePos)
+{
+	CHECK(CLASS_IsTest__Z17isNatCharTuplePosEV);
+}
+
+TEST_F(TestFlowFunctions, isNatCharTupleNeg)
+{
+	CHECK(CLASS_IsTest__Z17isNatCharTupleNegEV);
+}

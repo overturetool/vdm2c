@@ -1,16 +1,23 @@
 package org.overture.codegen.vdm2c.transformations;
 
+import org.apache.log4j.Logger;
 import org.overture.cgc.extast.analysis.DepthFirstAnalysisCAdaptor;
+import org.overture.codegen.ir.SStmIR;
 import org.overture.codegen.ir.STypeIR;
 import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.analysis.intf.IAnalysis;
+import org.overture.codegen.ir.declarations.AVarDeclIR;
 import org.overture.codegen.ir.expressions.*;
+import org.overture.codegen.ir.statements.ABlockStmIR;
 import org.overture.codegen.ir.types.*;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
+import org.overture.codegen.vdm2c.extast.statements.ALocalVariableDeclarationStmIR;
 import org.overture.codegen.vdm2c.utils.CTransUtil;
 import org.overture.codegen.vdm2c.utils.IApplyAssistant;
 
 public class IsCheckTrans extends DepthFirstAnalysisCAdaptor implements IApplyAssistant {
+
+    protected Logger log = Logger.getLogger(this.getClass().getName());
 
     public static final String VDM_IS_NAT = "isNat";
     public static final String VDM_IS_NAT1 = "isNat1";
@@ -20,6 +27,9 @@ public class IsCheckTrans extends DepthFirstAnalysisCAdaptor implements IApplyAs
     public static final String VDM_IS_RAT = "isRat";
     public static final String VDM_IS_CHAR = "isChar";
     public static final String VDM_IS_TOKEN = "isToken";
+    public static final String VDM_IS = "is";
+
+    public static final String IS_EXP_ENCODING = "isExpEncoding_";
 
     private TransAssistantIR assist;
 
@@ -64,6 +74,38 @@ public class IsCheckTrans extends DepthFirstAnalysisCAdaptor implements IApplyAs
         else if(type instanceof ATokenBasicTypeIR)
         {
             CTransUtil.rewriteToApply(this, node, VDM_IS_TOKEN, node.getExp());
+        }
+        else
+        {
+            String enc = IsExpTypeEncoder.encodeType(type);
+
+            if(enc == null)
+            {
+                log.error("Could not encode type!");
+                return;
+            }
+
+            AExternalExpIR encodingExp = new AExternalExpIR();
+            encodingExp.setTargetLangExp(enc);
+
+            AExternalTypeIR charArr = new AExternalTypeIR();
+            charArr.setName("char");
+
+            ABlockStmIR replacement = new ABlockStmIR();
+
+            String varName = assist.getInfo().getTempVarNameGen().nextVarName(IS_EXP_ENCODING);
+            AVarDeclIR encodingVar = assist.consDecl(varName + "[]", charArr, encodingExp);
+            ALocalVariableDeclarationStmIR declStm = new ALocalVariableDeclarationStmIR();
+            declStm.setDecleration(encodingVar);
+            replacement.getStatements().add(declStm);
+            AIdentifierVarExpIR id = assist.getInfo().getExpAssistant().consIdVar(varName, encodingVar.getType().clone());
+
+            SStmIR stm = assist.getEnclosingStm(node, "is expression");
+
+            CTransUtil.rewriteToApply(this, node, VDM_IS, node.getExp(), id);
+
+            assist.replaceNodeWith(stm, replacement);
+            replacement.getStatements().add(stm);
         }
     }
 

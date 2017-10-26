@@ -116,6 +116,7 @@ TVP isRecord(TVP val, int recID);
 TVP isRecordGC(TVP val, int recID, TVP *from);
 #endif
 TVP is(TVP v, char ot[]);
+TVP isGC(TVP v, char ot[], TVP *from);
 TVP sameClass(TVP a, TVP b);
 TVP sameClassGC(TVP a, TVP b, TVP *from);
 #endif  /*  NO_IS  */

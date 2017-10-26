@@ -72,6 +72,7 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 		gcNames.put(IsCheckTrans.VDM_IS_RAT, "isRatGC");
 		gcNames.put(IsCheckTrans.VDM_IS_CHAR, "isCharGC");
 		gcNames.put(IsCheckTrans.VDM_IS_TOKEN, "isTokenGC");
+		gcNames.put(IsCheckTrans.VDM_IS, "isGC");
 
 		// Numeric comparison
 		gcNames.put(NumericTrans.VDM_GREATER_THAN, "vdmGreaterThanGC");

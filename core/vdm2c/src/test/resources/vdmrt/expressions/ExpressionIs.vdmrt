@@ -66,4 +66,12 @@ public isTokenNeg : () ==> bool
 isTokenNeg () ==
 return not is_token("test");
 
+public isNatCharTuplePos : () ==> bool
+isNatCharTuplePos () ==
+return is_(mk_(0,'a'), nat * char);
+
+public isNatCharTupleNeg : () ==> bool
+isNatCharTupleNeg () ==
+return not is_(mk_(-1,'a'), nat * char);
+
 end IsTest
