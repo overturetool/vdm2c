@@ -29,6 +29,19 @@ public class IsExpUnionTypeFinderTest {
     }
 
     @Test
+    public void natCharTuple() throws AnalysisException {
+
+        ATupleTypeIR tup = new ATupleTypeIR();
+        tup.getTypes().add(new ANatNumericBasicTypeIR());
+        tup.getTypes().add(new ACharBasicTypeIR());
+
+        List<STypeIR> res = findTypes(tup);
+
+        Assert.assertEquals("Expected only a single type",1,  res.size());
+        Assert.assertTrue("Expected nat *char type", res.contains(tup));
+    }
+
+    @Test
     public void natOrChar() throws AnalysisException {
 
         AUnionTypeIR un = new AUnionTypeIR();

@@ -71,6 +71,8 @@ public class IsExpUnionTypeFinder extends DepthFirstAnalysisCAdaptor {
 
         if(root == null)
         {
+            root = node;
+
             // We're visiting the root
 
             if(!UnionFinder.containsUnion(node))
@@ -79,8 +81,6 @@ public class IsExpUnionTypeFinder extends DepthFirstAnalysisCAdaptor {
                 // If the type contains no union types we're done
                 return;
             }
-
-            root = node;
         }
 
         super.defaultSTypeIR(node);
@@ -95,7 +95,7 @@ public class IsExpUnionTypeFinder extends DepthFirstAnalysisCAdaptor {
         {
             STypeIR clone = t.clone();
 
-            if(node.parent() != null)
+            if(node.parent() instanceof STypeIR)
             {
                 assist.replaceNodeWith(node, clone);
                 types.add(root.clone());
