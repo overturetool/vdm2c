@@ -1,14 +1,13 @@
 package org.overture.codegen.vdm2c.transformations;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-
 import org.overture.cgc.extast.analysis.DepthFirstAnalysisCAdaptor;
+import org.overture.codegen.ir.INode;
 import org.overture.codegen.ir.SExpIR;
 import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.declarations.AMethodDeclIR;
 import org.overture.codegen.ir.expressions.AApplyExpIR;
 import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
+import org.overture.codegen.ir.statements.AReturnStmIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.CForIterator;
 import org.overture.codegen.vdm2c.ColTrans;
@@ -22,6 +21,9 @@ import org.overture.codegen.vdm2c.utils.CSetCompStrategy;
 import org.overture.codegen.vdm2c.utils.CTransUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
+import java.util.LinkedList;
 
 public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 {
@@ -166,11 +168,6 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 		// Used to handle GET and SET macros
 		super.caseAMacroApplyExpIR(node);
 		
-		if(insideFieldInitializer(node))
-		{
-			return;
-		}
-		
 		changeToGcCall(node, node.getArgs(), node.getRoot());
 	}
 	
@@ -179,16 +176,23 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 	{
 		super.caseAApplyExpIR(node);
 
-		if(insideFieldInitializer(node))
-		{
-			return;
-		}
-		
 		changeToGcCall(node, node.getArgs(), node.getRoot());
 	}
 
+	@Override
+	public void caseAReturnStmIR(AReturnStmIR node) throws AnalysisException {
+		super.caseAReturnStmIR(node);
+
+		if(isInsideFieldInitializer(node))
+		{
+			SExpIR exp = node.getExp();
+			SExpIR cloned = ValueSemantics.forceClone(exp.clone());
+			assist.replaceNodeWith(exp, cloned);
+		}
+	}
+
 	private void changeToGcCall(SExpIR node, LinkedList<SExpIR> args,
-			SExpIR root)
+								SExpIR root)
 	{
 		if (root instanceof AIdentifierVarExpIR)
 		{
@@ -262,21 +266,19 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 	{
 		return name.equals(CSetCompStrategy.NEW_SET_VAR_TO_GROW);
 	}
-	
-	private boolean insideFieldInitializer(SExpIR exp)
-	{
-		AMethodDeclIR encMethod = exp.getAncestor(AMethodDeclIR.class);
 
-		if (encMethod != null)
-		{
+	private boolean isInsideFieldInitializer(INode node) {
+		AMethodDeclIR encMethod = node.getAncestor(AMethodDeclIR.class);
+
+		if (encMethod != null) {
 			Object tag = encMethod.getTag();
-			
-			if(tag instanceof Vdm2cTag)
-			{
+
+			if (tag instanceof Vdm2cTag) {
 				Vdm2cTag t = (Vdm2cTag) tag;
 				return t.methodTags.contains(MethodTag.FieldInitializer);
 			}
 		}
+
 		return false;
 	}
 
