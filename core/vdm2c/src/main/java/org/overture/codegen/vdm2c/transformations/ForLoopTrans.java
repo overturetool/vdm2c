@@ -20,13 +20,7 @@ import org.overture.codegen.ir.SExpIR;
 import org.overture.codegen.ir.SPatternIR;
 import org.overture.codegen.ir.SStmIR;
 import org.overture.codegen.ir.analysis.AnalysisException;
-import org.overture.codegen.ir.expressions.AApplyExpIR;
-import org.overture.codegen.ir.expressions.AGreaterEqualNumericBinaryExpIR;
-import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
-import org.overture.codegen.ir.expressions.ALessEqualNumericBinaryExpIR;
-import org.overture.codegen.ir.expressions.ALessNumericBinaryExpIR;
-import org.overture.codegen.ir.expressions.APlusNumericBinaryExpIR;
-import org.overture.codegen.ir.expressions.SNumericBinaryExpIR;
+import org.overture.codegen.ir.expressions.*;
 import org.overture.codegen.ir.patterns.AIdentifierPatternIR;
 import org.overture.codegen.ir.statements.ABlockStmIR;
 import org.overture.codegen.ir.statements.AForAllStmIR;
@@ -146,7 +140,12 @@ public class ForLoopTrans extends DepthFirstAnalysisCAdaptor
 		String setName = getNewName();
 		String indexName = getNewName();
 		replBlock.getLocalDefs().add(newDeclarationAssignment(setName, newTvpType(), set, set.getSourceNode()));
-		replBlock.getLocalDefs().add(newDeclarationAssignment(indexName, newExternalType("int"), createIdentifier("0", null), null));
+
+		AExternalExpIR zero = new AExternalExpIR();
+		zero.setTargetLangExp("0");
+		zero.setType(newExternalType("int"));
+
+		replBlock.getLocalDefs().add(newDeclarationAssignment(indexName, newExternalType("int"), zero, null));
 		replBlock.getStatements().add(toStm(newMacroApply("ASSERT_CHECK_COLLECTION", newIdentifier(setName, set.getSourceNode()))));
 		String colName = getNewName();
 		replBlock.getStatements().add(toStm(newMacroApply("UNWRAP_COLLECTION", newIdentifier(colName, set.getSourceNode()), newIdentifier(setName, set.getSourceNode()))));
