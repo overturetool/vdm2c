@@ -214,6 +214,59 @@ bool isNumber(TVP val)
 	}
 }
 
+
+#if !defined(NO_IS) || !defined(NO_INHERITANCE)
+TVP isOfClass(TVP val, int classID)
+{
+	int searchID;
+	int i, assoclen = sizeof(assoc) / sizeof(int);
+
+	searchID = ((struct ClassType *)val->value.ptr)->classId;
+
+	if(searchID == classID)
+		return newBool(true);
+
+	for(i = 0; i < assoclen; i += 2)
+	{
+		if(assoc[i] == searchID)
+		{
+			if(assoc[i + 1] == classID)
+				return newBool(true);
+			else
+			{
+				searchID = assoc[i + 1];
+				i = -2;
+			}
+		}
+	}
+
+	return newBool(false);
+}
+
+TVP isOfClassGC(TVP val, int classID, TVP *from)
+{
+	TVP tmp;
+	TVP res;
+
+	tmp = isOfClass(val, classID);
+	res = vdmCloneGC(tmp, from);
+	vdmFree(tmp);
+
+	return res;
+}
+
+TVP sameClass(TVP a, TVP b)
+{
+	return newBool(((struct ClassType *)a->value.ptr)->classId == ((struct ClassType *)b->value.ptr)->classId);
+}
+
+TVP sameClassGC(TVP a, TVP b, TVP *from)
+{
+	return newBoolGC(((struct ClassType *)a->value.ptr)->classId == ((struct ClassType *)b->value.ptr)->classId, from);
+}
+#endif
+
+
 #ifndef NO_IS
 TVP isInt(TVP v)
 {
@@ -341,32 +394,6 @@ TVP isTokenGC(TVP v, TVP *from)
 	if(v->type == VDM_TOKEN)
 		return newBoolGC(true, from);
 	return newBoolGC(false, from);
-}
-
-TVP isOfClass(TVP val, int classID)
-{
-	if(val->type == VDM_CLASS)
-		if(((struct ClassType *)val->value.ptr)->classId == classID)
-			return newBool(true);
-	return newBool(false);
-}
-
-TVP isOfClassGC(TVP val, int classID, TVP *from)
-{
-	if(val->type == VDM_CLASS)
-		if(((struct ClassType *)val->value.ptr)->classId == classID)
-			return newBoolGC(true, from);
-	return newBoolGC(false, from);
-}
-
-TVP sameClass(TVP a, TVP b)
-{
-	return newBool(((struct ClassType *)a->value.ptr)->classId == ((struct ClassType *)b->value.ptr)->classId);
-}
-
-TVP sameClassGC(TVP a, TVP b, TVP *from)
-{
-	return newBoolGC(((struct ClassType *)a->value.ptr)->classId == ((struct ClassType *)b->value.ptr)->classId, from);
 }
 
 #ifndef NO_RECORDS
@@ -599,6 +626,19 @@ TVP isOfBaseClass(TVP val, int baseID)
 
 	searchID = ((struct ClassType *)val->value.ptr)->classId;
 
+	/*  First, base class must not inherit from any other.  */
+	for(i = 0; i < assoclen; i += 2)
+	{
+		if(assoc[i] == baseID)
+			return newBool(false);
+	}
+
+	/*  Current class is always base class.  */
+	if(searchID == baseID)
+		return newBool(true);
+
+
+
 	for(i = 0; i < assoclen; i += 2)
 	{
 		if(assoc[i] == searchID)
@@ -635,12 +675,12 @@ TVP sameBaseClass(TVP a, TVP b)
 	TVP bres;
 	bool res = false;
 
-	for(i = 0; i < assoclen; i += 2)
+	for(i = 1; i < assoclen; i += 2)
 	{
-		ares = isOfBaseClass(a, assoc[i]);
-		bres = isOfBaseClass(b, assoc[i]);
+		ares = isOfClass(a, assoc[i]);
+		bres = isOfClass(b, assoc[i]);
 
-		res &= ares->value.boolVal && bres->value.boolVal;
+		res = res || (ares->value.boolVal && bres->value.boolVal);
 
 		vdmFree(ares);
 		vdmFree(bres);

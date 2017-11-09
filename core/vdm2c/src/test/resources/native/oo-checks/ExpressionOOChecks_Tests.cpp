@@ -19,20 +19,20 @@ ExpressionOOChecks_const_init();
 
 // isofbaseclass tests
 
-/*TEST_F(TestFlowFunctions, isofbaseclass_First)
+TEST_F(TestFlowFunctions, isofbaseclass_First)
 {
   CHECK(CLASS_ExpressionOOChecks__Z19isofbaseclass_FirstEV);
-}*/
+}
 
 TEST_F(TestFlowFunctions, isofbaseclass_Second)
 {
   CHECK(CLASS_ExpressionOOChecks__Z20isofbaseclass_SecondEV);
 }
 
-/*TEST_F(TestFlowFunctions, isofbaseclass_Third)
+TEST_F(TestFlowFunctions, isofbaseclass_Third)
 {
   CHECK(CLASS_ExpressionOOChecks__Z19isofbaseclass_ThirdEV);
-}*/
+}
 
 TEST_F(TestFlowFunctions, isofbaseclass_Fourth)
 {
@@ -46,7 +46,7 @@ TEST_F(TestFlowFunctions, isofbaseclass_Fifth)
 
 // isofclass tests
 
-/*TEST_F(TestFlowFunctions, isofclass_First)
+TEST_F(TestFlowFunctions, isofclass_First)
 {
   CHECK(CLASS_ExpressionOOChecks__Z15isofclass_FirstEV);
 }
@@ -74,11 +74,11 @@ TEST_F(TestFlowFunctions, isofclass_Fifth)
 TEST_F(TestFlowFunctions, isofclass_Sixth)
 {
   CHECK(CLASS_ExpressionOOChecks__Z15isofclass_SixthEV);
-}*/
+}
 
 // samebaseclass
 
-/*TEST_F(TestFlowFunctions, samebaseclass_First)
+TEST_F(TestFlowFunctions, samebaseclass_First)
 {
   CHECK(CLASS_ExpressionOOChecks__Z19samebaseclass_FirstEV);
 }
@@ -96,7 +96,7 @@ TEST_F(TestFlowFunctions, samebaseclass_Third)
 TEST_F(TestFlowFunctions, samebaseclass_Fourth)
 {
   CHECK(CLASS_ExpressionOOChecks__Z20samebaseclass_FourthEV);
-}*/
+}
 
 TEST_F(TestFlowFunctions, samebaseclass_Fifth)
 {
@@ -105,7 +105,6 @@ TEST_F(TestFlowFunctions, samebaseclass_Fifth)
 
 // sameclass
 
-/*
 TEST_F(TestFlowFunctions, sameclass_First)
 {
   CHECK(CLASS_ExpressionOOChecks__Z15sameclass_FirstEV);
@@ -119,4 +118,4 @@ TEST_F(TestFlowFunctions, sameclass_Second)
 TEST_F(TestFlowFunctions, sameclass_Third)
 {
   CHECK(CLASS_ExpressionOOChecks__Z15sameclass_ThirdEV);
-}*/
+}

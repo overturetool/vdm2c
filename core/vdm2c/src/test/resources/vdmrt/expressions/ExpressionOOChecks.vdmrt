@@ -47,23 +47,23 @@ isofbaseclass_Fifth () == not isofbaseclass(Tree, q);
 --
 -- isofclass
 --
---public isofclass_First :  () -> bool
---isofclass_First () == isofclass(Tree,t);
---
---public isofclass_Second :  () -> bool
---isofclass_Second () == isofclass(Tree,b);
---
---public isofclass_Third :  () -> bool
---isofclass_Third () == not isofclass(Tree,q);
---
---public isofclass_Fourth :  () -> bool
---isofclass_Fourth () == isofclass(Queue,q);
---
---public isofclass_Fifth :  () -> bool
---isofclass_Fifth () == not isofclass(BinarySearchTree,t);
--- 
---public isofclass_Sixth :  () -> bool
---isofclass_Sixth () == isofclass(BinarySearchTree,b); 
+public isofclass_First :  () -> bool
+isofclass_First () == isofclass(Tree,t);
+
+public isofclass_Second :  () -> bool
+isofclass_Second () == isofclass(Tree,b);
+
+public isofclass_Third :  () -> bool
+isofclass_Third () == not isofclass(Tree,q);
+
+public isofclass_Fourth :  () -> bool
+isofclass_Fourth () == isofclass(Queue,q);
+
+public isofclass_Fifth :  () -> bool
+isofclass_Fifth () == not isofclass(BinarySearchTree,t);
+ 
+public isofclass_Sixth :  () -> bool
+isofclass_Sixth () == isofclass(BinarySearchTree,b); 
 
 --
 -- samebaseclass
@@ -86,14 +86,14 @@ samebaseclass_Fifth () == not samebaseclass(q,a);
 --
 -- sameclass
 --
---public sameclass_First :  () -> bool
---sameclass_First () == not sameclass(b,t);
---
---public sameclass_Second :  () -> bool
---sameclass_Second () == sameclass(b,bMark) ;
---
---public sameclass_Third :  () -> bool
---sameclass_Third () == not sameclass(q,t);
+public sameclass_First :  () -> bool
+sameclass_First () == not sameclass(b,t);
+
+public sameclass_Second :  () -> bool
+sameclass_Second () == sameclass(b,bMark) ;
+
+public sameclass_Third :  () -> bool
+sameclass_Third () == not sameclass(q,t);
 
 
 end ExpressionOOChecks
