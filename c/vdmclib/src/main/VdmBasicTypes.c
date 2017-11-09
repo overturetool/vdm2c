@@ -30,7 +30,7 @@
 #include "Vdm.h"
 #include <math.h>
 
-#ifndef NO_INHERITANCE
+#if !defined(NO_IS) || !defined(NO_INHERITANCE)
 #include "VdmClassHierarchy.h"
 #endif
 
