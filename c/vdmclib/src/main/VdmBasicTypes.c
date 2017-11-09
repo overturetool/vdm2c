@@ -254,16 +254,6 @@ TVP isOfClassGC(TVP val, int classID, TVP *from)
 
 	return res;
 }
-
-TVP sameClass(TVP a, TVP b)
-{
-	return newBool(((struct ClassType *)a->value.ptr)->classId == ((struct ClassType *)b->value.ptr)->classId);
-}
-
-TVP sameClassGC(TVP a, TVP b, TVP *from)
-{
-	return newBoolGC(((struct ClassType *)a->value.ptr)->classId == ((struct ClassType *)b->value.ptr)->classId, from);
-}
 #endif
 
 
@@ -666,6 +656,16 @@ TVP isOfBaseClassGC(TVP val, int baseID, TVP *from)
 	vdmFree(tmp);
 
 	return res;
+}
+
+TVP sameClass(TVP a, TVP b)
+{
+	return newBool(((struct ClassType *)a->value.ptr)->classId == ((struct ClassType *)b->value.ptr)->classId);
+}
+
+TVP sameClassGC(TVP a, TVP b, TVP *from)
+{
+	return newBoolGC(((struct ClassType *)a->value.ptr)->classId == ((struct ClassType *)b->value.ptr)->classId, from);
 }
 
 TVP sameBaseClass(TVP a, TVP b)
