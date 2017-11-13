@@ -109,8 +109,6 @@ TVP isChar(TVP val);
 TVP isCharGC(TVP val, TVP *from);
 TVP isToken(TVP val);
 TVP isTokenGC(TVP val, TVP *from);
-TVP isOfClass(TVP val, int classID);
-TVP isOfClassGC(TVP val, int classID, TVP *from);
 #ifndef NO_RECORDS
 TVP isRecord(TVP val, int recID);
 TVP isRecordGC(TVP val, int recID, TVP *from);
@@ -125,6 +123,10 @@ TVP isOfBaseClass(TVP val, int baseID);
 TVP isOfBaseClassGC(TVP val, int baseID, TVP *from);
 TVP sameBaseClass(TVP a, TVP b);
 TVP sameBaseClassGC(TVP a, TVP b, TVP *from);
+#endif
+#if !defined(NO_IS) || !defined(NO_INHERITANCE)
+TVP isOfClass(TVP val, int classID);
+TVP isOfClassGC(TVP val, int classID, TVP *from);
 #endif
 int toInteger(TVP a);
 double toDouble(TVP a);
