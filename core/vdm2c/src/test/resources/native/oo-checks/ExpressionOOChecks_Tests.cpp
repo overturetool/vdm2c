@@ -15,7 +15,7 @@ TVP res=CALL_FUNC(ExpressionOOChecks,ExpressionOOChecks,c,methodId);\
 EXPECT_EQ (true,res->value.boolVal);\
 vdmFree(res);\
 vdmFree(c);\
-ExpressionOOChecks_const_init();
+ExpressionOOChecks_const_shutdown();
 
 // isofbaseclass tests
 
