@@ -30,6 +30,7 @@ import org.overture.codegen.merging.TemplateCallable;
 import org.overture.codegen.merging.TemplateManager;
 import org.overture.codegen.utils.GeneralUtils;
 import org.overture.codegen.vdm2c.extast.declarations.AClassHeaderDeclIR;
+import org.overture.codegen.vdm2c.tags.CTags;
 
 public class CFormat
 {
@@ -268,7 +269,9 @@ public class CFormat
 	
 	public static boolean isDefaultCtor(AMethodDeclIR method)
 	{
-		return method.getFormalParams().size() == 1;
+		int noOfParams = method.getFormalParams().size();
+
+		return noOfParams == 1 || (method.getTag() == CTags.GC_CONSTRUCTOR && noOfParams == 2);
 	}
 	
 	public static boolean isRec(PIR node)

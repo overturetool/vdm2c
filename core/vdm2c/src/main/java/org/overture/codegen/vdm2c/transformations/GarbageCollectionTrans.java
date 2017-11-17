@@ -3,11 +3,20 @@ package org.overture.codegen.vdm2c.transformations;
 import org.overture.cgc.extast.analysis.DepthFirstAnalysisCAdaptor;
 import org.overture.codegen.ir.INode;
 import org.overture.codegen.ir.SExpIR;
+import org.overture.codegen.ir.SPatternIR;
+import org.overture.codegen.ir.STypeIR;
 import org.overture.codegen.ir.analysis.AnalysisException;
-import org.overture.codegen.ir.declarations.AMethodDeclIR;
+import org.overture.codegen.ir.declarations.*;
 import org.overture.codegen.ir.expressions.AApplyExpIR;
+import org.overture.codegen.ir.expressions.AExternalExpIR;
 import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
+import org.overture.codegen.ir.patterns.AIdentifierPatternIR;
+import org.overture.codegen.ir.statements.ABlockStmIR;
+import org.overture.codegen.ir.statements.APlainCallStmIR;
 import org.overture.codegen.ir.statements.AReturnStmIR;
+import org.overture.codegen.ir.statements.ASkipStmIR;
+import org.overture.codegen.ir.types.AExternalTypeIR;
+import org.overture.codegen.ir.types.AUnknownTypeIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.CForIterator;
 import org.overture.codegen.vdm2c.ColTrans;
@@ -15,6 +24,8 @@ import org.overture.codegen.vdm2c.TupleTrans;
 import org.overture.codegen.vdm2c.Vdm2cTag;
 import org.overture.codegen.vdm2c.Vdm2cTag.MethodTag;
 import org.overture.codegen.vdm2c.extast.expressions.AMacroApplyExpIR;
+import org.overture.codegen.vdm2c.extast.statements.ALocalVariableDeclarationStmIR;
+import org.overture.codegen.vdm2c.tags.CTags;
 import org.overture.codegen.vdm2c.utils.CGenUtil;
 import org.overture.codegen.vdm2c.utils.CLetBeStStrategy;
 import org.overture.codegen.vdm2c.utils.CSetCompStrategy;
@@ -191,6 +202,112 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 		}
 	}
 
+	@Override
+	public void caseAMethodDeclIR(AMethodDeclIR node) throws AnalysisException {
+		super.caseAMethodDeclIR(node);
+
+		if(!node.getIsConstructor())
+		{
+			return;
+		}
+
+		ADefaultClassDeclIR clazz = node.getAncestor(ADefaultClassDeclIR.class);
+
+		if(clazz != null)
+		{
+			AExternalTypeIR tvp = new AExternalTypeIR();
+			tvp.setName("TVP");
+
+			String fromName = "from";
+			AIdentifierPatternIR fromId = new AIdentifierPatternIR();
+			fromId.setName("*" + fromName);
+
+			AFormalParamLocalParamIR from = new AFormalParamLocalParamIR();
+			from.setType(tvp);
+			from.setPattern(fromId);
+
+			AIdentifierPatternIR tmpId = new AIdentifierPatternIR();
+			String tmpName = "tmp";
+			tmpId.setName(tmpName);
+
+			AIdentifierVarExpIR root = new AIdentifierVarExpIR();
+			root.setName(node.getName());
+			root.setType(node.getMethodType().clone());
+
+			AApplyExpIR callToRegularCtor = new AApplyExpIR();
+			callToRegularCtor.setType(node.getMethodType().getResult().clone());
+			callToRegularCtor.setRoot(root);
+
+			for(AFormalParamLocalParamIR param : node.getFormalParams())
+			{
+				STypeIR type = param.getType();
+				SPatternIR pattern = param.getPattern();
+
+				if(pattern instanceof AIdentifierPatternIR)
+				{
+					AIdentifierPatternIR id = (AIdentifierPatternIR) pattern;
+
+					AIdentifierVarExpIR arg = new AIdentifierVarExpIR();
+					arg.setType(type.clone());
+					arg.setName(id.getName());
+
+					callToRegularCtor.getArgs().add(arg);
+				}
+				else
+				{
+					logger.error("Expected formal paramater pattern to be an identifier pattern at this point. Got: " + pattern);
+				}
+			}
+
+			AVarDeclIR tmp = assist.getInfo().getDeclAssistant().consLocalVarDecl(tvp.clone(), tmpId, callToRegularCtor);
+
+			ALocalVariableDeclarationStmIR declStm = new ALocalVariableDeclarationStmIR();
+			declStm.setDecleration(tmp);
+
+			AIdentifierVarExpIR tmpArg = new AIdentifierVarExpIR();
+			tmpArg.setType(tmp.getType().clone());
+			tmpArg.setName(tmpName);
+
+			AIdentifierVarExpIR fromArg = new AIdentifierVarExpIR();
+			fromArg.setType(tvp.clone());
+			fromArg.setName(fromName);
+
+			AIdentifierVarExpIR addNodeRoot = new AIdentifierVarExpIR();
+			addNodeRoot.setName("add_allocd_mem_node");
+			addNodeRoot.setType(new AUnknownTypeIR());
+
+			AMacroApplyExpIR addNode = new AMacroApplyExpIR();
+			addNode.setRoot(addNodeRoot);
+			addNode.getArgs().add(tmpArg);
+			addNode.getArgs().add(fromArg);
+
+			AReturnStmIR retTmp = new AReturnStmIR();
+			retTmp.setExp(tmpArg.clone());
+
+			ABlockStmIR replBlock = new ABlockStmIR();
+			replBlock.getStatements().add(declStm);
+			replBlock.getStatements().add(CTransUtil.toStm(addNode));
+			replBlock.getStatements().add(retTmp);
+
+			AMethodDeclIR gcCtor = node.clone();
+			gcCtor.setTag(CTags.GC_CONSTRUCTOR);
+			gcCtor.setName(node.getName() + "GC");
+			gcCtor.getFormalParams().add(from);
+			gcCtor.setBody(replBlock);
+
+			for(int i = 0; i < clazz.getMethods().size(); i++)
+			{
+				AMethodDeclIR m = clazz.getMethods().get(i);
+
+				if(m == node)
+				{
+					clazz.getMethods().add(i + 1, gcCtor);
+					break;
+				}
+			}
+		}
+	}
+
 	private void changeToGcCall(SExpIR node, LinkedList<SExpIR> args,
 								SExpIR root)
 	{
@@ -226,6 +343,28 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 					else {
 						args.add(consReference(node));
 					}
+				}
+			}
+			else if(node.getTag() == CTags.CONSTRUCTOR_CALL)
+			{
+				if(node instanceof AApplyExpIR)
+				{
+					AApplyExpIR apply = (AApplyExpIR) node;
+
+					if(apply.getRoot() instanceof AIdentifierVarExpIR)
+					{
+						AIdentifierVarExpIR var = (AIdentifierVarExpIR) apply.getRoot();
+						var.setName(var.getName() + "GC");
+						apply.getArgs().add(CGenUtil.consCNull());
+					}
+					else
+					{
+						logger.error("Expected root to be a variable expression at this point. Got: " + apply.getRoot());
+					}
+				}
+				else
+				{
+					logger.error("Expected constructor call to be an apply expression at this point. Got: " + node);
 				}
 			}
 		}
