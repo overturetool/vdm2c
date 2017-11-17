@@ -107,7 +107,7 @@ TVP newToken(TVP x)
 
 TVP newUnknown()
 {
-  return newTypeValue(VDM_UNKNOWN, (TypedValueType
+	return newTypeValue(VDM_UNKNOWN, (TypedValueType
 	)
 			{});
 }
@@ -127,15 +127,12 @@ TVP newCollection(size_t size, vdmtype type)
 
 TVP newCollectionGC(size_t size, vdmtype type, TVP *from)
 {
-	struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
-	assert(ptr != NULL);
-	ptr->size = size;
-	ptr->value = (TVP*) calloc(size != 0 ? size : 1, sizeof(TVP)); /* I know this is slower than malloc but better for products  */
-	ptr->buf_size = size != 0 ? size : 1;
-	assert(ptr->value != NULL);
-	return newTypeValueGC(type, (TypedValueType
-	)
-			{ .ptr = ptr }, from);
+	TVP res;
+
+	res = newCollection(size, type);
+	add_allocd_mem_node(res, from);
+
+	return res;
 }
 
 TVP newCollectionPrealloc(size_t size, size_t expected_size, vdmtype type)
@@ -153,15 +150,12 @@ TVP newCollectionPrealloc(size_t size, size_t expected_size, vdmtype type)
 
 TVP newCollectionPreallocGC(size_t size, size_t expected_size, vdmtype type, TVP *from)
 {
-	struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
-	assert(ptr != NULL);
-	ptr->size = size;
-	ptr->value = (TVP*) calloc(expected_size, sizeof(TVP)); /* I know this is slower than malloc but better for products  */
-	ptr->buf_size = expected_size;
-	assert(ptr->value != NULL);
-	return newTypeValueGC(type, (TypedValueType
-	)
-			{ .ptr = ptr }, from);
+	TVP res;
+
+	res = newCollectionPrealloc(size, expected_size, type);
+	add_allocd_mem_node(res, from);
+
+	return res;
 }
 
 TVP newCollectionWithValues(size_t size, vdmtype type, TVP* elements)
@@ -249,7 +243,7 @@ TVP vdmClone(TVP x)
 	case VDM_RAT:
 	case VDM_QUOTE:
 	case VDM_TOKEN:
-  case VDM_UNKNOWN:  
+	case VDM_UNKNOWN:
 	{
 		/* encoded as values so the initial copy line handles these  */
 		break;
@@ -410,10 +404,10 @@ bool equals(TVP a, TVP b)
 
 	switch (a->type)
 	{
-  case VDM_UNKNOWN:
-  {
-    return b->type == VDM_UNKNOWN;
-  }
+	case VDM_UNKNOWN:
+	{
+		return b->type == VDM_UNKNOWN;
+	}
 	case VDM_BOOL:
 	{
 		return a->value.boolVal == b->value.boolVal;
@@ -567,7 +561,7 @@ void vdmFree_GCInternal(TVP ptr)
 	case VDM_RAT:
 	case VDM_QUOTE:
 	case VDM_TOKEN:
-  case VDM_UNKNOWN:  
+	case VDM_UNKNOWN:
 	{
 		break;
 	}
@@ -700,7 +694,7 @@ void vdmFree(TVP ptr)
 	case VDM_RAT:
 	case VDM_QUOTE:
 	case VDM_TOKEN:
-  case VDM_UNKNOWN:  
+	case VDM_UNKNOWN:
 	{
 		break;
 	}

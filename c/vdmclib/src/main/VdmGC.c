@@ -199,13 +199,12 @@ void vdm_gc()
 /* ===============  Garbage collected versions  ==============  */
 TVP newTypeValueGC(vdmtype type, TypedValueType value, TVP *ref_from)
 {
-	TVP ptr = (TVP) malloc(sizeof(struct TypedValue));
-	assert(ptr != NULL);
-	ptr->type = type;
-	ptr->value = value;
-	add_allocd_mem_node(ptr, ref_from);
+	TVP res;
 
-	return ptr;
+	res = newTypeValue(type, value);
+	add_allocd_mem_node(res, ref_from);
+
+	return res;
 }
 
 /* / Basic  */
@@ -264,175 +263,16 @@ TVP newTokenGC(TVP x, TVP *from)
 
 TVP newUnknownGC(TVP *from)
 {
-  return newTypeValueGC(VDM_UNKNOWN, (TypedValueType)
-                       {}, from);
+	return newTypeValueGC(VDM_UNKNOWN, (TypedValueType)
+			{}, from);
 }
 
 TVP vdmCloneGC(TVP x, TVP *from)
 {
-	TVP tmp;
+	TVP res;
 
-	if(x == NULL)
-	{
-		return NULL;
-	}
+	res = vdmClone(x);
+	add_allocd_mem_node(res, from);
 
-	tmp = newTypeValueGC(x->type, x->value, from);
-
-	/* FIXME vdmClone any pointers  */
-	switch (tmp->type)
-	{
-  case VDM_UNKNOWN:
-  {
-    return x;
-  }
-  case VDM_BOOL:
-	case VDM_CHAR:
-	case VDM_INT:
-	case VDM_NAT:
-	case VDM_NAT1:
-	case VDM_REAL:
-	case VDM_RAT:
-	case VDM_QUOTE:
-	case VDM_TOKEN:
-	{
-		/* encoded as values so the initial copy line handles these  */
-		break;
-	}
-#ifndef NO_MAPS
-	case VDM_MAP:
-	{
-		UNWRAP_MAP(m, x);
-		struct Map *map = cloneMap(m);
-		tmp->value.ptr = map;
-		break;
-	}
-#endif
-#ifndef NO_PRODUCTS
-	case VDM_PRODUCT:
-	{
-		int i;
-		UNWRAP_COLLECTION(cptr, tmp);
-
-		struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
-		assert(ptr != NULL);
-
-		/* copy (size)  */
-		*ptr = *cptr;
-		ptr->value = (TVP*) malloc(sizeof(TVP) * ptr->size);
-		assert(ptr->value != NULL);
-
-		for (i = 0; i < cptr->size; i++)
-		{
-			ptr->value[i] = vdmClone(cptr->value[i]);
-		}
-
-		tmp->value.ptr = ptr;
-		break;
-	}
-#endif
-#ifndef NO_SEQS
-	case VDM_SEQ:
-	{
-		int i;
-
-		UNWRAP_COLLECTION(cptr, tmp);
-
-		struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
-		assert(ptr != NULL);
-
-		/* copy (size)  */
-		*ptr = *cptr;
-		ptr->value = (TVP*) malloc(sizeof(TVP) * ptr->size);
-		assert(ptr->value != NULL);
-
-		for (i = 0; i < cptr->size; i++)
-		{
-			ptr->value[i] = vdmClone(cptr->value[i]);
-		}
-
-		tmp->value.ptr = ptr;
-		break;
-	}
-#endif
-#ifndef NO_SETS
-	case VDM_SET:
-	{
-		int i;
-
-		UNWRAP_COLLECTION(cptr, tmp);
-
-		struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
-		assert(ptr != NULL);
-
-		/* copy (size)  */
-		*ptr = *cptr;
-		ptr->value = (TVP*) malloc(sizeof(TVP) * ptr->size);
-		assert(ptr->value != NULL);
-
-		for (i = 0; i < cptr->size; i++)
-		{
-			ptr->value[i] = vdmClone(cptr->value[i]);
-		}
-
-		tmp->value.ptr = ptr;
-		break;
-	}
-#endif
-	/* 	case VDM_OPTIONAL:  */
-	/* 		TODO  */
-	/* 		break;  */
-#ifndef NO_RECORDS
-	case VDM_RECORD:
-	{
-		ASSERT_CHECK_RECORD(x);
-
-		int i;
-		TVP tmpField = NULL;
-		int numFields;
-
-		/* Create a shell for a new class and populate it with the information  */
-		/* that can be used from the one being cloned, but all of it should be  */
-		/* irrelevant for records.  */
-		(tmp->value).ptr = newClassValue(((struct ClassType*)(x->value.ptr))->classId,
-				((struct ClassType*)(x->value.ptr))->refs,
-				NULL,
-				NULL);
-
-		/* Generic way of accessing the number-of-fields field.  The name of the record type is  */
-		/* hard-coded into the corresponding struct name.  */
-		numFields = (*((TVP*)((char*)(((struct ClassType*)x->value.ptr)->value) + \
-				sizeof(struct VTable*) + \
-				sizeof(int) + \
-				sizeof(unsigned int))))->value.intVal;
-
-		/* Allocate memory to be populated with the pointers pointing to the cloned fields.  */
-		((struct ClassType*)((tmp->value).ptr))->value = malloc(sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(TVP) + sizeof(TVP) * numFields);
-		assert(((struct ClassType*)((tmp->value).ptr))->value != NULL);
-
-		for(i = 0; i <= numFields; i++)
-		{
-			/* Start cloning the fields one by one, including the number-of-fields field,  */
-			/* since it is just a TVP.  */
-			tmpField = vdmClone(*((TVP*)((char*)(((struct ClassType*)x->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(TVP) * i)));
-
-			/* Only copy the address stored in tmpField so that that memory is now addressed by the current field in the struct.  */
-			memcpy(((TVP*)((char*)(((struct ClassType*)tmp->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(TVP) * i)), &tmpField, sizeof(TVP));
-		}
-
-		break;
-	}
-#endif
-	case VDM_CLASS:
-	{
-		/* handle smart pointer  */
-		struct ClassType* classTptr = (struct ClassType*) tmp->value.ptr;
-
-		/* improve using memcpy  */
-		tmp->value.ptr = newClassValue(classTptr->classId, classTptr->refs, classTptr->freeClass, classTptr->value);
-		break;
-	}
-	}
-
-	return tmp;
+	return res;
 }
