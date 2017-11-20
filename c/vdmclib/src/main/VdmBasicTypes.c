@@ -61,12 +61,10 @@ TVP vdmNot(TVP arg)
 
 TVP vdmNotGC(TVP arg, TVP *from)
 {
-	TVP tmp;
 	TVP res;
 
-	tmp = vdmNot(arg);
-	res = vdmCloneGC(tmp, from);
-	vdmFree(tmp);
+	res = vdmNot(arg);
+	add_allocd_mem_node(res, from);
 
 	return res;
 }
@@ -89,12 +87,10 @@ TVP vdmAnd(TVP a,TVP b)
 
 TVP vdmAndGC(TVP a, TVP b, TVP *from)
 {
-	TVP tmp;
 	TVP res;
 
-	tmp = vdmAnd(a, b);
-	res = vdmCloneGC(tmp, from);
-	vdmFree(tmp);
+	res = vdmAnd(a, b);
+	add_allocd_mem_node(res, from);
 
 	return res;
 }
@@ -117,12 +113,10 @@ TVP vdmOr(TVP a,TVP b)
 
 TVP vdmOrGC(TVP a, TVP b, TVP *from)
 {
-	TVP tmp;
 	TVP res;
 
-	tmp = vdmOr(a, b);
-	res = vdmCloneGC(tmp, from);
-	vdmFree(tmp);
+	res = vdmOr(a, b);
+	add_allocd_mem_node(res, from);
 
 	return res;
 }
@@ -139,12 +133,10 @@ TVP vdmXor(TVP a,TVP b)
 
 TVP vdmXorGC(TVP a, TVP b, TVP *from)
 {
-	TVP tmp;
 	TVP res;
 
-	tmp = vdmXor(a, b);
-	res = vdmCloneGC(tmp, from);
-	vdmFree(tmp);
+	res = vdmXor(a, b);
+	add_allocd_mem_node(res, from);
 
 	return res;
 }
@@ -167,12 +159,10 @@ TVP vdmImplies(TVP a,TVP b)
 
 TVP vdmImpliesGC(TVP a, TVP b, TVP *from)
 {
-	TVP tmp;
 	TVP res;
 
-	tmp = vdmImplies(a, b);
-	res = vdmCloneGC(tmp, from);
-	vdmFree(tmp);
+	res = vdmImplies(a, b);
+	add_allocd_mem_node(res, from);
 
 	return res;
 }
@@ -189,12 +179,10 @@ TVP vdmBiimplication(TVP a,TVP b)
 
 TVP vdmBiimplicationGC(TVP a, TVP b, TVP *from)
 {
-	TVP tmp;
 	TVP res;
 
-	tmp = vdmBiimplication(a, b);
-	res = vdmCloneGC(tmp, from);
-	vdmFree(tmp);
+	res = vdmBiimplication(a, b);
+	add_allocd_mem_node(res, from);
 
 	return res;
 }
@@ -245,12 +233,10 @@ TVP isOfClass(TVP val, int classID)
 
 TVP isOfClassGC(TVP val, int classID, TVP *from)
 {
-	TVP tmp;
 	TVP res;
 
-	tmp = isOfClass(val, classID);
-	res = vdmCloneGC(tmp, from);
-	vdmFree(tmp);
+	res = isOfClass(val, classID);
+	add_allocd_mem_node(res, from);
 
 	return res;
 }
@@ -597,12 +583,10 @@ TVP is(TVP v, char ot[])
 
 TVP isGC(TVP v, char ot[], TVP *from)
 {
-	TVP tmp;
 	TVP res;
 
-	tmp = is(v, ot);
-	res = vdmCloneGC(tmp, from);
-	vdmFree(tmp);
+	res = is(v, ot);
+	add_allocd_mem_node(res, from);
 
 	return res;
 }
@@ -648,12 +632,10 @@ TVP isOfBaseClass(TVP val, int baseID)
 
 TVP isOfBaseClassGC(TVP val, int baseID, TVP *from)
 {
-	TVP tmp;
 	TVP res;
 
-	tmp = isOfBaseClass(val, baseID);
-	res = vdmCloneGC(tmp, from);
-	vdmFree(tmp);
+	res = isOfBaseClass(val, baseID);
+	add_allocd_mem_node(res, from);
 
 	return res;
 }
@@ -691,12 +673,10 @@ TVP sameBaseClass(TVP a, TVP b)
 
 TVP sameBaseClassGC(TVP a, TVP b, TVP *from)
 {
-	TVP tmp;
 	TVP res;
 
-	tmp = sameBaseClass(a, b);
-	res = vdmCloneGC(tmp, from);
-	vdmFree(tmp);
+	res = sameBaseClass(a, b);
+	add_allocd_mem_node(res, from);
 
 	return res;
 }
@@ -767,12 +747,10 @@ TVP vdmMinus(TVP arg)
 
 TVP vdmMinusGC(TVP arg, TVP *from)
 {
-	TVP tmp;
 	TVP res;
 
-	tmp = vdmMinus(arg);
-	res = vdmCloneGC(tmp, from);
-	vdmFree(tmp);
+	res = vdmMinus(arg);
+	add_allocd_mem_node(res, from);
 
 	return res;
 }
@@ -797,12 +775,12 @@ TVP vdmAbs(TVP arg)
 
 TVP vdmAbsGC(TVP arg, TVP *from)
 {
-	TVP tmp;
 	TVP res;
 
-	tmp = vdmAbs(arg);
-	res = vdmCloneGC(tmp, from);
-	vdmFree(tmp);
+	res = vdmAbs(arg);
+	add_allocd_mem_node(res, from);
+
+	return res;
 
 	return res;
 }
@@ -839,12 +817,12 @@ TVP vdmSum(TVP a,TVP b)
 
 TVP vdmSumGC(TVP a,TVP b, TVP *from)
 {
-	TVP tmp;
 	TVP res;
 
-	tmp = vdmSum(a, b);
-	res = vdmCloneGC(tmp, from);
-	vdmFree(tmp);
+	res = vdmSum(a, b);
+	add_allocd_mem_node(res, from);
+
+	return res;
 
 	return res;
 }
@@ -866,12 +844,10 @@ TVP vdmDifference(TVP a,TVP b)
 
 TVP vdmDifferenceGC(TVP a,TVP b, TVP *from)
 {
-	TVP tmp;
 	TVP res;
 
-	tmp = vdmDifference(a, b);
-	res = vdmCloneGC(tmp, from);
-	vdmFree(tmp);
+	res = vdmDifference(a, b);
+	add_allocd_mem_node(res, from);
 
 	return res;
 }
@@ -893,12 +869,10 @@ TVP vdmProduct(TVP a,TVP b)
 
 TVP vdmProductGC(TVP a, TVP b, TVP *from)
 {
-	TVP tmp;
 	TVP res;
 
-	tmp = vdmProduct(a, b);
-	res = vdmCloneGC(tmp, from);
-	vdmFree(tmp);
+	res = vdmProduct(a, b);
+	add_allocd_mem_node(res, from);
 
 	return res;
 }
@@ -964,12 +938,10 @@ TVP vdmDiv(TVP a, TVP b)
 
 TVP vdmDivGC(TVP a, TVP b, TVP *from)
 {
-	TVP tmp;
 	TVP res;
 
-	tmp = vdmDiv(a, b);
-	res = vdmCloneGC(tmp, from);
-	vdmFree(tmp);
+	res = vdmDiv(a, b);
+	add_allocd_mem_node(res, from);
 
 	return res;
 }
@@ -991,12 +963,10 @@ TVP vdmRem(TVP a,TVP b)
 
 TVP vdmRemGC(TVP a, TVP b, TVP *from)
 {
-	TVP tmp;
 	TVP res;
 
-	tmp = vdmRem(a, b);
-	res = vdmCloneGC(tmp, from);
-	vdmFree(tmp);
+	res = vdmRem(a, b);
+	add_allocd_mem_node(res, from);
 
 	return res;
 }
@@ -1022,12 +992,10 @@ TVP vdmMod(TVP a,TVP b)
 
 TVP vdmModGC(TVP a, TVP b, TVP *from)
 {
-	TVP tmp;
 	TVP res;
 
-	tmp = vdmMod(a, b);
-	res = vdmCloneGC(tmp, from);
-	vdmFree(tmp);
+	res = vdmMod(a, b);
+	add_allocd_mem_node(res, from);
 
 	return res;
 }
