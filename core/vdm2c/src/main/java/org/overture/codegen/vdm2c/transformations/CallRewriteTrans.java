@@ -39,6 +39,7 @@ import org.overture.codegen.ir.types.ASeqSeqTypeIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.ColTrans;
 import org.overture.codegen.vdm2c.extast.expressions.AMacroApplyExpIR;
+import org.overture.codegen.vdm2c.tags.CTags;
 import org.overture.codegen.vdm2c.utils.CGenUtil;
 import org.overture.codegen.vdm2c.utils.CTransUtil;
 import org.overture.codegen.vdm2c.utils.NameMangler;
@@ -113,10 +114,12 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 			}
 			enclosing = (AMethodDeclIR)tmpnode;
 			//Handle case where body is not a block, but just a single statement.
+			AApplyExpIR ctorCall = newApply(NameMangler.mangle(constr), CGenUtil.consCNull());
+			ctorCall.setTag(CTags.CONSTRUCTOR_CALL);
 			((ABlockStmIR)enclosing.getBody()).getLocalDefs().add(newDeclarationAssignment(
 						tmpVarName,
 						newTvpType(),
-						newApply(NameMangler.mangle(constr), CGenUtil.consCNull()),
+					ctorCall,
 						null));
 				
 			//Call static function instead.
@@ -279,10 +282,12 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 			enclosing = (AMethodDeclIR)tmpnode;
 			
 			//Handle case where body is not a block, but just a single statement.
+			AApplyExpIR ctorCall = newApply(NameMangler.mangle(constr), CGenUtil.consCNull());
+			ctorCall.setTag(CTags.CONSTRUCTOR_CALL);
 			((ABlockStmIR)enclosing.getBody()).getLocalDefs().add(newDeclarationAssignment(
 						tmpVarName,
 						newTvpType(),
-						newApply(NameMangler.mangle(constr), CGenUtil.consCNull()),
+					ctorCall,
 						null));
 				
 			//Call static function instead.
