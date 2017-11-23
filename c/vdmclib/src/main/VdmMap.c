@@ -159,7 +159,7 @@ TVP newMapVarGC(size_t size, size_t expected_size, TVP *from, ...)
 
 	if(size == 0)
 	{
-		return newMap();
+		return newMapGC(from);
 	}
 
 	ptr = (struct Map*) malloc(sizeof(struct Map));

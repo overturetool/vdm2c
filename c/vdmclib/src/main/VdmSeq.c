@@ -461,6 +461,8 @@ void vdmSeqUpdate(TVP seq, TVP indexVal, TVP newValue)
 	UNWRAP_COLLECTION(col, seq);
 
 	assert(index - 1 >= 0 && index - 1 < col->size && "invalid index");
+
+	vdmFree(col->value[index - 1]);
 	col->value[index - 1] = vdmClone(newValue);
 }
 
