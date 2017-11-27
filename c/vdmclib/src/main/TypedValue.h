@@ -101,7 +101,6 @@ typedef union TypedValueType
 struct TypedValue
 {
 	vdmtype type;
-	struct TypedValue **ref_from;
 	TypedValueType value;
 };
 

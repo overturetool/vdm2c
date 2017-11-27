@@ -24,7 +24,6 @@ void vdm_gc_init()
 void add_allocd_mem_node(TVP l)
 {
 	allocd_mem_tail->loc = l;
-	allocd_mem_tail->loc->ref_from = NULL;
 
 	allocd_mem_tail->next = (struct alloc_list_node*)malloc(sizeof(struct alloc_list_node));
 	assert(allocd_mem_tail->next != NULL);
@@ -169,28 +168,8 @@ void vdm_gc()
 		tmp = current->next;
 		tmp_loc = current->loc;
 
-		/* No information was passed about where the reference was assigned.  */
-		/* This is the case when the value is created in-place or when freed using vdmFree().  */
-		if(current->loc->ref_from == NULL)
-		{
-			remove_allocd_mem_node(current);
-			vdmFree_GCInternal(tmp_loc);
-		}
-		else if(*(current->loc->ref_from) != current->loc)
-		{
-			/* For compatibility with vdmFree().  */
-			/* Check that there is no interference between this call's stack  */
-			/* variables and the reference to the memory we are freeing  */
-			/* Before NULLing the referencing location for vdmFree.  */
-			if(!((((void *)&tmp) <= ((void *)current->loc->ref_from) && ((void *)current->loc->ref_from) <= ((void *)(&tmp + 1))) ||
-					(((void *)&current) <= ((void *)current->loc->ref_from) && ((void *)current->loc->ref_from) <= ((void *)(&current + 1))) ||
-					(((void *)&tmp_loc) <= ((void *)current->loc->ref_from) && ((void *)current->loc->ref_from) <= ((void *)(&tmp_loc + 1)))))
-				*(current->loc->ref_from) = NULL;
-
-
-			vdmFree_GCInternal(current->loc);
-			remove_allocd_mem_node(current);
-		}
+		vdmFree_GCInternal(current->loc);
+		remove_allocd_mem_node(current);
 		current = tmp;
 	}
 }

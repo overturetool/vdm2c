@@ -48,7 +48,6 @@ TVP newTypeValue(vdmtype type, TypedValueType value)
 	assert(ptr != NULL);
 	ptr->type = type;
 	ptr->value = value;
-	ptr->ref_from = NULL;
 
 	return ptr;
 }
@@ -806,12 +805,8 @@ void vdmFree(TVP ptr)
 
 	/* free typedvalue  */
 	remove_allocd_mem_node_by_location(ptr);
-	tmp = ptr->ref_from;
+
 	free(ptr);
-	if(tmp != NULL)
-	{
-		*tmp = NULL;
-	}
 }
 
 TVP vdmEquals(TVP a, TVP b)
