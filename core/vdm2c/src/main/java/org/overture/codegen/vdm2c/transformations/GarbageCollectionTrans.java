@@ -270,7 +270,6 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 
 			AIdentifierVarExpIR fromArg = new AIdentifierVarExpIR();
 			fromArg.setType(tvp.clone());
-			fromArg.setName(fromName);
 
 			AIdentifierVarExpIR addNodeRoot = new AIdentifierVarExpIR();
 			addNodeRoot.setName("add_allocd_mem_node");
@@ -279,7 +278,6 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 			AMacroApplyExpIR addNode = new AMacroApplyExpIR();
 			addNode.setRoot(addNodeRoot);
 			addNode.getArgs().add(tmpArg);
-			addNode.getArgs().add(fromArg);
 
 			AReturnStmIR retTmp = new AReturnStmIR();
 			retTmp.setExp(tmpArg.clone());
@@ -292,7 +290,6 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 			AMethodDeclIR gcCtor = node.clone();
 			gcCtor.setTag(CTags.GC_CONSTRUCTOR);
 			gcCtor.setName(node.getName() + "GC");
-			gcCtor.getFormalParams().add(from);
 			gcCtor.setBody(replBlock);
 
 			for(int i = 0; i < clazz.getMethods().size(); i++)
@@ -322,28 +319,6 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 			if (val != null)
 			{
 				id.setName(val);
-				if(!(isFieldAccessor(oldName) || isSetter(oldName)))
-				{
-					if (isSeqOrSet(oldName) || isTupleExp(oldName)) {
-						// The signatures of 'newSeqVarGC', 'newSetVarGC' and 'newProductVarGC' are:
-						// TVP newSeqVarGC(size_t size, TVP *from, ...)
-						// TVP newSetVarGC(size_t size, TVP *from, ...)
-						// TVP newProductVarGC(size_t size, TVP *from, ...)
-						// Therefore, 'from' is the second argument (at index 1)
-						args.add(1, consReference(node));
-					}
-					else if(isMap(oldName) || isSetVarToGrow(oldName))
-					{
-						// The signature of 'newMapVarGC' is:
-						// TVP newMapVarGC(size_t size, size_t expected_size, TVP *from, ...);
-						// TVP newSetVarToGrowGC(size_t size, size_t expected_size, TVP *from, ...)
-						// Therefore, 'from' is the third argument (at index 2)
-						args.add(2, consReference(node));
-					}
-					else {
-						args.add(consReference(node));
-					}
-				}
 			}
 			else if(node.getTag() == CTags.CONSTRUCTOR_CALL)
 			{
@@ -355,7 +330,6 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 					{
 						AIdentifierVarExpIR var = (AIdentifierVarExpIR) apply.getRoot();
 						var.setName(var.getName() + "GC");
-						apply.getArgs().add(CGenUtil.consCNull());
 					}
 					else
 					{
@@ -368,42 +342,6 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 				}
 			}
 		}
-	}
-
-	private SExpIR consReference(SExpIR exp)
-	{
-		// Expression is not associated with a memory address
-		return CGenUtil.consCNull();
-	}
-
-	private boolean isFieldAccessor(String name)
-	{
-		return name.equals(CTransUtil.GET_FIELD) || name.equals(CTransUtil.GET_FIELD_PTR); 
-	}
-	
-	private boolean isSetter(String name)
-	{
-		return name.equals(CTransUtil.SET_FIELD) || name.equals(CTransUtil.SET_FIELD_PTR);
-	}
-	
-	private boolean isSeqOrSet(String name)
-	{
-		return name.equals(ColTrans.SEQ_VAR) || name.equals(ColTrans.SET_VAR);
-	}
-	
-	private boolean isTupleExp(String name) {
-	
-		return name.equals(TupleTrans.TUPLE_EXP);
-	}
-	
-	private boolean isMap(String name)
-	{
-		return name.equals(ColTrans.MAP_VAR);
-	}
-	
-	private boolean isSetVarToGrow(String name)
-	{
-		return name.equals(CSetCompStrategy.NEW_SET_VAR_TO_GROW);
 	}
 
 	private boolean isInsideFieldInitializer(INode node) {
@@ -420,5 +358,4 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 
 		return false;
 	}
-
 }

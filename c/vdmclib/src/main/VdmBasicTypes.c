@@ -59,12 +59,12 @@ TVP vdmNot(TVP arg)
 	return newBool(!arg->value.boolVal);
 }
 
-TVP vdmNotGC(TVP arg, TVP *from)
+TVP vdmNotGC(TVP arg)
 {
 	TVP res;
 
 	res = vdmNot(arg);
-	add_allocd_mem_node(res, from);
+	add_allocd_mem_node(res);
 
 	return res;
 }
@@ -85,12 +85,12 @@ TVP vdmAnd(TVP a,TVP b)
 	return newBool(b->value.boolVal);
 }
 
-TVP vdmAndGC(TVP a, TVP b, TVP *from)
+TVP vdmAndGC(TVP a, TVP b)
 {
 	TVP res;
 
 	res = vdmAnd(a, b);
-	add_allocd_mem_node(res, from);
+	add_allocd_mem_node(res);
 
 	return res;
 }
@@ -111,12 +111,12 @@ TVP vdmOr(TVP a,TVP b)
 	return newBool(b->value.boolVal);
 }
 
-TVP vdmOrGC(TVP a, TVP b, TVP *from)
+TVP vdmOrGC(TVP a, TVP b)
 {
 	TVP res;
 
 	res = vdmOr(a, b);
-	add_allocd_mem_node(res, from);
+	add_allocd_mem_node(res);
 
 	return res;
 }
@@ -131,12 +131,12 @@ TVP vdmXor(TVP a,TVP b)
 	return newBool((!(a->value.boolVal) && b->value.boolVal) || ((a->value.boolVal) && !(b->value.boolVal)));
 }
 
-TVP vdmXorGC(TVP a, TVP b, TVP *from)
+TVP vdmXorGC(TVP a, TVP b)
 {
 	TVP res;
 
 	res = vdmXor(a, b);
-	add_allocd_mem_node(res, from);
+	add_allocd_mem_node(res);
 
 	return res;
 }
@@ -157,12 +157,12 @@ TVP vdmImplies(TVP a,TVP b)
 	return newBool(b->value.boolVal);
 }
 
-TVP vdmImpliesGC(TVP a, TVP b, TVP *from)
+TVP vdmImpliesGC(TVP a, TVP b)
 {
 	TVP res;
 
 	res = vdmImplies(a, b);
-	add_allocd_mem_node(res, from);
+	add_allocd_mem_node(res);
 
 	return res;
 }
@@ -177,12 +177,12 @@ TVP vdmBiimplication(TVP a,TVP b)
 	return newBool((!a->value.boolVal || b->value.boolVal) && (!b->value.boolVal || a->value.boolVal));
 }
 
-TVP vdmBiimplicationGC(TVP a, TVP b, TVP *from)
+TVP vdmBiimplicationGC(TVP a, TVP b)
 {
 	TVP res;
 
 	res = vdmBiimplication(a, b);
-	add_allocd_mem_node(res, from);
+	add_allocd_mem_node(res);
 
 	return res;
 }
@@ -231,12 +231,12 @@ TVP isOfClass(TVP val, int classID)
 	return newBool(false);
 }
 
-TVP isOfClassGC(TVP val, int classID, TVP *from)
+TVP isOfClassGC(TVP val, int classID)
 {
 	TVP res;
 
 	res = isOfClass(val, classID);
-	add_allocd_mem_node(res, from);
+	add_allocd_mem_node(res);
 
 	return res;
 }
@@ -251,11 +251,11 @@ TVP isInt(TVP v)
 	return newBool(false);
 }
 
-TVP isIntGC(TVP v, TVP *from)
+TVP isIntGC(TVP v)
 {
 	if(v->type == VDM_INT)
-		return newBoolGC(true, from);
-	return newBoolGC(false, from);
+		return newBoolGC(true);
+	return newBoolGC(false);
 }
 
 TVP isNat(TVP v)
@@ -270,16 +270,16 @@ TVP isNat(TVP v)
 	return newBool(false);
 }
 
-TVP isNatGC(TVP v, TVP *from)
+TVP isNatGC(TVP v)
 {
 	if(v->type == VDM_INT)
 	{
 		if(v->value.intVal >= 0)
 		{
-			return newBoolGC(true, from);
+			return newBoolGC(true);
 		}
 	}
-	return newBoolGC(false, from);
+	return newBoolGC(false);
 }
 
 TVP isNat1(TVP v)
@@ -294,16 +294,16 @@ TVP isNat1(TVP v)
 	return newBool(false);
 }
 
-TVP isNat1GC(TVP v, TVP *from)
+TVP isNat1GC(TVP v)
 {
 	if(v->type == VDM_INT)
 	{
 		if(v->value.intVal > 0)
 		{
-			return newBoolGC(true, from);
+			return newBoolGC(true);
 		}
 	}
-	return newBoolGC(false, from);
+	return newBoolGC(false);
 }
 
 TVP isRat(TVP v)
@@ -311,9 +311,9 @@ TVP isRat(TVP v)
 	return isReal(v);
 }
 
-TVP isRatGC(TVP v, TVP *from)
+TVP isRatGC(TVP v)
 {
-	return isRealGC(v, from);
+	return isRealGC(v);
 }
 
 TVP isReal(TVP v)
@@ -323,11 +323,11 @@ TVP isReal(TVP v)
 	return newBool(false);
 }
 
-TVP isRealGC(TVP v, TVP *from)
+TVP isRealGC(TVP v)
 {
 	if(v->type == VDM_REAL)
-		return newBoolGC(true, from);
-	return newBoolGC(false, from);
+		return newBoolGC(true);
+	return newBoolGC(false);
 }
 
 TVP isBool(TVP v)
@@ -337,11 +337,11 @@ TVP isBool(TVP v)
 	return newBool(false);
 }
 
-TVP isBoolGC(TVP v, TVP *from)
+TVP isBoolGC(TVP v)
 {
 	if(v->type == VDM_BOOL)
-		return newBoolGC(true, from);
-	return newBoolGC(false, from);
+		return newBoolGC(true);
+	return newBoolGC(false);
 }
 
 TVP isChar(TVP v)
@@ -351,11 +351,11 @@ TVP isChar(TVP v)
 	return newBool(false);
 }
 
-TVP isCharGC(TVP v, TVP *from)
+TVP isCharGC(TVP v)
 {
 	if(v->type == VDM_CHAR)
-		return newBoolGC(true, from);
-	return newBoolGC(false, from);
+		return newBoolGC(true);
+	return newBoolGC(false);
 }
 
 TVP isToken(TVP v)
@@ -365,11 +365,11 @@ TVP isToken(TVP v)
 	return newBool(false);
 }
 
-TVP isTokenGC(TVP v, TVP *from)
+TVP isTokenGC(TVP v)
 {
 	if(v->type == VDM_TOKEN)
-		return newBoolGC(true, from);
-	return newBoolGC(false, from);
+		return newBoolGC(true);
+	return newBoolGC(false);
 }
 
 #ifndef NO_RECORDS
@@ -381,12 +381,12 @@ TVP isRecord(TVP val, int recID)
 	return newBool(false);
 }
 
-TVP isRecordGC(TVP val, int recID, TVP *from)
+TVP isRecordGC(TVP val, int recID)
 {
 	if(val->type == VDM_RECORD)
 		if(((struct ClassType *)val->value.ptr)->classId == recID)
-			return newBoolGC(true, from);
-	return newBoolGC(false, from);
+			return newBoolGC(true);
+	return newBoolGC(false);
 }
 #endif
 
@@ -581,12 +581,12 @@ TVP is(TVP v, char ot[])
 	return newBool(res);
 }
 
-TVP isGC(TVP v, char ot[], TVP *from)
+TVP isGC(TVP v, char ot[])
 {
 	TVP res;
 
 	res = is(v, ot);
-	add_allocd_mem_node(res, from);
+	add_allocd_mem_node(res);
 
 	return res;
 }
@@ -630,12 +630,12 @@ TVP isOfBaseClass(TVP val, int baseID)
 	return newBool(false);
 }
 
-TVP isOfBaseClassGC(TVP val, int baseID, TVP *from)
+TVP isOfBaseClassGC(TVP val, int baseID)
 {
 	TVP res;
 
 	res = isOfBaseClass(val, baseID);
-	add_allocd_mem_node(res, from);
+	add_allocd_mem_node(res);
 
 	return res;
 }
@@ -645,9 +645,9 @@ TVP sameClass(TVP a, TVP b)
 	return newBool(((struct ClassType *)a->value.ptr)->classId == ((struct ClassType *)b->value.ptr)->classId);
 }
 
-TVP sameClassGC(TVP a, TVP b, TVP *from)
+TVP sameClassGC(TVP a, TVP b)
 {
-	return newBoolGC(((struct ClassType *)a->value.ptr)->classId == ((struct ClassType *)b->value.ptr)->classId, from);
+	return newBoolGC(((struct ClassType *)a->value.ptr)->classId == ((struct ClassType *)b->value.ptr)->classId);
 }
 
 TVP sameBaseClass(TVP a, TVP b)
@@ -671,12 +671,12 @@ TVP sameBaseClass(TVP a, TVP b)
 	return newBool(res);
 }
 
-TVP sameBaseClassGC(TVP a, TVP b, TVP *from)
+TVP sameBaseClassGC(TVP a, TVP b)
 {
 	TVP res;
 
 	res = sameBaseClass(a, b);
-	add_allocd_mem_node(res, from);
+	add_allocd_mem_node(res);
 
 	return res;
 }
@@ -745,12 +745,12 @@ TVP vdmMinus(TVP arg)
 	}
 }
 
-TVP vdmMinusGC(TVP arg, TVP *from)
+TVP vdmMinusGC(TVP arg)
 {
 	TVP res;
 
 	res = vdmMinus(arg);
-	add_allocd_mem_node(res, from);
+	add_allocd_mem_node(res);
 
 	return res;
 }
@@ -773,12 +773,12 @@ TVP vdmAbs(TVP arg)
 	}
 }
 
-TVP vdmAbsGC(TVP arg, TVP *from)
+TVP vdmAbsGC(TVP arg)
 {
 	TVP res;
 
 	res = vdmAbs(arg);
-	add_allocd_mem_node(res, from);
+	add_allocd_mem_node(res);
 
 	return res;
 
@@ -792,12 +792,12 @@ TVP vdmFloor(TVP arg)
 	return newInt(floor(arg->value.doubleVal));
 }
 
-TVP vdmFloorGC(TVP arg, TVP *from)
+TVP vdmFloorGC(TVP arg)
 {
 	ASSERT_CHECK_REAL(arg);
 
 	/* TODO: Why do we return a Real, when floor is int in VDM?  */
-	return newIntGC(floor(arg->value.doubleVal), from);
+	return newIntGC(floor(arg->value.doubleVal));
 }
 
 TVP vdmSum(TVP a,TVP b)
@@ -815,12 +815,12 @@ TVP vdmSum(TVP a,TVP b)
 	return newReal(av+bv);
 }
 
-TVP vdmSumGC(TVP a,TVP b, TVP *from)
+TVP vdmSumGC(TVP a,TVP b)
 {
 	TVP res;
 
 	res = vdmSum(a, b);
-	add_allocd_mem_node(res, from);
+	add_allocd_mem_node(res);
 
 	return res;
 
@@ -842,12 +842,12 @@ TVP vdmDifference(TVP a,TVP b)
 	return newReal(av - bv);
 }
 
-TVP vdmDifferenceGC(TVP a,TVP b, TVP *from)
+TVP vdmDifferenceGC(TVP a,TVP b)
 {
 	TVP res;
 
 	res = vdmDifference(a, b);
-	add_allocd_mem_node(res, from);
+	add_allocd_mem_node(res);
 
 	return res;
 }
@@ -867,12 +867,12 @@ TVP vdmProduct(TVP a,TVP b)
 	return newReal(av * bv);
 }
 
-TVP vdmProductGC(TVP a, TVP b, TVP *from)
+TVP vdmProductGC(TVP a, TVP b)
 {
 	TVP res;
 
 	res = vdmProduct(a, b);
-	add_allocd_mem_node(res, from);
+	add_allocd_mem_node(res);
 
 	return res;
 }
@@ -888,7 +888,7 @@ TVP vdmDivision(TVP a,TVP b)
 	return newReal(av/bv);
 }
 
-TVP vdmDivisionGC(TVP a,TVP b, TVP *from)
+TVP vdmDivisionGC(TVP a,TVP b)
 {
 	ASSERT_CHECK_NUMERIC(a);
 	ASSERT_CHECK_NUMERIC(b);
@@ -896,7 +896,7 @@ TVP vdmDivisionGC(TVP a,TVP b, TVP *from)
 	double av = toDouble(a);
 	double bv = toDouble(b);
 
-	return newRealGC(av/bv, from);
+	return newRealGC(av/bv);
 }
 
 static long divi(double lv, double rv)
@@ -936,12 +936,12 @@ TVP vdmDiv(TVP a, TVP b)
 	return newInt(divi(av,bv));
 }
 
-TVP vdmDivGC(TVP a, TVP b, TVP *from)
+TVP vdmDivGC(TVP a, TVP b)
 {
 	TVP res;
 
 	res = vdmDiv(a, b);
-	add_allocd_mem_node(res, from);
+	add_allocd_mem_node(res);
 
 	return res;
 }
@@ -961,12 +961,12 @@ TVP vdmRem(TVP a,TVP b)
 	return newInt(av-bv*divi(av,bv));
 }
 
-TVP vdmRemGC(TVP a, TVP b, TVP *from)
+TVP vdmRemGC(TVP a, TVP b)
 {
 	TVP res;
 
 	res = vdmRem(a, b);
-	add_allocd_mem_node(res, from);
+	add_allocd_mem_node(res);
 
 	return res;
 }
@@ -990,12 +990,12 @@ TVP vdmMod(TVP a,TVP b)
 	return newReal(lv-rv*(long) floor(lv/rv));
 }
 
-TVP vdmModGC(TVP a, TVP b, TVP *from)
+TVP vdmModGC(TVP a, TVP b)
 {
 	TVP res;
 
 	res = vdmMod(a, b);
-	add_allocd_mem_node(res, from);
+	add_allocd_mem_node(res);
 
 	return res;
 }
@@ -1011,7 +1011,7 @@ TVP vdmPower(TVP a,TVP b)
 	return newReal(pow(av,bv));
 }
 
-TVP vdmPowerGC(TVP a, TVP b, TVP *from)
+TVP vdmPowerGC(TVP a, TVP b)
 {
 	ASSERT_CHECK_NUMERIC(a);
 	ASSERT_CHECK_NUMERIC(b);
@@ -1019,7 +1019,7 @@ TVP vdmPowerGC(TVP a, TVP b, TVP *from)
 	double av = toDouble(a);
 	double bv = toDouble(b);
 
-	return newRealGC(pow(av,bv), from);
+	return newRealGC(pow(av,bv));
 }
 
 TVP vdmNumericEqual(TVP a,TVP b)
@@ -1033,7 +1033,7 @@ TVP vdmNumericEqual(TVP a,TVP b)
 	return newBool(av==bv);
 }
 
-TVP vdmNumericEqualGC(TVP a, TVP b, TVP *from)
+TVP vdmNumericEqualGC(TVP a, TVP b)
 {
 	ASSERT_CHECK_NUMERIC(a);
 	ASSERT_CHECK_NUMERIC(b);
@@ -1041,7 +1041,7 @@ TVP vdmNumericEqualGC(TVP a, TVP b, TVP *from)
 	double av = toDouble(a);
 	double bv = toDouble(b);
 
-	return newBoolGC(av==bv, from);
+	return newBoolGC(av==bv);
 }
 
 TVP vdmGreaterThan(TVP a,TVP b)
@@ -1055,7 +1055,7 @@ TVP vdmGreaterThan(TVP a,TVP b)
 	return newBool(av>bv);
 }
 
-TVP vdmGreaterThanGC(TVP a,TVP b, TVP *from)
+TVP vdmGreaterThanGC(TVP a,TVP b)
 {
 	ASSERT_CHECK_NUMERIC(a);
 	ASSERT_CHECK_NUMERIC(b);
@@ -1063,7 +1063,7 @@ TVP vdmGreaterThanGC(TVP a,TVP b, TVP *from)
 	double av = toDouble(a);
 	double bv = toDouble(b);
 
-	return newBoolGC(av>bv, from);
+	return newBoolGC(av>bv);
 }
 
 TVP vdmGreaterOrEqual(TVP a,TVP b)
@@ -1077,7 +1077,7 @@ TVP vdmGreaterOrEqual(TVP a,TVP b)
 	return newBool(av>=bv);
 }
 
-TVP vdmGreaterOrEqualGC(TVP a, TVP b, TVP *from)
+TVP vdmGreaterOrEqualGC(TVP a, TVP b)
 {
 	ASSERT_CHECK_NUMERIC(a);
 	ASSERT_CHECK_NUMERIC(b);
@@ -1085,7 +1085,7 @@ TVP vdmGreaterOrEqualGC(TVP a, TVP b, TVP *from)
 	double av = toDouble(a);
 	double bv = toDouble(b);
 
-	return newBoolGC(av>=bv, from);
+	return newBoolGC(av>=bv);
 }
 
 TVP vdmLessThan(TVP a,TVP b)
@@ -1099,7 +1099,7 @@ TVP vdmLessThan(TVP a,TVP b)
 	return newBool(av<bv);
 }
 
-TVP vdmLessThanGC(TVP a, TVP b, TVP *from)
+TVP vdmLessThanGC(TVP a, TVP b)
 {
 	ASSERT_CHECK_NUMERIC(a);
 	ASSERT_CHECK_NUMERIC(b);
@@ -1107,7 +1107,7 @@ TVP vdmLessThanGC(TVP a, TVP b, TVP *from)
 	double av = toDouble(a);
 	double bv = toDouble(b);
 
-	return newBoolGC(av<bv, from);
+	return newBoolGC(av<bv);
 }
 
 TVP vdmLessOrEqual(TVP a,TVP b)
@@ -1121,7 +1121,7 @@ TVP vdmLessOrEqual(TVP a,TVP b)
 	return newBool(av<=bv);
 }
 
-TVP vdmLessOrEqualGC(TVP a, TVP b, TVP *from)
+TVP vdmLessOrEqualGC(TVP a, TVP b)
 {
 	ASSERT_CHECK_NUMERIC(a);
 	ASSERT_CHECK_NUMERIC(b);
@@ -1129,5 +1129,5 @@ TVP vdmLessOrEqualGC(TVP a, TVP b, TVP *from)
 	double av = toDouble(a);
 	double bv = toDouble(b);
 
-	return newBoolGC(av <= bv, from);
+	return newBoolGC(av <= bv);
 }

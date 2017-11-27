@@ -173,17 +173,17 @@ TVP newCollectionWithValues(size_t size, vdmtype type, TVP* elements);
 TVP newCollectionWithValuesPrealloc(size_t size, size_t expected_size, vdmtype type, TVP* elements);
 TVP newCollection(size_t size, vdmtype type);
 TVP newCollectionPrealloc(size_t size, size_t expected_size, vdmtype type);
-TVP newCollectionGC(size_t size, vdmtype type, TVP *from);
-TVP newCollectionPreallocGC(size_t size, size_t expected_size, vdmtype type, TVP *from);
-TVP newCollectionWithValuesGC(size_t size, vdmtype type, TVP* elements, TVP *from);
+TVP newCollectionGC(size_t size, vdmtype type);
+TVP newCollectionPreallocGC(size_t size, size_t expected_size, vdmtype type);
+TVP newCollectionWithValuesGC(size_t size, vdmtype type, TVP* elements);
 
 TVP vdmClone(TVP x);
 
 bool equals(TVP a, TVP b);
 TVP vdmEquals(TVP a, TVP b);
-TVP vdmEqualsGC(TVP a, TVP b, TVP *from);
+TVP vdmEqualsGC(TVP a, TVP b);
 TVP vdmInEquals(TVP a, TVP b);
-TVP vdmInEqualsGC(TVP a, TVP b, TVP *from);
+TVP vdmInEqualsGC(TVP a, TVP b);
 bool collectionEqual(TVP col1,TVP col2);
 
 void vdmFree(TVP ptr);

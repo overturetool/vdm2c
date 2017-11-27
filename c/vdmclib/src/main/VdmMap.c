@@ -97,7 +97,7 @@ struct Map* cloneMap(struct Map *m)
 }
 
 
-TVP newMapGC(TVP *from)
+TVP newMapGC()
 {
 	struct Map* ptr = (struct Map*) malloc(sizeof(struct Map));
 	assert(ptr != NULL);
@@ -106,7 +106,7 @@ TVP newMapGC(TVP *from)
 
 	return newTypeValueGC(VDM_MAP, (TypedValueType
 	)
-			{ .ptr = ptr }, from);
+			{ .ptr = ptr });
 }
 
 
@@ -149,7 +149,7 @@ TVP newMapVar(size_t size, size_t expected_size, ...)
 }
 
 /* Not a very useful function, but here to support the map comprehension mechanism.  */
-TVP newMapVarGC(size_t size, size_t expected_size, TVP *from, ...)
+TVP newMapVarGC(size_t size, size_t expected_size, ...)
 {
 	struct Map* ptr;
 	TVP key;
@@ -159,7 +159,7 @@ TVP newMapVarGC(size_t size, size_t expected_size, TVP *from, ...)
 
 	if(size == 0)
 	{
-		return newMapGC(from);
+		return newMapGC();
 	}
 
 	ptr = (struct Map*) malloc(sizeof(struct Map));
@@ -167,10 +167,10 @@ TVP newMapVarGC(size_t size, size_t expected_size, TVP *from, ...)
 
 	ptr->chain = NULL;
 
-	theMap = newTypeValueGC(VDM_MAP, (TypedValueType){ .ptr = ptr }, from);
+	theMap = newTypeValueGC(VDM_MAP, (TypedValueType){ .ptr = ptr });
 
 	va_list argList;
-	va_start(argList, from);
+	va_start(argList, expected_size);
 
 	for(i = 0; i < size; i++)
 	{
@@ -275,13 +275,13 @@ TVP vdmMapApply(TVP map, TVP key)
 
 
 /*  TODO: Apply does not work if the key is not found  */
-TVP vdmMapApplyGC(TVP map, TVP key, TVP *from)
+TVP vdmMapApplyGC(TVP map, TVP key)
 {
 	TVP tmp;
 	TVP res;
 
 	tmp = vdmMapApply(map, key);
-	res = vdmCloneGC(tmp, from);
+	res = vdmCloneGC(tmp);
 	vdmFree(tmp);
 
 	return res;
@@ -328,13 +328,13 @@ TVP vdmMapDom(TVP map)
 }
 
 
-TVP vdmMapDomGC(TVP map, TVP *from)
+TVP vdmMapDomGC(TVP map)
 {
 	TVP tmp;
 	TVP res;
 
 	tmp = vdmMapDom(map);
-	res = vdmCloneGC(tmp, from);
+	res = vdmCloneGC(tmp);
 	vdmFree(tmp);
 
 	return res;
@@ -381,13 +381,13 @@ TVP vdmMapRng(TVP map)
 }
 
 
-TVP vdmMapRngGC(TVP map, TVP *from)
+TVP vdmMapRngGC(TVP map)
 {
 	TVP tmp;
 	TVP res;
 
 	tmp = vdmMapRng(map);
-	res = vdmCloneGC(tmp, from);
+	res = vdmCloneGC(tmp);
 	vdmFree(tmp);
 
 	return res;
@@ -467,13 +467,13 @@ TVP vdmMapMunion(TVP map1, TVP map2)
 }
 
 
-TVP vdmMapMunionGC(TVP map1, TVP map2, TVP *from)
+TVP vdmMapMunionGC(TVP map1, TVP map2)
 {
 	TVP tmp;
 	TVP res;
 
 	tmp = vdmMapMunion(map1, map2);
-	res = vdmCloneGC(tmp, from);
+	res = vdmCloneGC(tmp);
 	vdmFree(tmp);
 
 	return res;
@@ -523,13 +523,13 @@ TVP vdmMapOverride(TVP map1, TVP map2)
 }
 
 
-TVP vdmMapOverrideGC(TVP map1, TVP map2, TVP *from)
+TVP vdmMapOverrideGC(TVP map1, TVP map2)
 {
 	TVP tmp;
 	TVP res;
 
 	tmp = vdmMapOverride(map1, map2);
-	res = vdmCloneGC(tmp, from);
+	res = vdmCloneGC(tmp);
 	vdmFree(tmp);
 
 	return res;
@@ -550,13 +550,13 @@ TVP vdmMapMerge(TVP set)
 }
 
 
-TVP vdmMapMergeGC(TVP set, TVP *from)
+TVP vdmMapMergeGC(TVP set)
 {
 	TVP tmp;
 	TVP res;
 
 	tmp = vdmMapMerge(set);
-	res = vdmCloneGC(tmp, from);
+	res = vdmCloneGC(tmp);
 	vdmFree(tmp);
 
 	return res;
@@ -596,13 +596,13 @@ TVP vdmMapDomRestrictTo(TVP set,TVP map)
 }
 
 
-TVP vdmMapDomRestrictToGC(TVP set,TVP map, TVP *from)
+TVP vdmMapDomRestrictToGC(TVP set,TVP map)
 {
 	TVP tmp;
 	TVP res;
 
 	tmp = vdmMapDomRestrictTo(set, map);
-	res = vdmCloneGC(tmp, from);
+	res = vdmCloneGC(tmp);
 	vdmFree(tmp);
 
 	return res;
@@ -639,13 +639,13 @@ TVP vdmMapDomRestrictBy(TVP set,TVP map)
 
 
 
-TVP vdmMapDomRestrictByGC(TVP set,TVP map, TVP *from)
+TVP vdmMapDomRestrictByGC(TVP set,TVP map)
 {
 	TVP tmp;
 	TVP res;
 
 	tmp = vdmMapDomRestrictBy(set, map);
-	res = vdmCloneGC(tmp, from);
+	res = vdmCloneGC(tmp);
 	vdmFree(tmp);
 
 	return res;
@@ -684,13 +684,13 @@ TVP vdmMapRngRestrictTo(TVP map, TVP set)
 }
 
 
-TVP vdmMapRngRestrictToGC(TVP map, TVP set, TVP *from)
+TVP vdmMapRngRestrictToGC(TVP map, TVP set)
 {
 	TVP tmp;
 	TVP res;
 
 	tmp = vdmMapRngRestrictTo(map, set);
-	res = vdmCloneGC(tmp, from);
+	res = vdmCloneGC(tmp);
 	vdmFree(tmp);
 
 	return res;
@@ -729,14 +729,14 @@ TVP vdmMapRngRestrictBy(TVP map, TVP set)
 }
 
 
-TVP vdmMapRngRestrictByGC(TVP map, TVP set, TVP *from)
+TVP vdmMapRngRestrictByGC(TVP map, TVP set)
 {
 	ASSERT_CHECK(map);
 	TVP tmp;
 	TVP res;
 
 	tmp = vdmMapRngRestrictBy(map, set);
-	res = vdmCloneGC(tmp, from);
+	res = vdmCloneGC(tmp);
 	vdmFree(tmp);
 
 	return res;
@@ -768,13 +768,13 @@ TVP vdmMapInverse(TVP map){
 }
 
 
-TVP vdmMapInverseGC(TVP map, TVP *from)
+TVP vdmMapInverseGC(TVP map)
 {
 	TVP tmp;
 	TVP res;
 
 	tmp = vdmMapInverse(map);
-	res = vdmCloneGC(tmp, from);
+	res = vdmCloneGC(tmp);
 	vdmFree(tmp);
 
 	return res;
@@ -910,13 +910,13 @@ TVP vdmMapCompose(TVP a, TVP b)
 	return res;
 }
 
-TVP vdmMapComposeGC(TVP a, TVP b, TVP *from)
+TVP vdmMapComposeGC(TVP a, TVP b)
 {
 	TVP tmp;
 	TVP res;
 
 	tmp = vdmMapCompose(a, b);
-	res = vdmCloneGC(tmp, from);
+	res = vdmCloneGC(tmp);
 	vdmFree(tmp);
 
 	return res;
@@ -975,13 +975,13 @@ TVP vdmMapIterate(TVP a, TVP num)
 	return res;
 }
 
-TVP vdmMapIterateGC(TVP a, TVP num, TVP *from)
+TVP vdmMapIterateGC(TVP a, TVP num)
 {
 	TVP tmp;
 	TVP res;
 
 	tmp = vdmMapIterate(a, num);
-	res = vdmCloneGC(tmp, from);
+	res = vdmCloneGC(tmp);
 	vdmFree(tmp);
 
 	return res;

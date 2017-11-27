@@ -48,32 +48,32 @@ TVP newSeqWithValues(size_t size,TVP* elements);
  * Create new seq from variadic list of elements
  */
 TVP newSeqVar(size_t size,...);
-TVP newSeqVarGC(size_t size, TVP *from, ...);
+TVP newSeqVarGC(size_t size, ...);
 TVP newSeqVarToGrow(size_t size, size_t expected_size, ...);
 
 void vdmSeqGrow(TVP seq, TVP element);
 void vdmSeqFit(TVP seq);
 TVP vdmSeqHd(TVP seq);
-TVP vdmSeqHdGC(TVP seq, TVP *from);
+TVP vdmSeqHdGC(TVP seq);
 TVP vdmSeqTl(TVP seq);
-TVP vdmSeqTlGC(TVP seq, TVP *from);
+TVP vdmSeqTlGC(TVP seq);
 TVP vdmSeqLen(TVP seq);
-TVP vdmSeqLenGC(TVP seq, TVP *from);
-TVP vdmSeqConcGC(TVP seq, TVP seq2, TVP *from);
-TVP vdmSeqReverseGC(TVP seq, TVP *from);
-TVP vdmSeqIndexGC(TVP seq, TVP indexVal, TVP *from);
+TVP vdmSeqLenGC(TVP seq);
+TVP vdmSeqConcGC(TVP seq, TVP seq2);
+TVP vdmSeqReverseGC(TVP seq);
+TVP vdmSeqIndexGC(TVP seq, TVP indexVal);
 
 #ifndef NO_SETS
 TVP vdmSeqElems(TVP seq);
-TVP vdmSeqElemsGC(TVP seq, TVP *from);
+TVP vdmSeqElemsGC(TVP seq);
 TVP vdmSeqInds(TVP seq);
-TVP vdmSeqIndsGC(TVP seq, TVP *from);
+TVP vdmSeqIndsGC(TVP seq);
 #endif
 
 TVP vdmSeqConc(TVP seq,TVP seq2);
 TVP vdmSeqReverse(TVP seq);
 TVP vdmSeqMod(TVP seq,TVP map);
-TVP vdmSeqModGC(TVP seq,TVP map, TVP *from);
+TVP vdmSeqModGC(TVP seq,TVP map);
 TVP vdmSeqIndex(TVP seq,TVP index);
 
 void vdmSeqUpdate(TVP seq, TVP index, TVP newValue);

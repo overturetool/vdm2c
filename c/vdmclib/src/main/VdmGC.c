@@ -21,10 +21,10 @@ void vdm_gc_init()
 	allocd_mem_tail = allocd_mem_head;
 }
 
-void add_allocd_mem_node(TVP l, TVP *from)
+void add_allocd_mem_node(TVP l)
 {
 	allocd_mem_tail->loc = l;
-	allocd_mem_tail->loc->ref_from = from;
+	allocd_mem_tail->loc->ref_from = NULL;
 
 	allocd_mem_tail->next = (struct alloc_list_node*)malloc(sizeof(struct alloc_list_node));
 	assert(allocd_mem_tail->next != NULL);
@@ -197,53 +197,53 @@ void vdm_gc()
 
 /* #ifdef WITH_GC  */
 /* ===============  Garbage collected versions  ==============  */
-TVP newTypeValueGC(vdmtype type, TypedValueType value, TVP *ref_from)
+TVP newTypeValueGC(vdmtype type, TypedValueType value)
 {
 	TVP res;
 
 	res = newTypeValue(type, value);
-	add_allocd_mem_node(res, ref_from);
+	add_allocd_mem_node(res);
 
 	return res;
 }
 
 /* / Basic  */
-TVP newIntGC(int x, TVP *from)
+TVP newIntGC(int x)
 {
 	return newTypeValueGC(VDM_INT, (TypedValueType
 	)
-			{ .intVal = x }, from);
+			{ .intVal = x });
 }
 
-TVP newBoolGC(bool x, TVP *from)
+TVP newBoolGC(bool x)
 {
 	return newTypeValueGC(VDM_BOOL, (TypedValueType
 	)
-			{ .boolVal = x }, from);
+			{ .boolVal = x });
 }
 
-TVP newRealGC(double x, TVP *from)
+TVP newRealGC(double x)
 {
 	return newTypeValueGC(VDM_REAL, (TypedValueType
 	)
-			{ .doubleVal = x }, from);
+			{ .doubleVal = x });
 }
 
-TVP newCharGC(char x, TVP *from)
+TVP newCharGC(char x)
 {
 	return newTypeValueGC(VDM_CHAR, (TypedValueType
 	)
-			{ .charVal = x }, from);
+			{ .charVal = x });
 }
 
-TVP newQuoteGC(unsigned int x, TVP *from)
+TVP newQuoteGC(unsigned int x)
 {
 	return newTypeValueGC(VDM_QUOTE, (TypedValueType
 	)
-			{ .quoteVal = x }, from);
+			{ .quoteVal = x });
 }
 
-TVP newTokenGC(TVP x, TVP *from)
+TVP newTokenGC(TVP x)
 {
 	char *str = unpackString(x);
 	char *strTmp = str;
@@ -258,21 +258,21 @@ TVP newTokenGC(TVP x, TVP *from)
 
 	return newTypeValueGC(VDM_TOKEN, (TypedValueType
 	)
-			{ .intVal = hashVal }, from);
+			{ .intVal = hashVal });
 }
 
-TVP newUnknownGC(TVP *from)
+TVP newUnknownGC()
 {
 	return newTypeValueGC(VDM_UNKNOWN, (TypedValueType)
-			{}, from);
+			{});
 }
 
-TVP vdmCloneGC(TVP x, TVP *from)
+TVP vdmCloneGC(TVP x)
 {
 	TVP res;
 
 	res = vdmClone(x);
-	add_allocd_mem_node(res, from);
+	add_allocd_mem_node(res);
 
 	return res;
 }

@@ -125,12 +125,12 @@ TVP newCollection(size_t size, vdmtype type)
 			{ .ptr = ptr });
 }
 
-TVP newCollectionGC(size_t size, vdmtype type, TVP *from)
+TVP newCollectionGC(size_t size, vdmtype type)
 {
 	TVP res;
 
 	res = newCollection(size, type);
-	add_allocd_mem_node(res, from);
+	add_allocd_mem_node(res);
 
 	return res;
 }
@@ -148,12 +148,12 @@ TVP newCollectionPrealloc(size_t size, size_t expected_size, vdmtype type)
 			{ .ptr = ptr });
 }
 
-TVP newCollectionPreallocGC(size_t size, size_t expected_size, vdmtype type, TVP *from)
+TVP newCollectionPreallocGC(size_t size, size_t expected_size, vdmtype type)
 {
 	TVP res;
 
 	res = newCollectionPrealloc(size, expected_size, type);
-	add_allocd_mem_node(res, from);
+	add_allocd_mem_node(res);
 
 	return res;
 }
@@ -186,11 +186,11 @@ TVP newCollectionWithValuesPrealloc(size_t size, size_t expected_size, vdmtype t
 	return product;
 }
 
-TVP newCollectionWithValuesGC(size_t size, vdmtype type, TVP* elements, TVP *from)
+TVP newCollectionWithValuesGC(size_t size, vdmtype type, TVP* elements)
 {
 	int i;
 
-	TVP product = newCollectionGC(size, type, from);
+	TVP product = newCollectionGC(size, type);
 	UNWRAP_COLLECTION(col, product);
 
 	for (i = 0; i < size; i++)
@@ -817,12 +817,12 @@ void vdmFree(TVP ptr)
 TVP vdmEquals(TVP a, TVP b)
 {	return newBool(equals(a,b));}
 
-TVP vdmEqualsGC(TVP a, TVP b, TVP *from)
-{	return newBoolGC(equals(a,b), from);}
+TVP vdmEqualsGC(TVP a, TVP b)
+{	return newBoolGC(equals(a,b));}
 
 TVP vdmInEquals(TVP a, TVP b)
 {	return newBool(!equals(a,b));}
 
-TVP vdmInEqualsGC(TVP a, TVP b, TVP *from)
-{	return newBoolGC(!equals(a,b), from);}
+TVP vdmInEqualsGC(TVP a, TVP b)
+{	return newBoolGC(!equals(a,b));}
 

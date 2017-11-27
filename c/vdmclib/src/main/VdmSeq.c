@@ -92,7 +92,7 @@ TVP newSeqVar(size_t size, ...)
 	return res;
 }
 
-TVP newSeqVarGC(size_t size, TVP *from, ...)
+TVP newSeqVarGC(size_t size, ...)
 {
 	int i;
 	TVP arg;
@@ -102,7 +102,7 @@ TVP newSeqVarGC(size_t size, TVP *from, ...)
 	elements = (TVP *)calloc(size, sizeof(TVP));
 
 	va_list ap;
-	va_start(ap, from);
+	va_start(ap, size);
 
 	for (i = 0; i < size; i++)
 	{
@@ -111,7 +111,7 @@ TVP newSeqVarGC(size_t size, TVP *from, ...)
 	}
 	va_end(ap);
 
-	res = newCollectionWithValuesGC(size, VDM_SEQ, elements, from);
+	res = newCollectionWithValuesGC(size, VDM_SEQ, elements);
 	free(elements);
 
 	return res;
@@ -192,14 +192,14 @@ TVP vdmSeqHd(TVP seq)
 	return vdmClone(col->value[0]);
 }
 
-TVP vdmSeqHdGC(TVP seq, TVP *from)
+TVP vdmSeqHdGC(TVP seq)
 {
 	ASSERT_CHECK(seq);
 	UNWRAP_COLLECTION(col,seq);
 
 	assert(col->size != 0 && "Can not take head of empty sequence.\n");
 
-	return vdmCloneGC(col->value[0], from);
+	return vdmCloneGC(col->value[0]);
 }
 
 TVP vdmSeqTl(TVP seq)
@@ -224,13 +224,13 @@ TVP vdmSeqTl(TVP seq)
 	return tailVal;
 }
 
-TVP vdmSeqTlGC(TVP seq, TVP *from)
+TVP vdmSeqTlGC(TVP seq)
 {
 	TVP tmp;
 	TVP res;
 
 	tmp = vdmSeqTl(seq);
-	res = vdmCloneGC(tmp, from);
+	res = vdmCloneGC(tmp);
 	vdmFree(tmp);
 
 	return res;
@@ -243,11 +243,11 @@ TVP vdmSeqLen(TVP seq)
 	return newInt(col->size);
 }
 
-TVP vdmSeqLenGC(TVP seq, TVP *from)
+TVP vdmSeqLenGC(TVP seq)
 {
 	ASSERT_CHECK(seq);
 	UNWRAP_COLLECTION(col,seq);
-	return newIntGC(col->size, from);
+	return newIntGC(col->size);
 }
 
 #ifndef NO_SETS
@@ -262,12 +262,12 @@ TVP vdmSeqElems(TVP seq)
 }
 
 
-TVP vdmSeqElemsGC(TVP seq, TVP *from)
+TVP vdmSeqElemsGC(TVP seq)
 {
 	ASSERT_CHECK(seq);
 	UNWRAP_COLLECTION(col,seq);
 
-	TVP elemsVal = newSetWithValuesGC(col->size, col->value, from);
+	TVP elemsVal = newSetWithValuesGC(col->size, col->value);
 
 	return elemsVal;
 }
@@ -295,13 +295,13 @@ TVP vdmSeqInds(TVP seq)
 }
 
 
-TVP vdmSeqIndsGC(TVP seq, TVP *from)
+TVP vdmSeqIndsGC(TVP seq)
 {
 	TVP tmp;
 	TVP res;
 
 	tmp = vdmSeqInds(seq);
-	res = vdmCloneGC(tmp, from);
+	res = vdmCloneGC(tmp);
 	vdmFree(tmp);
 
 	return res;
@@ -336,13 +336,13 @@ TVP vdmSeqConc(TVP seq,TVP seq2)
 	return concVal;
 }
 
-TVP vdmSeqConcGC(TVP seq, TVP seq2, TVP *from)
+TVP vdmSeqConcGC(TVP seq, TVP seq2)
 {
 	TVP tmp;
 	TVP res;
 
 	tmp = vdmSeqConc(seq, seq2);
-	res = vdmCloneGC(tmp, from);
+	res = vdmCloneGC(tmp);
 	vdmFree(tmp);
 
 	return res;
@@ -369,13 +369,13 @@ TVP vdmSeqReverse(TVP seq)
 	return elemsVal;
 }
 
-TVP vdmSeqReverseGC(TVP seq, TVP *from)
+TVP vdmSeqReverseGC(TVP seq)
 {
 	TVP tmp;
 	TVP res;
 
 	tmp = vdmSeqReverse(seq);
-	res = vdmCloneGC(tmp, from);
+	res = vdmCloneGC(tmp);
 	vdmFree(tmp);
 
 	return res;
@@ -415,13 +415,13 @@ TVP vdmSeqMod(TVP seq,TVP map)
 }
 
 
-TVP vdmSeqModGC(TVP seq,TVP map, TVP *from)
+TVP vdmSeqModGC(TVP seq,TVP map)
 {
 	TVP tmp;
 	TVP res;
 
 	tmp = vdmSeqMod(seq, map);
-	res = vdmCloneGC(tmp, from);
+	res = vdmCloneGC(tmp);
 	vdmFree(tmp);
 
 	return res;
@@ -440,13 +440,13 @@ TVP vdmSeqIndex(TVP seq, TVP indexVal) /* VDM uses 1 based index  */
 	return vdmClone(col->value[index-1]);
 }
 
-TVP vdmSeqIndexGC(TVP seq, TVP indexVal, TVP *from) /* VDM uses 1 based index  */
+TVP vdmSeqIndexGC(TVP seq, TVP indexVal) /* VDM uses 1 based index  */
 {
 	TVP tmp;
 	TVP res;
 
 	tmp = vdmSeqIndex(seq, indexVal);
-	res = vdmCloneGC(tmp, from);
+	res = vdmCloneGC(tmp);
 	vdmFree(tmp);
 
 	return res;
