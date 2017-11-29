@@ -677,8 +677,6 @@ void vdmFree_GCInternal(TVP ptr)
 
 void vdmFree(TVP ptr)
 {
-	TVP *tmp;
-
 	if (ptr == NULL)
 		return;
 

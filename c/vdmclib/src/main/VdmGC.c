@@ -155,7 +155,6 @@ void vdm_gc_shutdown()
 void vdm_gc()
 {
 	struct alloc_list_node *current, *tmp;
-	TVP tmp_loc;
 
 	current = allocd_mem_head;
 
@@ -166,7 +165,6 @@ void vdm_gc()
 	while(current != allocd_mem_tail)
 	{
 		tmp = current->next;
-		tmp_loc = current->loc;
 
 		vdmFree_GCInternal(current->loc);
 		remove_allocd_mem_node(current);
