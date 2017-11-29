@@ -25,7 +25,7 @@ node {
       withMaven(mavenLocalRepo: '.repository', mavenSettingsFilePath: "${env.MVN_SETTINGS_PATH}") {
 
         // Run the maven build
-        sh "mvn install -PWith-IDE -Pall-platforms -P!linux64 -DexternalTestsPath=$OVERTURE_EXTERNAL_TEST_ROOT -P!ui-tests -Pforce-download-externals -Pcodesigning"
+        sh "mvn install -DskipTests -PWith-IDE -Pall-platforms -P!linux64 -DexternalTestsPath=$OVERTURE_EXTERNAL_TEST_ROOT -P!ui-tests -Pforce-download-externals -Pcodesigning"
         step([$class: 'ArtifactArchiver', artifacts: '**/target/*.jar', fingerprint: true])
         step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*.xml'])
         step([$class: 'JacocoPublisher', exclusionPattern: '**/org/overture/ast/analysis/**/*.*, **/org/overture/ast/expressions/**/*.*, **/org/overture/ast/modules/**/*.*, **/org/overture/ast/node/**/*.*,**/org/overture/ast/patterns/**/*.*, **/org/overture/ast/statements/**/*.*, **/org/overture/ast/types/**/*.*, **/org/overture/codegen/ir/**/*, **/org/overture/ide/**/*'])
@@ -50,15 +50,15 @@ node {
                 def repo = 'vdm2c'
                 if (env.BRANCH_NAME == 'vpb/development')
                 {
-                    repo = 'vpb-vdm2c'
+                    repo = 'vdm2c-vpb'
                 }
                 else if(env.BRANCH_NAME == 'pvj/development')
                 {
-                    repo = 'pvj-vdm2c'
+                    repo = 'vdm2c-pvj'
                 }
 								rtMaven.deployer releaseRepo:repo, snapshotRepo:repo, server: server
 				        
-								rtMaven.run pom: 'pom.xml', goals: 'install', buildInfo: buildInfo
+								rtMaven.run pom: 'pom.xml', goals: 'install -DskipTests', buildInfo: buildInfo
 
 								//get rid of old snapshots only keep then for a short amount of time
 								buildInfo.retention maxBuilds: 5, maxDays: 7, deleteBuildArtifacts: true
