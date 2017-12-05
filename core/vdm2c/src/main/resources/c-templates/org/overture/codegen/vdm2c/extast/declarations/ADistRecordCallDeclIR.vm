@@ -1,0 +1,188 @@
+
+#if($node.getIsHeader())
+#ifndef RECORDS_H_
+\#define RECORDS_H_
+
+// General serialisation function
+int serialiseRecord(byte* encBuff, TVP t, int pos);
+TVP deSerialiseRecord(byte* decBuff, TVP t, int pos);
+
+
+TVP deSerialiseRecordRes(byte* decFullBuff);
+void serialiseRecordRes(byte* encBuff , TVP t);
+
+#end
+
+// This is the record class
+
+#if(!$node.getIsHeader())
+#foreach( $recName in $node.getRecNames() )
+  
+  
+  byte* asn1Scc$recName.getName()_enc(const asn1Scc$recName.getName()* pVal, byte* encBuff,
+		BitStream *bitStrm, int *pErrCode) {
+
+	//static byte encBuff[asn1Scc$recName.getName()_REQUIRED_BYTES_FOR_ENCODING + 1]; /* +1 for zerosized types */
+	BitStream_Init(bitStrm, encBuff, asn1Scc$recName.getName()_REQUIRED_BYTES_FOR_ENCODING);
+	asn1Scc$recName.getName()_Encode(pVal, bitStrm, pErrCode, TRUE);
+
+	return bitStrm->buf;
+}
+ 
+ asn1Scc asn1Scc$recName.getName()_dec(byte* encBuf, int *pErrCode) {
+
+	static asn1Scc$recName.getName() decodedPDU;
+	BitStream bitStrmDec;
+	BitStream_AttachBuffer(&bitStrmDec, encBuf,
+	asn1Scc$recName.getName()_REQUIRED_BYTES_FOR_ENCODING);
+	asn1Scc$recName.getName()_Decode(&decodedPDU, &bitStrmDec, pErrCode);
+
+	return decodedPDU;
+}
+
+	int serialise$recName.getName()(byte* encBuff, TVP t, int pos) {
+	// 2.1. Create ASN1 type
+	asn1Scc$recName.getName() rec;
+	asn1Scc$recName.getName()_Initialize(&rec);
+
+	// 2.2. Instanciate
+	int errCode;
+
+	// 2.3. Convert from TVP to ASN1
+	Convert_$recName.getName()_from_VDM_to_ASN1SCC(&rec, &t);
+
+	int offset = asn1Scc$recName.getName()_REQUIRED_BYTES_FOR_ENCODING;
+
+	//printf("Deserialising level is: %d \n",  rec.level);
+
+	// 2.4. Serialise ASN.1 type
+	BitStream bitStrmEnc;
+	asn1Scc$recName.getName()_enc(&rec, encBuff+pos+2, &bitStrmEnc, &errCode);
+
+	return offset;
+}
+
+TVP deSerialise$recName.getName()(byte* decBuff, TVP t, int pos) {
+	int errCode;
+	asn1Scc$recName.getName() res_ser;
+	byte decFullBuff[asn1Scc$recName.getName()_REQUIRED_BYTES_FOR_ENCODING + 1];
+
+	memcpy(decFullBuff, decBuff+pos+2, asn1Scc$recName.getName()_REQUIRED_BYTES_FOR_ENCODING + 1);
+
+	//res_ser = IntValue_dec(buffer, &errCode);
+	BitStream bitStrmDec;
+	BitStream_AttachBuffer(&bitStrmDec, decFullBuff, asn1Scc$recName.getName()_REQUIRED_BYTES_FOR_ENCODING);
+	asn1Scc$recName.getName()_Decode(&res_ser, &bitStrmDec, &errCode);
+
+	// Convert back to TVP
+	TVP res = _Z6$recName.getName()EIB(NULL, newIntGC(0,NULL), newBoolGC(true,NULL));
+	//res->type = VDM_REAL;
+	Convert_$recName.getName()_from_ASN1SCC_to_VDM(&res, &res_ser);
+
+	return res;
+
+}
+
+void serialiseRecordRes$recName.getName()(byte* encBuff, TVP t) {
+
+	encBuff[0] = VDM_RECORD;
+	encBuff[1] = ((struct ClassType*)t->value.ptr)->classId;
+
+	// 1. Create ASN1 type
+	asn1Scc$recName.getName() rec;
+	asn1Scc$recName.getName()_Initialize(&rec);
+
+	// 2. Instanciate
+	int errCode;
+
+	// 2. Convert from TVP to ASN1
+	Convert_$recName.getName()_from_VDM_to_ASN1SCC(&rec, &t);
+
+	printf("Deserialising level is: %d \n", rec.level);
+
+	// 3. Serialise ASN.1 type
+	BitStream bitStrmEnc;
+	asn1Scc$recName.getName()_enc(&rec, encBuff+2, &bitStrmEnc, &errCode);
+}
+
+TVP deSerialiseRecordRes$recName.getName()(byte* decFullBuff) {
+	int errCode;
+	asn1Scc$recName.getName() res_ser;
+	byte decBuff[asn1Scc$recName.getName()_REQUIRED_BYTES_FOR_ENCODING + 1];
+
+	memcpy(decBuff, decFullBuff+2, asn1Scc$recName.getName()_REQUIRED_BYTES_FOR_ENCODING + 1);
+
+	//res_ser = IntValue_dec(buffer, &errCode);
+	BitStream bitStrmDec;
+	BitStream_AttachBuffer(&bitStrmDec, decBuff, asn1Scc$recName.getName()_REQUIRED_BYTES_FOR_ENCODING);
+	asn1Scc$recName.getName()_Decode(&res_ser, &bitStrmDec, &errCode);
+
+	TVP res;
+
+	// Convert back to TVP
+	res = _Z6$recName.getName()EIB(NULL, newIntGC(0,NULL), newBoolGC(true,NULL));
+	//res->type = VDM_REAL;
+	Convert_$recName.getName()_from_ASN1SCC_to_VDM(&res, &res_ser);
+
+	return res;
+}
+  
+#end
+
+int serialiseRecord(byte* encBuff, TVP t, int pos) {
+
+	int offset = 0;
+
+	int id = ((struct ClassType*)t->value.ptr)->classId;
+	
+	#foreach( $recName in $node.getRecNames() )
+	if(id==CLASS_ID_$recName.getName()_ID) {
+		offset = serialise$recName.getName()(encBuff, t, pos);
+	}
+	#end
+
+	return offset;
+}
+
+TVP deSerialiseRecord(byte* decBuff, TVP t, int pos) {
+
+	//int id = ((struct ClassType*)t->value.ptr)->classId;
+	
+	#foreach( $recName in $node.getRecNames() )
+	if(decBuff[pos+1]==CLASS_ID_$recName.getName()_ID) {
+		TVP res = deSerialise$recName.getName()(decBuff, t, pos);
+		return res;
+	}
+	#end
+
+	return NULL;
+}
+
+void serialiseRecordRes(byte* encBuff, TVP t) {
+
+	int id = ((struct ClassType*)t->value.ptr)->classId;
+	
+	#foreach( $recName in $node.getRecNames() )
+	if(id==CLASS_ID_$recName.getName()_ID) {
+		serialiseRecordRes$recName.getName()(encBuff, t);
+	}
+	#end
+}
+
+TVP deSerialiseRecordRes(byte* decFullBuff) {
+
+	TVP res;
+	#foreach( $recName in $node.getRecNames() )
+	if(decFullBuff[1]==CLASS_ID_$recName.getName()_ID) {
+		res = deSerialiseRecordRes$recName.getName()(decFullBuff);
+	}
+	#end
+
+	return res;
+}
+
+#end
+
+#if($node.getIsHeader())
+#endif
+#end

@@ -50,6 +50,7 @@ IR = #decl
     | {array} [static]:java_Boolean [type]:IR.#type [name]:java_String [size]:java_Integer [initial]:struct*
     | {quote} [name]:java_String [id]:java_Integer
     | {distCall} [methods]:IR.#decl.method* [isHeader]:java_Boolean
+    | {distRecordCall} [rec_names]:IR.#decl.method* [isHeader]:java_Boolean
        ;
  
        

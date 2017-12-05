@@ -43,8 +43,10 @@ import org.overture.codegen.vdm2c.distribution.CDistTransSeries;
 import org.overture.codegen.vdm2c.distribution.DistCGenUtil;
 import org.overture.codegen.vdm2c.distribution.SystemArchitectureAnalysis;
 import org.overture.codegen.vdm2c.analysis.FeatureAnalysisResult;
+import org.overture.codegen.vdm2c.ast.CGenClonableString;
 import org.overture.codegen.vdm2c.extast.declarations.AClassHeaderDeclIR;
 import org.overture.codegen.vdm2c.extast.declarations.ADistCallDeclIR;
+import org.overture.codegen.vdm2c.extast.declarations.ADistRecordCallDeclIR;
 import org.overture.codegen.vdm2c.sourceformat.ISourceFileFormatter;
 import org.overture.codegen.vdm2c.transformations.AddFieldTrans;
 import org.overture.codegen.vdm2c.utils.CTransUtil;
@@ -63,6 +65,8 @@ public class CGen extends CodeGenBase
 	private String classAssocArray;
 
 	private List<String> headers = new LinkedList<>();
+	
+	private List<String> rec_names = new LinkedList<>();
 
 	public static final String FEATURE_FILE_NAME = "VdmModelFeatures.h";
 
@@ -136,6 +140,7 @@ public class CGen extends CodeGenBase
 				recClass.setSourceNode(recDecl.getSourceNode());
 				recClass.setStatic(false);
 				recClass.setName(recDecl.getName());
+				rec_names.add(recDecl.getName());
 
 				if (recDecl.getInvariant() != null)
 				{
@@ -311,10 +316,12 @@ public class CGen extends CodeGenBase
 		CFormat my_formatter = consFormatter(canBeGenerated);
 
 		genDistCalls(canBeGenerated, IRStatus.extract(canBeGenerated, ADefaultClassDeclIR.class));
-
+		
 		// Distribution Transformations
-		if(dist_gen)
+		if(dist_gen){
+			genDistRecordCalls(canBeGenerated, IRStatus.extract(canBeGenerated, ADefaultClassDeclIR.class));
 			applyDistTransformations(canBeGenerated);
+		}
 
 		for (IRStatus<PIR> status : canBeGenerated)
 		{
@@ -678,6 +685,12 @@ public class CGen extends CodeGenBase
 							writeFile(outputD, bus + ".c", generatedClass.getContent());
 					}
 				}
+				else if (node instanceof ADistRecordCallDeclIR){
+					ADistRecordCallDeclIR st = (ADistRecordCallDeclIR) node;
+					
+					if(st.getIsHeader()) writeFile(outputD, "records" + ".h", generatedClass.getContent());
+					else writeFile(outputD, "records" + ".c", generatedClass.getContent());
+				}
 			}
 
 			//			for(String bus : SystemArchitectureAnalysis.connectionMapStr.keySet()){
@@ -689,6 +702,57 @@ public class CGen extends CodeGenBase
 		}
 	}
 
+	private void genDistRecordCalls(List<IRStatus<PIR>> canBeGenerated, List<IRStatus<ADefaultClassDeclIR>> classes) {
+
+		if (rec_names.isEmpty()) return;
+		ADistRecordCallDeclIR distCall1 = new ADistRecordCallDeclIR();
+		//ADistRecordCallDeclIR distCall2 = new ADistRecordCallDeclIR();
+
+		if(!classes.isEmpty()) {
+			IRStatus<ADefaultClassDeclIR> c = classes.get(0);
+
+			distCall1.setSourceNode(c.getIrNode().getSourceNode());
+			distCall1.setIsHeader(false);			
+			for(String recName : rec_names){
+				// Create a new method: 
+				AMethodDeclIR m = new AMethodDeclIR();
+
+				m.setAsync(false);
+				m.setAbstract(false);
+				m.setAccess("public");
+				m.setImplicit(false);
+				m.setIsConstructor(false);
+				m.setStatic(false);
+				m.setName(recName);
+				
+				distCall1.getRecNames().add(m);
+			}
+			
+			ADistRecordCallDeclIR distCall2 = distCall1.clone();
+			distCall2.setIsHeader(true);
+			//CGenClonableString rt = new CGenClonableString("Hej");
+			//CGenClonableString rt2 = new CGenClonableString("Hello");
+
+			
+			//distCall1.getRecNames().add(rt);
+			
+				String bus = "recordss";
+				// Create C file
+				//ADistCallDeclIR distCall = genDistCall(c.getIrNode(), bus + "CG", false);
+				String nodeName = bus;// +// "_dist";
+				distCall1.setTag(bus);
+				IRStatus irStatus = new IRStatus(c.getVdmNode(), nodeName, distCall1, c.getUnsupportedInIr(), c.getTransformationWarnings());
+				canBeGenerated.add(irStatus);
+
+				// Create H file
+				//distCall = genDistCall(c.getIrNode(), bus + "CG", true);
+				distCall2.setTag(bus);
+				irStatus = new IRStatus(c.getVdmNode(), nodeName, distCall2, c.getUnsupportedInIr(), c.getTransformationWarnings());
+				canBeGenerated.add(irStatus);
+
+		}
+	}
+	
 	private void genDistCalls(List<IRStatus<PIR>> canBeGenerated, List<IRStatus<ADefaultClassDeclIR>> classes) {
 
 		if(!classes.isEmpty()) {
