@@ -1,4 +1,4 @@
-package org.overture.codegen.vdm2c.ast;
+package org.overture.codegen.vdm2asn1.ast;
 
 import org.overture.ast.util.ClonableString;
 import org.overture.codegen.ir.ExternalNode;

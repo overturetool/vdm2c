@@ -1,4 +1,4 @@
-package org.overture.codegen.vdm2c;
+package org.overture.codegen.vdm2asn1;
 
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
@@ -40,7 +40,7 @@ import org.overture.codegen.merging.MergeVisitor;
 import org.overture.codegen.merging.TemplateCallable;
 import org.overture.codegen.merging.TemplateManager;
 import org.overture.codegen.utils.GeneralUtils;
-import org.overture.codegen.vdm2c.extast.declarations.AClassHeaderDeclIR;
+import org.overture.codegen.vdm2asn1.extast.declarations.AClassHeaderDeclIR;
 
 public class CFormat
 {

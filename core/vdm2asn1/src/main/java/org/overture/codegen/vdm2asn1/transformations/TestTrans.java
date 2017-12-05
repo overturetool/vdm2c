@@ -1,4 +1,4 @@
-package org.overture.codegen.vdm2c.transformations;
+package org.overture.codegen.vdm2asn1.transformations;
 
 import java.util.LinkedList;
 
@@ -11,6 +11,10 @@ import org.overture.codegen.ir.types.AClassTypeIR;
 import org.overture.codegen.ir.types.ARecordTypeIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 
+public class TestTrans{
+	
+}
+/*
 public class TestTrans extends DepthFirstAnalysisCAdaptor
 {
 	private  TransAssistantIR assist;
@@ -40,6 +44,7 @@ public class TestTrans extends DepthFirstAnalysisCAdaptor
 		
 	}
 	
+	
 //	@Override
 //	public void caseARecordTypeIR(ARecordTypeIR node) throws AnalysisException
 //	{
@@ -50,3 +55,4 @@ public class TestTrans extends DepthFirstAnalysisCAdaptor
 //		assist.replaceNodeWith(node, classType);
 //	}
 }
+*/

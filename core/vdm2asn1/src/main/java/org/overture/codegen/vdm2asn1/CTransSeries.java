@@ -1,4 +1,4 @@
-package org.overture.codegen.vdm2c;
+package org.overture.codegen.vdm2asn1;
 
 /*
  import static org.overture.codegen.ir.CodeGenBase.EVAL_METHOD_PREFIX;
@@ -31,8 +31,7 @@ import org.overture.codegen.trans.letexps.FuncTrans;
 import org.overture.codegen.trans.letexps.IfExpTrans;
 import org.overture.codegen.trans.patterns.PatternTrans;
 import org.overture.codegen.trans.patterns.PatternVarPrefixes;
-//import org.overture.codegen.trans.quantifier.Exists1CounterData;
-import org.overture.codegen.vdm2c.transformations.TestTrans;
+import org.overture.codegen.vdm2asn1.transformations.TestTrans;
 
 
 public class CTransSeries
@@ -163,7 +162,7 @@ public class CTransSeries
 //		transformations.add(new RemoveCWrappersTrans(transAssistant));
 //		transformations.add(new MethodVisibilityTrans(transAssistant));
 
-		transformations.add(new TestTrans(transAssistant));
+		//transformations.add(new TestTrans(transAssistant));
 		
 		return transformations;
 	}

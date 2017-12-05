@@ -6,8 +6,8 @@ analysis org.overture.cgc.extast.analysis;
 Tokens
 
  // Wraps a string type so it can be used as a field type
-  eString ='java:org.overture.codegen.vdm2c.ast.CGenClonableString';
-eVtables ='java:org.overture.codegen.vdm2c.ast.Vtables';
+  eString ='java:org.overture.codegen.vdm2asn1.ast.CGenClonableString';
+eVtables ='java:org.overture.codegen.vdm2asn1.ast.Vtables';
 Abstract Syntax Tree
 
 IR = #decl
@@ -16,7 +16,7 @@ IR = #decl
     ;
     
     
-#exp {-> package='org.overture.codegen.vdm2c.extast.expressions'}
+#exp {-> package='org.overture.codegen.vdm2asn1.extast.expressions'}
     =	{macroApply} [root]:IR.#exp [args]:IR.#exp*
     |	{ptrDeref} [root]:IR.#exp [target]:IR.#exp
     |	{c} [exp]:IR.#exp
@@ -28,13 +28,13 @@ IR = #decl
 
 
 
-#stm {-> package='org.overture.codegen.vdm2c.extast.statements'}
+#stm {-> package='org.overture.codegen.vdm2asn1.extast.statements'}
 	= {localVariableDeclaration} [decleration]:IR.#decl.var;
 	
 	
 
 
-#decl {-> package='org.overture.codegen.vdm2c.extast.declarations'}
+#decl {-> package='org.overture.codegen.vdm2asn1.extast.declarations'}
 	= 
        {classHeader}
     	[name]:java_String
@@ -55,7 +55,7 @@ IR = #decl
  
        
 
-struct  {-> package='org.overture.codegen.vdm2c.extast.declarations'}
+struct  {-> package='org.overture.codegen.vdm2asn1.extast.declarations'}
 	= {anonymous} [exp]:IR.#exp*	
 	;
        

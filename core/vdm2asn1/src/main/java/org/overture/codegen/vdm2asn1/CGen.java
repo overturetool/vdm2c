@@ -1,4 +1,4 @@
-package org.overture.codegen.vdm2c;
+package org.overture.codegen.vdm2asn1;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -32,7 +32,7 @@ import org.overture.codegen.ir.types.AClassTypeIR;
 import org.overture.codegen.ir.types.AMethodTypeIR;
 import org.overture.codegen.utils.GeneratedData;
 import org.overture.codegen.utils.GeneratedModule;
-import org.overture.codegen.vdm2c.extast.declarations.AClassHeaderDeclIR;
+import org.overture.codegen.vdm2asn1.extast.declarations.AClassHeaderDeclIR;
 //import org.overture.codegen.vdm2c.sourceformat.ISourceFileFormatter;
 
 public class CGen extends CodeGenBase

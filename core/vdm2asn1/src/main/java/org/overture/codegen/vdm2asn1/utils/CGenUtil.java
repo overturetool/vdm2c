@@ -1,4 +1,4 @@
-package org.overture.codegen.vdm2c.utils;
+package org.overture.codegen.vdm2asn1.utils;
 
 import java.io.File;
 import java.io.FileOutputStream;

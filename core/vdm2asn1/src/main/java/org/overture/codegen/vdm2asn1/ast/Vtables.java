@@ -1,4 +1,4 @@
-package org.overture.codegen.vdm2c.ast;
+package org.overture.codegen.vdm2asn1.ast;
 
 
 import java.util.HashMap;
@@ -9,9 +9,9 @@ import java.util.Vector;
 
 import org.overture.codegen.ir.declarations.ADefaultClassDeclIR;
 import org.overture.codegen.ir.declarations.AMethodDeclIR;
-import org.overture.codegen.vdm2c.extast.declarations.AAnonymousStruct;
-import org.overture.codegen.vdm2c.extast.declarations.AArrayDeclIR;
-import org.overture.codegen.vdm2c.extast.declarations.AClassHeaderDeclIR;
+import org.overture.codegen.vdm2asn1.extast.declarations.AAnonymousStruct;
+import org.overture.codegen.vdm2asn1.extast.declarations.AArrayDeclIR;
+import org.overture.codegen.vdm2asn1.extast.declarations.AClassHeaderDeclIR;
 
 public class Vtables
 {
@@ -149,6 +149,7 @@ public class Vtables
 			}
 
 			// FIXME this should also be recursive
+			/*
 			for (VEntry aArrayDeclIR : superHeader.getVtable().table)
 			{
 				for (VEntryOverride m : entry.getValue())
@@ -160,6 +161,7 @@ public class Vtables
 				}
 
 			}
+			*/
 
 		}
 

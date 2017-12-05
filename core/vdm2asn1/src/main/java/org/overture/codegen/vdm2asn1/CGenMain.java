@@ -1,4 +1,4 @@
-package org.overture.codegen.vdm2c;
+package org.overture.codegen.vdm2asn1;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,7 +25,7 @@ import org.overture.codegen.utils.GeneralCodeGenUtils;
 import org.overture.codegen.utils.GeneralUtils;
 import org.overture.codegen.utils.GeneratedData;
 import org.overture.codegen.utils.GeneratedModule;
-import org.overture.codegen.vdm2c.extast.declarations.AClassHeaderDeclIR;
+import org.overture.codegen.vdm2asn1.extast.declarations.AClassHeaderDeclIR;
 //import org.overture.codegen.vdm2c.sourceformat.ISourceFileFormatter;
 import org.overture.config.Settings;
 import org.overture.typechecker.util.TypeCheckerUtil;
