@@ -31,7 +31,7 @@ import org.overture.codegen.trans.letexps.FuncTrans;
 import org.overture.codegen.trans.letexps.IfExpTrans;
 import org.overture.codegen.trans.patterns.PatternTrans;
 import org.overture.codegen.trans.patterns.PatternVarPrefixes;
-import org.overture.codegen.trans.quantifier.Exists1CounterData;
+//import org.overture.codegen.trans.quantifier.Exists1CounterData;
 import org.overture.codegen.vdm2c.transformations.TestTrans;
 
 
@@ -45,6 +45,7 @@ public class CTransSeries
 		this.codeGen = codeGen;
 	}
 
+	/*
 	private Exists1CounterData consExists1CounterData()
 	{
 		AExternalTypeIR type = new AExternalTypeIR();
@@ -55,6 +56,7 @@ public class CTransSeries
 
 		return new Exists1CounterData(type, initExp);
 	}
+	*/
 
 	public List<DepthFirstAnalysisAdaptor> consAnalyses()
 	{
