@@ -35,14 +35,14 @@ import org.overture.codegen.utils.GeneratedModule;
 import org.overture.codegen.vdm2asn1.extast.declarations.AClassHeaderDeclIR;
 //import org.overture.codegen.vdm2c.sourceformat.ISourceFileFormatter;
 
-public class CGen extends CodeGenBase
+public class Asn1Gen extends CodeGenBase
 {
 	private List<File> emittedFiles = new LinkedList<>();
 //	private ISourceFileFormatter formatter;
 
 	public static Map<String, Boolean> hasTimeMap = null;
 
-	public CGen()
+	public Asn1Gen()
 	{
 	}
 
@@ -138,7 +138,7 @@ public class CGen extends CodeGenBase
 	{
 		List<GeneratedModule> genModules = new LinkedList<GeneratedModule>();
 
-		Boolean dist_gen = CGenMain.distGen;
+		Boolean dist_gen = Asn1GenMain.distGen;
 
 		statuses = replaceSystemClassWithClass(statuses);
 
@@ -311,7 +311,7 @@ public class CGen extends CodeGenBase
 		if (generatedClass.getIrNode() instanceof AClassHeaderDeclIR) {
 			extension = "h";
 		} else {
-			extension = "ans";
+			extension = "asn";
 		}
 		return extension;
 	}
@@ -348,6 +348,12 @@ public class CGen extends CodeGenBase
 		BufferedWriter output = new BufferedWriter(new FileWriter(file));
 
 		emittedFiles.add(new File(fileName));
+		
+		if(module.getContent()==null){
+			output.close();
+			return;
+		}
+		
 		output.write(module.getContent());
 		output.close();
 

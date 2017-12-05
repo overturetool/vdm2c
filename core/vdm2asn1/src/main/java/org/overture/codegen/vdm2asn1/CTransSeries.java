@@ -37,9 +37,9 @@ import org.overture.codegen.vdm2asn1.transformations.TestTrans;
 public class CTransSeries
 {
 
-	private CGen codeGen;
+	private Asn1Gen codeGen;
 
-	public CTransSeries(CGen codeGen)
+	public CTransSeries(Asn1Gen codeGen)
 	{
 		this.codeGen = codeGen;
 	}

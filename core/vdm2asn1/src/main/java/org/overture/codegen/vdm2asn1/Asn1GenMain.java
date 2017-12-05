@@ -31,7 +31,7 @@ import org.overture.config.Settings;
 import org.overture.typechecker.util.TypeCheckerUtil;
 import org.overture.typechecker.util.TypeCheckerUtil.TypeCheckResult;
 
-public class CGenMain
+public class Asn1GenMain
 {
 	private static boolean quiet = false;
 	public static boolean distGen = false;
@@ -74,6 +74,29 @@ public class CGenMain
 			return;
 		}
 
+		/*
+		 String current = null;
+		try
+		{
+			current = new java.io.File( "." ).getCanonicalPath();
+			System.out.println("Current dir:"+current);
+		} catch (IOException e1)
+		{
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		try
+		{
+			Process p = Runtime.getRuntime().exec("/Users/Miran/Desktop/ASN1_test/gen_mapping.sh -i HelloRecord/WatertankController.asn -o Miran4");
+		} catch (IOException e1)
+		{
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
+	        */
+		
 		List<File> files = new LinkedList<File>();
 		File outputDir = null;
 //		ISourceFileFormatter formatter = null;
@@ -182,7 +205,7 @@ public class CGenMain
 
 			List<SClassDefinition> ast = res.result;
 
-			CGen cGen = new CGen();
+			Asn1Gen cGen = new Asn1Gen();
 
 //			if (formatter != null)
 //			{
