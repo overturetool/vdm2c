@@ -1,0 +1,13 @@
+if ( $CFormat.format($node.getIfExp()) )
+	$CFormat.formatSource($node.getThenStm())
+	$CFormat.format($node.getThenStm())#if(!$CFormat.isBlock($node.getThenStm()));#end
+#foreach( $stm in $node.getElseIf() )
+else if ( $CFormat.format($stm.getElseIf()) )
+	$CFormat.formatSource($stm.getThenStm())
+	$CFormat.format($stm.getThenStm())#if(!$CFormat.isBlock($stm.getThenStm()));#end
+#end
+#if ( !$CFormat.isNull($node.getElseStm()) )
+else
+	$CFormat.formatSource($node.getElseStm())
+	$CFormat.format($node.getElseStm())#if(!$CFormat.isBlock($node.getElseStm()));#end
+#end

@@ -1,0 +1,3 @@
+#set( $root = $CFormat.format($node.getRoot()) )
+#set( $args = $CFormat.formatArgs($node.getArgs()) )
+${root}($args)

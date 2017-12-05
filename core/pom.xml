@@ -14,6 +14,7 @@
 
   <modules>
     <module>vdm2c</module>
+    <module>vdm2asn1</module>
   </modules>
 
 <dependencies>

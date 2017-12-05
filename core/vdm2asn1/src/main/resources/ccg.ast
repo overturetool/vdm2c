@@ -1,0 +1,61 @@
+Packages
+
+base org.overture.cgc.extast.node;
+analysis org.overture.cgc.extast.analysis;
+
+Tokens
+
+ // Wraps a string type so it can be used as a field type
+  eString ='java:org.overture.codegen.vdm2c.ast.CGenClonableString';
+eVtables ='java:org.overture.codegen.vdm2c.ast.Vtables';
+Abstract Syntax Tree
+
+IR = #decl
+   | #stm
+   | #exp
+    ;
+    
+    
+#exp {-> package='org.overture.codegen.vdm2c.extast.expressions'}
+    =	{macroApply} [root]:IR.#exp [args]:IR.#exp*
+    |	{ptrDeref} [root]:IR.#exp [target]:IR.#exp
+    |	{c} [exp]:IR.#exp
+    |	{arrayIndex} [root]:IR.#exp [index]:IR.#exp
+    |	{stm} [stm]:IR.#stm
+    |	{paren} [exp]:IR.#exp
+    |	{plusplus} [exp]:IR.#exp
+	;
+
+
+
+#stm {-> package='org.overture.codegen.vdm2c.extast.statements'}
+	= {localVariableDeclaration} [decleration]:IR.#decl.var;
+	
+	
+
+
+#decl {-> package='org.overture.codegen.vdm2c.extast.declarations'}
+	= 
+       {classHeader}
+    	[name]:java_String
+    	(originalDef):IR.#decl.#Class
+		(flattenedSupers):IR.#decl.classHeader*
+		[state]:IR.#decl.classState
+    	[includes]:eString*
+    	[vtable]:eVtables
+    	(values):IR.#decl.field*
+    	[quotes]:IR.#decl.quote*
+    	[arrDM]:IR.#decl.array
+    	[arrDMinit]:IR.#decl.array
+    | {classState} (fields):IR.#decl.field*
+    | {array} [static]:java_Boolean [type]:IR.#type [name]:java_String [size]:java_Integer [initial]:struct*
+    | {arrayDM} [static]:java_Boolean [type]:IR.#type [name]:java_String [size]:java_Integer [initial]:struct*
+    | {quote} [name]:java_String [id]:java_Integer
+       ;
+ 
+       
+
+struct  {-> package='org.overture.codegen.vdm2c.extast.declarations'}
+	= {anonymous} [exp]:IR.#exp*	
+	;
+       

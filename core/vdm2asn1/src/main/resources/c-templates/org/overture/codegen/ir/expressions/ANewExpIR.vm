@@ -1,0 +1,1 @@
+new $node.getName()($CFormat.formatArgs($node.getArgs()))

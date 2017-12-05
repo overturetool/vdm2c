@@ -1,0 +1,1 @@
+$String.format("QUOTE_%S",$node.getValue())

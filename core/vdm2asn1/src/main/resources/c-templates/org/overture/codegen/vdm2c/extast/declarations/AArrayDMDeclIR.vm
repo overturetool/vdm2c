@@ -1,0 +1,7 @@
+#if($CFormat.isNull($node.getStatic()))#else static #end $CFormat.format($node.getType()) $node.getName() #if($node.getInitial().isEmpty()) $String.format("[%d]",$node.getSize()) #else [] =
+
+#foreach( $entry in $node.getInitial() )
+$CFormat.format($entry)
+#end			
+				
+ #end ;

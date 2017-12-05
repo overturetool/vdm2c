@@ -1,0 +1,11 @@
+##
+##
+#set( $pattern = $CFormat.format($node.getPattern()) )
+##
+##$CFormat.formatMetaData($node.getMetaData())##
+##
+#set( $rhs = "" )
+#if ( !$CFormat.isNull($node.getExp()) )
+  #set( $rhs = "= $CFormat.format($node.getExp())" )
+#end
+$CFormat.format($node.getType()) $pattern $rhs

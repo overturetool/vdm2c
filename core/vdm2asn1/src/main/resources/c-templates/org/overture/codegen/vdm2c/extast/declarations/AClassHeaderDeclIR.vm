@@ -1,0 +1,117 @@
+// The template for class header
+#set( $cname = $node.getName())
+#set( $cstructname = $String.format("%sCLASS",$cname))
+#set( $cdefname = $String.format("CLASSES_%s_H_", $cname ) )
+#ifndef $cdefname
+\#define $cdefname
+
+\#define VDM_CG
+
+\#include "Vdm.h"
+#foreach( $super in $node.getFlattenedSupers() )
+\#include "$String.format("%s.h",$super.getName().toString())"
+#end
+
+//include types used in the class
+#foreach( $typeName in $node.getIncludes() )
+\#include "$String.format("%s.h",$typeName)"
+#end
+
+#[[
+/* -------------------------------
+ *
+ * Quotes
+ *
+ --------------------------------- */ 
+ ]]#
+#foreach( $val in $node.getQuotes() )
+	#set($qn = $String.format("QUOTE_%S",$val.getName()))
+#ifndef $qn
+\#define $qn $val.getId()
+#endif /* $qn */
+
+#end
+
+#[[
+/* -------------------------------
+ *
+ * values / global const
+ *
+ --------------------------------- */ 
+ ]]#
+#foreach( $val in $node.getValues() )
+extern TVP $val.getName();
+#end
+
+#[[
+/* -------------------------------
+ *
+ * The class
+ *
+ --------------------------------- */ 
+ ]]#
+
+//class id
+\#define $String.format("CLASS_ID_%s_ID %d",$cname, $CFormat.getClassId($cname))
+
+\#define $String.format("%s struct %s*",$cstructname,$cname)
+
+// The vtable ids
+#foreach( $entry in $node.getVtable().getTable() )
+\#define $String.format("CLASS_%s_%s %d",$cname,$entry.getKey(), $node.getVtable().getTable().indexOf($entry))
+#end
+
+struct $cname
+{
+#foreach( $super in $node.getFlattenedSupers() )
+	$CFormat.format($super.getState())
+#end
+	$CFormat.format($node.getState())
+};
+
+#[[
+/* -------------------------------
+ *
+ * Constructors
+ *
+ --------------------------------- */ 
+ ]]#
+
+#foreach( $method in $node.getOriginalDef().getMethods() )
+#if($method.getIsConstructor()) 
+	$CFormat.formatSource($method)
+	$CFormat.format($method.getMethodType().getResult()) $method.getName()($CFormat.format($method.getFormalParams()).replace("this","this_"));
+#end
+#end
+
+#[[
+/* -------------------------------
+ *
+ * public access functions
+ *
+ --------------------------------- */ 
+ ]]#
+#foreach( $method in $node.getOriginalDef().getMethods() )
+#if($CFormat.isPublic($method) && !$method.getIsConstructor()) 
+	$CFormat.format($method.getMethodType().getResult()) $method.getName()($CFormat.format($method.getFormalParams()).replace("this","this_"));
+#end
+#end
+
+#[[
+/* -------------------------------
+ *
+ * Internal
+ *
+ --------------------------------- */ 
+ ]]#
+
+void ${cname}_free_fields(${cstructname});
+$cstructname ${cname}_Constructor(${cstructname});
+
+#if(!$CFormat.isNull($node.getArrDMinit())) 
+	$CFormat.format($node.getArrDMinit())
+#end
+
+##$CFormat.format($node.getArrDMinit())
+
+#endif /* $cdefname */

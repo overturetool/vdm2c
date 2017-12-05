@@ -1,0 +1,7 @@
+Dataview DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+#foreach( $decl in $node.getTypeDecls() )
+$CFormat.format($decl)
+#end
+
+END

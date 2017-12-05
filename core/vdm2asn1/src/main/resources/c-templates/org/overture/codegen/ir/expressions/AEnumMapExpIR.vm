@@ -1,0 +1,3 @@
+#set ( $mapsize = $node.getMembers().size() )
+## '5' is the estimated size. TODO: Come up with better estimate
+newMapVarToGrow(${mapsize},5, #{if}($mapsize == 0)NULL#{else}$CFormat.formatMapArgs($node.getMembers())#end)

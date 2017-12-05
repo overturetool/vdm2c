@@ -1,0 +1,16 @@
+$node.getName() ::= SEQUENCE {
+	$CFormat.formatFields($node.getFields())
+}
+
+###MH class $node.getName() implements Record
+##{
+###	#foreach( $field in $node.getFields() )
+###$CFormat.format($field)
+#####end
+##
+##
+####
+###foreach( $method in $node.getMethods() )
+##$CFormat.format($method)
+###end
+##}

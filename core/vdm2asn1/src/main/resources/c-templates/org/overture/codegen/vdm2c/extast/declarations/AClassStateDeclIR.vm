@@ -1,0 +1,9 @@
+#set( $cname = $node.parent().getName())
+
+/* Definition of Class: '$cname' */
+	VDM_CLASS_BASE_DEFINITIONS($cname);
+	 
+	#foreach( $field in $node.getFields() )
+VDM_CLASS_FIELD_DEFINITION($cname,$field.getName());
+	#end
+VDM_CLASS_FIELD_DEFINITION($cname,numFields);
