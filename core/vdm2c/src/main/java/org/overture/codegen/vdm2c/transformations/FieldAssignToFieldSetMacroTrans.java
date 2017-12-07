@@ -8,6 +8,7 @@ import org.overture.ast.statements.AIdentifierStateDesignator;
 import org.overture.cgc.extast.analysis.AnswerCAdaptor;
 import org.overture.cgc.extast.analysis.DepthFirstAnalysisCAdaptor;
 import org.overture.codegen.ir.INode;
+import org.overture.codegen.ir.SExpIR;
 import org.overture.codegen.ir.analysis.AnalysisException;
 import org.overture.codegen.ir.declarations.AVarDeclIR;
 import org.overture.codegen.ir.declarations.SClassDeclIR;
@@ -18,6 +19,7 @@ import org.overture.codegen.ir.statements.AAssignToExpStmIR;
 import org.overture.codegen.ir.statements.ABlockStmIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.extast.expressions.AMacroApplyExpIR;
+import org.overture.codegen.vdm2c.tags.CTags;
 import org.overture.codegen.vdm2c.utils.CTransUtil;
 import org.overture.codegen.vdm2c.utils.GlobalFieldUtil;
 import org.overture.codegen.vdm2c.utils.NameConverter;
@@ -86,7 +88,19 @@ DepthFirstAnalysisCAdaptor
 			{
 				AIdentifierVarExpIR id = createIdentifier(target.getName(), target.getSourceNode());
 				id.setType(target.getType().clone());
+
 				assist.replaceNodeWith(node.getTarget(), id);
+				SExpIR expCloned = ValueSemantics.forceClone(node.getExp().clone());
+				expCloned.setTag(CTags.EXP_ASSIGNED_TO_STATIC_FIELD);
+				assist.replaceNodeWith(node.getExp(), expCloned);
+
+				SExpIR freeStaticField = ValueSemantics.free(id.getName(), id.getSourceNode());
+
+				ABlockStmIR replacement = new ABlockStmIR();
+				assist.replaceNodeWith(node, replacement);
+				replacement.getStatements().add(CTransUtil.exp2Stm(freeStaticField));
+				replacement.getStatements().add(node);
+
 				return;
 			}
 			

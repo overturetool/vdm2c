@@ -308,6 +308,13 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 	private void changeToGcCall(SExpIR node, LinkedList<SExpIR> args,
 								SExpIR root)
 	{
+		// Assignments to static instance variables require special treatment. See
+		// https://github.com/overturetool/vdm2c/issues/122#issuecomment-349663826
+		if(node.getTag() == CTags.EXP_ASSIGNED_TO_STATIC_FIELD)
+		{
+			return;
+		}
+
 		if (root instanceof AIdentifierVarExpIR)
 		{
 			AIdentifierVarExpIR id = (AIdentifierVarExpIR) root;
