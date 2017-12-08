@@ -185,6 +185,20 @@ TVP newCollectionWithValuesPrealloc(size_t size, size_t expected_size, vdmtype t
 	return product;
 }
 
+TVP newCollectionWithValuesPreallocGC(size_t size, size_t expected_size, vdmtype type, TVP* elements)
+{
+	int i;
+
+	TVP product = newCollectionPreallocGC(size, expected_size, type);
+	UNWRAP_COLLECTION(col,product);
+
+	for (i = 0; i < size; i++)
+	{
+		col->value[i]= vdmClone(elements[i]);
+	}
+	return product;
+}
+
 TVP newCollectionWithValuesGC(size_t size, vdmtype type, TVP* elements)
 {
 	int i;
