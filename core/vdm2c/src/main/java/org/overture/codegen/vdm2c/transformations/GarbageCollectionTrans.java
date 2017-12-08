@@ -26,10 +26,7 @@ import org.overture.codegen.vdm2c.Vdm2cTag.MethodTag;
 import org.overture.codegen.vdm2c.extast.expressions.AMacroApplyExpIR;
 import org.overture.codegen.vdm2c.extast.statements.ALocalVariableDeclarationStmIR;
 import org.overture.codegen.vdm2c.tags.CTags;
-import org.overture.codegen.vdm2c.utils.CGenUtil;
-import org.overture.codegen.vdm2c.utils.CLetBeStStrategy;
-import org.overture.codegen.vdm2c.utils.CSetCompStrategy;
-import org.overture.codegen.vdm2c.utils.CTransUtil;
+import org.overture.codegen.vdm2c.utils.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -107,6 +104,7 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 
 		// Collections
 		gcNames.put(ColTrans.SEQ_VAR, "newSeqVarGC");
+		gcNames.put(CSeqCompStrategy.NEW_SEQ_VAR_TO_GROW, "newSeqVarToGrowGC");
 		gcNames.put(ColTrans.SET_VAR, "newSetVarGC");
 		gcNames.put(ColTrans.MAP_VAR, "newMapVarGC");
 		
