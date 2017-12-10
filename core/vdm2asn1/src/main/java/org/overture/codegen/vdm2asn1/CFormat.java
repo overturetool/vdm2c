@@ -1,5 +1,7 @@
 package org.overture.codegen.vdm2asn1;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -10,6 +12,8 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
+import org.apache.velocity.Template;
+import org.apache.velocity.runtime.parser.ParseException;
 import org.overture.ast.definitions.SClassDefinition;
 import org.overture.ast.intf.lex.ILexLocation;
 import org.overture.codegen.assistant.AssistantBase;
@@ -20,6 +24,7 @@ import org.overture.codegen.ir.SDeclIR;
 import org.overture.codegen.ir.SExpIR;
 import org.overture.codegen.ir.STypeIR;
 import org.overture.codegen.ir.analysis.AnalysisException;
+import org.overture.codegen.ir.declarations.ADefaultClassDeclIR;
 import org.overture.codegen.ir.declarations.AFieldDeclIR;
 import org.overture.codegen.ir.declarations.AFormalParamLocalParamIR;
 import org.overture.codegen.ir.declarations.AFuncDeclIR;
@@ -68,8 +73,7 @@ public class CFormat
 		return id;
 
 	}
-
-
+	/*
 	public CFormat(IRInfo info)
 	{
 		TemplateManager tm = new TemplateManager("c-templates");
@@ -80,7 +84,56 @@ public class CFormat
 		this.mergeVisitor = new MergeVisitor(tm, templateCallables);
 		this.info = info;
 	}
+*/
+	public CFormat(IRInfo info)
+	{
+		final String cTemplates = "asn-templates";
+		
+		TemplateManager tm = new TemplateManager(cTemplates)
+		{
+			@Override
+			public Template getTemplate(Class<? extends INode> nodeClass)
+					throws ParseException
+			{
+				/*
+				if (nodeClass == ADefaultClassDeclIR.class)
+				{
+					final String CLAZZ_TEMPLATE = "DataView DEFINITIONS AUTOMATIC TAGS ::= BEGIN\n"
+							+ "#foreach( $decl in $node.getTypeDecls() )\n"
+							+ "$CFormat.format($decl)\n" + "#end\n\n" + "END";
 
+					StringBuffer sb = new StringBuffer(CLAZZ_TEMPLATE);
+
+					return constructTemplate("class", sb);
+				}
+				*/
+			
+				/*
+				if (nodeClass == ARe)
+				{
+					final String CLAZZ_TEMPLATE = "DataView DEFINITIONS AUTOMATIC TAGS ::= BEGIN\n"
+							+ "#foreach( $decl in $node.getTypeDecls() )\n"
+							+ "$CFormat.format($decl)\n" + "#end\n\n" + "END";
+
+					StringBuffer sb = new StringBuffer(CLAZZ_TEMPLATE);
+
+					return constructTemplate("class", sb);
+				}	
+			*/
+
+				return super.getTemplate(nodeClass);
+			}
+		};
+
+		TemplateCallable[] templateCallables = new TemplateCallable[] {
+				new TemplateCallable("CFormat", this),
+				new TemplateCallable("String", new String()) };
+		this.mergeVisitor = new MergeVisitor(tm, templateCallables);
+		this.info = info;
+	}
+
+	
+	
 	public String format(INode node) throws AnalysisException
 	{
 		StringWriter writer = new StringWriter();
