@@ -357,7 +357,6 @@ TVP vdmClone(TVP x)
 		/* that can be used from the one being cloned, but all of it should be  */
 		/* irrelevant for records.  */
 		(tmp->value).ptr = newClassValue(((struct ClassType*)(x->value.ptr))->classId,
-				((struct ClassType*)(x->value.ptr))->refs,
 				NULL,
 				NULL);
 
@@ -365,21 +364,20 @@ TVP vdmClone(TVP x)
 		/* hard-coded into the corresponding struct name.  */
 		numFields = (*((TVP*)((char*)(((struct ClassType*)x->value.ptr)->value) + \
 				sizeof(struct VTable*) + \
-				sizeof(int) + \
-				sizeof(unsigned int))))->value.intVal;
+				sizeof(int))))->value.intVal;
 
 		/* Allocate memory to be populated with the pointers pointing to the cloned fields.  */
-		((struct ClassType*)((tmp->value).ptr))->value = malloc(sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(TVP) + sizeof(TVP) * numFields);
+		((struct ClassType*)((tmp->value).ptr))->value = malloc(sizeof(struct VTable*) + sizeof(int) + sizeof(TVP) + sizeof(TVP) * numFields);
 		assert(((struct ClassType*)((tmp->value).ptr))->value != NULL);
 
 		for(i = 0; i <= numFields; i++)
 		{
 			/* Start cloning the fields one by one, including the number-of-fields field,  */
 			/* since it is just a TVP.  */
-			tmpField = vdmClone(*((TVP*)((char*)(((struct ClassType*)x->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(TVP) * i)));
+			tmpField = vdmClone(*((TVP*)((char*)(((struct ClassType*)x->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(TVP) * i)));
 
 			/* Only copy the address stored in tmpField so that that memory is now addressed by the current field in the struct.  */
-			memcpy(((TVP*)((char*)(((struct ClassType*)tmp->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(TVP) * i)), &tmpField, sizeof(TVP));
+			memcpy(((TVP*)((char*)(((struct ClassType*)tmp->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(TVP) * i)), &tmpField, sizeof(TVP));
 		}
 
 		break;
@@ -391,7 +389,7 @@ TVP vdmClone(TVP x)
 		struct ClassType* classTptr = (struct ClassType*) tmp->value.ptr;
 
 		/* improve using memcpy  */
-		tmp->value.ptr = newClassValue(classTptr->classId, classTptr->refs, classTptr->freeClass, classTptr->value);
+		tmp->value.ptr = newClassValue(classTptr->classId, classTptr->freeClass, classTptr->value);
 		break;
 	}
 	}
@@ -491,13 +489,11 @@ bool equals(TVP a, TVP b)
 
 		numFields_a = (*((TVP*)((char*)(((struct ClassType*)a->value.ptr)->value) + \
 				sizeof(struct VTable*) + \
-				sizeof(int) + \
-				sizeof(unsigned int))))->value.intVal;
+				sizeof(int))))->value.intVal;
 
 		numFields_b = (*((TVP*)((char*)(((struct ClassType*)b->value.ptr)->value) + \
 				sizeof(struct VTable*) + \
-				sizeof(int) + \
-				sizeof(unsigned int))))->value.intVal;
+				sizeof(int))))->value.intVal;
 
 		if(numFields_a != numFields_b)
 		{
@@ -506,8 +502,8 @@ bool equals(TVP a, TVP b)
 
 		for(i = 0; i < numFields_a; i++)
 		{
-			res = vdmEquals(*((TVP*)((char*)(((struct ClassType*)a->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(TVP) + sizeof(TVP) * i)), \
-					*((TVP*)((char*)(((struct ClassType*)b->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(TVP) + sizeof(TVP) * i)));
+			res = vdmEquals(*((TVP*)((char*)(((struct ClassType*)a->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(TVP) + sizeof(TVP) * i)), \
+					*((TVP*)((char*)(((struct ClassType*)b->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(TVP) + sizeof(TVP) * i)));
 			if(!res->value.boolVal)
 			{
 				vdmFree(res);
@@ -654,13 +650,12 @@ void vdmFree_GCInternal(TVP ptr)
 
 		numFields = (*((TVP*)((char*)(((struct ClassType*)ptr->value.ptr)->value) + \
 				sizeof(struct VTable*) + \
-				sizeof(int) + \
-				sizeof(unsigned int))))->value.intVal;
+				sizeof(int))))->value.intVal;
 
 		/* We include the numFields field here, since it is just a TVP.  */
 		for(i = 0; i <= numFields; i++)
 		{
-			vdmFree_GCInternal(*((TVP*)((char*)(((struct ClassType*)ptr->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(TVP) * i)));
+			vdmFree_GCInternal(*((TVP*)((char*)(((struct ClassType*)ptr->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(TVP) * i)));
 		}
 
 		/* Free the virtual function table.  */
@@ -786,13 +781,12 @@ void vdmFree(TVP ptr)
 
 		numFields = (*((TVP*)((char*)(((struct ClassType*)ptr->value.ptr)->value) + \
 				sizeof(struct VTable*) + \
-				sizeof(int) + \
-				sizeof(unsigned int))))->value.intVal;
+				sizeof(int))))->value.intVal;
 
 		/* We include the numFields field here, since it is just a TVP.  */
 		for(i = 0; i <= numFields; i++)
 		{
-			vdmFree(*((TVP*)((char*)(((struct ClassType*)ptr->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(unsigned int) + sizeof(TVP) * i)));
+			vdmFree(*((TVP*)((char*)(((struct ClassType*)ptr->value.ptr)->value) + sizeof(struct VTable*) + sizeof(int) + sizeof(TVP) * i)));
 		}
 
 		/* Free the virtual function table.  */

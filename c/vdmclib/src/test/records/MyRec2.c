@@ -13,18 +13,14 @@
 
 void MyRec2_free_fields(struct MyRec2 *this)
 {
-		vdmFree(this->m_MyRec2_field1);
-			vdmFree(this->m_MyRec2_field2);
-	}
+	vdmFree(this->m_MyRec2_field1);
+	vdmFree(this->m_MyRec2_field2);
+}
 
 static void MyRec2_free(struct MyRec2 *this)
 {
-	--this->_MyRec2_refs;
-	if (this->_MyRec2_refs < 1)
-	{
-		MyRec2_free_fields(this);
-		free(this);
-	}
+	MyRec2_free_fields(this);
+	free(this);
 }
 
 
@@ -33,32 +29,32 @@ static void MyRec2_free(struct MyRec2 *this)
  * Member methods 
  *
  --------------------------------- */
- 
 
- void MyRec2_const_init()	{
 
-return ;
+void MyRec2_const_init()	{
+
+	return ;
 }
 
 
 
- void MyRec2_const_shutdown()	{
+void MyRec2_const_shutdown()	{
 
-return ;
+	return ;
 }
 
 
 
- void MyRec2_static_init()	{
+void MyRec2_static_init()	{
 
-return ;
+	return ;
 }
 
 
 
- void MyRec2_static_shutdown()	{
+void MyRec2_static_shutdown()	{
 
-return ;
+	return ;
 }
 
 
@@ -69,8 +65,8 @@ return ;
  * VTable
  *
  --------------------------------- */
- 
- static  struct VTable VTableArrayForMyRec2  [0]  ;
+
+static  struct VTable VTableArrayForMyRec2  [0]  ;
 
 
 
@@ -79,8 +75,8 @@ return ;
  * Internal memory constructor
  *
  --------------------------------- */
- 
- 
+
+
 MyRec2CLASS MyRec2_Constructor(MyRec2CLASS this_ptr)
 {
 
@@ -91,27 +87,26 @@ MyRec2CLASS MyRec2_Constructor(MyRec2CLASS this_ptr)
 
 	if(this_ptr!=NULL)
 	{
-	
-			
+
+
 		this_ptr->_MyRec2_id = CLASS_ID_MyRec2_ID;
-		this_ptr->_MyRec2_refs = 0;
 		this_ptr->_MyRec2_pVTable=VTableArrayForMyRec2;
 
-				this_ptr->m_MyRec2_field1= NULL ;
-						this_ptr->m_MyRec2_field2= NULL ;
-						this_ptr->m_MyRec2_numFields= NULL ;
-			}
+		this_ptr->m_MyRec2_field1= NULL ;
+		this_ptr->m_MyRec2_field2= NULL ;
+		this_ptr->m_MyRec2_numFields= NULL ;
+	}
 
 	return this_ptr;
 }
 
 static TVP new()
-{
+		{
 	MyRec2CLASS ptr=MyRec2_Constructor(NULL);
 
 	return newTypeValue(VDM_RECORD, (TypedValueType)
-			{	.ptr=newClassValue(ptr->_MyRec2_id, &ptr->_MyRec2_refs, (freeVdmClassFunction)&MyRec2_free, ptr)});
-}
+			{	.ptr=newClassValue(ptr->_MyRec2_id, (freeVdmClassFunction)&MyRec2_free, ptr)});
+		}
 
 
 
@@ -120,38 +115,38 @@ static TVP new()
  * Public class constructors
  *
  --------------------------------- */ 
- 
 
 
- TVP _Z6MyRec2EI1SI(MyRec2CLASS this, TVP param_field1, TVP param_field2)	{
 
- TVP __buf = NULL;
+TVP _Z6MyRec2EI1SI(MyRec2CLASS this, TVP param_field1, TVP param_field2)	{
 
-if ( this == NULL )
-	
+	TVP __buf = NULL;
+
+	if ( this == NULL )
+
 	{
 
-__buf = new();
+		__buf = new();
 
-this = TO_CLASS_PTR(__buf, MyRec2);
-}
-;
+		this = TO_CLASS_PTR(__buf, MyRec2);
+	}
+	;
 
- TVP field_tmp_3 = param_field1;
+	TVP field_tmp_3 = param_field1;
 
-SET_FIELD_PTR(MyRec2, MyRec2, this, field1, field_tmp_3);
+	SET_FIELD_PTR(MyRec2, MyRec2, this, field1, field_tmp_3);
 
-vdmFree(field_tmp_3);
+	vdmFree(field_tmp_3);
 
- TVP field_tmp_4 = param_field2;
+	TVP field_tmp_4 = param_field2;
 
-SET_FIELD_PTR(MyRec2, MyRec2, this, field2, field_tmp_4);
+	SET_FIELD_PTR(MyRec2, MyRec2, this, field2, field_tmp_4);
 
-vdmFree(field_tmp_4);
+	vdmFree(field_tmp_4);
 
-SET_FIELD_PTR(MyRec2, MyRec2, this, numFields, newInt(2));
+	SET_FIELD_PTR(MyRec2, MyRec2, this, numFields, newInt(2));
 
-return __buf;
+	return __buf;
 }
 
 
@@ -162,6 +157,6 @@ return __buf;
  * Global class fields
  *
  --------------------------------- */
- 
-		
+
+
 #endif /* NO_RECORDS */

@@ -19,12 +19,8 @@ void MyRec_free_fields(struct MyRec *this)
 
 static void MyRec_free(struct MyRec *this)
 {
-	--this->_MyRec_refs;
-	if (this->_MyRec_refs < 1)
-	{
-		MyRec_free_fields(this);
-		free(this);
-	}
+	MyRec_free_fields(this);
+	free(this);
 }
 
 
@@ -96,7 +92,6 @@ MyRecCLASS MyRec_Constructor(MyRecCLASS this_ptr)
 
 
 		this_ptr->_MyRec_id = CLASS_ID_MyRec_ID;
-		this_ptr->_MyRec_refs = 0;
 		this_ptr->_MyRec_pVTable=VTableArrayForMyRec;
 
 		this_ptr->m_MyRec_field1= NULL ;
@@ -108,12 +103,12 @@ MyRecCLASS MyRec_Constructor(MyRecCLASS this_ptr)
 }
 
 static TVP new()
-		{
+				{
 	MyRecCLASS ptr=MyRec_Constructor(NULL);
 
 	return newTypeValue(VDM_RECORD, (TypedValueType)
-			{	.ptr=newClassValue(ptr->_MyRec_id, &ptr->_MyRec_refs, (freeVdmClassFunction)&MyRec_free, ptr)});
-		}
+			{	.ptr=newClassValue(ptr->_MyRec_id, (freeVdmClassFunction)&MyRec_free, ptr)});
+				}
 
 
 

@@ -30,14 +30,12 @@
 
 #include "VdmClass.h"
 
-struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction freeClass, void* value)
+struct ClassType* newClassValue(int id, freeVdmClassFunction freeClass, void* value)
 {
 	struct ClassType* ptr = (struct ClassType*) malloc(sizeof(struct ClassType));
 	assert(ptr != NULL);
 	ptr->classId = id;
 	ptr->value = value;
 	ptr->freeClass = freeClass;
-	ptr->refs = refs;
-	(*refs)++;
 	return ptr;
 }

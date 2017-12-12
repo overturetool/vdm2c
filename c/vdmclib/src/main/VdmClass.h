@@ -71,8 +71,7 @@ struct VTable
  * 3. reference count for smart pointer
  * */
 #define VDM_CLASS_BASE_DEFINITIONS(className) 	struct VTable * _##className##_pVTable;\
-int _##className##_id;\
-unsigned int _##className##_refs
+int _##className##_id;
 
 #define VDM_CLASS_FIELD_DEFINITION(className, name) TVP m_##className##_##name
 
@@ -86,11 +85,10 @@ struct ClassType
 {
 	void* value;
 	int classId;
-	unsigned int* refs;
 	freeVdmClassFunction freeClass;/* TODO move to global map  */
 };
 
-struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction freeClass, void* value);
+struct ClassType* newClassValue(int id, freeVdmClassFunction freeClass, void* value);
 
 /*---------------------------------------------------
  *
@@ -269,9 +267,9 @@ struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction
  */
 #define SAME_ARGS(x, y) !strcmp(#x, #y)
 
-#define SELF(objName) newTypeValue(VDM_CLASS, (TypedValueType){.ptr=newClassValue(this->_##objName##_id, &this->_##objName##_refs, (freeVdmClassFunction)&objName##_free, this)});
+#define SELF(objName) newTypeValue(VDM_CLASS, (TypedValueType){.ptr=newClassValue(this->_##objName##_id, (freeVdmClassFunction)&objName##_free, this)});
 
 
-#define SELF_GC(objName) newTypeValueGC(VDM_CLASS, (TypedValueType){.ptr=newClassValue(this->_##objName##_id, &this->_##objName##_refs, (freeVdmClassFunction)&objName##_free, this)});
+#define SELF_GC(objName) newTypeValueGC(VDM_CLASS, (TypedValueType){.ptr=newClassValue(this->_##objName##_id, (freeVdmClassFunction)&objName##_free, this)});
 
 #endif /* LIB_VDMCLASS_H_ */

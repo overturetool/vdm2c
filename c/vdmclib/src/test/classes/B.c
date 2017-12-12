@@ -32,12 +32,8 @@
 
 void B_free(struct B *this)
 {
-	--this->_B_refs;
-	if (this->_B_refs < 1)
-	{
-		vdmFree(this->m_B_field2);
-		free(this);
-	}
+	vdmFree(this->m_B_field2);
+	free(this);
 }
 
 static TVP B_sum(BCLASS this)
@@ -75,10 +71,10 @@ static TVP B_getField2(BCLASS this)
 
 struct VTable VTableArrayForB[] =
 {
-/* { 0, 0, (VirtualFunctionPointer) A_calc }, */
-{ 0, 0, (VirtualFunctionPointer) B_sum },
-{ 0, 0, (VirtualFunctionPointer) B_sum2 },
-{ 0, 0, (VirtualFunctionPointer) B_getField2 }, };
+		/* { 0, 0, (VirtualFunctionPointer) A_calc }, */
+		{ 0, 0, (VirtualFunctionPointer) B_sum },
+		{ 0, 0, (VirtualFunctionPointer) B_sum2 },
+		{ 0, 0, (VirtualFunctionPointer) B_getField2 }, };
 
 BCLASS B_Constructor(BCLASS this_ptr)
 {
@@ -113,11 +109,11 @@ BCLASS B_Constructor(BCLASS this_ptr)
 }
 
 static TVP new()
-{
+		{
 	BCLASS ptr = B_Constructor(NULL);
 	return newTypeValue(VDM_CLASS, (TypedValueType)
-			{	.ptr=newClassValue(ptr->_B_id, &ptr->_B_refs, (freeVdmClassFunction)&B_free, ptr)});
-}
+			{	.ptr=newClassValue(ptr->_B_id, (freeVdmClassFunction)&B_free, ptr)});
+		}
 
 const struct BClass B =
 { ._new = &new };

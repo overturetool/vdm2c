@@ -16,12 +16,8 @@ void RecordTest_free_fields(struct RecordTest *this)
 
 static void RecordTest_free(struct RecordTest *this)
 {
-	--this->_RecordTest_refs;
-	if (this->_RecordTest_refs < 1)
-	{
-		RecordTest_free_fields(this);
-		free(this);
-	}
+	RecordTest_free_fields(this);
+	free(this);
 }
 
 
@@ -172,7 +168,6 @@ RecordTestCLASS RecordTest_Constructor(RecordTestCLASS this_ptr)
 
 
 		this_ptr->_RecordTest_id = CLASS_ID_RecordTest_ID;
-		this_ptr->_RecordTest_refs = 0;
 		this_ptr->_RecordTest_pVTable=VTableArrayForRecordTest;
 
 	}
@@ -181,12 +176,12 @@ RecordTestCLASS RecordTest_Constructor(RecordTestCLASS this_ptr)
 }
 
 static TVP new()
-						{
+								{
 	RecordTestCLASS ptr=RecordTest_Constructor(NULL);
 
 	return newTypeValue(VDM_CLASS, (TypedValueType)
-			{	.ptr=newClassValue(ptr->_RecordTest_id, &ptr->_RecordTest_refs, (freeVdmClassFunction)&RecordTest_free, ptr)});
-						}
+			{	.ptr=newClassValue(ptr->_RecordTest_id, (freeVdmClassFunction)&RecordTest_free, ptr)});
+								}
 
 
 

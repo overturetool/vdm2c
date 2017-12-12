@@ -38,12 +38,9 @@ void A_free_fields(struct A *this)
 
 static void A_free(struct A *this)
 {
-	--this->_A_refs;
-	if (this->_A_refs < 1)
-	{
-		A_free_fields(this);
-		free(this);
-	}
+
+	A_free_fields(this);
+	free(this);
 }
 
 TVP A_calc(ACLASS this,TVP x, TVP y)
@@ -58,8 +55,8 @@ static TVP A_sum(ACLASS this)
 
 struct VTable VTableArrayForA[] =
 {
-{ 0, 0, (VirtualFunctionPointer) A_calc },
-{ 0, 0, (VirtualFunctionPointer) A_sum }, };
+		{ 0, 0, (VirtualFunctionPointer) A_calc },
+		{ 0, 0, (VirtualFunctionPointer) A_sum }, };
 
 ACLASS A_Constructor(ACLASS this_ptr)
 {
@@ -72,7 +69,6 @@ ACLASS A_Constructor(ACLASS this_ptr)
 	if(this_ptr!=NULL)
 	{
 		this_ptr->_A_id = CLASS_ID_A_ID;
-		this_ptr->_A_refs = 0;
 		this_ptr->_A_pVTable=VTableArrayForA;
 
 		this_ptr->m_A_field1= newInt(4);
@@ -82,12 +78,12 @@ ACLASS A_Constructor(ACLASS this_ptr)
 }
 
 static TVP new()
-{
+		{
 	ACLASS ptr=A_Constructor(NULL);
 
 	return newTypeValue(VDM_CLASS, (TypedValueType)
-			{	.ptr=newClassValue(ptr->_A_id, &ptr->_A_refs, (freeVdmClassFunction)&A_free, ptr)});
-}
+			{	.ptr=newClassValue(ptr->_A_id, (freeVdmClassFunction)&A_free, ptr)});
+		}
 
 const struct AClass A =
 { ._new = &new };

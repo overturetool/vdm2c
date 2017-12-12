@@ -24,12 +24,8 @@ void ${cname}_free_fields(struct ${cname} *this)
 
 static void ${cname}_free(struct ${cname} *this)
 {
-	--this->_${cname}_refs;
-	if (this->_${cname}_refs < 1)
-	{
-		${cname}_free_fields(this);
-		free(this);
-	}
+	${cname}_free_fields(this);
+	free(this);
 }
 
 #[[
@@ -107,7 +103,6 @@ ${cname}CLASS ${cname}_Constructor(${cname}CLASS this_ptr)
 	
 		/*  $cname init  */
 		this_ptr->_${cname}_id = CLASS_ID_${cname}_ID;
-		this_ptr->_${cname}_refs = 0;
 		this_ptr->_${cname}_pVTable=VTableArrayFor${cname};
 
 	#foreach( $field in $node.getFields() )
@@ -126,7 +121,7 @@ static TVP new()
 	${cname}CLASS ptr=${cname}_Constructor(NULL);
 
 	return newTypeValue($CFormat.getVdmType($node), (TypedValueType)
-			{	.ptr=newClassValue(ptr->_${cname}_id, &ptr->_${cname}_refs, (freeVdmClassFunction)&${cname}_free, ptr)});
+			{	.ptr=newClassValue(ptr->_${cname}_id, (freeVdmClassFunction)&${cname}_free, ptr)});
 }
 
 
