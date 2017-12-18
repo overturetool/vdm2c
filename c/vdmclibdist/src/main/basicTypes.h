@@ -1,3 +1,8 @@
+
+
+/*  VERSION: For the version of VDM2C used to generate this project, refer to one of the generated files.  */
+
+
 #ifndef GENERATED_ASN1SCC_BASICTYPES_H
 #define GENERATED_ASN1SCC_BASICTYPES_H
 /*

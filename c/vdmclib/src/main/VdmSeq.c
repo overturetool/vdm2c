@@ -26,6 +26,11 @@
  *  Created on: Dec 1, 2015
  *      Author: kel
  */
+
+
+/*  VERSION: For the version of VDM2C used to generate this project, refer to one of the generated files.  */
+
+
 #include <stdarg.h>
 #include "VdmSeq.h"
 #include "VdmGC.h"
