@@ -27,6 +27,10 @@
  *      Author: kel
  */
 
+
+/*  VERSION: For the version of VDM2C used to generate this project, refer to one of the generated files.  */
+
+
 #ifndef LIB_VDMPRODUCT_H_
 #define LIB_VDMPRODUCT_H_
 #include "Vdm.h"

@@ -27,6 +27,10 @@
  *      Author: kel
  */
 
+
+/*  VERSION: For the version of VDM2C used to generate this project, refer to one of the generated files.  */
+
+
 #ifndef TYPEDVALUE_H_
 #define TYPEDVALUE_H_
 
@@ -175,6 +179,7 @@ TVP newCollectionPrealloc(size_t size, size_t expected_size, vdmtype type);
 TVP newCollectionGC(size_t size, vdmtype type);
 TVP newCollectionPreallocGC(size_t size, size_t expected_size, vdmtype type);
 TVP newCollectionWithValuesGC(size_t size, vdmtype type, TVP* elements);
+TVP newCollectionWithValuesPreallocGC(size_t size, size_t expected_size, vdmtype type, TVP* elements);
 
 TVP vdmClone(TVP x);
 

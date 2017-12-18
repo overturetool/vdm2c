@@ -5,6 +5,10 @@
  *      Author: Victor Bandur
  */
 
+
+/*  VERSION: For the version of VDM2C used to generate this project, refer to one of the generated files.  */
+
+
 #include "CSVLib.h"
 
 /* This must not be protected by NO_CSV for source code FMU export to work properly.  */

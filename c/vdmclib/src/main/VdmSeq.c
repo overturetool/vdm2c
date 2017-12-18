@@ -26,6 +26,11 @@
  *  Created on: Dec 1, 2015
  *      Author: kel
  */
+
+
+/*  VERSION: For the version of VDM2C used to generate this project, refer to one of the generated files.  */
+
+
 #include <stdarg.h>
 #include "VdmSeq.h"
 #include "VdmGC.h"
@@ -196,7 +201,7 @@ TVP newSeqVarToGrowGC(size_t size, size_t expected_size, ...)
 
 	va_end(ap);
 
-	TVP res = newCollectionWithValuesPreallocGC(count, VDM_SEQ, value);
+	TVP res = newCollectionWithValuesPreallocGC(count, expected_size, VDM_SEQ, value);
 	free(value);
 	return res;
 }

@@ -27,6 +27,10 @@
  *      Author: kel
  */
 
+
+/*  VERSION: For the version of VDM2C used to generate this project, refer to one of the generated files.  */
+
+
 #ifndef LIB_VDM_H_
 #define LIB_VDM_H_
 
@@ -35,6 +39,7 @@
  * The VDM semantics requires the program to SEQ-fault,
  *  but this is not appreciated in the testing framework
  */
+
 #ifndef FATAL_ERROR
 #define FATAL_ERROR(message) exit(EXIT_FAILURE)
 #endif

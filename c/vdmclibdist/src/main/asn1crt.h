@@ -1,3 +1,8 @@
+
+
+/*  VERSION: For the version of VDM2C used to generate this project, refer to one of the generated files.  */
+
+
 #ifndef ASN1SCC_ASN1CRT_H_
 #define ASN1SCC_ASN1CRT_H_
 
