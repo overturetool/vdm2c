@@ -325,6 +325,7 @@ void vdmSetGrow(TVP set, TVP element)
 	assert(col->value != NULL);
 
 	vdmSetAdd(col->value, &(col->size), vdmClone(element));
+	vdmFree(element);
 }
 
 
