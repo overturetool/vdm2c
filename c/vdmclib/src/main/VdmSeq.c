@@ -47,8 +47,9 @@
 /* ------------------------------------------------  */
 static void vdmSeqAdd(TVP* value, int* index, TVP newValue)
 {
-	value[*index] = newValue;
+	value[*index] = vdmClone(newValue);
 	*index = (*index) + 1;
+	vdmFree(newValue);
 }
 /* End utility functions  */
 /* ------------------------------------------------  */

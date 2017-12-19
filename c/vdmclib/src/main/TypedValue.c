@@ -265,7 +265,7 @@ TVP vdmClone(TVP x)
 		/* encoded as values so the initial copy line handles these  */
 		break;
 	}
-#ifndef NO_MAPS
+#if !defined(NO_MAPS) || !defined(NO_SEQS)
 	case VDM_MAP:
 	{
 		UNWRAP_MAP(m, x);
@@ -449,7 +449,7 @@ bool equals(TVP a, TVP b)
 	{
 		return a->value.quoteVal == b->value.quoteVal;
 	}
-#ifndef NO_MAPS
+#if !defined(NO_MAPS) || !defined(NO_SEQS)
 	case VDM_MAP:
 	{
 		TVP r0 = vdmMapEquals(a, b);
@@ -582,7 +582,7 @@ void vdmFree_GCInternal(TVP ptr)
 	{
 		break;
 	}
-#ifndef NO_MAPS
+#if !defined(NO_MAPS) || !defined(NO_SEQS)
 	case VDM_MAP:
 	{
 		freeMap((struct Map*)(ptr->value.ptr));
@@ -713,7 +713,7 @@ void vdmFree(TVP ptr)
 	{
 		break;
 	}
-#ifndef NO_MAPS
+#if !defined(NO_MAPS) || !defined(NO_SEQS)
 	case VDM_MAP:
 	{
 		freeMap((struct Map*)(ptr->value.ptr));
