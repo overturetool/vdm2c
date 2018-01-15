@@ -26,6 +26,11 @@
  *  Created on: Dec 7, 2015
  *      Author: kel
  */
+
+
+/*  VERSION: For the version of VDM2C used to generate this project, refer to one of the generated files.  */
+
+
 #include <string.h>
 #include <stdarg.h>
 #include <math.h>

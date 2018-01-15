@@ -28,6 +28,10 @@
  */
 
 
+
+/*  VERSION: For the version of VDM2C used to generate this project, refer to one of the generated files.  */
+
+
 #include "VdmClass.h"
 
 struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction freeClass, void* value)

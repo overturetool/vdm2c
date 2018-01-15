@@ -27,6 +27,10 @@
  *      Author: kel
  */
 
+
+/*  VERSION: For the version of VDM2C used to generate this project, refer to one of the generated files.  */
+
+
 #ifndef LIB_VDMSEQ_H_
 #define LIB_VDMSEQ_H_
 #include "TypedValue.h"
@@ -50,6 +54,7 @@ TVP newSeqWithValues(size_t size,TVP* elements);
 TVP newSeqVar(size_t size,...);
 TVP newSeqVarGC(size_t size, ...);
 TVP newSeqVarToGrow(size_t size, size_t expected_size, ...);
+TVP newSeqVarToGrowGC(size_t size, size_t expected_size, ...);
 
 void vdmSeqGrow(TVP seq, TVP element);
 void vdmSeqFit(TVP seq);

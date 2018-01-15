@@ -1,3 +1,8 @@
+
+
+/*  VERSION: For the version of VDM2C used to generate this project, refer to one of the generated files.  */
+
+
 #ifndef VDMGC_H_
 #define VDMGC_H_
 

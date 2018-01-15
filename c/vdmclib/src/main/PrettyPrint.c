@@ -5,6 +5,11 @@
  *      Author: Victor Bandur
  */
 
+
+
+/*  VERSION: For the version of VDM2C used to generate this project, refer to one of the generated files.  */
+
+
 #include "PrettyPrint.h"
 #include <assert.h>
 #include <stdio.h>

@@ -27,6 +27,10 @@
  *      Author: kel
  */
 
+
+/*  VERSION: For the version of VDM2C used to generate this project, refer to one of the generated files.  */
+
+
 #include "Vdm.h"
 #include "TypedValue.h"
 #include "VdmClass.h"
@@ -176,6 +180,20 @@ TVP newCollectionWithValuesPrealloc(size_t size, size_t expected_size, vdmtype t
 	int i;
 
 	TVP product = newCollectionPrealloc(size, expected_size, type);
+	UNWRAP_COLLECTION(col,product);
+
+	for (i = 0; i < size; i++)
+	{
+		col->value[i]= vdmClone(elements[i]);
+	}
+	return product;
+}
+
+TVP newCollectionWithValuesPreallocGC(size_t size, size_t expected_size, vdmtype type, TVP* elements)
+{
+	int i;
+
+	TVP product = newCollectionPreallocGC(size, expected_size, type);
 	UNWRAP_COLLECTION(col,product);
 
 	for (i = 0; i < size; i++)

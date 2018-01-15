@@ -26,6 +26,11 @@
  *  Created on: Dec 1, 2015
  *      Author: kel
  */
+
+
+/*  VERSION: For the version of VDM2C used to generate this project, refer to one of the generated files.  */
+
+
 #include <stdarg.h>
 #include "VdmSeq.h"
 #include "VdmGC.h"
@@ -156,6 +161,47 @@ TVP newSeqVarToGrow(size_t size, size_t expected_size, ...)
 	va_end(ap);
 
 	TVP res = newCollectionWithValuesPrealloc(count, bufsize, VDM_SEQ, value);
+	free(value);
+	return res;
+}
+
+TVP newSeqVarToGrowGC(size_t size, size_t expected_size, ...)
+{
+	int i;
+
+	va_list ap;
+	va_start(ap, expected_size);
+
+	int count = 0;
+
+	int bufsize = expected_size;
+
+	TVP* value = (TVP*) calloc(bufsize, sizeof(TVP));
+	assert(value != NULL);
+
+	TVP arg;
+	TVP v;
+
+	for(i = 0; i < size; i++)
+	{
+		arg = va_arg(ap, TVP);
+		v = vdmClone(arg); /*  set binding  */
+
+
+		/* Extra security measure.  Will only be true if size >= expected_size.  */
+		if(count >= bufsize)
+		{
+			/* buffer too small add memory chunk  */
+			bufsize += DEFAULT_SEQ_COMP_BUFFER_STEPSIZE;
+			value = (TVP*)realloc(value, bufsize * sizeof(TVP));
+			assert(value != NULL);
+		}
+		vdmSeqAdd(value, &count, v);
+	}
+
+	va_end(ap);
+
+	TVP res = newCollectionWithValuesPreallocGC(count, expected_size, VDM_SEQ, value);
 	free(value);
 	return res;
 }
