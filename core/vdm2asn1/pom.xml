@@ -68,7 +68,7 @@
 		<archive>
 		<manifest>
 		<addClasspath>true</addClasspath>
-		<mainClass>org.overture.codegen.vdm2c.CGenMain</mainClass>
+		<mainClass>org.overture.codegen.vdm2asn1.Asn1GenMain</mainClass>
 		</manifest>
 		</archive>
 		<descriptorRefs>
@@ -90,7 +90,7 @@
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<configuration>
 					<excludePackageNames>
-						org.overture.cgc.extast.*:org.overture.cgc.extast.analysis.intf.*:org.overture.cgc.extast.node.*:org.overture.codegen.vdm2c.extast.declarations.*:org.overture.codegen.vdm2c.extast.expressions.*
+						org.overture.cgc.extast.*:org.overture.cgc.extast.analysis.intf.*:org.overture.cgc.extast.node.*:org.overture.codegen.vdm2asn1.extast.declarations.*:org.overture.codegen.vdm2asn1.extast.expressions.*
 					</excludePackageNames>
 					<failOnError>false</failOnError>
 					<skip>true</skip>

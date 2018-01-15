@@ -174,7 +174,10 @@ http://mojo.codehaus.org/versions-maven-plugin/
 						<exclude>org/overture/codegen/vdm2c/extast/statements/**/*</exclude>
 						<exclude>org/overture/cgc/extast/node/**/*</exclude>
 						<exclude>org/overture/codegen/vdm2c/ast/preview/**/*</exclude>
-						
+						<exclude>org/overture/codegen/vdm2asn1/extast/expressions/**/*</exclude>
+						<exclude>org/overture/codegen/vdm2asn1/extast/declarations/**/*</exclude>
+						<exclude>org/overture/codegen/vdm2asn1/extast/statements/**/*</exclude>
+						<exclude>org/overture/codegen/vdm2asn1/ast/preview/**/*</exclude>
 					</excludes>
 				</configuration>
 				<executions>

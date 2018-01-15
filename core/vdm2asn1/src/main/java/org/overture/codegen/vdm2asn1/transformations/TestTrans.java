@@ -11,10 +11,12 @@ import org.overture.codegen.ir.types.AClassTypeIR;
 import org.overture.codegen.ir.types.ARecordTypeIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 
+/*
 public class TestTrans{
 	
 }
-/*
+*/
+
 public class TestTrans extends DepthFirstAnalysisCAdaptor
 {
 	private  TransAssistantIR assist;
@@ -55,4 +57,4 @@ public class TestTrans extends DepthFirstAnalysisCAdaptor
 //		assist.replaceNodeWith(node, classType);
 //	}
 }
-*/
+

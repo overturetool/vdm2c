@@ -41,6 +41,7 @@ import org.overture.codegen.ir.statements.ABlockStmIR;
 import org.overture.codegen.ir.types.AExternalTypeIR;
 import org.overture.codegen.ir.types.AIntNumericBasicTypeIR;
 import org.overture.codegen.ir.types.ASeqSeqTypeIR;
+import org.overture.codegen.ir.types.ASetSetTypeIR;
 import org.overture.codegen.merging.MergeVisitor;
 import org.overture.codegen.merging.TemplateCallable;
 import org.overture.codegen.merging.TemplateManager;
@@ -155,6 +156,9 @@ public class CFormat
 				name =  decl.getName().toString() + " ::= INTEGER";
 
 			if(decl.getType() instanceof ASeqSeqTypeIR)
+				name =  decl.getName().toString() + " ::= SEQUENCE SIZE (";
+			
+			if(decl.getType() instanceof ASetSetTypeIR)
 				name =  decl.getName().toString() + " ::= SEQUENCE SIZE (";
 		}
 

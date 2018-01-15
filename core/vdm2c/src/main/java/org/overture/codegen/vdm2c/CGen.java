@@ -1,9 +1,11 @@
 package org.overture.codegen.vdm2c;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -13,6 +15,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.overture.ast.analysis.AnalysisException;
+import org.overture.ast.node.INode;
 import org.overture.codegen.ir.CodeGenBase;
 import org.overture.codegen.ir.IRConstants;
 import org.overture.codegen.ir.IRStatus;
@@ -38,6 +41,7 @@ import org.overture.codegen.ir.types.AIntNumericBasicTypeIR;
 import org.overture.codegen.ir.types.AMethodTypeIR;
 import org.overture.codegen.utils.GeneratedData;
 import org.overture.codegen.utils.GeneratedModule;
+import org.overture.codegen.vdm2asn1.Asn1Gen;
 import org.overture.codegen.vdm2c.analysis.ClassAssocAnalysis;
 import org.overture.codegen.vdm2c.distribution.CDistTransSeries;
 import org.overture.codegen.vdm2c.distribution.DistCGenUtil;
@@ -631,16 +635,42 @@ public class CGen extends CodeGenBase
 	}
 
 
-	public void emitDistCode(GeneratedData data, File outputDir) throws Exception {
+	public void emitDistCode(GeneratedData data, File outputDir, List<INode> filter) throws Exception {
+		
+		// Generate ASN.1 files for each CPU
+		/*
+		Asn1Gen asn1Gen = new Asn1Gen();
+		GeneratedData data2 = asn1Gen.generate(filter);
+		
+		for (GeneratedModule generatedClass : data2.getClasses())
+		{
+			asn1Gen.writeFile(generatedClass, outputDir);
+		
+		}
+		
+		vdm2asn1Mapping(outputDir.getAbsolutePath() + "/");
+		*/
+
+		
 		for (String cpuName : SystemArchitectureAnalysis.distributionMap.keySet()) {
 
+			File outputD = new File(outputDir.getAbsolutePath() + "/" + cpuName);
+			
+			/*
+			// ASN file generation
+			for (GeneratedModule generatedClass : data2.getClasses())
+			{
+				asn1Gen.writeFile(generatedClass, outputD);
+			
+			}
+			*/
 			CGen cGen = this;
 
-			File outputD = new File(outputDir.getAbsolutePath() + "/" + cpuName);
+			
 
 			cGen.emitFeatureFile(outputD, CGen.FEATURE_FILE_NAME);
 			cGen.emitClassAssocFile(outputD, CGen.CLASS_ASSOC_FILE_NAME);
-
+			
 			for (GeneratedModule generatedClass : data.getClasses()) {
 
 				org.overture.codegen.ir.INode node = generatedClass.getIrNode();
@@ -702,6 +732,137 @@ public class CGen extends CodeGenBase
 		}
 	}
 
+	public static void vdm2asn1Mapping(String outDir)
+	{
+		String s = null;
+
+		//String outDir = "/Users/Miran/Documents/C_codegen/vdm2c/core/vdm2c/DistCG_case/";
+		
+		try
+		{
+
+			// String python = findExecutableOnPath("python3.6");
+			// run the Unix "ps -ef" command
+			// using the Runtime exec method:
+
+			Process p = null;
+			// If python3.6 is installed
+			// if(python != null)
+			// {
+			//p = Runtime.getRuntime().exec("/usr/local/bin/python3.6 "
+			//		+ "/Users/Miran/Library/Python/3.6/bin/asn2aadlPlus " + outDir + "WatertankController_record.asn " + outDir + "DataView.aadl");
+			
+			ProcessBuilder pb = new ProcessBuilder("CMD.exe", "/C", "SET"); // SET prints out the environment variables
+	        pb.redirectErrorStream(true);
+	        Map<String,String> env = pb.environment();
+	        String path = env.get("PATH") + ";C:\\naved\\bin";
+	        env.put("PATH", path);
+			
+			try
+			{
+				p.waitFor();
+			} catch (InterruptedException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			p = Runtime.getRuntime().exec("/usr/local/bin/python3.6 "
+					+ "/Users/Miran/Library/Python/3.6/bin/asn2aadlVDM " +  outDir + "WatertankController_record.asn " + outDir + "vdm_temp_architeture.aadl");
+			try
+			{
+				p.waitFor();
+			} catch (InterruptedException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			p = Runtime.getRuntime().exec("/usr/local/bin/python3.6 "
+					+ "/Users/Miran/Library/Python/3.6/bin/aadl2glueC -o " + outDir +  " " + outDir + "vdm_temp_architeture.aadl " + outDir +  "DataView.aadl");
+			try
+			{
+				p.waitFor();
+			} catch (InterruptedException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			p = Runtime.getRuntime().exec("asn1.exe -c -uPER -typePrefix asn1Scc -o " + outDir + " " + outDir + "WatertankController_record.asn");
+			try
+			{
+				p.waitFor();
+			} catch (InterruptedException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			// }
+			// else
+			// {
+			// TODO: What todo
+			// System.err.println("Could not find python3.6");
+			// System.exit(1);
+			// }
+
+			for (String dirname : System.getenv("PATH").split(File.pathSeparator))
+			{
+				File file = new File(dirname, "test");
+				if (file.isFile() && file.canExecute())
+				{
+
+				}
+			}
+
+			BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
+
+			BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+
+			// read the output from the command
+			System.out.println("Here is the standard output of the command:\n");
+			while ((s = stdInput.readLine()) != null)
+			{
+				System.out.println(s);
+			}
+
+			// read any errors from the attempted command
+			System.out.println("Here is the standard error of the command (if any):\n");
+			while ((s = stdError.readLine()) != null)
+			{
+				System.out.println(s);
+			}
+
+			// System.exit(0);
+		} catch (IOException e)
+		{
+			System.out.println("exception happened - here's what I know: ");
+			e.printStackTrace();
+			System.exit(-1);
+		}
+
+		/*
+		 * try { //Runtime.getRuntime().exec(
+		 * "/usr/local/bin/python3.6 /Users/Miran/Library/Python/3.6/bin/asn2aadlPlus  /Users/Miran/Documents/C_codegen/vdm2c/core/vdm2asn1/HelloRecord2/DataView.aadl"
+		 * ); //Runtime.getRuntime().exec("echo $PATH"); } catch (IOException e1) { // TODO Auto-generated catch block
+		 * e1.printStackTrace(); }
+		 */
+		/*
+		 * try { //String[] COMMAND = {"/bin/sh"
+		 * ,"/Users/Miran/Documents/C_codegen/vdm2c/core/vdm2asn1/src/main/resources/scripts/gen_mapping.sh", "-i",
+		 * "/Users/Miran/Documents/C_codegen/vdm2c/core/vdm2asn1/HelloRecord2/WatertankController.asn", "-o",
+		 * "/Users/Miran/Documents/C_codegen/vdm2c/core/vdm2asn1/WTasn1" }; //Process p = Runtime.getRuntime().exec(
+		 * "/Users/Miran/Documents/C_codegen/vdm2c/core/vdm2asn1/src/main/resources/scripts/gen_mapping.sh -i /Users/Miran/Documents/C_codegen/vdm2c/core/vdm2asn1/HelloRecord2/WatertankController.asn -o /Users/Miran/Documents/C_codegen/vdm2c/core/vdm2asn1/WTasn1"
+		 * ); //p.wait(); //System.out.println(p.getOutputStream()); String[] cmd1 = { "python3.6",
+		 * "/Users/Miran/Library/Python/3.6/bin/asn2aadlPlus",
+		 * "/Users/Miran/Documents/C_codegen/vdm2c/core/vdm2asn1/HelloRecord2/WatertankController.asn",
+		 * "/Users/Miran/Documents/C_codegen/vdm2c/core/vdm2asn1/HelloRecord2/DataView.aadl" }; try {
+		 * Runtime.getRuntime().exec(cmd1).waitFor(); } catch (InterruptedException e) { // TODO Auto-generated catch
+		 * block e.printStackTrace(); } } catch (IOException e1) { // TODO Auto-generated catch block
+		 * e1.printStackTrace(); }
+		 */
+	}
+	
 	private void genDistRecordCalls(List<IRStatus<PIR>> canBeGenerated, List<IRStatus<ADefaultClassDeclIR>> classes) {
 
 		if (rec_names.isEmpty()) return;

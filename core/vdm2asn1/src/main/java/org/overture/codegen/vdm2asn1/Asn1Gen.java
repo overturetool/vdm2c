@@ -138,7 +138,7 @@ public class Asn1Gen extends CodeGenBase
 	{
 		List<GeneratedModule> genModules = new LinkedList<GeneratedModule>();
 
-		Boolean dist_gen = Asn1GenMain.distGen;
+		//Boolean dist_gen = Asn1GenMain.distGen;
 
 		statuses = replaceSystemClassWithClass(statuses);
 
@@ -199,7 +199,12 @@ public class Asn1Gen extends CodeGenBase
 			//First remove all VDMUnited.vdmrt-related classes.
 			if (irStatus.getIrNode() instanceof ADefaultClassDeclIR)
 			{
-				if(irStatus.getIrNodeName().equals("Test") ||
+				
+				ADefaultClassDeclIR node = (ADefaultClassDeclIR) irStatus.getIrNode();
+				
+				if(node.getTypeDecls().size()==0 || 
+						irStatus.getIrNodeName().equals("IO"))
+				/*if(irStatus.getIrNodeName().equals("Environment") ||
 						irStatus.getIrNodeName().equals("TestCase") ||
 						irStatus.getIrNodeName().equals("TestSuite") ||
 						irStatus.getIrNodeName().equals("TestListener") ||
@@ -208,7 +213,7 @@ public class Asn1Gen extends CodeGenBase
 						irStatus.getIrNodeName().equals("Throwable") ||
 						irStatus.getIrNodeName().equals("Error") ||
 						irStatus.getIrNodeName().equals("AssertionFailedError") ||
-						irStatus.getIrNodeName().equals("Assert"))
+						irStatus.getIrNodeName().equals("Assert"))*/
 				{
 					newstatuses.remove(irStatus);
 					continue;
@@ -333,7 +338,7 @@ public class Asn1Gen extends CodeGenBase
 			throws org.overture.codegen.ir.analysis.AnalysisException,
 			IOException
 	{
-		writeFile(module, output_dir, module.getName());
+		writeFile(module, output_dir, module.getName()+ "_record");
 	}
 
 	public void writeFile(GeneratedModule module, File output_dir, String name)

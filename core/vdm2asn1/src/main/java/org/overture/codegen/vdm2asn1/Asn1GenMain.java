@@ -1,7 +1,9 @@
 package org.overture.codegen.vdm2asn1;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -34,7 +36,20 @@ import org.overture.typechecker.util.TypeCheckerUtil.TypeCheckResult;
 public class Asn1GenMain
 {
 	private static boolean quiet = false;
-	public static boolean distGen = false;
+
+	public static String findExecutableOnPath(String name)
+	{
+		for (String dirname : System.getenv("PATH").split(File.pathSeparator))
+		{
+			File file = new File(dirname, name);
+			if (file.isFile() && file.canExecute())
+			{
+				return file.getAbsolutePath();
+			}
+		}
+
+		return null;
+	}
 
 	public static void main(String[] args)
 	{
@@ -74,36 +89,24 @@ public class Asn1GenMain
 			return;
 		}
 
-		/*
-		 String current = null;
+		String current = null;
 		try
 		{
-			current = new java.io.File( "." ).getCanonicalPath();
-			System.out.println("Current dir:"+current);
-		} catch (IOException e1)
-		{
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		
-		try
-		{
-			Process p = Runtime.getRuntime().exec("/Users/Miran/Desktop/ASN1_test/gen_mapping.sh -i HelloRecord/WatertankController.asn -o Miran4");
+			current = new java.io.File(".").getCanonicalPath();
+			System.out.println("Current dir:" + current);
 		} catch (IOException e1)
 		{
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 
-	        */
-		
 		List<File> files = new LinkedList<File>();
 		File outputDir = null;
-//		ISourceFileFormatter formatter = null;
+		// ISourceFileFormatter formatter = null;
 
 		quiet = cmd.hasOption(quietOpt.getOpt());
 
-		distGen = cmd.hasOption(distGenOpt.getOpt());
+		//distGen = cmd.hasOption(distGenOpt.getOpt());
 
 		if (cmd.hasOption(helpOpt.getOpt()))
 		{
@@ -117,18 +120,18 @@ public class Asn1GenMain
 			try
 			{
 				Class<?> formatterClass = Class.forName(formatterClassName);
-//				try
-//				{
-////					formatter = (ISourceFileFormatter) formatterClass.newInstance();
-//				} catch (InstantiationException e)
-//				{
-//					error(String.format("Unable to invoke default constructor for formatter '%s'", formatterClassName));
-//					return;
-//				} catch (IllegalAccessException e)
-//				{
-//					error(String.format("Unable to access class for formatter '%s'", formatterClassName));
-//					return;
-//				}
+				// try
+				// {
+				//// formatter = (ISourceFileFormatter) formatterClass.newInstance();
+				// } catch (InstantiationException e)
+				// {
+				// error(String.format("Unable to invoke default constructor for formatter '%s'", formatterClassName));
+				// return;
+				// } catch (IllegalAccessException e)
+				// {
+				// error(String.format("Unable to access class for formatter '%s'", formatterClassName));
+				// return;
+				// }
 			} catch (ClassNotFoundException e)
 			{
 				error(String.format("Formatter '%s' not found in class path", formatterClassName));
@@ -189,6 +192,7 @@ public class Asn1GenMain
 
 		try
 		{
+
 			TypeCheckResult<List<SClassDefinition>> res = TypeCheckerUtil.typeCheckRt(files);
 
 			if (!res.parserResult.errors.isEmpty())
@@ -207,18 +211,20 @@ public class Asn1GenMain
 
 			Asn1Gen cGen = new Asn1Gen();
 
-//			if (formatter != null)
-//			{
-//				cGen.setSourceCodeFormatter(formatter);
-//			}
+			// if (formatter != null)
+			// {
+			// cGen.setSourceCodeFormatter(formatter);
+			// }
 
 			List<INode> filter = CodeGenBase.getNodes(ast);
-			
+
 			GeneratedData data = cGen.generate(filter);
 
 			print("C code generated to folder: " + outputDir.getAbsolutePath());
 
-			if (distGen)
+			//vdm2asn1Mapping();
+			
+			if (false)
 			{
 
 			} else
@@ -290,6 +296,128 @@ public class Asn1GenMain
 			e.printStackTrace();
 		}
 
+	}
+
+	public static void vdm2asn1Mapping()
+	{
+		String s = null;
+
+		try
+		{
+
+			// String python = findExecutableOnPath("python3.6");
+			// run the Unix "ps -ef" command
+			// using the Runtime exec method:
+
+			Process p = null;
+			// If python3.6 is installed
+			// if(python != null)
+			// {
+			p = Runtime.getRuntime().exec("/usr/local/bin/python3.6 "
+					+ "/Users/Miran/Library/Python/3.6/bin/asn2aadlPlus /Users/Miran/Documents/C_codegen/vdm2c/core/vdm2asn1/HelloRecord2/WatertankController.asn /Users/Miran/Documents/C_codegen/vdm2c/core/vdm2asn1/HelloRecord2/DataView.aadl");
+			try
+			{
+				p.waitFor();
+			} catch (InterruptedException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			p = Runtime.getRuntime().exec("/usr/local/bin/python3.6 "
+					+ "/Users/Miran/Library/Python/3.6/bin/asn2aadlVDM /Users/Miran/Documents/C_codegen/vdm2c/core/vdm2asn1/HelloRecord2/WatertankController.asn /Users/Miran/Documents/C_codegen/vdm2c/core/vdm2asn1/HelloRecord2/vdm_temp_architeture.aadl");
+			try
+			{
+				p.waitFor();
+			} catch (InterruptedException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			p = Runtime.getRuntime().exec("/usr/local/bin/python3.6 "
+					+ "/Users/Miran/Library/Python/3.6/bin/aadl2glueC -o /Users/Miran/Documents/C_codegen/vdm2c/core/vdm2asn1/HelloRecord2 /Users/Miran/Documents/C_codegen/vdm2c/core/vdm2asn1/HelloRecord2/vdm_temp_architeture.aadl /Users/Miran/Documents/C_codegen/vdm2c/core/vdm2asn1/HelloRecord2/DataView.aadl");
+			try
+			{
+				p.waitFor();
+			} catch (InterruptedException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			p = Runtime.getRuntime().exec("asn1.exe -c -uPER -typePrefix asn1Scc -o HelloRecord2 HelloRecord2/WatertankController.asn");
+			try
+			{
+				p.waitFor();
+			} catch (InterruptedException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			// }
+			// else
+			// {
+			// TODO: What todo
+			// System.err.println("Could not find python3.6");
+			// System.exit(1);
+			// }
+
+			for (String dirname : System.getenv("PATH").split(File.pathSeparator))
+			{
+				File file = new File(dirname, "test");
+				if (file.isFile() && file.canExecute())
+				{
+
+				}
+			}
+
+			BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
+
+			BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+
+			// read the output from the command
+			System.out.println("Here is the standard output of the command:\n");
+			while ((s = stdInput.readLine()) != null)
+			{
+				System.out.println(s);
+			}
+
+			// read any errors from the attempted command
+			System.out.println("Here is the standard error of the command (if any):\n");
+			while ((s = stdError.readLine()) != null)
+			{
+				System.out.println(s);
+			}
+
+			// System.exit(0);
+		} catch (IOException e)
+		{
+			System.out.println("exception happened - here's what I know: ");
+			e.printStackTrace();
+			System.exit(-1);
+		}
+
+		/*
+		 * try { //Runtime.getRuntime().exec(
+		 * "/usr/local/bin/python3.6 /Users/Miran/Library/Python/3.6/bin/asn2aadlPlus  /Users/Miran/Documents/C_codegen/vdm2c/core/vdm2asn1/HelloRecord2/DataView.aadl"
+		 * ); //Runtime.getRuntime().exec("echo $PATH"); } catch (IOException e1) { // TODO Auto-generated catch block
+		 * e1.printStackTrace(); }
+		 */
+		/*
+		 * try { //String[] COMMAND = {"/bin/sh"
+		 * ,"/Users/Miran/Documents/C_codegen/vdm2c/core/vdm2asn1/src/main/resources/scripts/gen_mapping.sh", "-i",
+		 * "/Users/Miran/Documents/C_codegen/vdm2c/core/vdm2asn1/HelloRecord2/WatertankController.asn", "-o",
+		 * "/Users/Miran/Documents/C_codegen/vdm2c/core/vdm2asn1/WTasn1" }; //Process p = Runtime.getRuntime().exec(
+		 * "/Users/Miran/Documents/C_codegen/vdm2c/core/vdm2asn1/src/main/resources/scripts/gen_mapping.sh -i /Users/Miran/Documents/C_codegen/vdm2c/core/vdm2asn1/HelloRecord2/WatertankController.asn -o /Users/Miran/Documents/C_codegen/vdm2c/core/vdm2asn1/WTasn1"
+		 * ); //p.wait(); //System.out.println(p.getOutputStream()); String[] cmd1 = { "python3.6",
+		 * "/Users/Miran/Library/Python/3.6/bin/asn2aadlPlus",
+		 * "/Users/Miran/Documents/C_codegen/vdm2c/core/vdm2asn1/HelloRecord2/WatertankController.asn",
+		 * "/Users/Miran/Documents/C_codegen/vdm2c/core/vdm2asn1/HelloRecord2/DataView.aadl" }; try {
+		 * Runtime.getRuntime().exec(cmd1).waitFor(); } catch (InterruptedException e) { // TODO Auto-generated catch
+		 * block e.printStackTrace(); } } catch (IOException e1) { // TODO Auto-generated catch block
+		 * e1.printStackTrace(); }
+		 */
 	}
 
 	private static void showHelp(Options options)

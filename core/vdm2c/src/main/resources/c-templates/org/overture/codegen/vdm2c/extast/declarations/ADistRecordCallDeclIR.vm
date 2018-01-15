@@ -3,8 +3,18 @@
 #ifndef RECORDS_H_
 \#define RECORDS_H_
 
+\#include "Vdm.h"
+\#include "System.h"
+\#include <stdarg.h>
+\#include <stdio.h>
+\#include <string.h>
+\#include <stdio.h>
+\#include <stdlib.h>
+\#include <unistd.h>
+\#include "asn1vdm.h"
+
 // General serialisation function
-int serialiseRecord(byte* encBuff, TVP t, int pos);
+int serialiseRecord(byte* encBuff, TVP t, int pos, int id);
 TVP deSerialiseRecord(byte* decBuff, TVP t, int pos);
 
 
@@ -16,6 +26,12 @@ void serialiseRecordRes(byte* encBuff , TVP t);
 // This is the record class
 
 #if(!$node.getIsHeader())
+
+\#include "records.h"
+\#include "asn1crt.h"
+\#include "WTdatafile.h"
+\#include "Vdm_ASN1_Types.h"
+
 #foreach( $recName in $node.getRecNames() )
   
   
@@ -29,7 +45,7 @@ void serialiseRecordRes(byte* encBuff , TVP t);
 	return bitStrm->buf;
 }
  
- asn1Scc asn1Scc$recName.getName()_dec(byte* encBuf, int *pErrCode) {
+asn1Scc$recName.getName() asn1Scc$recName.getName()_dec(byte* encBuf, int *pErrCode) {
 
 	static asn1Scc$recName.getName() decodedPDU;
 	BitStream bitStrmDec;
@@ -129,11 +145,9 @@ TVP deSerialiseRecordRes$recName.getName()(byte* decFullBuff) {
   
 #end
 
-int serialiseRecord(byte* encBuff, TVP t, int pos) {
+int serialiseRecord(byte* encBuff, TVP t, int pos, int id) {
 
 	int offset = 0;
-
-	int id = ((struct ClassType*)t->value.ptr)->classId;
 	
 	#foreach( $recName in $node.getRecNames() )
 	if(id==CLASS_ID_$recName.getName()_ID) {

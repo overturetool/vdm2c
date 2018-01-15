@@ -26,8 +26,10 @@ import org.overture.codegen.ir.VdmNodeInfo;
 import org.overture.codegen.utils.GeneralUtils;
 import org.overture.codegen.utils.GeneratedData;
 import org.overture.codegen.utils.GeneratedModule;
+import org.overture.codegen.vdm2asn1.Asn1Gen;
 import org.overture.codegen.vdm2c.CFormat;
 import org.overture.codegen.vdm2c.CGen;
+//import org.overture.codegen.vdm2c.Asn;
 import org.overture.codegen.vdm2c.distribution.SystemArchitectureAnalysis;
 import org.overture.codegen.vdm2c.extast.declarations.AClassHeaderDeclIR;
 import org.overture.codegen.vdm2c.utils.CGenUtil;
@@ -61,6 +63,9 @@ public class CGenerator
 		GeneralUtils.deleteFolderContents(eclipseProjectFolder, true);
 
 		final CGen vdm2c = new CGen();
+		//final Asn1Gen vdm2asn = new Asn1Gen();
+		
+		//final vdm2asn = new AsnGen();
 		vdm2c.getCGenSettings().setUseGarbageCollection(true);
 
 		final IVdmModel model = vdmProject.getModel();
@@ -75,12 +80,18 @@ public class CGenerator
 			CodeGenConsole.GetInstance().println("");
 		}
 
+		List<INode> ast = PluginVdm2CUtil.getNodes(model.getSourceUnits());
+		
+		//GeneratedData data2 = vdm2asn.generate(PluginVdm2CUtil.getNodes(model.getSourceUnits()));
 		// Generate user specified classes
-		GeneratedData data = vdm2c.generate(PluginVdm2CUtil.getNodes(model.getSourceUnits()));
+		GeneratedData data = vdm2c.generate(ast);
 
+		
+
+		
 		if(vdm2c.getDistGen()){
 			try {
-				vdm2c.emitDistCode(data, cCodeOutputFolder);
+				vdm2c.emitDistCode(data, cCodeOutputFolder, ast);
 				
 				// If distribution, these maps exist
 				for(String cpu : SystemArchitectureAnalysis.distributionMapStr.keySet()){

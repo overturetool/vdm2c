@@ -47,6 +47,11 @@
 								</artifactItem>
 								<artifactItem>
 									<groupId>org.overturetool.vdm2c.core</groupId>
+									<artifactId>vdm2asn1</artifactId>
+									<version>${project.version}</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>org.overturetool.vdm2c.core</groupId>
 									<artifactId>vdm2c</artifactId>
 									<version>${project.version}</version>
 								</artifactItem>

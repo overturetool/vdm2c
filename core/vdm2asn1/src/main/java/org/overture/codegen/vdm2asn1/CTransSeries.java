@@ -162,7 +162,7 @@ public class CTransSeries
 //		transformations.add(new RemoveCWrappersTrans(transAssistant));
 //		transformations.add(new MethodVisibilityTrans(transAssistant));
 
-		//transformations.add(new TestTrans(transAssistant));
+		transformations.add(new TestTrans(transAssistant));
 		
 		return transformations;
 	}

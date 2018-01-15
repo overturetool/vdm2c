@@ -23,6 +23,8 @@ import org.overture.codegen.utils.GeneralCodeGenUtils;
 import org.overture.codegen.utils.GeneralUtils;
 import org.overture.codegen.utils.GeneratedData;
 import org.overture.codegen.utils.GeneratedModule;
+import org.overture.codegen.vdm2asn1.Asn1Gen;
+import org.overture.codegen.vdm2asn1.Asn1GenMain;
 import org.overture.codegen.vdm2c.sourceformat.ISourceFileFormatter;
 import org.overture.config.Release;
 import org.overture.config.Settings;
@@ -30,6 +32,7 @@ import org.overture.typechecker.util.TypeCheckerUtil;
 import org.overture.typechecker.util.TypeCheckerUtil.TypeCheckResult;
 
 public class CGenMain {
+	private static final int LinkedList = 0;
 	private static boolean quiet = false;
 
 	public static void main(String[] args) {
@@ -67,6 +70,10 @@ public class CGenMain {
 
 		CGen cGen = new CGen();
 
+		String env = System.getenv("PATH");
+		
+	
+		
 		try {
 			cmd = parser.parse(options, args);
 		} catch (ParseException e1) {
@@ -164,7 +171,8 @@ public class CGenMain {
 
 		try {
 			TypeCheckResult<List<SClassDefinition>> res = TypeCheckerUtil.typeCheckRt(files);
-
+			TypeCheckResult<List<SClassDefinition>> res2 = TypeCheckerUtil.typeCheckRt(files);
+			
 			if (!res.parserResult.errors.isEmpty()) {
 				error(res.parserResult.getErrorString());
 				return;
@@ -176,18 +184,20 @@ public class CGenMain {
 			}
 
 			List<SClassDefinition> ast = res.result;
+			List<SClassDefinition> ast2 = res2.result;
 
 			if (formatter != null) {
 				cGen.setSourceCodeFormatter(formatter);
 			}
 
 			List<INode> filter = CodeGenBase.getNodes(ast);
-
+			List<INode> filter2 = CodeGenBase.getNodes(ast2);
+			
 			GeneratedData data = cGen.generate(filter);
-
+			
 			if (cGen.getDistGen()) {
 				try {
-					cGen.emitDistCode(data, outputDir);
+					cGen.emitDistCode(data, outputDir, filter);
 				} catch (org.overture.codegen.ir.analysis.AnalysisException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
