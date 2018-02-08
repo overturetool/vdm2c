@@ -801,6 +801,7 @@ void vdmFree(TVP ptr)
 
 		/* Free the virtual function table.  */
 		free(((struct ClassType*)ptr->value.ptr)->value);
+		free(ptr->value.ptr);
 
 		break;
 #endif /* NO_RECORDS */
