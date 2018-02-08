@@ -338,6 +338,12 @@ TVP vdmSeqInds(TVP seq)
 
 	TVP indsVal = newSetWithValues(col->size, value);
 
+	for (i = 0; i < col->size; i++)
+	{
+		vdmFree(value[i]);
+	}
+	free(value);
+
 	return indsVal;
 }
 
