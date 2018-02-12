@@ -388,6 +388,18 @@ TVP vdmSetEnumerateSetOfInts(int lower, int upper)
 	return res;
 }
 
+TVP vdmSetEnumerateSetOfIntsGC(int lower, int upper)
+{
+	TVP tmp;
+	TVP res;
+
+	tmp = vdmSetEnumerateSetOfInts(lower, upper);
+	res = vdmCloneGC(tmp);
+	vdmFree(tmp);
+
+	return res;
+}
+
 
 TVP vdmSetElementAt(TVP set, int loc)
 {
