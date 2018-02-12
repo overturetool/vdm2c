@@ -1,20 +1,23 @@
 package org.overture.codegen.vdm2c.transformations;
 
+import java.util.HashMap;
+import java.util.LinkedList;
+
 import org.overture.cgc.extast.analysis.DepthFirstAnalysisCAdaptor;
 import org.overture.codegen.ir.INode;
 import org.overture.codegen.ir.SExpIR;
 import org.overture.codegen.ir.SPatternIR;
 import org.overture.codegen.ir.STypeIR;
 import org.overture.codegen.ir.analysis.AnalysisException;
-import org.overture.codegen.ir.declarations.*;
+import org.overture.codegen.ir.declarations.ADefaultClassDeclIR;
+import org.overture.codegen.ir.declarations.AFormalParamLocalParamIR;
+import org.overture.codegen.ir.declarations.AMethodDeclIR;
+import org.overture.codegen.ir.declarations.AVarDeclIR;
 import org.overture.codegen.ir.expressions.AApplyExpIR;
-import org.overture.codegen.ir.expressions.AExternalExpIR;
 import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
 import org.overture.codegen.ir.patterns.AIdentifierPatternIR;
 import org.overture.codegen.ir.statements.ABlockStmIR;
-import org.overture.codegen.ir.statements.APlainCallStmIR;
 import org.overture.codegen.ir.statements.AReturnStmIR;
-import org.overture.codegen.ir.statements.ASkipStmIR;
 import org.overture.codegen.ir.types.AExternalTypeIR;
 import org.overture.codegen.ir.types.AUnknownTypeIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
@@ -26,12 +29,12 @@ import org.overture.codegen.vdm2c.Vdm2cTag.MethodTag;
 import org.overture.codegen.vdm2c.extast.expressions.AMacroApplyExpIR;
 import org.overture.codegen.vdm2c.extast.statements.ALocalVariableDeclarationStmIR;
 import org.overture.codegen.vdm2c.tags.CTags;
-import org.overture.codegen.vdm2c.utils.*;
+import org.overture.codegen.vdm2c.utils.CLetBeStStrategy;
+import org.overture.codegen.vdm2c.utils.CSeqCompStrategy;
+import org.overture.codegen.vdm2c.utils.CSetCompStrategy;
+import org.overture.codegen.vdm2c.utils.CTransUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.HashMap;
-import java.util.LinkedList;
 
 public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 {
@@ -131,6 +134,7 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 		gcNames.put(ColTrans.SET_DIST_UNION, "vdmSetDunionGC");
 		gcNames.put(ColTrans.SET_DIST_INTER, "vdmSetDinterGC");
 		gcNames.put(ColTrans.SET_POWER_SET, "vdmSetPowerGC");
+		gcNames.put(ColTrans.SET_RANGE, "vdmSetEnumerateSetOfIntsGC");
 		
 		// Comprehensions
 		gcNames.put(CSetCompStrategy.NEW_SET_VAR_TO_GROW, "newSetVarToGrowGC");

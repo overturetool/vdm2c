@@ -1,5 +1,6 @@
 package org.overture.codegen.vdm2c;
 
+import static org.overture.codegen.vdm2c.utils.CTransUtil.newApply;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.rewriteToApply;
 
 import java.util.LinkedList;
@@ -43,6 +44,7 @@ public class ColTrans extends DepthFirstAnalysisCAdaptor implements IApplyAssist
 	public static final String SET_DIST_UNION = "vdmSetDunion";
 	public static final String SET_DIST_INTER = "vdmSetDinter";
 	public static final String SET_POWER_SET = "vdmSetPower";
+	public static final String SET_RANGE = "vdmSetEnumerateSetOfInts";
 	
 	// Map operations
 	public static final String MAP_DOM = "vdmMapDom";
@@ -231,6 +233,12 @@ public class ColTrans extends DepthFirstAnalysisCAdaptor implements IApplyAssist
 	public void caseAPowerSetUnaryExpIR(APowerSetUnaryExpIR node) throws AnalysisException {
 		
 		rewriteToApply(this, node, SET_POWER_SET, node.getExp());
+	}
+	
+	@Override
+	public void caseARangeSetExpIR(ARangeSetExpIR node) throws AnalysisException {
+		
+		rewriteToApply(this, node, SET_RANGE, newApply("toInteger", node.getFirst().clone()), newApply("toInteger", node.getLast().clone()));
 	}
 	
 	@Override

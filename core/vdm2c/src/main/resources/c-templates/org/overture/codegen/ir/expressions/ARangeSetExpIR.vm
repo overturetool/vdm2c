@@ -1,4 +1,0 @@
-#set( $first = $CFormat.format($node.getFirst()) )
-#set( $last = $CFormat.format($node.getLast()) )
-##
-vdmSetEnumerateSetOfInts(toInteger(${first}), toInteger(${last}))
