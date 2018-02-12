@@ -60,6 +60,7 @@ TVP newSetVarToGrowGC(size_t size, size_t expected_size,  ...);
 void vdmSetGrow(TVP set, TVP element);
 void vdmSetFit(TVP set);
 TVP vdmSetEnumerateSetOfInts(int lower, int upper);
+TVP vdmSetEnumerateSetOfIntsGC(int lower, int upper);
 TVP vdmSetElementAt(TVP set, int loc);
 TVP vdmSetElementAtGC(TVP set, int loc);
 TVP vdmSetMemberOf(TVP set, TVP element);
