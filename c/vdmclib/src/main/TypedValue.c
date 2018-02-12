@@ -362,7 +362,7 @@ TVP vdmClone(TVP x)
 		/* irrelevant for records.  */
 		(tmp->value).ptr = newClassValue(((struct ClassType*)(x->value.ptr))->classId,
 				((struct ClassType*)(x->value.ptr))->refs,
-				NULL,
+				((struct ClassType*)(x->value.ptr))->freeClass,
 				NULL);
 
 		/* Generic way of accessing the number-of-fields field.  The name of the record type is  */
@@ -669,6 +669,7 @@ void vdmFree_GCInternal(TVP ptr)
 
 		/* Free the virtual function table.  */
 		free(((struct ClassType*)ptr->value.ptr)->value);
+		free(ptr->value.ptr);
 
 		break;
 #endif /* NO_RECORDS */
