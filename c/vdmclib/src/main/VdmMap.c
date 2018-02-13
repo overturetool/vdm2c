@@ -794,8 +794,8 @@ TVP vdmMapEquals(TVP map1, TVP map2){
 	bool eq = true;
 
 	TVP key1;
-	TVP val1;
-	TVP key2;
+	TVP val1 = NULL;
+	TVP key2 = NULL;
 	TVP val2;
 	TVP map1_dom;
 	TVP map2_dom;
