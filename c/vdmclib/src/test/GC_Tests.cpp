@@ -37,7 +37,7 @@ TEST(GC, test1)
 
 	vdm_gc_init();
 
-	a = newIntGC(3, &a);
+	a = newIntGC(3);
 
 	vdm_gc();
 
@@ -51,7 +51,7 @@ TEST(GC, test2)
 
 	vdm_gc_init();
 
-	a = newIntGC(3, NULL);
+	a = newIntGC(3);
 
 	vdm_gc();
 
@@ -66,8 +66,7 @@ TEST(GC, test3)
 
 	vdm_gc_init();
 
-	a = newIntGC(3, NULL);
-	vdmFree(a);
+	a = newIntGC(3);
 
 	vdm_gc();
 
@@ -82,10 +81,9 @@ TEST(GC, test4)
 
 	vdm_gc_init();
 
-	a = newIntGC(3, &a);
+	a = newIntGC(3);
 
 	vdm_gc();
-	vdmFree(a);
 
 	vdm_gc_shutdown();
 }
@@ -97,7 +95,7 @@ TEST(GC, test5)
 
 	vdm_gc_init();
 
-	a = newIntGC(3, &a);
+	a = newIntGC(3);
 
 	vdmFree(a);
 	vdm_gc();
@@ -112,8 +110,8 @@ TEST(GC, test6)
 
 	vdm_gc_init();
 
-	a = newIntGC(3, &a);
-	a = newBoolGC(true, &a);
+	a = newIntGC(3);
+	a = newBoolGC(true);
 
 	vdmFree(a);
 	vdm_gc();
@@ -128,11 +126,10 @@ TEST(GC, test7)
 
 	vdm_gc_init();
 
-	a = newIntGC(3, &a);
-	a = newBoolGC(true, &a);
+	a = newIntGC(3);
+	a = newBoolGC(true);
 
 	vdm_gc();
-	vdmFree(a);
 
 	vdm_gc_shutdown();
 }
@@ -145,11 +142,11 @@ TEST(GC, test8)
 
 	vdm_gc_init();
 
-	a = newIntGC(3, &a);
+	a = newIntGC(3);
 
 	vdmFree(a);
 
-	a = newBoolGC(true, NULL);
+	a = newBoolGC(true);
 
 	vdm_gc();
 //	vdmFree(a);

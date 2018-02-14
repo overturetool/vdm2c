@@ -20,9 +20,11 @@ import org.overture.codegen.trans.iterator.ILanguageIterator;
 
 public class CSeqCompStrategy extends SeqCompStrategy {
 
+	public static final String NEW_SEQ_VAR_TO_GROW = "newSeqVarToGrow";
+
 	public CSeqCompStrategy(TransAssistantIR transformationAssitant, SExpIR first, SExpIR predicate, String var,
-			STypeIR compType, ILanguageIterator langIterator, ITempVarGen tempGen,
-			IterationVarPrefixes iteVarPrefixes) {
+							STypeIR compType, ILanguageIterator langIterator, ITempVarGen tempGen,
+							IterationVarPrefixes iteVarPrefixes) {
 		super(transformationAssitant, first, predicate, var, compType, langIterator, tempGen, iteVarPrefixes);
 	}
 
@@ -37,7 +39,7 @@ public class CSeqCompStrategy extends SeqCompStrategy {
 		// Evaluated such that a
 		// useful estimate can
 		// be made of the size
-		return CTransUtil.newApply("newSeqVarToGrow", CTransUtil.consCInt("0"), CTransUtil.consCInt("5"));
+		return CTransUtil.newApply(NEW_SEQ_VAR_TO_GROW, CTransUtil.consCInt("0"), CTransUtil.consCInt("5"));
 	}
 	
 	@Override

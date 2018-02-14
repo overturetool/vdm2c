@@ -98,6 +98,8 @@ public class CGenerator
 					
 					//Emit file containing the mapping between model names and mangled names as #defines.
 					emitMangledNamesHeaderFile(new File(cCodeOutputFolder + File.separator + cpu + File.separator + "MangledNames.h"));
+					vdm2c.emitClassAssocFile(new File(cCodeOutputFolder + File.separator + cpu), CGen.CLASS_ASSOC_FILE_NAME);
+					vdm2c.emitFeatureFile(new File(cCodeOutputFolder + File.separator + cpu), CGen.FEATURE_FILE_NAME);
 				}
 			} catch (Exception e) {
 				CodeGenConsole.GetInstance().printErrorln("Problems encountered while generating C sources for a distributed system: " + e.getMessage());
@@ -108,6 +110,7 @@ public class CGenerator
 			try {
 				vdm2c.genCSourceFiles(cCodeOutputFolder, data.getClasses());
 				vdm2c.emitFeatureFile(cCodeOutputFolder, CGen.FEATURE_FILE_NAME);
+				vdm2c.emitClassAssocFile(cCodeOutputFolder, CGen.CLASS_ASSOC_FILE_NAME);
 				
 				outputUserspecifiedModules(cCodeOutputFolder, data.getClasses());
 

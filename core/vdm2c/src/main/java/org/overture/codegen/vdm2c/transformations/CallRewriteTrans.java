@@ -39,6 +39,7 @@ import org.overture.codegen.ir.types.ASeqSeqTypeIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.ColTrans;
 import org.overture.codegen.vdm2c.extast.expressions.AMacroApplyExpIR;
+import org.overture.codegen.vdm2c.tags.CTags;
 import org.overture.codegen.vdm2c.utils.CGenUtil;
 import org.overture.codegen.vdm2c.utils.CTransUtil;
 import org.overture.codegen.vdm2c.utils.NameMangler;
@@ -113,10 +114,12 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 			}
 			enclosing = (AMethodDeclIR)tmpnode;
 			//Handle case where body is not a block, but just a single statement.
+			AApplyExpIR ctorCall = newApply(NameMangler.mangle(constr), CGenUtil.consCNull());
+			ctorCall.setTag(CTags.CONSTRUCTOR_CALL);
 			((ABlockStmIR)enclosing.getBody()).getLocalDefs().add(newDeclarationAssignment(
 						tmpVarName,
 						newTvpType(),
-						newApply(NameMangler.mangle(constr), CGenUtil.consCNull()),
+					ctorCall,
 						null));
 				
 			//Call static function instead.
@@ -138,14 +141,14 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 
 	}
 
-	AMacroApplyExpIR createLocalPtrApply(AMethodDeclIR method, String thisName,
+	public static AMacroApplyExpIR createLocalPtrApply(AMethodDeclIR method, String thisName,
 			List<SExpIR> linkedList) throws AnalysisException
 	{
 		AMethodDeclIR selectedMethod = method;
 		String thisType = thisName;
 		String methodOwnerType = selectedMethod.getAncestor(SClassDeclIR.class).getName();
 		String thisArgs = "this";
-		String methodId = String.format(CTransUtil.METHOD_CALL_ID_PATTERN, methodOwnerType, selectedMethod.getName());
+		String methodId = CTransUtil.getMethodId(selectedMethod, methodOwnerType);
 
 		AMacroApplyExpIR apply = newMacroApply(CTransUtil.CALL_FUNC_PTR, createIdentifier(thisType, null), createIdentifier(methodOwnerType, null), createIdentifier(thisArgs, null), createIdentifier(methodId, null));
 		apply.setType(method.getMethodType().getResult().clone());
@@ -174,7 +177,7 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 		AMethodDeclIR selectedMethod = method;
 		String thisType = thisName;
 		String methodOwnerType = selectedMethod.getAncestor(SClassDeclIR.class).getName();
-		String methodId = String.format(CTransUtil.METHOD_CALL_ID_PATTERN, methodOwnerType, selectedMethod.getName());
+		String methodId = CTransUtil.getMethodId(selectedMethod, methodOwnerType);
 		// CALL_FUNC(thisTypeName,funcTname,classValue,id, args...
 		AMacroApplyExpIR apply = newMacroApply(CTransUtil.CALL_FUNC, createIdentifier(thisType, null), createIdentifier(methodOwnerType, null), classValue.clone(), createIdentifier(methodId, null));
 		apply.setType(method.getMethodType().getResult().clone());
@@ -279,10 +282,12 @@ public class CallRewriteTrans extends DepthFirstAnalysisCAdaptor
 			enclosing = (AMethodDeclIR)tmpnode;
 			
 			//Handle case where body is not a block, but just a single statement.
+			AApplyExpIR ctorCall = newApply(NameMangler.mangle(constr), CGenUtil.consCNull());
+			ctorCall.setTag(CTags.CONSTRUCTOR_CALL);
 			((ABlockStmIR)enclosing.getBody()).getLocalDefs().add(newDeclarationAssignment(
 						tmpVarName,
 						newTvpType(),
-						newApply(NameMangler.mangle(constr), CGenUtil.consCNull()),
+					ctorCall,
 						null));
 				
 			//Call static function instead.

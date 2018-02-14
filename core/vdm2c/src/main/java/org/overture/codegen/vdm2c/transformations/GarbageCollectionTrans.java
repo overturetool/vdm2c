@@ -4,11 +4,22 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 import org.overture.cgc.extast.analysis.DepthFirstAnalysisCAdaptor;
+import org.overture.codegen.ir.INode;
 import org.overture.codegen.ir.SExpIR;
+import org.overture.codegen.ir.SPatternIR;
+import org.overture.codegen.ir.STypeIR;
 import org.overture.codegen.ir.analysis.AnalysisException;
+import org.overture.codegen.ir.declarations.ADefaultClassDeclIR;
+import org.overture.codegen.ir.declarations.AFormalParamLocalParamIR;
 import org.overture.codegen.ir.declarations.AMethodDeclIR;
+import org.overture.codegen.ir.declarations.AVarDeclIR;
 import org.overture.codegen.ir.expressions.AApplyExpIR;
 import org.overture.codegen.ir.expressions.AIdentifierVarExpIR;
+import org.overture.codegen.ir.patterns.AIdentifierPatternIR;
+import org.overture.codegen.ir.statements.ABlockStmIR;
+import org.overture.codegen.ir.statements.AReturnStmIR;
+import org.overture.codegen.ir.types.AExternalTypeIR;
+import org.overture.codegen.ir.types.AUnknownTypeIR;
 import org.overture.codegen.trans.assistants.TransAssistantIR;
 import org.overture.codegen.vdm2c.CForIterator;
 import org.overture.codegen.vdm2c.ColTrans;
@@ -16,8 +27,10 @@ import org.overture.codegen.vdm2c.TupleTrans;
 import org.overture.codegen.vdm2c.Vdm2cTag;
 import org.overture.codegen.vdm2c.Vdm2cTag.MethodTag;
 import org.overture.codegen.vdm2c.extast.expressions.AMacroApplyExpIR;
-import org.overture.codegen.vdm2c.utils.CGenUtil;
+import org.overture.codegen.vdm2c.extast.statements.ALocalVariableDeclarationStmIR;
+import org.overture.codegen.vdm2c.tags.CTags;
 import org.overture.codegen.vdm2c.utils.CLetBeStStrategy;
+import org.overture.codegen.vdm2c.utils.CSeqCompStrategy;
 import org.overture.codegen.vdm2c.utils.CSetCompStrategy;
 import org.overture.codegen.vdm2c.utils.CTransUtil;
 import org.slf4j.Logger;
@@ -62,7 +75,18 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 		gcNames.put(NumericTrans.VDM_REM, "vdmRemGC");
 		gcNames.put(NumericTrans.VDM_MOD, "vdmModGC");
 		gcNames.put(NumericTrans.VDM_POW, "vdmPowerGC");
-		
+
+		// "is" checks
+		gcNames.put(IsCheckTrans.VDM_IS_NAT, "isNatGC");
+		gcNames.put(IsCheckTrans.VDM_IS_NAT1, "isNat1GC");
+		gcNames.put(IsCheckTrans.VDM_IS_INT, "isIntGC");
+		gcNames.put(IsCheckTrans.VDM_IS_REAL, "isRealGC");
+		gcNames.put(IsCheckTrans.VDM_IS_BOOL, "isBoolGC");
+		gcNames.put(IsCheckTrans.VDM_IS_RAT, "isRatGC");
+		gcNames.put(IsCheckTrans.VDM_IS_CHAR, "isCharGC");
+		gcNames.put(IsCheckTrans.VDM_IS_TOKEN, "isTokenGC");
+		gcNames.put(IsCheckTrans.VDM_IS, "isGC");
+
 		// Numeric comparison
 		gcNames.put(NumericTrans.VDM_GREATER_THAN, "vdmGreaterThanGC");
 		gcNames.put(NumericTrans.VDM_GREATER_OR_EQUAL, "vdmGreaterOrEqualGC");
@@ -83,6 +107,7 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 
 		// Collections
 		gcNames.put(ColTrans.SEQ_VAR, "newSeqVarGC");
+		gcNames.put(CSeqCompStrategy.NEW_SEQ_VAR_TO_GROW, "newSeqVarToGrowGC");
 		gcNames.put(ColTrans.SET_VAR, "newSetVarGC");
 		gcNames.put(ColTrans.MAP_VAR, "newMapVarGC");
 		
@@ -109,6 +134,7 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 		gcNames.put(ColTrans.SET_DIST_UNION, "vdmSetDunionGC");
 		gcNames.put(ColTrans.SET_DIST_INTER, "vdmSetDinterGC");
 		gcNames.put(ColTrans.SET_POWER_SET, "vdmSetPowerGC");
+		gcNames.put(ColTrans.SET_RANGE, "vdmSetEnumerateSetOfIntsGC");
 		
 		// Comprehensions
 		gcNames.put(CSetCompStrategy.NEW_SET_VAR_TO_GROW, "newSetVarToGrowGC");
@@ -124,7 +150,15 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 		gcNames.put(ColTrans.MAP_RES_DOM_BY, "vdmMapDomRestrictByGC");
 		gcNames.put(ColTrans.MAP_RES_RNG_TO, "vdmMapRngRestrictToGC");
 		gcNames.put(ColTrans.MAP_RES_RNG_BY, "vdmMapRngRestrictByGC");
-		
+		gcNames.put(ColTrans.MAP_ITERATE, "vdmMapIterateGC");
+		gcNames.put(ColTrans.MAP_COMP, "vdmMapComposeGC");
+
+		// OO checks
+		gcNames.put(OOCheckTrans.IS_OF_BASE_CLASS, "isOfBaseClassGC");
+		gcNames.put(OOCheckTrans.IS_OF_CLASS, "isOfClassGC");
+		gcNames.put(OOCheckTrans.SAME_BASE_CLASS, "sameBaseClassGC");
+		gcNames.put(OOCheckTrans.SAME_CLASS, "sameClassGC");
+
 		// Tuples
 		gcNames.put(TupleTrans.TUPLE_EXP, "newProductVarGC");
 		gcNames.put(TupleTrans.TUPLE_FIELD_NUMBER_EXP, "productGetGC");
@@ -147,11 +181,6 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 		// Used to handle GET and SET macros
 		super.caseAMacroApplyExpIR(node);
 		
-		if(insideFieldInitializer(node))
-		{
-			return;
-		}
-		
 		changeToGcCall(node, node.getArgs(), node.getRoot());
 	}
 	
@@ -160,17 +189,134 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 	{
 		super.caseAApplyExpIR(node);
 
-		if(insideFieldInitializer(node))
-		{
-			return;
-		}
-		
 		changeToGcCall(node, node.getArgs(), node.getRoot());
 	}
 
+	@Override
+	public void caseAReturnStmIR(AReturnStmIR node) throws AnalysisException {
+		super.caseAReturnStmIR(node);
+
+		if(isInsideFieldInitializer(node))
+		{
+			SExpIR exp = node.getExp();
+			SExpIR cloned = ValueSemantics.forceClone(exp.clone());
+			assist.replaceNodeWith(exp, cloned);
+		}
+	}
+
+	@Override
+	public void caseAMethodDeclIR(AMethodDeclIR node) throws AnalysisException {
+		super.caseAMethodDeclIR(node);
+
+		if(!node.getIsConstructor())
+		{
+			return;
+		}
+
+		ADefaultClassDeclIR clazz = node.getAncestor(ADefaultClassDeclIR.class);
+
+		if(clazz != null)
+		{
+			AExternalTypeIR tvp = new AExternalTypeIR();
+			tvp.setName("TVP");
+
+			String fromName = "from";
+			AIdentifierPatternIR fromId = new AIdentifierPatternIR();
+			fromId.setName("*" + fromName);
+
+			AFormalParamLocalParamIR from = new AFormalParamLocalParamIR();
+			from.setType(tvp);
+			from.setPattern(fromId);
+
+			AIdentifierPatternIR tmpId = new AIdentifierPatternIR();
+			String tmpName = "tmp";
+			tmpId.setName(tmpName);
+
+			AIdentifierVarExpIR root = new AIdentifierVarExpIR();
+			root.setName(node.getName());
+			root.setType(node.getMethodType().clone());
+
+			AApplyExpIR callToRegularCtor = new AApplyExpIR();
+			callToRegularCtor.setType(node.getMethodType().getResult().clone());
+			callToRegularCtor.setRoot(root);
+
+			for(AFormalParamLocalParamIR param : node.getFormalParams())
+			{
+				STypeIR type = param.getType();
+				SPatternIR pattern = param.getPattern();
+
+				if(pattern instanceof AIdentifierPatternIR)
+				{
+					AIdentifierPatternIR id = (AIdentifierPatternIR) pattern;
+
+					AIdentifierVarExpIR arg = new AIdentifierVarExpIR();
+					arg.setType(type.clone());
+					arg.setName(id.getName());
+
+					callToRegularCtor.getArgs().add(arg);
+				}
+				else
+				{
+					logger.error("Expected formal paramater pattern to be an identifier pattern at this point. Got: " + pattern);
+				}
+			}
+
+			AVarDeclIR tmp = assist.getInfo().getDeclAssistant().consLocalVarDecl(tvp.clone(), tmpId, callToRegularCtor);
+
+			ALocalVariableDeclarationStmIR declStm = new ALocalVariableDeclarationStmIR();
+			declStm.setDecleration(tmp);
+
+			AIdentifierVarExpIR tmpArg = new AIdentifierVarExpIR();
+			tmpArg.setType(tmp.getType().clone());
+			tmpArg.setName(tmpName);
+
+			AIdentifierVarExpIR fromArg = new AIdentifierVarExpIR();
+			fromArg.setType(tvp.clone());
+
+			AIdentifierVarExpIR addNodeRoot = new AIdentifierVarExpIR();
+			addNodeRoot.setName("add_allocd_mem_node");
+			addNodeRoot.setType(new AUnknownTypeIR());
+
+			AMacroApplyExpIR addNode = new AMacroApplyExpIR();
+			addNode.setRoot(addNodeRoot);
+			addNode.getArgs().add(tmpArg);
+
+			AReturnStmIR retTmp = new AReturnStmIR();
+			retTmp.setExp(tmpArg.clone());
+
+			ABlockStmIR replBlock = new ABlockStmIR();
+			replBlock.getStatements().add(declStm);
+			replBlock.getStatements().add(CTransUtil.toStm(addNode));
+			replBlock.getStatements().add(retTmp);
+
+			AMethodDeclIR gcCtor = node.clone();
+			gcCtor.setTag(CTags.GC_CONSTRUCTOR);
+			gcCtor.setName(node.getName() + "GC");
+			gcCtor.setBody(replBlock);
+
+			for(int i = 0; i < clazz.getMethods().size(); i++)
+			{
+				AMethodDeclIR m = clazz.getMethods().get(i);
+
+				if(m == node)
+				{
+					clazz.getMethods().add(i + 1, gcCtor);
+					break;
+				}
+			}
+		}
+	}
+
 	private void changeToGcCall(SExpIR node, LinkedList<SExpIR> args,
-			SExpIR root)
+								SExpIR root)
 	{
+		// Assignments to static instance variables require special treatment. See
+		// https://github.com/overturetool/vdm2c/issues/122#issuecomment-349663826
+		if(node.getTag() == CTags.EXP_ASSIGNED_TO_STATIC_FIELD)
+		{
+			return;
+		}
+
 		if (root instanceof AIdentifierVarExpIR)
 		{
 			AIdentifierVarExpIR id = (AIdentifierVarExpIR) root;
@@ -182,83 +328,43 @@ public class GarbageCollectionTrans extends DepthFirstAnalysisCAdaptor
 			if (val != null)
 			{
 				id.setName(val);
-				if(!(isFieldAccessor(oldName) || isSetter(oldName)))
+			}
+			else if(node.getTag() == CTags.CONSTRUCTOR_CALL)
+			{
+				if(node instanceof AApplyExpIR)
 				{
-					if (isSeqOrSet(oldName) || isTupleExp(oldName)) {
-						// The signatures of 'newSeqVarGC', 'newSetVarGC' and 'newProductVarGC' are:
-						// TVP newSeqVarGC(size_t size, TVP *from, ...)
-						// TVP newSetVarGC(size_t size, TVP *from, ...)
-						// TVP newProductVarGC(size_t size, TVP *from, ...)
-						// Therefore, 'from' is the second argument (at index 1)
-						args.add(1, consReference(node));
-					}
-					else if(isMap(oldName) || isSetVarToGrow(oldName))
+					AApplyExpIR apply = (AApplyExpIR) node;
+
+					if(apply.getRoot() instanceof AIdentifierVarExpIR)
 					{
-						// The signature of 'newMapVarGC' is:
-						// TVP newMapVarGC(size_t size, size_t expected_size, TVP *from, ...);
-						// TVP newSetVarToGrowGC(size_t size, size_t expected_size, TVP *from, ...)
-						// Therefore, 'from' is the third argument (at index 2)
-						args.add(2, consReference(node));
+						AIdentifierVarExpIR var = (AIdentifierVarExpIR) apply.getRoot();
+						var.setName(var.getName() + "GC");
 					}
-					else {
-						args.add(consReference(node));
+					else
+					{
+						logger.error("Expected root to be a variable expression at this point. Got: " + apply.getRoot());
 					}
+				}
+				else
+				{
+					logger.error("Expected constructor call to be an apply expression at this point. Got: " + node);
 				}
 			}
 		}
 	}
 
-	private SExpIR consReference(SExpIR exp)
-	{
-		// Expression is not associated with a memory address
-		return CGenUtil.consCNull();
-	}
+	private boolean isInsideFieldInitializer(INode node) {
+		AMethodDeclIR encMethod = node.getAncestor(AMethodDeclIR.class);
 
-	private boolean isFieldAccessor(String name)
-	{
-		return name.equals(CTransUtil.GET_FIELD) || name.equals(CTransUtil.GET_FIELD_PTR); 
-	}
-	
-	private boolean isSetter(String name)
-	{
-		return name.equals(CTransUtil.SET_FIELD) || name.equals(CTransUtil.SET_FIELD_PTR);
-	}
-	
-	private boolean isSeqOrSet(String name)
-	{
-		return name.equals(ColTrans.SEQ_VAR) || name.equals(ColTrans.SET_VAR);
-	}
-	
-	private boolean isTupleExp(String name) {
-	
-		return name.equals(TupleTrans.TUPLE_EXP);
-	}
-	
-	private boolean isMap(String name)
-	{
-		return name.equals(ColTrans.MAP_VAR);
-	}
-	
-	private boolean isSetVarToGrow(String name)
-	{
-		return name.equals(CSetCompStrategy.NEW_SET_VAR_TO_GROW);
-	}
-	
-	private boolean insideFieldInitializer(SExpIR exp)
-	{
-		AMethodDeclIR encMethod = exp.getAncestor(AMethodDeclIR.class);
-
-		if (encMethod != null)
-		{
+		if (encMethod != null) {
 			Object tag = encMethod.getTag();
-			
-			if(tag instanceof Vdm2cTag)
-			{
+
+			if (tag instanceof Vdm2cTag) {
 				Vdm2cTag t = (Vdm2cTag) tag;
 				return t.methodTags.contains(MethodTag.FieldInitializer);
 			}
 		}
+
 		return false;
 	}
-
 }

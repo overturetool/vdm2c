@@ -27,8 +27,16 @@
  *      Author: kel
  */
 
+
+/*  VERSION: For the version of VDM2C used to generate this project, refer to one of the generated files.  */
+
+
 #include "Vdm.h"
 #include <math.h>
+
+#if !defined(NO_IS) || !defined(NO_INHERITANCE)
+#include "VdmClassHierarchy.h"
+#endif
 
 
 
@@ -43,6 +51,8 @@
  * Boolean
  */
 
+
+
 TVP vdmNot(TVP arg)
 {
 	if(arg == NULL)
@@ -53,14 +63,14 @@ TVP vdmNot(TVP arg)
 	return newBool(!arg->value.boolVal);
 }
 
-TVP vdmNotGC(TVP arg, TVP *from)
+TVP vdmNotGC(TVP arg)
 {
-	if(arg == NULL)
-		return NULL;
+	TVP res;
 
-	ASSERT_CHECK_BOOL(arg);
+	res = vdmNot(arg);
+	add_allocd_mem_node(res);
 
-	return newBoolGC(!arg->value.boolVal, from);
+	return res;
 }
 
 TVP vdmAnd(TVP a,TVP b)
@@ -79,20 +89,14 @@ TVP vdmAnd(TVP a,TVP b)
 	return newBool(b->value.boolVal);
 }
 
-TVP vdmAndGC(TVP a, TVP b, TVP *from)
+TVP vdmAndGC(TVP a, TVP b)
 {
-	if(a == NULL)
-		return NULL;
+	TVP res;
 
-	ASSERT_CHECK_BOOL(a);
-	if(!a->value.boolVal)
-		return newBoolGC(false, from);
+	res = vdmAnd(a, b);
+	add_allocd_mem_node(res);
 
-	if(b == NULL)
-		return NULL;
-
-	ASSERT_CHECK_BOOL(b);
-	return newBoolGC(b->value.boolVal, from);
+	return res;
 }
 
 TVP vdmOr(TVP a,TVP b)
@@ -111,20 +115,14 @@ TVP vdmOr(TVP a,TVP b)
 	return newBool(b->value.boolVal);
 }
 
-TVP vdmOrGC(TVP a, TVP b, TVP *from)
+TVP vdmOrGC(TVP a, TVP b)
 {
-	if(a == NULL)
-		return NULL;
+	TVP res;
 
-	ASSERT_CHECK_BOOL(a);
-	if(a->value.boolVal)
-		return newBoolGC(true, from);
+	res = vdmOr(a, b);
+	add_allocd_mem_node(res);
 
-	if(b == NULL)
-		return NULL;
-
-	ASSERT_CHECK_BOOL(b);
-	return newBoolGC(b->value.boolVal, from);
+	return res;
 }
 
 TVP vdmXor(TVP a,TVP b)
@@ -137,14 +135,14 @@ TVP vdmXor(TVP a,TVP b)
 	return newBool((!(a->value.boolVal) && b->value.boolVal) || ((a->value.boolVal) && !(b->value.boolVal)));
 }
 
-TVP vdmXorGC(TVP a, TVP b, TVP *from)
+TVP vdmXorGC(TVP a, TVP b)
 {
-	if(a == NULL || b == NULL)
-		return NULL;
+	TVP res;
 
-	ASSERT_CHECK_BOOL(a);
-	ASSERT_CHECK_BOOL(b);
-	return newBoolGC((!(a->value.boolVal) && b->value.boolVal) || ((a->value.boolVal) && !(b->value.boolVal)), from);
+	res = vdmXor(a, b);
+	add_allocd_mem_node(res);
+
+	return res;
 }
 
 TVP vdmImplies(TVP a,TVP b)
@@ -163,20 +161,14 @@ TVP vdmImplies(TVP a,TVP b)
 	return newBool(b->value.boolVal);
 }
 
-TVP vdmImpliesGC(TVP a, TVP b, TVP *from)
+TVP vdmImpliesGC(TVP a, TVP b)
 {
-	if(a == NULL)
-		return NULL;
+	TVP res;
 
-	ASSERT_CHECK_BOOL(a);
-	if(!a->value.boolVal)
-		return newBoolGC(true, from);
+	res = vdmImplies(a, b);
+	add_allocd_mem_node(res);
 
-	if(b == NULL)
-		return NULL;
-
-	ASSERT_CHECK_BOOL(b);
-	return newBoolGC(b->value.boolVal, from);
+	return res;
 }
 
 TVP vdmBiimplication(TVP a,TVP b)
@@ -189,14 +181,14 @@ TVP vdmBiimplication(TVP a,TVP b)
 	return newBool((!a->value.boolVal || b->value.boolVal) && (!b->value.boolVal || a->value.boolVal));
 }
 
-TVP vdmBiimplicationGC(TVP a, TVP b, TVP *from)
+TVP vdmBiimplicationGC(TVP a, TVP b)
 {
-	if(a == NULL || b == NULL)
-		return NULL;
+	TVP res;
 
-	ASSERT_CHECK_BOOL(a);
-	ASSERT_CHECK_BOOL(b);
-	return newBoolGC((!a->value.boolVal || b->value.boolVal) && (!b->value.boolVal || a->value.boolVal), from);
+	res = vdmBiimplication(a, b);
+	add_allocd_mem_node(res);
+
+	return res;
 }
 
 bool isNumber(TVP val)
@@ -214,6 +206,48 @@ bool isNumber(TVP val)
 	}
 }
 
+
+#if !defined(NO_IS) || !defined(NO_INHERITANCE)
+TVP isOfClass(TVP val, int classID)
+{
+	int searchID;
+	int i, assoclen = sizeof(assoc) / sizeof(int);
+
+	searchID = ((struct ClassType *)val->value.ptr)->classId;
+
+	if(searchID == classID)
+		return newBool(true);
+
+	for(i = 0; i < assoclen; i += 2)
+	{
+		if(assoc[i] == searchID)
+		{
+			if(assoc[i + 1] == classID)
+				return newBool(true);
+			else
+			{
+				searchID = assoc[i + 1];
+				i = -2;
+			}
+		}
+	}
+
+	return newBool(false);
+}
+
+TVP isOfClassGC(TVP val, int classID)
+{
+	TVP res;
+
+	res = isOfClass(val, classID);
+	add_allocd_mem_node(res);
+
+	return res;
+}
+#endif
+
+
+#ifndef NO_IS
 TVP isInt(TVP v)
 {
 	if(v->type == VDM_INT)
@@ -221,11 +255,69 @@ TVP isInt(TVP v)
 	return newBool(false);
 }
 
-TVP isIntGC(TVP v, TVP *from)
+TVP isIntGC(TVP v)
 {
 	if(v->type == VDM_INT)
-		return newBoolGC(true, from);
-	return newBoolGC(false, from);
+		return newBoolGC(true);
+	return newBoolGC(false);
+}
+
+TVP isNat(TVP v)
+{
+	if(v->type == VDM_INT)
+	{
+		if(v->value.intVal >= 0)
+		{
+			return newBool(true);
+		}
+	}
+	return newBool(false);
+}
+
+TVP isNatGC(TVP v)
+{
+	if(v->type == VDM_INT)
+	{
+		if(v->value.intVal >= 0)
+		{
+			return newBoolGC(true);
+		}
+	}
+	return newBoolGC(false);
+}
+
+TVP isNat1(TVP v)
+{
+	if(v->type == VDM_INT)
+	{
+		if(v->value.intVal > 0)
+		{
+			return newBool(true);
+		}
+	}
+	return newBool(false);
+}
+
+TVP isNat1GC(TVP v)
+{
+	if(v->type == VDM_INT)
+	{
+		if(v->value.intVal > 0)
+		{
+			return newBoolGC(true);
+		}
+	}
+	return newBoolGC(false);
+}
+
+TVP isRat(TVP v)
+{
+	return isReal(v);
+}
+
+TVP isRatGC(TVP v)
+{
+	return isRealGC(v);
 }
 
 TVP isReal(TVP v)
@@ -235,11 +327,11 @@ TVP isReal(TVP v)
 	return newBool(false);
 }
 
-TVP isRealGC(TVP v, TVP *from)
+TVP isRealGC(TVP v)
 {
 	if(v->type == VDM_REAL)
-		return newBoolGC(true, from);
-	return newBoolGC(false, from);
+		return newBoolGC(true);
+	return newBoolGC(false);
 }
 
 TVP isBool(TVP v)
@@ -249,12 +341,350 @@ TVP isBool(TVP v)
 	return newBool(false);
 }
 
-TVP isBoolGC(TVP v, TVP *from)
+TVP isBoolGC(TVP v)
 {
 	if(v->type == VDM_BOOL)
-		return newBoolGC(true, from);
-	return newBoolGC(false, from);
+		return newBoolGC(true);
+	return newBoolGC(false);
 }
+
+TVP isChar(TVP v)
+{
+	if(v->type == VDM_CHAR)
+		return newBool(true);
+	return newBool(false);
+}
+
+TVP isCharGC(TVP v)
+{
+	if(v->type == VDM_CHAR)
+		return newBoolGC(true);
+	return newBoolGC(false);
+}
+
+TVP isToken(TVP v)
+{
+	if(v->type == VDM_TOKEN)
+		return newBool(true);
+	return newBool(false);
+}
+
+TVP isTokenGC(TVP v)
+{
+	if(v->type == VDM_TOKEN)
+		return newBoolGC(true);
+	return newBoolGC(false);
+}
+
+#ifndef NO_RECORDS
+TVP isRecord(TVP val, int recID)
+{
+	if(val->type == VDM_RECORD)
+		if(((struct ClassType *)val->value.ptr)->classId == recID)
+			return newBool(true);
+	return newBool(false);
+}
+
+TVP isRecordGC(TVP val, int recID)
+{
+	if(val->type == VDM_RECORD)
+		if(((struct ClassType *)val->value.ptr)->classId == recID)
+			return newBoolGC(true);
+	return newBoolGC(false);
+}
+#endif
+
+TVP is(TVP v, char ot[])
+{
+	int i;
+	bool res = false;
+	TVP isres;
+
+	if(ot[0] == '0')
+	{
+		if(v == NULL)
+		{
+			res = true;
+		}
+		else
+		{
+			res = true;
+			ot[0] = '1';
+			isres = is(v, ot);
+			res &= isres->value.boolVal;
+			vdmFree(isres);
+		}
+	}
+	else
+	{
+		/* No nesting inside sequence, set, record or map. */
+		if(ot[1] != 'Q' && ot[1] != 'T' && ot[1] != 'P' && ot[1] != 'Z' && ot[1] != 'Y' && ot[1] != 'M')
+		{
+			switch(ot[1])
+			{
+			case 'i':  /*  VDM_INT  */
+				res = (isInt(v))->value.boolVal;
+				break;
+			case 'd':  /*  VDM_REAL  */
+				res = (isReal(v))->value.boolVal;
+				break;
+			case 'b':  /*  VDM_BOOL  */
+				res = (isBool(v))->value.boolVal;
+				break;
+			case 'j':  /*  VDM_NAT  */
+				res = (isNat(v))->value.boolVal;
+				break;
+			case 'k':  /*  VDM_NAT1  */
+				res = (isNat1(v))->value.boolVal;
+				break;
+			case 'e':  /*  VDM_RAT  */
+				res = (isRat(v))->value.boolVal;
+				break;
+			case 'c':  /*  VDM_CHAR  */
+				res = (isChar(v))->value.boolVal;
+				break;
+			case 't':  /*  VDM_TOKEN  */
+				res = (isToken(v))->value.boolVal;
+				break;
+			case 'W':  /*  VDM_CLASS  */
+				res = (isOfClass(v, ot[2]))->value.boolVal;
+				break;
+#ifndef NO_RECORDS
+			case 'R':  /*  VDM_CLASS  */
+				res = (isRecord(v, ot[2]))->value.boolVal;
+				break;
+#endif
+			default:
+				break;
+			};
+		}
+#ifndef NO_SEQS
+		else if(ot[1] == 'Q')
+		{
+			if(v->type == VDM_SEQ)
+			{
+				res = true;
+
+				for(i = 0; i < ((struct Collection *)(v->value.ptr))->size; i++)
+				{
+					isres = is(((struct Collection *)(v->value.ptr))->value[i], &(ot[2]));
+					res &= isres->value.boolVal;
+					vdmFree(isres);
+				}
+			}
+		}
+		else if(ot[1] == 'Z') /*  seq1  */
+		{
+			if(v->type == VDM_SEQ)
+			{
+				if(((struct Collection *)(v->value.ptr))->size > 0)
+				{
+					res = true;
+
+					for(i = 0; i < ((struct Collection *)(v->value.ptr))->size; i++)
+					{
+						isres = is(((struct Collection *)(v->value.ptr))->value[i], &(ot[2]));
+						res &= isres->value.boolVal;
+						vdmFree(isres);
+					}
+				}
+			}
+		}
+#endif
+#ifndef NO_SETS
+		else if(ot[1] == 'T')
+		{
+			if(v->type == VDM_SET)
+			{
+				res = true;
+
+				for(i = 0; i < ((struct Collection *)(v->value.ptr))->size; i++)
+				{
+					isres = is(((struct Collection *)(v->value.ptr))->value[i], &(ot[2]));
+					res &= isres->value.boolVal;
+					vdmFree(isres);
+				}
+			}
+		}
+		else if(ot[1] == 'Y')  /*  set1  */
+		{
+			if(v->type == VDM_SET)
+			{
+				if(((struct Collection *)(v->value.ptr))->size > 0)
+				{
+					res = true;
+
+					for(i = 0; i < ((struct Collection *)(v->value.ptr))->size; i++)
+					{
+						isres = is(((struct Collection *)(v->value.ptr))->value[i], &(ot[2]));
+						res &= isres->value.boolVal;
+						vdmFree(isres);
+					}
+				}
+			}
+		}
+#endif
+#ifndef NO_PRODUCTS
+		else if(ot[1] == 'P')
+		{
+			if(v->type == VDM_PRODUCT)
+			{
+				res = true;
+
+				char numFields = ot[2];
+				int i = 0, field = 0;
+
+				ot = &ot[3];
+
+				while(field < numFields)
+				{
+					if(ot[i] == '*')
+					{
+						isres = is(((struct Collection *)(v->value.ptr))->value[field], &(ot[i + 1]));
+						res &= isres->value.boolVal;
+						vdmFree(isres);
+						field++;
+					}
+
+					i++;
+				}
+			}
+		}
+#endif
+#ifndef NO_MAPS
+		else if(ot[1] == 'M')
+		{
+			if(v->type == VDM_MAP)
+			{
+				res = true;
+
+				char numFields = 2;
+				int i = 0, field = 0;
+
+				ot = &ot[2];
+
+				while(field < numFields)
+				{
+					if(ot[i] == '*')
+					{
+						isres = is(((struct Collection *)(v->value.ptr))->value[field], &(ot[i + 1]));
+						res &= isres->value.boolVal;
+						vdmFree(isres);
+						field++;
+					}
+
+					i++;
+				}
+			}
+		}
+#endif
+		else
+		{}
+	}
+
+	return newBool(res);
+}
+
+TVP isGC(TVP v, char ot[])
+{
+	TVP res;
+
+	res = is(v, ot);
+	add_allocd_mem_node(res);
+
+	return res;
+}
+#endif  /*  NO_IS  */
+
+#ifndef NO_INHERITANCE
+TVP isOfBaseClass(TVP val, int baseID)
+{
+	int searchID;
+	int i, assoclen = sizeof(assoc) / sizeof(int);
+
+	searchID = ((struct ClassType *)val->value.ptr)->classId;
+
+	/*  First, base class must not inherit from any other.  */
+	for(i = 0; i < assoclen; i += 2)
+	{
+		if(assoc[i] == baseID)
+			return newBool(false);
+	}
+
+	/*  Current class is always base class.  */
+	if(searchID == baseID)
+		return newBool(true);
+
+
+
+	for(i = 0; i < assoclen; i += 2)
+	{
+		if(assoc[i] == searchID)
+		{
+			if(assoc[i + 1] == baseID)
+				return newBool(true);
+			else
+			{
+				searchID = assoc[i + 1];
+				i = 0;
+			}
+		}
+	}
+
+	return newBool(false);
+}
+
+TVP isOfBaseClassGC(TVP val, int baseID)
+{
+	TVP res;
+
+	res = isOfBaseClass(val, baseID);
+	add_allocd_mem_node(res);
+
+	return res;
+}
+
+TVP sameClass(TVP a, TVP b)
+{
+	return newBool(((struct ClassType *)a->value.ptr)->classId == ((struct ClassType *)b->value.ptr)->classId);
+}
+
+TVP sameClassGC(TVP a, TVP b)
+{
+	return newBoolGC(((struct ClassType *)a->value.ptr)->classId == ((struct ClassType *)b->value.ptr)->classId);
+}
+
+TVP sameBaseClass(TVP a, TVP b)
+{
+	int i, assoclen = sizeof(assoc) / sizeof(int);
+	TVP ares;
+	TVP bres;
+	bool res = false;
+
+	for(i = 1; i < assoclen; i += 2)
+	{
+		ares = isOfClass(a, assoc[i]);
+		bres = isOfClass(b, assoc[i]);
+
+		res = res || (ares->value.boolVal && bres->value.boolVal);
+
+		vdmFree(ares);
+		vdmFree(bres);
+	}
+
+	return newBool(res);
+}
+
+TVP sameBaseClassGC(TVP a, TVP b)
+{
+	TVP res;
+
+	res = sameBaseClass(a, b);
+	add_allocd_mem_node(res);
+
+	return res;
+}
+#endif
 
 /*
  * Numeric
@@ -319,22 +749,14 @@ TVP vdmMinus(TVP arg)
 	}
 }
 
-TVP vdmMinusGC(TVP arg, TVP *from)
+TVP vdmMinusGC(TVP arg)
 {
-	ASSERT_CHECK_NUMERIC(arg);
+	TVP res;
 
-	switch(arg->type)
-	{
-	case VDM_INT:
-	case VDM_NAT:
-	case VDM_NAT1:
-		return newIntGC(-arg->value.intVal, from);
-	case VDM_REAL:
-		return newRealGC(-arg->value.doubleVal, from);
-	default:
-		FATAL_ERROR("Invalid type");
-		return NULL;
-	}
+	res = vdmMinus(arg);
+	add_allocd_mem_node(res);
+
+	return res;
 }
 
 TVP vdmAbs(TVP arg)
@@ -355,22 +777,16 @@ TVP vdmAbs(TVP arg)
 	}
 }
 
-TVP vdmAbsGC(TVP arg, TVP *from)
+TVP vdmAbsGC(TVP arg)
 {
-	ASSERT_CHECK_NUMERIC(arg);
+	TVP res;
 
-	switch(arg->type)
-	{
-	case VDM_INT:
-	case VDM_NAT:
-	case VDM_NAT1:
-		return newIntGC(abs(arg->value.intVal), from);
-	case VDM_REAL:
-		return newRealGC(fabs(arg->value.doubleVal), from);
-	default:
-		FATAL_ERROR("Invalid type");
-		return NULL;
-	}
+	res = vdmAbs(arg);
+	add_allocd_mem_node(res);
+
+	return res;
+
+	return res;
 }
 
 TVP vdmFloor(TVP arg)
@@ -380,12 +796,12 @@ TVP vdmFloor(TVP arg)
 	return newInt(floor(arg->value.doubleVal));
 }
 
-TVP vdmFloorGC(TVP arg, TVP *from)
+TVP vdmFloorGC(TVP arg)
 {
 	ASSERT_CHECK_REAL(arg);
 
 	/* TODO: Why do we return a Real, when floor is int in VDM?  */
-	return newIntGC(floor(arg->value.doubleVal), from);
+	return newIntGC(floor(arg->value.doubleVal));
 }
 
 TVP vdmSum(TVP a,TVP b)
@@ -403,19 +819,16 @@ TVP vdmSum(TVP a,TVP b)
 	return newReal(av+bv);
 }
 
-TVP vdmSumGC(TVP a,TVP b, TVP *from)
+TVP vdmSumGC(TVP a,TVP b)
 {
-	ASSERT_CHECK_NUMERIC(a);
-	ASSERT_CHECK_NUMERIC(b);
+	TVP res;
 
-	double av = toDouble(a);
-	double bv=toDouble(b);
+	res = vdmSum(a, b);
+	add_allocd_mem_node(res);
 
-	if((a->type == VDM_INT || a->type == VDM_NAT || a->type == VDM_NAT1) &&
-				(b->type == VDM_INT || b->type == VDM_NAT || b->type == VDM_NAT1))
-			return newIntGC((int)(av + bv), from);
+	return res;
 
-		return newRealGC(av+bv, from);
+	return res;
 }
 
 TVP vdmDifference(TVP a,TVP b)
@@ -433,19 +846,14 @@ TVP vdmDifference(TVP a,TVP b)
 	return newReal(av - bv);
 }
 
-TVP vdmDifferenceGC(TVP a,TVP b, TVP *from)
+TVP vdmDifferenceGC(TVP a,TVP b)
 {
-	ASSERT_CHECK_NUMERIC(a);
-	ASSERT_CHECK_NUMERIC(b);
+	TVP res;
 
-	double av = toDouble(a);
-	double bv=toDouble(b);
+	res = vdmDifference(a, b);
+	add_allocd_mem_node(res);
 
-	if((a->type == VDM_INT || a->type == VDM_NAT || a->type == VDM_NAT1) &&
-				(b->type == VDM_INT || b->type == VDM_NAT || b->type == VDM_NAT1))
-			return newIntGC((int)(av - bv), from);
-
-		return newRealGC(av - bv, from);
+	return res;
 }
 
 TVP vdmProduct(TVP a,TVP b)
@@ -463,19 +871,14 @@ TVP vdmProduct(TVP a,TVP b)
 	return newReal(av * bv);
 }
 
-TVP vdmProductGC(TVP a, TVP b, TVP *from)
+TVP vdmProductGC(TVP a, TVP b)
 {
-	ASSERT_CHECK_NUMERIC(a);
-	ASSERT_CHECK_NUMERIC(b);
+	TVP res;
 
-	double av = toDouble(a);
-	double bv=toDouble(b);
+	res = vdmProduct(a, b);
+	add_allocd_mem_node(res);
 
-	if((a->type == VDM_INT || a->type == VDM_NAT || a->type == VDM_NAT1) &&
-				(b->type == VDM_INT || b->type == VDM_NAT || b->type == VDM_NAT1))
-			return newIntGC((int)(av * bv), from);
-
-		return newRealGC(av * bv, from);
+	return res;
 }
 
 TVP vdmDivision(TVP a,TVP b)
@@ -489,7 +892,7 @@ TVP vdmDivision(TVP a,TVP b)
 	return newReal(av/bv);
 }
 
-TVP vdmDivisionGC(TVP a,TVP b, TVP *from)
+TVP vdmDivisionGC(TVP a,TVP b)
 {
 	ASSERT_CHECK_NUMERIC(a);
 	ASSERT_CHECK_NUMERIC(b);
@@ -497,7 +900,7 @@ TVP vdmDivisionGC(TVP a,TVP b, TVP *from)
 	double av = toDouble(a);
 	double bv = toDouble(b);
 
-	return newRealGC(av/bv, from);
+	return newRealGC(av/bv);
 }
 
 static long divi(double lv, double rv)
@@ -537,20 +940,14 @@ TVP vdmDiv(TVP a, TVP b)
 	return newInt(divi(av,bv));
 }
 
-TVP vdmDivGC(TVP a, TVP b, TVP *from)
+TVP vdmDivGC(TVP a, TVP b)
 {
-	ASSERT_CHECK_NUMERIC(a);
-	ASSERT_CHECK_NUMERIC(b);
+	TVP res;
 
-	/* See https://github.com/overturetool/overture/blob/development/core/interpreter/src/main/java/org/overture/interpreter/eval/BinaryExpressionEvaluator.java#L444  */
+	res = vdmDiv(a, b);
+	add_allocd_mem_node(res);
 
-	ASSERT_CHECK_INT(a);
-	ASSERT_CHECK_INT(b);
-
-	int av = toDouble(a);
-	int bv = toDouble(b);
-
-	return newIntGC(divi(av,bv), from);
+	return res;
 }
 
 TVP vdmRem(TVP a,TVP b)
@@ -568,19 +965,14 @@ TVP vdmRem(TVP a,TVP b)
 	return newInt(av-bv*divi(av,bv));
 }
 
-TVP vdmRemGC(TVP a, TVP b, TVP *from)
+TVP vdmRemGC(TVP a, TVP b)
 {
-	ASSERT_CHECK_NUMERIC(a);
-	ASSERT_CHECK_NUMERIC(b);
+	TVP res;
 
-	/* See https://github.com/overturetool/overture/blob/development/core/interpreter/src/main/java/org/overture/interpreter/eval/BinaryExpressionEvaluator.java#L628  */
-	ASSERT_CHECK_INT(a);
-	ASSERT_CHECK_INT(b);
+	res = vdmRem(a, b);
+	add_allocd_mem_node(res);
 
-	int av = toDouble(a);
-	int bv = toDouble(b);
-
-	return newIntGC(av-bv*divi(av,bv), from);
+	return res;
 }
 
 TVP vdmMod(TVP a,TVP b)
@@ -602,23 +994,14 @@ TVP vdmMod(TVP a,TVP b)
 	return newReal(lv-rv*(long) floor(lv/rv));
 }
 
-TVP vdmModGC(TVP a, TVP b, TVP *from)
+TVP vdmModGC(TVP a, TVP b)
 {
-	ASSERT_CHECK_NUMERIC(a);
-	ASSERT_CHECK_NUMERIC(b);
+	TVP res;
 
-	/* See https://github.com/overturetool/overture/blob/development/core/interpreter/src/main/java/org/overture/interpreter/eval/BinaryExpressionEvaluator.java#L575  */
-	ASSERT_CHECK_INT(a);
-	ASSERT_CHECK_INT(b);
+	res = vdmMod(a, b);
+	add_allocd_mem_node(res);
 
-	double lv =(int) toDouble(a);
-	double rv = (int)toDouble(b);
-
-	if((a->type == VDM_INT || a->type == VDM_NAT || a->type == VDM_NAT1) &&
-				(b->type == VDM_INT || b->type == VDM_NAT || b->type == VDM_NAT1))
-			return newIntGC((int)(lv-rv*(long) floor(lv/rv)), from);
-
-		return newRealGC(lv-rv*(long) floor(lv/rv), from);
+	return res;
 }
 
 TVP vdmPower(TVP a,TVP b)
@@ -632,7 +1015,7 @@ TVP vdmPower(TVP a,TVP b)
 	return newReal(pow(av,bv));
 }
 
-TVP vdmPowerGC(TVP a, TVP b, TVP *from)
+TVP vdmPowerGC(TVP a, TVP b)
 {
 	ASSERT_CHECK_NUMERIC(a);
 	ASSERT_CHECK_NUMERIC(b);
@@ -640,7 +1023,7 @@ TVP vdmPowerGC(TVP a, TVP b, TVP *from)
 	double av = toDouble(a);
 	double bv = toDouble(b);
 
-	return newRealGC(pow(av,bv), from);
+	return newRealGC(pow(av,bv));
 }
 
 TVP vdmNumericEqual(TVP a,TVP b)
@@ -654,7 +1037,7 @@ TVP vdmNumericEqual(TVP a,TVP b)
 	return newBool(av==bv);
 }
 
-TVP vdmNumericEqualGC(TVP a, TVP b, TVP *from)
+TVP vdmNumericEqualGC(TVP a, TVP b)
 {
 	ASSERT_CHECK_NUMERIC(a);
 	ASSERT_CHECK_NUMERIC(b);
@@ -662,7 +1045,7 @@ TVP vdmNumericEqualGC(TVP a, TVP b, TVP *from)
 	double av = toDouble(a);
 	double bv = toDouble(b);
 
-	return newBoolGC(av==bv, from);
+	return newBoolGC(av==bv);
 }
 
 TVP vdmGreaterThan(TVP a,TVP b)
@@ -676,7 +1059,7 @@ TVP vdmGreaterThan(TVP a,TVP b)
 	return newBool(av>bv);
 }
 
-TVP vdmGreaterThanGC(TVP a,TVP b, TVP *from)
+TVP vdmGreaterThanGC(TVP a,TVP b)
 {
 	ASSERT_CHECK_NUMERIC(a);
 	ASSERT_CHECK_NUMERIC(b);
@@ -684,7 +1067,7 @@ TVP vdmGreaterThanGC(TVP a,TVP b, TVP *from)
 	double av = toDouble(a);
 	double bv = toDouble(b);
 
-	return newBoolGC(av>bv, from);
+	return newBoolGC(av>bv);
 }
 
 TVP vdmGreaterOrEqual(TVP a,TVP b)
@@ -698,7 +1081,7 @@ TVP vdmGreaterOrEqual(TVP a,TVP b)
 	return newBool(av>=bv);
 }
 
-TVP vdmGreaterOrEqualGC(TVP a, TVP b, TVP *from)
+TVP vdmGreaterOrEqualGC(TVP a, TVP b)
 {
 	ASSERT_CHECK_NUMERIC(a);
 	ASSERT_CHECK_NUMERIC(b);
@@ -706,7 +1089,7 @@ TVP vdmGreaterOrEqualGC(TVP a, TVP b, TVP *from)
 	double av = toDouble(a);
 	double bv = toDouble(b);
 
-	return newBoolGC(av>=bv, from);
+	return newBoolGC(av>=bv);
 }
 
 TVP vdmLessThan(TVP a,TVP b)
@@ -720,7 +1103,7 @@ TVP vdmLessThan(TVP a,TVP b)
 	return newBool(av<bv);
 }
 
-TVP vdmLessThanGC(TVP a, TVP b, TVP *from)
+TVP vdmLessThanGC(TVP a, TVP b)
 {
 	ASSERT_CHECK_NUMERIC(a);
 	ASSERT_CHECK_NUMERIC(b);
@@ -728,7 +1111,7 @@ TVP vdmLessThanGC(TVP a, TVP b, TVP *from)
 	double av = toDouble(a);
 	double bv = toDouble(b);
 
-	return newBoolGC(av<bv, from);
+	return newBoolGC(av<bv);
 }
 
 TVP vdmLessOrEqual(TVP a,TVP b)
@@ -742,7 +1125,7 @@ TVP vdmLessOrEqual(TVP a,TVP b)
 	return newBool(av<=bv);
 }
 
-TVP vdmLessOrEqualGC(TVP a, TVP b, TVP *from)
+TVP vdmLessOrEqualGC(TVP a, TVP b)
 {
 	ASSERT_CHECK_NUMERIC(a);
 	ASSERT_CHECK_NUMERIC(b);
@@ -750,5 +1133,5 @@ TVP vdmLessOrEqualGC(TVP a, TVP b, TVP *from)
 	double av = toDouble(a);
 	double bv = toDouble(b);
 
-	return newBoolGC(av <= bv, from);
+	return newBoolGC(av <= bv);
 }

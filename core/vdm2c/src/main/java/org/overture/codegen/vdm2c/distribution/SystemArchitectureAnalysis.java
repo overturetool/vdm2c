@@ -177,9 +177,12 @@ public class SystemArchitectureAnalysis
 									continue;
 
 								Set<SExpIR> depSet = distributionMap.get(cpuName);
-								for (SExpIR arg : o.getArgs())
-								{
-									depSet.add(arg);
+
+								if(!o.getArgs().isEmpty()) {
+									// The deploy operation takes two arguments: the first argument
+									// is the object to deploy, the second argument is a name
+									// (a string really) that is not important.
+									depSet.add(o.getArgs().getFirst());
 									distributionMap.put(cpuName, depSet);
 								}
 							}

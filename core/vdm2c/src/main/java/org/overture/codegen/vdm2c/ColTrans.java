@@ -1,5 +1,6 @@
 package org.overture.codegen.vdm2c;
 
+import static org.overture.codegen.vdm2c.utils.CTransUtil.newApply;
 import static org.overture.codegen.vdm2c.utils.CTransUtil.rewriteToApply;
 
 import java.util.LinkedList;
@@ -43,6 +44,7 @@ public class ColTrans extends DepthFirstAnalysisCAdaptor implements IApplyAssist
 	public static final String SET_DIST_UNION = "vdmSetDunion";
 	public static final String SET_DIST_INTER = "vdmSetDinter";
 	public static final String SET_POWER_SET = "vdmSetPower";
+	public static final String SET_RANGE = "vdmSetEnumerateSetOfInts";
 	
 	// Map operations
 	public static final String MAP_DOM = "vdmMapDom";
@@ -55,6 +57,8 @@ public class ColTrans extends DepthFirstAnalysisCAdaptor implements IApplyAssist
 	public static final String MAP_RES_DOM_BY = "vdmMapDomRestrictBy";
 	public static final String MAP_RES_RNG_TO = "vdmMapRngRestrictTo";
 	public static final String MAP_RES_RNG_BY = "vdmMapRngRestrictBy";
+	public static final String MAP_ITERATE = "vdmMapIterate";
+	public static final String MAP_COMP = "vdmMapCompose";
 
 	private TransAssistantIR assist;
 
@@ -232,6 +236,12 @@ public class ColTrans extends DepthFirstAnalysisCAdaptor implements IApplyAssist
 	}
 	
 	@Override
+	public void caseARangeSetExpIR(ARangeSetExpIR node) throws AnalysisException {
+		
+		rewriteToApply(this, node, SET_RANGE, newApply("toInteger", node.getFirst().clone()), newApply("toInteger", node.getLast().clone()));
+	}
+	
+	@Override
 	public void caseAMapDomainUnaryExpIR(AMapDomainUnaryExpIR node) throws AnalysisException {
 		
 		rewriteToApply(this, node, MAP_DOM, node.getExp());
@@ -284,7 +294,19 @@ public class ColTrans extends DepthFirstAnalysisCAdaptor implements IApplyAssist
 		
 		rewriteToApply(this, node, MAP_RES_RNG_BY, node.getLeft(), node.getRight());
 	}
-	
+
+	@Override
+	public void caseAMapIterationBinaryExpIR(AMapIterationBinaryExpIR node) throws AnalysisException {
+
+		rewriteToApply(this, node, MAP_ITERATE, node.getLeft(), node.getRight());
+	}
+
+	@Override
+	public void caseACompBinaryExpIR(ACompBinaryExpIR node) throws AnalysisException {
+
+		rewriteToApply(this, node, MAP_COMP, node.getLeft(), node.getRight());
+	}
+
 	private void rewriteColEnumToApply(SExpIR node, String seqVar, List<SExpIR> members)
 			throws AnalysisException {
 		AExternalTypeIR extType = new AExternalTypeIR();

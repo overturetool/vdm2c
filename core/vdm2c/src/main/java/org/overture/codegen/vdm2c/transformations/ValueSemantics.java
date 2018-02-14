@@ -16,16 +16,21 @@ public class ValueSemantics {
 
 	public static SExpIR clone(SExpIR exp) {
 		if (exp instanceof SVarExpIR) {
-			AApplyExpIR vdmCloneApply = CTransUtil.newApply(VDM_CLONE, exp);
-
-			if (exp.getType() != null) {
-				vdmCloneApply.setType(exp.getType().clone());
-			}
-			return vdmCloneApply;
+			return forceClone(exp);
 		} else {
 			// Don't clone literals
 			return exp;
 		}
+	}
+
+	public static SExpIR forceClone(SExpIR exp)
+	{
+		AApplyExpIR vdmCloneApply = CTransUtil.newApply(VDM_CLONE, exp);
+
+		if (exp.getType() != null) {
+			vdmCloneApply.setType(exp.getType().clone());
+		}
+		return vdmCloneApply;
 	}
 
 	public static SExpIR free(String name, SourceNode source)

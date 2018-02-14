@@ -37,3 +37,12 @@ TEST_F(TestFlowFunctions, existsSecond)
 	CHECK(CLASS_ExpressionQuantifiers__Z12existsSecondEV);
 }
 
+TEST_F(TestFlowFunctions, exists1First)
+{
+	CHECK(CLASS_ExpressionQuantifiers__Z12exists1FirstEV);
+}
+
+TEST_F(TestFlowFunctions, exists1Second)
+{
+	CHECK(CLASS_ExpressionQuantifiers__Z13exists1SecondEV);
+}

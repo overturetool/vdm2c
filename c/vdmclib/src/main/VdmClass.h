@@ -27,6 +27,10 @@
  *      Author: kel
  */
 
+
+/*  VERSION: For the version of VDM2C used to generate this project, refer to one of the generated files.  */
+
+
 #ifndef LIB_VDMCLASS_H_
 #define LIB_VDMCLASS_H_
 
@@ -191,8 +195,7 @@ struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction
 
 #define SET_STRUCT_FIELD_GC(tname,ptr,fieldtype,fieldname,newValue)\
 	vdmFree(*((fieldtype*)(((unsigned char*)ptr) + offsetof(struct tname, fieldname))));\
-	(*((fieldtype*)(((unsigned char*)ptr) + offsetof(struct tname, fieldname))) = vdmCloneGC(newValue,\
-			(TVP *)((fieldtype*)(((unsigned char*)ptr) + offsetof(struct tname, fieldname)))))
+	(*((fieldtype*)(((unsigned char*)ptr) + offsetof(struct tname, fieldname))) = vdmCloneGC(newValue))
 
 /*
  * Macro to obtain the (sub-)class specific VTable from a class struct
@@ -217,7 +220,7 @@ struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction
  * Macro to obtain a field from a (sub-)class specific class struct. We clone to preserve value semantics and the rule of freeing
  */
 #define GET_FIELD(thisTypeName, fieldTypeName, classValue, fieldName) vdmClone(GET_STRUCT_FIELD(fieldTypeName,CLASS_CAST(TO_CLASS_PTR(classValue,thisTypeName),thisTypeName,fieldTypeName) ,TVP,m_##fieldTypeName##_##fieldName))
-#define GET_FIELD_GC(thisTypeName, fieldTypeName, classValue, fieldName) vdmCloneGC(GET_STRUCT_FIELD(fieldTypeName,CLASS_CAST(TO_CLASS_PTR(classValue,thisTypeName),thisTypeName,fieldTypeName) ,TVP,m_##fieldTypeName##_##fieldName), NULL)
+#define GET_FIELD_GC(thisTypeName, fieldTypeName, classValue, fieldName) vdmCloneGC(GET_STRUCT_FIELD(fieldTypeName,CLASS_CAST(TO_CLASS_PTR(classValue,thisTypeName),thisTypeName,fieldTypeName) ,TVP,m_##fieldTypeName##_##fieldName))
 
 /*
  * Macro to set a field from a (sub-)class specific class struct. We clone to preserve value semantics and the rule of freeing
@@ -240,7 +243,7 @@ struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction
  * Macro to obtain a field from a (sub-)class specific class struct. We clone to preserve value semantics and the rule of freeing
  */
 #define GET_FIELD_PTR(thisTypeName, fieldTypeName, ptr, fieldName) vdmClone(GET_STRUCT_FIELD(fieldTypeName,CLASS_CAST(ptr,thisTypeName,fieldTypeName) ,TVP,m_##fieldTypeName##_##fieldName))
-#define GET_FIELD_PTR_GC(thisTypeName, fieldTypeName, ptr, fieldName) vdmCloneGC(GET_STRUCT_FIELD(fieldTypeName,CLASS_CAST(ptr,thisTypeName,fieldTypeName) ,TVP,m_##fieldTypeName##_##fieldName), NULL)
+#define GET_FIELD_PTR_GC(thisTypeName, fieldTypeName, ptr, fieldName) vdmCloneGC(GET_STRUCT_FIELD(fieldTypeName,CLASS_CAST(ptr,thisTypeName,fieldTypeName) ,TVP,m_##fieldTypeName##_##fieldName))
 
 /*
  * Macro to obtain a field from a (sub-)class specific class struct. This macro is intended to be used for updating sequences and maps, which is why the field is not cloned.
@@ -273,6 +276,6 @@ struct ClassType* newClassValue(int id, unsigned int* refs, freeVdmClassFunction
 #define SELF(objName) newTypeValue(VDM_CLASS, (TypedValueType){.ptr=newClassValue(this->_##objName##_id, &this->_##objName##_refs, (freeVdmClassFunction)&objName##_free, this)});
 
 
-#define SELF_GC(objName, varName) newTypeValueGC(VDM_CLASS, (TypedValueType){.ptr=newClassValue(this->_##objName##_id, &this->_##objName##_refs, (freeVdmClassFunction)&objName##_free, this)}, varName);
+#define SELF_GC(objName) newTypeValueGC(VDM_CLASS, (TypedValueType){.ptr=newClassValue(this->_##objName##_id, &this->_##objName##_refs, (freeVdmClassFunction)&objName##_free, this)});
 
 #endif /* LIB_VDMCLASS_H_ */

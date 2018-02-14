@@ -27,6 +27,10 @@
  *      Author: kel
  */
 
+
+/*  VERSION: For the version of VDM2C used to generate this project, refer to one of the generated files.  */
+
+
 #include "Vdm.h"
 #include "TypedValue.h"
 #include "VdmClass.h"
@@ -48,7 +52,6 @@ TVP newTypeValue(vdmtype type, TypedValueType value)
 	assert(ptr != NULL);
 	ptr->type = type;
 	ptr->value = value;
-	ptr->ref_from = NULL;
 
 	return ptr;
 }
@@ -98,6 +101,7 @@ TVP newToken(TVP x)
 		hashVal = ((hashVal << 2) + hashVal) + c;
 
 	free(strTmp);
+	vdmFree(x);
 
 	return newTypeValue(VDM_TOKEN, (TypedValueType
 	)
@@ -106,7 +110,7 @@ TVP newToken(TVP x)
 
 TVP newUnknown()
 {
-  return newTypeValue(VDM_UNKNOWN, (TypedValueType
+	return newTypeValue(VDM_UNKNOWN, (TypedValueType
 	)
 			{});
 }
@@ -124,17 +128,14 @@ TVP newCollection(size_t size, vdmtype type)
 			{ .ptr = ptr });
 }
 
-TVP newCollectionGC(size_t size, vdmtype type, TVP *from)
+TVP newCollectionGC(size_t size, vdmtype type)
 {
-	struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
-	assert(ptr != NULL);
-	ptr->size = size;
-	ptr->value = (TVP*) calloc(size != 0 ? size : 1, sizeof(TVP)); /* I know this is slower than malloc but better for products  */
-	ptr->buf_size = size != 0 ? size : 1;
-	assert(ptr->value != NULL);
-	return newTypeValueGC(type, (TypedValueType
-	)
-			{ .ptr = ptr }, from);
+	TVP res;
+
+	res = newCollection(size, type);
+	add_allocd_mem_node(res);
+
+	return res;
 }
 
 TVP newCollectionPrealloc(size_t size, size_t expected_size, vdmtype type)
@@ -150,17 +151,14 @@ TVP newCollectionPrealloc(size_t size, size_t expected_size, vdmtype type)
 			{ .ptr = ptr });
 }
 
-TVP newCollectionPreallocGC(size_t size, size_t expected_size, vdmtype type, TVP *from)
+TVP newCollectionPreallocGC(size_t size, size_t expected_size, vdmtype type)
 {
-	struct Collection* ptr = (struct Collection*) malloc(sizeof(struct Collection));
-	assert(ptr != NULL);
-	ptr->size = size;
-	ptr->value = (TVP*) calloc(expected_size, sizeof(TVP)); /* I know this is slower than malloc but better for products  */
-	ptr->buf_size = expected_size;
-	assert(ptr->value != NULL);
-	return newTypeValueGC(type, (TypedValueType
-	)
-			{ .ptr = ptr }, from);
+	TVP res;
+
+	res = newCollectionPrealloc(size, expected_size, type);
+	add_allocd_mem_node(res);
+
+	return res;
 }
 
 TVP newCollectionWithValues(size_t size, vdmtype type, TVP* elements)
@@ -191,11 +189,25 @@ TVP newCollectionWithValuesPrealloc(size_t size, size_t expected_size, vdmtype t
 	return product;
 }
 
-TVP newCollectionWithValuesGC(size_t size, vdmtype type, TVP* elements, TVP *from)
+TVP newCollectionWithValuesPreallocGC(size_t size, size_t expected_size, vdmtype type, TVP* elements)
 {
 	int i;
 
-	TVP product = newCollectionGC(size, type, from);
+	TVP product = newCollectionPreallocGC(size, expected_size, type);
+	UNWRAP_COLLECTION(col,product);
+
+	for (i = 0; i < size; i++)
+	{
+		col->value[i]= vdmClone(elements[i]);
+	}
+	return product;
+}
+
+TVP newCollectionWithValuesGC(size_t size, vdmtype type, TVP* elements)
+{
+	int i;
+
+	TVP product = newCollectionGC(size, type);
 	UNWRAP_COLLECTION(col, product);
 
 	for (i = 0; i < size; i++)
@@ -248,12 +260,12 @@ TVP vdmClone(TVP x)
 	case VDM_RAT:
 	case VDM_QUOTE:
 	case VDM_TOKEN:
-  case VDM_UNKNOWN:  
+	case VDM_UNKNOWN:
 	{
 		/* encoded as values so the initial copy line handles these  */
 		break;
 	}
-#ifndef NO_MAPS
+#if !defined(NO_MAPS) || !defined(NO_SEQS)
 	case VDM_MAP:
 	{
 		UNWRAP_MAP(m, x);
@@ -350,7 +362,7 @@ TVP vdmClone(TVP x)
 		/* irrelevant for records.  */
 		(tmp->value).ptr = newClassValue(((struct ClassType*)(x->value.ptr))->classId,
 				((struct ClassType*)(x->value.ptr))->refs,
-				NULL,
+				((struct ClassType*)(x->value.ptr))->freeClass,
 				NULL);
 
 		/* Generic way of accessing the number-of-fields field.  The name of the record type is  */
@@ -409,10 +421,10 @@ bool equals(TVP a, TVP b)
 
 	switch (a->type)
 	{
-  case VDM_UNKNOWN:
-  {
-    return b->type == VDM_UNKNOWN;
-  }
+	case VDM_UNKNOWN:
+	{
+		return b->type == VDM_UNKNOWN;
+	}
 	case VDM_BOOL:
 	{
 		return a->value.boolVal == b->value.boolVal;
@@ -437,7 +449,7 @@ bool equals(TVP a, TVP b)
 	{
 		return a->value.quoteVal == b->value.quoteVal;
 	}
-#ifndef NO_MAPS
+#if !defined(NO_MAPS) || !defined(NO_SEQS)
 	case VDM_MAP:
 	{
 		TVP r0 = vdmMapEquals(a, b);
@@ -566,11 +578,11 @@ void vdmFree_GCInternal(TVP ptr)
 	case VDM_RAT:
 	case VDM_QUOTE:
 	case VDM_TOKEN:
-  case VDM_UNKNOWN:  
+	case VDM_UNKNOWN:
 	{
 		break;
 	}
-#ifndef NO_MAPS
+#if !defined(NO_MAPS) || !defined(NO_SEQS)
 	case VDM_MAP:
 	{
 		freeMap((struct Map*)(ptr->value.ptr));
@@ -657,6 +669,7 @@ void vdmFree_GCInternal(TVP ptr)
 
 		/* Free the virtual function table.  */
 		free(((struct ClassType*)ptr->value.ptr)->value);
+		free(ptr->value.ptr);
 
 		break;
 #endif /* NO_RECORDS */
@@ -683,8 +696,6 @@ void vdmFree_GCInternal(TVP ptr)
 
 void vdmFree(TVP ptr)
 {
-	TVP *tmp;
-
 	if (ptr == NULL)
 		return;
 
@@ -699,11 +710,11 @@ void vdmFree(TVP ptr)
 	case VDM_RAT:
 	case VDM_QUOTE:
 	case VDM_TOKEN:
-  case VDM_UNKNOWN:  
+	case VDM_UNKNOWN:
 	{
 		break;
 	}
-#ifndef NO_MAPS
+#if !defined(NO_MAPS) || !defined(NO_SEQS)
 	case VDM_MAP:
 	{
 		freeMap((struct Map*)(ptr->value.ptr));
@@ -791,6 +802,7 @@ void vdmFree(TVP ptr)
 
 		/* Free the virtual function table.  */
 		free(((struct ClassType*)ptr->value.ptr)->value);
+		free(ptr->value.ptr);
 
 		break;
 #endif /* NO_RECORDS */
@@ -811,23 +823,19 @@ void vdmFree(TVP ptr)
 
 	/* free typedvalue  */
 	remove_allocd_mem_node_by_location(ptr);
-	tmp = ptr->ref_from;
+
 	free(ptr);
-	if(tmp != NULL)
-	{
-		*tmp = NULL;
-	}
 }
 
 TVP vdmEquals(TVP a, TVP b)
 {	return newBool(equals(a,b));}
 
-TVP vdmEqualsGC(TVP a, TVP b, TVP *from)
-{	return newBoolGC(equals(a,b), from);}
+TVP vdmEqualsGC(TVP a, TVP b)
+{	return newBoolGC(equals(a,b));}
 
 TVP vdmInEquals(TVP a, TVP b)
 {	return newBool(!equals(a,b));}
 
-TVP vdmInEqualsGC(TVP a, TVP b, TVP *from)
-{	return newBoolGC(!equals(a,b), from);}
+TVP vdmInEqualsGC(TVP a, TVP b)
+{	return newBoolGC(!equals(a,b));}
 

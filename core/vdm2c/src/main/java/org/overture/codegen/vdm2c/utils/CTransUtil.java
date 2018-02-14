@@ -122,6 +122,10 @@ public class CTransUtil
 		return assign;
 	}
 
+	public static String getMethodId(AMethodDeclIR selectedMethod, String methodOwnerType) {
+		return String.format(CTransUtil.METHOD_CALL_ID_PATTERN, methodOwnerType, selectedMethod.getName());
+	}
+
 	@SuppressWarnings("deprecation")
 	public static SExpIR newCast(String string, SExpIR newApply)
 	{

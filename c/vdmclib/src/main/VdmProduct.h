@@ -27,6 +27,10 @@
  *      Author: kel
  */
 
+
+/*  VERSION: For the version of VDM2C used to generate this project, refer to one of the generated files.  */
+
+
 #ifndef LIB_VDMPRODUCT_H_
 #define LIB_VDMPRODUCT_H_
 #include "Vdm.h"
@@ -35,11 +39,11 @@
 #ifndef NO_PRODUCTS
 
 TVP newProductVar(size_t size,...);
-TVP newProductVarGC(size_t size, TVP *from, ...);
+TVP newProductVarGC(size_t size, ...);
 TVP newProductWithValues(size_t size,TVP* elements);
 
 TVP productGet(TVP product, int index);
-TVP productGetGC(TVP product, int index, TVP *from);
+TVP productGetGC(TVP product, int index);
 void productSet(TVP product, int index, TVP val);
 /* bool productEqual(TVP product,TVP product2);  */
 

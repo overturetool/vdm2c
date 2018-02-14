@@ -50,6 +50,7 @@ public class CGenMain {
 				.build();
 		Option helpOpt = Option.builder("h").longOpt("help").desc("Show this description").build();
 		Option gcOpt = Option.builder("gc").longOpt("garbagecollection").desc("Use garbage collection").build();
+		Option preOpt = Option.builder("pre").longOpt("preconditions").desc("Generate pre conditions").build();
 		Option defaultArg = Option.builder("").desc("A VDM-RT file to code generate").hasArg().build();
 
 		options.addOption(quietOpt);
@@ -58,6 +59,7 @@ public class CGenMain {
 		options.addOption(helpOpt);
 		options.addOption(formatOpt);
 		options.addOption(gcOpt);
+		options.addOption(preOpt);
 		options.addOption(defaultArg);
 
 		CommandLineParser parser = new DefaultParser();
@@ -105,6 +107,12 @@ public class CGenMain {
 
 		if (cmd.hasOption(gcOpt.getOpt())) {
 			cGen.getCGenSettings().setUseGarbageCollection(true);
+		}
+
+		if(cmd.hasOption(preOpt.getOpt()))
+		{
+			cGen.getSettings().setGeneratePreConds(true);
+			cGen.getSettings().setGeneratePreCondChecks(true);
 		}
 
 		if (cmd.hasOption(sourceOpt.getOpt())) {
@@ -227,7 +235,8 @@ public class CGenMain {
 						}
 					}
 				}
-
+				
+				cGen.emitClassAssocFile(outputDir, CGen.CLASS_ASSOC_FILE_NAME);
 				cGen.emitFeatureFile(outputDir, CGen.FEATURE_FILE_NAME);
 				if (!quiet) {
 					print("Generated feature file: " + new File(outputDir, CGen.FEATURE_FILE_NAME).getAbsolutePath());

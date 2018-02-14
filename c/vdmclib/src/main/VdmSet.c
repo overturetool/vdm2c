@@ -26,6 +26,11 @@
  *  Created on: Dec 7, 2015
  *      Author: kel
  */
+
+
+/*  VERSION: For the version of VDM2C used to generate this project, refer to one of the generated files.  */
+
+
 #include <string.h>
 #include <stdarg.h>
 #include <math.h>
@@ -99,7 +104,7 @@ TVP newSetWithValues(size_t size, TVP* elements)
 }
 
 
-TVP newSetWithValuesGC(size_t size, TVP* elements, TVP *from)
+TVP newSetWithValuesGC(size_t size, TVP* elements)
 {
 	int i;
 	int count = 0;
@@ -121,7 +126,7 @@ TVP newSetWithValuesGC(size_t size, TVP* elements, TVP *from)
 		vdmSetAdd(value, &count,v);
 	}
 
-	TVP res = newCollectionWithValuesGC(count, VDM_SET, value, from);
+	TVP res = newCollectionWithValuesGC(count, VDM_SET, value);
 
 	for(i = 0; i < count; i++)
 	{
@@ -175,12 +180,12 @@ TVP newSetVar(size_t size, ...)
 }
 
 
-TVP newSetVarGC(size_t size, TVP *from, ...)
+TVP newSetVarGC(size_t size, ...)
 {
 	int i;
 
 	va_list ap;
-	va_start(ap, from);
+	va_start(ap, size);
 
 	int count = 0;
 
@@ -205,7 +210,7 @@ TVP newSetVarGC(size_t size, TVP *from, ...)
 
 	va_end(ap);
 
-	TVP res = newCollectionWithValuesGC(count, VDM_SET, value, from);
+	TVP res = newCollectionWithValuesGC(count, VDM_SET, value);
 	for(i = 0; i < count; i++)
 	{
 		vdmFree(value[i]);
@@ -260,10 +265,10 @@ TVP newSetVarToGrow(size_t size, size_t expected_size, ...)
 	return res;
 }
 
-TVP newSetVarToGrowGC(size_t size, size_t expected_size, TVP *from, ...)
+TVP newSetVarToGrowGC(size_t size, size_t expected_size, ...)
 {
 	va_list ap;
-	va_start(ap, from);
+	va_start(ap, expected_size);
 
 	int i;
 	int count = 0;
@@ -294,7 +299,7 @@ TVP newSetVarToGrowGC(size_t size, size_t expected_size, TVP *from, ...)
 
 	va_end(ap);
 
-	TVP res = newCollectionWithValuesGC(count, VDM_SET, value, from);
+	TVP res = newCollectionWithValuesGC(count, VDM_SET, value);
 	free(value);
 	return res;
 }
@@ -304,22 +309,23 @@ TVP newSetVarToGrowGC(size_t size, size_t expected_size, TVP *from, ...)
 /* What to return?  */
 void vdmSetGrow(TVP set, TVP element)
 {
-/* 	int bufsize = DEFAULT_SET_COMP_BUFFER;  */
+	/* 	int bufsize = DEFAULT_SET_COMP_BUFFER;  */
 
 	UNWRAP_COLLECTION(col, set);
 	int size = col->size;
 
-/* 	if(col->size >= bufsize)  */
-/* 	{  */
-/* 		buffer too small add memory chunk  */
-/* 		bufsize += DEFAULT_SET_COMP_BUFFER_STEPSIZE;  */
-/* 		col->value = (TVP*)realloc(col->value, bufsize * sizeof(TVP));  */
-/* 	}  */
+	/* 	if(col->size >= bufsize)  */
+	/* 	{  */
+	/* 		buffer too small add memory chunk  */
+	/* 		bufsize += DEFAULT_SET_COMP_BUFFER_STEPSIZE;  */
+	/* 		col->value = (TVP*)realloc(col->value, bufsize * sizeof(TVP));  */
+	/* 	}  */
 
 	col->value = (TVP *)realloc(col->value, (size + 1) * sizeof(TVP));
 	assert(col->value != NULL);
 
 	vdmSetAdd(col->value, &(col->size), vdmClone(element));
+	vdmFree(element);
 }
 
 
@@ -382,6 +388,18 @@ TVP vdmSetEnumerateSetOfInts(int lower, int upper)
 	return res;
 }
 
+TVP vdmSetEnumerateSetOfIntsGC(int lower, int upper)
+{
+	TVP tmp;
+	TVP res;
+
+	tmp = vdmSetEnumerateSetOfInts(lower, upper);
+	res = vdmCloneGC(tmp);
+	vdmFree(tmp);
+
+	return res;
+}
+
 
 TVP vdmSetElementAt(TVP set, int loc)
 {
@@ -395,7 +413,7 @@ TVP vdmSetElementAt(TVP set, int loc)
 	return vdmClone(col->value[loc]);
 }
 
-TVP vdmSetElementAtGC(TVP set, int loc, TVP *from)
+TVP vdmSetElementAtGC(TVP set, int loc)
 {
 	UNWRAP_COLLECTION(col, set);
 
@@ -404,7 +422,7 @@ TVP vdmSetElementAtGC(TVP set, int loc, TVP *from)
 		return NULL;
 	}
 
-	return vdmCloneGC(col->value[loc], from);
+	return vdmCloneGC(col->value[loc]);
 }
 
 
@@ -428,22 +446,16 @@ TVP vdmSetMemberOf(TVP set, TVP element)
 }
 
 
-TVP vdmSetMemberOfGC(TVP set, TVP element, TVP *from)
+TVP vdmSetMemberOfGC(TVP set, TVP element)
 {
-	int i;
+	TVP tmp;
+	TVP res;
 
-	ASSERT_CHECK(set);
+	tmp = vdmSetMemberOf(set, element);
+	res = vdmCloneGC(tmp);
+	vdmFree(tmp);
 
-	UNWRAP_COLLECTION(col,set);
-
-	bool found = false;
-
-	for (i = 0; i < col->size; i++)
-	{
-		found|= equals(col->value[i],element);
-	}
-
-	return newBoolGC(found, from);
+	return res;
 }
 
 
@@ -463,19 +475,16 @@ TVP vdmSetNotMemberOf(TVP set, TVP element)
 	return newBool(!resval);
 }
 
-TVP vdmSetNotMemberOfGC(TVP set, TVP element, TVP *from)
+TVP vdmSetNotMemberOfGC(TVP set, TVP element)
 {
+	TVP tmp;
 	TVP res;
-	bool resval;
 
-	ASSERT_CHECK(set);
+	tmp = vdmSetNotMemberOf(set, element);
+	res = vdmCloneGC(tmp);
+	vdmFree(tmp);
 
-	res = vdmSetMemberOf(set, element);
-	resval = res->value.boolVal;
-
-	vdmFree(res);
-
-	return newBoolGC(!resval, from);
+	return res;
 }
 
 
@@ -524,49 +533,16 @@ TVP vdmSetUnion(TVP set1, TVP set2)
 	return resset;
 }
 
-TVP vdmSetUnionGC(TVP set1, TVP set2, TVP *from)
+TVP vdmSetUnionGC(TVP set1, TVP set2)
 {
-	int i;
+	TVP tmp;
+	TVP res;
 
-	TVP *newvalues;
-	TVP resset;
+	tmp = vdmSetUnion(set1, set2);
+	res = vdmCloneGC(tmp);
+	vdmFree(tmp);
 
-	ASSERT_CHECK(set1);
-	ASSERT_CHECK(set2);
-
-	UNWRAP_COLLECTION(col1, set1);
-	UNWRAP_COLLECTION(col2, set2);
-	/* col1 and col2 of type struct Collection*.  */
-
-	/* This can not be done because col1 and col2 are not valid at the time when  */
-	/* newcol1 and newcol2 are declared, hence the bogus length of one of them.  */
-	/* TVP newcol1[col1->size];  */
-	/* TVP newcol2[col2->size];  */
-	/* Something like the following is fine because memory layout is not involved.  */
-	/* int a = col1->size;  */
-
-	/* newcol1 = (TVP*)malloc(col1->size * sizeof(TVP));  */
-	/* newcol2 = (TVP*)malloc(col2->size * sizeof(TVP));  */
-
-	newvalues = (TVP*)malloc((col1->size + col2->size) * sizeof(TVP));
-	assert(newvalues != NULL);
-	for(i = 0; i < col1->size; i++)
-	{
-		newvalues[i] = vdmClone((col1->value)[i]);
-	}
-
-	for(i = col1->size; i < (col1-> size + col2->size); i++)
-	{
-		newvalues[i] = vdmClone((col2->value)[i - col1->size]);
-	}
-
-	resset = newSetWithValuesGC(col1->size + col2->size, newvalues, from);
-
-	for(i = 0; i < col1->size + col2->size; i++)
-		vdmFree(newvalues[i]);
-	free(newvalues);
-
-	return resset;
+	return res;
 }
 
 
@@ -612,44 +588,16 @@ TVP vdmSetInter(TVP set1, TVP set2)
 }
 
 
-TVP vdmSetInterGC(TVP set1, TVP set2, TVP *from)
+TVP vdmSetInterGC(TVP set1, TVP set2)
 {
-	int i;
-	TVP inter;
-	TVP tmpset1;
-	TVP tmpset2;
+	TVP tmp;
 	TVP res;
 
-	ASSERT_CHECK(set1);
-	ASSERT_CHECK(set2);
+	tmp = vdmSetInter(set1, set2);
+	res = vdmCloneGC(tmp);
+	vdmFree(tmp);
 
-	UNWRAP_COLLECTION(col1, set1);
-	UNWRAP_COLLECTION(col2, set2);
-
-	if(col1->size == 0 || col2->size ==0)
-	{
-		return newSetWithValuesGC(0, NULL, from);
-	}
-
-	inter = newSetWithValuesGC(0, NULL, from);
-
-	for(i = 0; i < col1->size; i++)
-	{
-		res = vdmSetMemberOf(set2, (col1->value)[i]);
-
-		if(res->value.boolVal)
-		{
-			/* add to intersection set  */
-			tmpset1 = newSetVar(1, col1->value[i]);
-			tmpset2 = vdmSetUnion(inter, tmpset1);
-			vdmFree(inter);
-			inter = tmpset2;
-			vdmFree(tmpset1);
-		}
-		vdmFree(res);
-	}
-
-	return inter;
+	return res;
 }
 
 
@@ -695,42 +643,16 @@ TVP vdmSetDifference(TVP set1, TVP set2)
 
 
 
-TVP vdmSetDifferenceGC(TVP set1, TVP set2, TVP *from)
+TVP vdmSetDifferenceGC(TVP set1, TVP set2)
 {
-	int i;
-	TVP tmpset1;
-	TVP tmpset2;
-	TVP resultset;
+	TVP tmp;
 	TVP res;
 
-	ASSERT_CHECK(set1);
-	ASSERT_CHECK(set2);
+	tmp = vdmSetDifference(set1, set2);
+	res = vdmCloneGC(tmp);
+	vdmFree(tmp);
 
-	UNWRAP_COLLECTION(col1, set1);
-	UNWRAP_COLLECTION(col2, set2);
-
-	if(col1->size == 0 || col2->size == 0)
-	{
-		return set1;
-	}
-
-	resultset = newSetWithValuesGC(0, NULL, from);
-
-	for(i = 0; i < col1->size; i++)
-	{
-		res = vdmSetNotMemberOf(set2, (col1->value)[i]);
-		if(res->value.boolVal)
-		{
-			tmpset1 = newSetVar(1, (col1->value)[i]);
-			tmpset2 = vdmSetUnion(resultset, tmpset1);
-			vdmFree(resultset);
-			resultset = tmpset2;
-			vdmFree(tmpset1);
-		}
-		vdmFree(res);
-	}
-
-	return resultset;
+	return res;
 }
 
 
@@ -767,35 +689,16 @@ TVP vdmSetSubset(TVP set1, TVP set2)
 
 
 
-TVP vdmSetSubsetGC(TVP set1, TVP set2, TVP *from)
+TVP vdmSetSubsetGC(TVP set1, TVP set2)
 {
-	int i;
+	TVP tmp;
 	TVP res;
 
-	ASSERT_CHECK(set1);
-	ASSERT_CHECK(set2);
+	tmp = vdmSetSubset(set1, set2);
+	res = vdmCloneGC(tmp);
+	vdmFree(tmp);
 
-	UNWRAP_COLLECTION(col1, set1);
-	UNWRAP_COLLECTION(col2, set2);
-
-	if(col1-> size > col2->size)
-	{
-		return newBoolGC(false, from);
-	}
-
-	for(i = 0; i < col1->size; i++)
-	{
-
-		res = vdmSetMemberOf(set2, (col1->value)[i]);
-		if(!res->value.boolVal)
-		{
-			free(res);
-			return newBoolGC(false, from);
-		}
-		free(res);
-	}
-
-	return newBoolGC(true, from);
+	return res;
 }
 
 
@@ -817,20 +720,16 @@ TVP vdmSetProperSubset(TVP set1, TVP set2)
 }
 
 
-TVP vdmSetProperSubsetGC(TVP set1, TVP set2, TVP *from)
+TVP vdmSetProperSubsetGC(TVP set1, TVP set2)
 {
-	ASSERT_CHECK(set1);
-	ASSERT_CHECK(set2);
+	TVP tmp;
+	TVP res;
 
-	UNWRAP_COLLECTION(col1, set1);
-	UNWRAP_COLLECTION(col2, set2);
+	tmp = vdmSetProperSubset(set1, set2);
+	res = vdmCloneGC(tmp);
+	vdmFree(tmp);
 
-	if(col1->size >= col2->size)
-	{
-		return newBoolGC(false, from);
-	}
-
-	return vdmSetSubsetGC(set1, set2, from);
+	return res;
 }
 
 
@@ -865,12 +764,12 @@ TVP vdmSetNotEquals(TVP set1, TVP set2)
 }
 
 
-TVP vdmSetNotEqualsGC(TVP set1, TVP set2, TVP *from)
+TVP vdmSetNotEqualsGC(TVP set1, TVP set2)
 {
 	ASSERT_CHECK(set1);
 	ASSERT_CHECK(set2);
 
-	return vdmInEqualsGC(set1, set2, from);
+	return vdmInEqualsGC(set1, set2);
 }
 
 
@@ -884,12 +783,12 @@ TVP vdmSetCard(TVP set)
 }
 
 
-TVP vdmSetCardGC(TVP set, TVP *from)
+TVP vdmSetCardGC(TVP set)
 {
 	ASSERT_CHECK(set);
 	UNWRAP_COLLECTION(col, set);
 
-	return newIntGC(col->size, from);
+	return newIntGC(col->size);
 }
 
 
@@ -924,33 +823,16 @@ TVP vdmSetDunion(TVP set)
 }
 
 
-TVP vdmSetDunionGC(TVP set, TVP *from)
+TVP vdmSetDunionGC(TVP set)
 {
-	int i;
-	TVP unionset;
-	TVP set1;
+	TVP tmp;
+	TVP res;
 
-	/* Preliminary checks.  */
-	ASSERT_CHECK(set);
+	tmp = vdmSetDunion(set);
+	res = vdmCloneGC(tmp);
+	vdmFree(tmp);
 
-	UNWRAP_COLLECTION(col, set);
-	for(i = 0; i < col->size; i++)
-	{
-		ASSERT_CHECK((col->value)[i]);
-	}
-
-	/* Initialize final set.  */
-	unionset = newSetVarGC(0, NULL, from);
-
-	/* Build union set.  */
-	for(i = 0; i < col->size; i++)
-	{
-		set1 = vdmSetUnion(unionset, (col->value)[i]);
-		vdmFree(unionset);
-		unionset = set1;
-	}
-
-	return unionset;
+	return res;
 }
 
 
@@ -985,33 +867,16 @@ TVP vdmSetDinter(TVP set)
 }
 
 
-TVP vdmSetDinterGC(TVP set, TVP *from)
+TVP vdmSetDinterGC(TVP set)
 {
-	int i;
-	TVP interset;
-	TVP set1;
+	TVP tmp;
+	TVP res;
 
-	/* Preliminary checks.  */
-	ASSERT_CHECK(set);
+	tmp = vdmSetDinter(set);
+	res = vdmCloneGC(tmp);
+	vdmFree(tmp);
 
-	UNWRAP_COLLECTION(col, set);
-	for(i = 0; i < col->size; i++)
-	{
-		ASSERT_CHECK((col->value)[i]);
-	}
-
-	/* Initialize final set.  */
-	interset = vdmClone((col->value)[0]);
-
-	/* Build intersection set.  */
-	for(i = 1; i < col->size; i++)
-	{
-		set1 = vdmSetInterGC(interset, (col->value)[i], from);
-		vdmFree(interset);
-		interset = set1;
-	}
-
-	return interset;
+	return res;
 }
 
 
@@ -1064,51 +929,16 @@ TVP vdmSetPower(TVP set)
 }
 
 
-TVP vdmSetPowerGC(TVP set, TVP *from)
+TVP vdmSetPowerGC(TVP set)
 {
-	int i, j;
-	TVP set1;
-	TVP set2;
-	TVP set3;
-	TVP powerset;
-	struct Collection *powercol;
-	int powercolsize;
+	TVP tmp;
+	TVP res;
 
-	ASSERT_CHECK(set);
+	tmp = vdmSetPower(set);
+	res = vdmCloneGC(tmp);
+	vdmFree(tmp);
 
-	UNWRAP_COLLECTION(col, set);
-
-	/* Initialize powerset to contain the empty set.  */
-	powerset = newSetVar(0, NULL);
-
-	set1 = newSetVar(0, NULL);
-	set2 = newSetVar(1, set1);
-	vdmFree(set1);
-	set1 = vdmSetUnion(powerset, set2);
-	vdmFree(set2);
-	vdmFree(powerset);
-	powerset = set1;
-
-	for(i = 0; i < col->size; i++)
-	{
-		powercolsize = ((struct Collection*)powerset->value.ptr)->size;
-		for(j = 0; j < powercolsize; j++)
-		{
-			powercol = (struct Collection*)powerset->value.ptr;
-
-			set1 = newSetVar(1, (col->value)[i]);
-			set2 = vdmSetUnion((powercol->value)[j], set1);
-			vdmFree(set1);
-			set1 = newSetVar(1, set2);
-			vdmFree(set2);
-			set3 = vdmSetUnionGC(powerset, set1, from);
-			vdmFree(set1);
-			vdmFree(powerset);
-			powerset = set3;
-		}
-	}
-
-	return powerset;
+	return res;
 }
 
 #endif /* NO_SETS */

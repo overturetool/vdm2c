@@ -23,7 +23,8 @@ import org.overture.codegen.trans.letexps.FuncTrans;
 import org.overture.codegen.trans.letexps.IfExpTrans;
 import org.overture.codegen.trans.patterns.PatternTrans;
 import org.overture.codegen.trans.patterns.PatternVarPrefixes;
-import org.overture.codegen.trans.quantifier.Exists1CounterData;
+import org.overture.codegen.trans.quantifier.CounterData;
+import org.overture.codegen.trans.uniontypes.NonDetStmTrans;
 import org.overture.codegen.vdm2c.transformations.*;
 
 import java.util.LinkedList;
@@ -39,15 +40,15 @@ public class CTransSeries
 		this.codeGen = codeGen;
 	}
 
-	private Exists1CounterData consExists1CounterData()
+	private CounterData consExists1CounterData()
 	{
 		AExternalTypeIR type = new AExternalTypeIR();
-		type.setName("Long");
+		type.setName("TVP");
 
 		IRInfo irInfo = codeGen.getIRGenerator().getIRInfo();
 		AIntLiteralExpIR initExp = irInfo.getExpAssistant().consIntLiteral(0);
 
-		return new Exists1CounterData(type, initExp);
+		return new CounterData(type, initExp);
 	}
 
 	public List<DepthFirstAnalysisAdaptor> consAnalyses()
@@ -70,6 +71,8 @@ public class CTransSeries
 		// Construct the transformations
 		transformations.add(new RecTypeToClassTypeTrans(transAssistant));
 		transformations.add(new FuncTrans(transAssistant));
+		transformations.add(new NonDetStmTrans(transAssistant));
+		transformations.add(new PrePostTrans(transAssistant.getInfo()));
 		transformations.add(new FieldInitializerExtractorTrans(transAssistant));
 		transformations.add(new RemoveRTConstructs(transAssistant));
 
@@ -112,9 +115,12 @@ public class CTransSeries
 		 * Phase #1 - Rewrite all standard C nodes to match C 1-to-1<br/>
 		 * - Rewrite e.g. 1 + 2 to vdmSum(1,2) instead.
 		 */
+		transformations.add(new IsExpUnionTypeTrans(transAssistant));
+		transformations.add(new IsCheckTrans(transAssistant));
 		transformations.add(new NumericTrans(transAssistant));
 		transformations.add(new LogicTrans(transAssistant));
 		transformations.add(new ColTrans(transAssistant));
+		transformations.add(new OOCheckTrans(transAssistant));
 		transformations.add(new TupleTrans(transAssistant));
 		transformations.add(new LiteralInstantiationRewriteTrans(transAssistant));
 		transformations.add(new RenameFieldsDeclsTrans(transAssistant));
@@ -158,6 +164,10 @@ public class CTransSeries
 		transformations.add(new MethodVisibilityTrans(transAssistant));
 		transformations.add(new C89ForLoopTrans(transAssistant));
 		transformations.add(new EnsureValueSemanticsTrans());
+		transformations.add(new CPreCheckTrans(transAssistant));
+		transformations.add(new ScopeCleanerTrans(transAssistant));
+
+		//transformations.add(new RenameMathLibraryTrans(transAssistant));
 
 		if(codeGen.getCGenSettings().usesGarbageCollection())
 		{

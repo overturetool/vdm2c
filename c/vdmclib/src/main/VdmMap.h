@@ -27,6 +27,10 @@
  *      Author: kel
  */
 
+
+/*  VERSION: For the version of VDM2C used to generate this project, refer to one of the generated files.  */
+
+
 #ifndef LIB_VDMMAP_H_
 #define LIB_VDMMAP_H_
 
@@ -60,35 +64,38 @@ void vdmMapAdd(TVP map,TVP key, TVP value);
 void vdmMapUpdate(TVP map, TVP key, TVP value);
 
 TVP newMapVar(size_t, size_t, ...);
-TVP newMapVarGC(size_t size, size_t expected_size, TVP *from, ...);
+TVP newMapVarGC(size_t size, size_t expected_size, ...);
 void vdmMapGrow(TVP, TVP, TVP);
 void vdmMapFit(TVP);
 
 /* VDM map operators  */
 TVP vdmMapDom(TVP map);
-TVP vdmMapDomGC(TVP map, TVP *from);
+TVP vdmMapDomGC(TVP map);
 TVP vdmMapRng(TVP map);
-TVP vdmMapRngGC(TVP map, TVP *from);
+TVP vdmMapRngGC(TVP map);
 TVP vdmMapMunion(TVP map1, TVP map2);
-TVP vdmMapMunionGC(TVP map1, TVP map2, TVP *from);
+TVP vdmMapMunionGC(TVP map1, TVP map2);
 TVP vdmMapOverride(TVP map1, TVP map2);
-TVP vdmMapOverrideGC(TVP map1, TVP map2, TVP *from);
+TVP vdmMapOverrideGC(TVP map1, TVP map2);
 TVP vdmMapMerge(TVP set);
-TVP vdmMapMergeGC(TVP set, TVP *from);
+TVP vdmMapMergeGC(TVP set);
 TVP vdmMapDomRestrictTo(TVP set,TVP map);
-TVP vdmMapDomRestrictToGC(TVP set,TVP map, TVP *from);
+TVP vdmMapDomRestrictToGC(TVP set,TVP map);
 TVP vdmMapDomRestrictBy(TVP set,TVP map);
-TVP vdmMapDomRestrictByGC(TVP set,TVP map, TVP *from);
+TVP vdmMapDomRestrictByGC(TVP set,TVP map);
 TVP vdmMapRngRestrictTo(TVP map, TVP set);
-TVP vdmMapRngRestrictToGC(TVP map, TVP set, TVP *from);
+TVP vdmMapRngRestrictToGC(TVP map, TVP set);
 TVP vdmMapRngRestrictBy(TVP map, TVP set);
-TVP vdmMapRngRestrictByGC(TVP map, TVP set, TVP *from);
+TVP vdmMapRngRestrictByGC(TVP map, TVP set);
 TVP vdmMapApply(TVP map, TVP key);
-TVP vdmMapApplyGC(TVP map, TVP key, TVP *from);
+TVP vdmMapApplyGC(TVP map, TVP key);
 TVP vdmMapInverse(TVP map);
-TVP vdmMapInverseGC(TVP map, TVP *from);
-
+TVP vdmMapInverseGC(TVP map);
 TVP vdmMapEquals(TVP map1, TVP map2);
+TVP vdmMapCompose(TVP a, TVP b);
+TVP vdmMapComposeGC(TVP a, TVP b);
+TVP vdmMapIterate(TVP a, TVP num);
+TVP vdmMapIterateGC(TVP a, TVP num);
 
 #endif /* NO_MAPS */
 #endif /* LIB_VDMMAP_H_ */

@@ -82,3 +82,13 @@ TEST_F(TestFlowFunctions, mapRngResBy)
 {
 	CHECK(CLASS_ExpressionMap__Z16mapRestrictRngByEV);
 }
+
+TEST_F(TestFlowFunctions, mapIterate)
+{
+	CHECK(CLASS_ExpressionMap__Z12mapIterationEV);
+}
+
+TEST_F(TestFlowFunctions, mapComp)
+{
+	CHECK(CLASS_ExpressionMap__Z7mapCompEV);
+}

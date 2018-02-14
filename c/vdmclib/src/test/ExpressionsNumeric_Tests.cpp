@@ -46,18 +46,15 @@ TEST(Expression_Numeric, minusExpGC)
 {
 	vdm_gc_init();
 
-	TVP t = newIntGC(5, &t);
+	TVP t = newIntGC(5);
 
 	assert(t->type == VDM_INT && "Value is not a integer");
-	TVP res = vdmMinusGC(t, &res);
+	TVP res = vdmMinusGC(t);
 
 
 	EXPECT_EQ(-5,res->value.intVal);
 
 	vdm_gc();
-
-//	vdmFree(t);
-//	vdmFree(res);
 
 	vdm_gc_shutdown();
 }
@@ -78,24 +75,16 @@ TEST(Expression_Numeric, absExpGC)
 {
 	vdm_gc_init();
 
-	TVP t = newIntGC(-5, &t);
+	TVP t = newIntGC(-5);
 
 	assert(t->type == VDM_INT && "Value is not a integer");
 
-	vdm_gc();
-
-	TVP res = vdmMinusGC(t, &res);
-
-	vdm_gc();
+	TVP res = vdmMinusGC(t);
 
 	EXPECT_EQ(5,res->value.intVal);
 
 	vdm_gc();
-
-	vdmFree(t);
-	vdmFree(res);
 }
-
 
 TEST(Expression_Numeric, floorExp)
 {
@@ -104,9 +93,6 @@ TEST(Expression_Numeric, floorExp)
 	assert(t->type == VDM_REAL && "Value is not a real");
 	TVP res = vdmFloor(t);
 	EXPECT_EQ(5,res->value.intVal);
-
-	vdmFree(t);
-	vdmFree(res);
 }
 
 TEST(Expression_Numeric, sumExp)

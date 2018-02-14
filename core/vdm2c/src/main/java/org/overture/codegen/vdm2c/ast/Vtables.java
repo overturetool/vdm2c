@@ -16,6 +16,7 @@ import org.overture.codegen.ir.declarations.AMethodDeclIR;
 import org.overture.codegen.vdm2c.extast.declarations.AAnonymousStruct;
 import org.overture.codegen.vdm2c.extast.declarations.AArrayDeclIR;
 import org.overture.codegen.vdm2c.extast.declarations.AClassHeaderDeclIR;
+import org.overture.codegen.vdm2c.tags.CTags;
 import org.overture.codegen.vdm2c.utils.NameMangler;
 
 public class Vtables
@@ -298,22 +299,29 @@ public class Vtables
 	{
 		if(!method.getIsConstructor())
 			return false;
-		
-		if(method.getFormalParams().size() != 1)
-		{
-			return false;
-		}
-		
+
 		ADefaultClassDeclIR encClass = method.getAncestor(ADefaultClassDeclIR.class);
 		
 		if(encClass != null)
 		{
-			return encClass.getSourceNode() != null && encClass.getSourceNode().getVdmNode() instanceof ARecordInvariantType;
+			// Does the class originate from a record definition?
+			if(encClass.getSourceNode() != null && encClass.getSourceNode().getVdmNode() instanceof ARecordInvariantType)
+			{
+				// Is it a generated GC default constructor?
+				if(method.getFormalParams().size() == 2 && method.getTag() == CTags.GC_CONSTRUCTOR)
+				{
+					return true;
+				}
+
+				// Is it the default constructor?
+				if(method.getFormalParams().size() == 1)
+				{
+					return true;
+				}
+			}
 		}
-		else
-		{
-			return false;
-		}
+		
+		return false;
 	}
 
 }

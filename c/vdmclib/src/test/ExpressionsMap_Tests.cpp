@@ -500,4 +500,77 @@ TEST(Expression_Map, vdmMapGrow)
 	vdmFree(theMap);
 }
 
+TEST(ExpressionMap, Composition)
+{
+	TVP a;
+	TVP b;
+	TVP res1;
+	TVP res2;
+
+	a = newMapVar(1, 1, newInt(3), newInt(4));
+	b = newMapVar(1, 1, newInt(2), newInt(3));
+
+	res1 = vdmMapCompose(a, b);
+
+	res2 = vdmMapApply(res1, newInt(2));
+
+	EXPECT_TRUE(res2->value.intVal == 4);
+
+	vdmFree(a);
+	vdmFree(b);
+	vdmFree(res1);
+	vdmFree(res2);
+}
+
+TEST(ExpressionMap, Iteration)
+{
+	TVP a;
+	TVP res1;
+	TVP res2;
+
+	a = newMapVar(3, 3, newInt(3), newInt(4), newInt(4), newInt(6), newInt(6), newInt(3));
+	res1 = vdmMapIterate(a, newInt(0));
+
+	EXPECT_TRUE(vdmMapApply(res1, newInt(3))->value.intVal == 3);
+	EXPECT_TRUE(vdmMapApply(res1, newInt(4))->value.intVal == 4);
+	EXPECT_TRUE(vdmMapApply(res1, newInt(6))->value.intVal == 6);
+	vdmFree(res1);
+
+	res1 = vdmMapIterate(a, newInt(1));
+	EXPECT_TRUE(vdmEquals(a, res1)->value.boolVal);
+	vdmFree(res1);
+
+	res1 = vdmMapIterate(a, newInt(2));
+
+	res2 = vdmMapApply(res1, newInt(3));
+	EXPECT_TRUE(res2->value.intVal == 6);
+	vdmFree(res2);
+
+	res2 = vdmMapApply(res1, newInt(4));
+	EXPECT_TRUE(res2->value.intVal == 3);
+	vdmFree(res2);
+
+	res2 = vdmMapApply(res1, newInt(6));
+	EXPECT_TRUE(res2->value.intVal == 4);
+	vdmFree(res2);
+
+	vdmFree(res1);
+	res1 = vdmMapIterate(a, newInt(3));
+
+	res2 = vdmMapApply(res1, newInt(3));
+	EXPECT_TRUE(res2->value.intVal == 3);
+	vdmFree(res2);
+
+	res2 = vdmMapApply(res1, newInt(4));
+	EXPECT_TRUE(res2->value.intVal == 4);
+	vdmFree(res2);
+
+	res2 = vdmMapApply(res1, newInt(6));
+	EXPECT_TRUE(res2->value.intVal == 6);
+	vdmFree(res2);
+
+	vdmFree(res1);
+	vdmFree(a);
+}
+
 #endif /* NO_MAPS */

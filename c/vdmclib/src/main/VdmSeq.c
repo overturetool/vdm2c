@@ -26,6 +26,11 @@
  *  Created on: Dec 1, 2015
  *      Author: kel
  */
+
+
+/*  VERSION: For the version of VDM2C used to generate this project, refer to one of the generated files.  */
+
+
 #include <stdarg.h>
 #include "VdmSeq.h"
 #include "VdmGC.h"
@@ -42,8 +47,9 @@
 /* ------------------------------------------------  */
 static void vdmSeqAdd(TVP* value, int* index, TVP newValue)
 {
-	value[*index] = newValue;
+	value[*index] = vdmClone(newValue);
 	*index = (*index) + 1;
+	vdmFree(newValue);
 }
 /* End utility functions  */
 /* ------------------------------------------------  */
@@ -55,11 +61,6 @@ static void vdmSeqAdd(TVP* value, int* index, TVP newValue)
 TVP newSeq(size_t size)
 {
 	return newCollection(size, VDM_SEQ);
-}
-
-static TVP newSeqGC(size_t size, TVP *from)
-{
-	return newCollectionGC(size, VDM_SEQ, from);
 }
 
 TVP newSeqWithValues(size_t size, TVP* elements)
@@ -87,12 +88,17 @@ TVP newSeqVar(size_t size, ...)
 	va_end(ap);
 
 	res = newCollectionWithValues(size, VDM_SEQ, elements);
+
+	for (i = 0; i < size; i++)
+	{
+		vdmFree(elements[i]);
+	}
 	free(elements);
 
 	return res;
 }
 
-TVP newSeqVarGC(size_t size, TVP *from, ...)
+TVP newSeqVarGC(size_t size, ...)
 {
 	int i;
 	TVP arg;
@@ -102,7 +108,7 @@ TVP newSeqVarGC(size_t size, TVP *from, ...)
 	elements = (TVP *)calloc(size, sizeof(TVP));
 
 	va_list ap;
-	va_start(ap, from);
+	va_start(ap, size);
 
 	for (i = 0; i < size; i++)
 	{
@@ -111,7 +117,7 @@ TVP newSeqVarGC(size_t size, TVP *from, ...)
 	}
 	va_end(ap);
 
-	res = newCollectionWithValuesGC(size, VDM_SEQ, elements, from);
+	res = newCollectionWithValuesGC(size, VDM_SEQ, elements);
 	free(elements);
 
 	return res;
@@ -160,6 +166,47 @@ TVP newSeqVarToGrow(size_t size, size_t expected_size, ...)
 	return res;
 }
 
+TVP newSeqVarToGrowGC(size_t size, size_t expected_size, ...)
+{
+	int i;
+
+	va_list ap;
+	va_start(ap, expected_size);
+
+	int count = 0;
+
+	int bufsize = expected_size;
+
+	TVP* value = (TVP*) calloc(bufsize, sizeof(TVP));
+	assert(value != NULL);
+
+	TVP arg;
+	TVP v;
+
+	for(i = 0; i < size; i++)
+	{
+		arg = va_arg(ap, TVP);
+		v = vdmClone(arg); /*  set binding  */
+
+
+		/* Extra security measure.  Will only be true if size >= expected_size.  */
+		if(count >= bufsize)
+		{
+			/* buffer too small add memory chunk  */
+			bufsize += DEFAULT_SEQ_COMP_BUFFER_STEPSIZE;
+			value = (TVP*)realloc(value, bufsize * sizeof(TVP));
+			assert(value != NULL);
+		}
+		vdmSeqAdd(value, &count, v);
+	}
+
+	va_end(ap);
+
+	TVP res = newCollectionWithValuesPreallocGC(count, expected_size, VDM_SEQ, value);
+	free(value);
+	return res;
+}
+
 void vdmSeqGrow(TVP seq, TVP element)
 {
 	UNWRAP_COLLECTION(col, seq);
@@ -192,14 +239,14 @@ TVP vdmSeqHd(TVP seq)
 	return vdmClone(col->value[0]);
 }
 
-TVP vdmSeqHdGC(TVP seq, TVP *from)
+TVP vdmSeqHdGC(TVP seq)
 {
 	ASSERT_CHECK(seq);
 	UNWRAP_COLLECTION(col,seq);
 
 	assert(col->size != 0 && "Can not take head of empty sequence.\n");
 
-	return vdmCloneGC(col->value[0], from);
+	return vdmCloneGC(col->value[0]);
 }
 
 TVP vdmSeqTl(TVP seq)
@@ -224,26 +271,16 @@ TVP vdmSeqTl(TVP seq)
 	return tailVal;
 }
 
-TVP vdmSeqTlGC(TVP seq, TVP *from)
+TVP vdmSeqTlGC(TVP seq)
 {
-	int i;
+	TVP tmp;
+	TVP res;
 
-	ASSERT_CHECK(seq);
-	UNWRAP_COLLECTION(col,seq);
+	tmp = vdmSeqTl(seq);
+	res = vdmCloneGC(tmp);
+	vdmFree(tmp);
 
-	assert(col->size != 0 && "Can not take tail of empty sequence.\n");
-
-	/* malloc  */
-	TVP tailVal = newSeqGC(col->size - 1, from);
-	UNWRAP_COLLECTION(tail,tailVal);
-
-	/* copy tail list  */
-	for (i = 1; i < col->size; i++)
-	{
-		tail->value[i-1] = vdmClone(col->value[i]);
-	}
-
-	return tailVal;
+	return res;
 }
 
 TVP vdmSeqLen(TVP seq)
@@ -253,11 +290,11 @@ TVP vdmSeqLen(TVP seq)
 	return newInt(col->size);
 }
 
-TVP vdmSeqLenGC(TVP seq, TVP *from)
+TVP vdmSeqLenGC(TVP seq)
 {
 	ASSERT_CHECK(seq);
 	UNWRAP_COLLECTION(col,seq);
-	return newIntGC(col->size, from);
+	return newIntGC(col->size);
 }
 
 #ifndef NO_SETS
@@ -272,12 +309,12 @@ TVP vdmSeqElems(TVP seq)
 }
 
 
-TVP vdmSeqElemsGC(TVP seq, TVP *from)
+TVP vdmSeqElemsGC(TVP seq)
 {
 	ASSERT_CHECK(seq);
 	UNWRAP_COLLECTION(col,seq);
 
-	TVP elemsVal = newSetWithValuesGC(col->size, col->value, from);
+	TVP elemsVal = newSetWithValuesGC(col->size, col->value);
 
 	return elemsVal;
 }
@@ -301,29 +338,26 @@ TVP vdmSeqInds(TVP seq)
 
 	TVP indsVal = newSetWithValues(col->size, value);
 
+	for (i = 0; i < col->size; i++)
+	{
+		vdmFree(value[i]);
+	}
+	free(value);
+
 	return indsVal;
 }
 
 
-TVP vdmSeqIndsGC(TVP seq, TVP *from)
+TVP vdmSeqIndsGC(TVP seq)
 {
-	int i;
+	TVP tmp;
+	TVP res;
 
-	ASSERT_CHECK(seq);
-	UNWRAP_COLLECTION(col,seq);
+	tmp = vdmSeqInds(seq);
+	res = vdmCloneGC(tmp);
+	vdmFree(tmp);
 
-	TVP* value = (TVP*) calloc(col->size, sizeof(TVP));
-	assert(value != NULL);
-
-	/* copy  list  */
-	for (i = 0; i < col->size; i++)
-	{
-		value[i] = newInt(i+1);
-	}
-
-	TVP indsVal = newSetWithValuesGC(col->size, value, from);
-
-	return indsVal;
+	return res;
 }
 #endif
 
@@ -355,32 +389,16 @@ TVP vdmSeqConc(TVP seq,TVP seq2)
 	return concVal;
 }
 
-TVP vdmSeqConcGC(TVP seq, TVP seq2, TVP *from)
+TVP vdmSeqConcGC(TVP seq, TVP seq2)
 {
-	int i;
+	TVP tmp;
+	TVP res;
 
-	ASSERT_CHECK(seq);
-	ASSERT_CHECK(seq2);
-	UNWRAP_COLLECTION(col,seq);
-	UNWRAP_COLLECTION(col2,seq2);
+	tmp = vdmSeqConc(seq, seq2);
+	res = vdmCloneGC(tmp);
+	vdmFree(tmp);
 
-	/* malloc  */
-	TVP concVal = newSeqGC(col->size+col2->size, from);
-	UNWRAP_COLLECTION(concSeq,concVal);
-
-	/* copy  list  */
-	for (i = 0; i < col->size; i++)
-	{
-		concSeq->value[i] = vdmClone(col->value[i]);
-	}
-
-	int offset = col->size;
-	for (i = 0; i < col2->size; i++)
-	{
-		concSeq->value[i+offset] = vdmClone(col2->value[i]);
-	}
-
-	return concVal;
+	return res;
 }
 
 TVP vdmSeqReverse(TVP seq)
@@ -404,25 +422,16 @@ TVP vdmSeqReverse(TVP seq)
 	return elemsVal;
 }
 
-TVP vdmSeqReverseGC(TVP seq, TVP *from)
+TVP vdmSeqReverseGC(TVP seq)
 {
-	int i;
+	TVP tmp;
+	TVP res;
 
-	ASSERT_CHECK(seq);
-	UNWRAP_COLLECTION(col,seq);
+	tmp = vdmSeqReverse(seq);
+	res = vdmCloneGC(tmp);
+	vdmFree(tmp);
 
-	/* malloc  */
-	TVP elemsVal = newSeqGC(col->size, from);
-	UNWRAP_COLLECTION(elems,elemsVal);
-
-	int offset = col->size-1;
-	/* copy  list  */
-	for (i = 0; i < col->size; i++)
-	{
-		elems->value[i] = vdmClone(col->value[offset - i]);
-	}
-
-	return elemsVal;
+	return res;
 }
 
 TVP vdmSeqMod(TVP seq,TVP map)
@@ -459,39 +468,14 @@ TVP vdmSeqMod(TVP seq,TVP map)
 }
 
 
-TVP vdmSeqModGC(TVP seq,TVP map, TVP *from)
+TVP vdmSeqModGC(TVP seq,TVP map)
 {
-	ASSERT_CHECK(seq);
-	assert((map->type == VDM_MAP) && "Overriding expression is not a map.\n");
+	TVP tmp;
+	TVP res;
 
-	UNWRAP_COLLECTION(s,seq);
-
-	TVP res = newSeqGC(s->size, NULL);
-
-	UNWRAP_COLLECTION(r,res);
-
-	int i;
-	for (i = 0; i < s->size; i++) {
-		r->value[i] = vdmClone(s->value[i]);
-	}
-
-	TVP dom = vdmMapDom(map);
-	UNWRAP_COLLECTION(d,dom);
-
-	TVP key;
-	TVP val;
-	for (i = 0; i < d->size; i++) {
-
-		key = d->value[i];
-		assert((key->type == VDM_INT || key->type == VDM_NAT || key->type == VDM_NAT1) && "Overriding expression key is not an integer.\n");
-		assert(key->value.intVal >= 1 && key->value.intVal <= s->size && "Overriding expression key not in sequence index range.\n");
-
-		val = vdmMapApply(map,key);
-		vdmFree(r->value[key->value.intVal - 1]);
-		r->value[key->value.intVal - 1] = val;
-	}
-
-	vdmFree(dom);
+	tmp = vdmSeqMod(seq, map);
+	res = vdmCloneGC(tmp);
+	vdmFree(tmp);
 
 	return res;
 }
@@ -509,16 +493,16 @@ TVP vdmSeqIndex(TVP seq, TVP indexVal) /* VDM uses 1 based index  */
 	return vdmClone(col->value[index-1]);
 }
 
-TVP vdmSeqIndexGC(TVP seq, TVP indexVal, TVP *from) /* VDM uses 1 based index  */
+TVP vdmSeqIndexGC(TVP seq, TVP indexVal) /* VDM uses 1 based index  */
 {
-	ASSERT_CHECK(seq);
-	assert((indexVal->type == VDM_INT||indexVal->type == VDM_NAT||indexVal->type == VDM_NAT1) && "index is not a int");
+	TVP tmp;
+	TVP res;
 
-	int index = indexVal->value.intVal;
-	UNWRAP_COLLECTION(col,seq);
+	tmp = vdmSeqIndex(seq, indexVal);
+	res = vdmCloneGC(tmp);
+	vdmFree(tmp);
 
-	assert(index - 1 >= 0 && index - 1 < col->size && "invalid index");
-	return vdmCloneGC(col->value[index-1], from);
+	return res;
 }
 
 void vdmSeqUpdate(TVP seq, TVP indexVal, TVP newValue)
@@ -530,6 +514,8 @@ void vdmSeqUpdate(TVP seq, TVP indexVal, TVP newValue)
 	UNWRAP_COLLECTION(col, seq);
 
 	assert(index - 1 >= 0 && index - 1 < col->size && "invalid index");
+
+	vdmFree(col->value[index - 1]);
 	col->value[index - 1] = vdmClone(newValue);
 }
 

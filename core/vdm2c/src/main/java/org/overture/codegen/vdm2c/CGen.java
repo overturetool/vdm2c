@@ -38,6 +38,7 @@ import org.overture.codegen.ir.types.AIntNumericBasicTypeIR;
 import org.overture.codegen.ir.types.AMethodTypeIR;
 import org.overture.codegen.utils.GeneratedData;
 import org.overture.codegen.utils.GeneratedModule;
+import org.overture.codegen.vdm2c.analysis.ClassAssocAnalysis;
 import org.overture.codegen.vdm2c.distribution.CDistTransSeries;
 import org.overture.codegen.vdm2c.distribution.DistCGenUtil;
 import org.overture.codegen.vdm2c.distribution.SystemArchitectureAnalysis;
@@ -59,9 +60,13 @@ public class CGen extends CodeGenBase
 
 	private FeatureAnalysisResult featureAnalysis;
 
+	private String classAssocArray;
+
 	private List<String> headers = new LinkedList<>();
 
 	public static final String FEATURE_FILE_NAME = "VdmModelFeatures.h";
+
+	public static final String CLASS_ASSOC_FILE_NAME = "VdmClassHierarchy.h";
 
 	private boolean distGen = false;
 
@@ -87,6 +92,7 @@ public class CGen extends CodeGenBase
 		super.preProcessAst(ast);
 		hasTimeMap = TimeFinder.computeTimeMap(getClasses(ast));
 		featureAnalysis = FeatureAnalysisResult.runAnalysis(getClasses(ast), cGenSettings.usesGarbageCollection());
+		classAssocArray = ClassAssocAnalysis.runAnalysis(getClasses(ast), getInfo().getDeclAssistant());
 	}
 
 	public List<File> getEmittedFiles()
@@ -593,6 +599,17 @@ public class CGen extends CodeGenBase
 		}
 	}
 
+	public void emitClassAssocFile(File outputDir, String classAssocFile) throws Exception
+	{
+		if(classAssocArray != null)
+		{
+			writeFile(outputDir, classAssocFile, classAssocArray);
+		}
+		else
+		{
+			throw new Exception("No feature analysis result found! Did you run the code generator?");
+		}
+	}
 
 	public void emitFeatureFile(File outputDir, String featureFileName) throws Exception
 	{
@@ -615,6 +632,7 @@ public class CGen extends CodeGenBase
 			File outputD = new File(outputDir.getAbsolutePath() + "/" + cpuName);
 
 			cGen.emitFeatureFile(outputD, CGen.FEATURE_FILE_NAME);
+			cGen.emitClassAssocFile(outputD, CGen.CLASS_ASSOC_FILE_NAME);
 
 			for (GeneratedModule generatedClass : data.getClasses()) {
 
@@ -673,30 +691,25 @@ public class CGen extends CodeGenBase
 
 	private void genDistCalls(List<IRStatus<PIR>> canBeGenerated, List<IRStatus<ADefaultClassDeclIR>> classes) {
 
-		IRStatus<ADefaultClassDeclIR> c = classes.get(0);
+		if(!classes.isEmpty()) {
+			IRStatus<ADefaultClassDeclIR> c = classes.get(0);
 
-		//for (IRStatus<ADefaultClassDeclIR> c: classes) {
+			for (String bus : SystemArchitectureAnalysis.connectionMapStr.keySet()) {
 
-		//if(c.canBeGenerated())
-		//{
-		for (String bus : SystemArchitectureAnalysis.connectionMapStr.keySet()){
+				// Create C file
+				ADistCallDeclIR distCall = genDistCall(c.getIrNode(), bus + "CG", false);
+				String nodeName = bus;// +// "_dist";
+				distCall.setTag(bus);
+				IRStatus irStatus = new IRStatus(c.getVdmNode(), nodeName, distCall, c.getUnsupportedInIr(), c.getTransformationWarnings());
+				canBeGenerated.add(irStatus);
 
-			// Create C file
-			ADistCallDeclIR distCall = genDistCall(c.getIrNode(), bus + "CG", false);
-			String nodeName = bus ;// +// "_dist";
-			distCall.setTag(bus);
-			IRStatus irStatus = new IRStatus(c.getVdmNode(), nodeName, distCall, c.getUnsupportedInIr(), c.getTransformationWarnings());
-			canBeGenerated.add(irStatus);
-
-			// Create H file
-			distCall = genDistCall(c.getIrNode(), bus + "CG", true);
-			//String nodeName = bus;// +// "_dist";
-			distCall.setTag(bus);
-			irStatus = new IRStatus(c.getVdmNode(), nodeName, distCall, c.getUnsupportedInIr(), c.getTransformationWarnings());
-			canBeGenerated.add(irStatus);
+				// Create H file
+				distCall = genDistCall(c.getIrNode(), bus + "CG", true);
+				distCall.setTag(bus);
+				irStatus = new IRStatus(c.getVdmNode(), nodeName, distCall, c.getUnsupportedInIr(), c.getTransformationWarnings());
+				canBeGenerated.add(irStatus);
+			}
 		}
-		//}
-		//}
 	}
 
 	private ADistCallDeclIR genDistCall(ADefaultClassDeclIR c, String name, Boolean isHeader) {

@@ -27,6 +27,10 @@
  *      Author: kel
  */
 
+
+/*  VERSION: For the version of VDM2C used to generate this project, refer to one of the generated files.  */
+
+
 #ifndef LIB_VDMSET_H_
 #define LIB_VDMSET_H_
 
@@ -44,43 +48,44 @@
  * Create new set from array of elements
  */
 TVP newSetWithValues(size_t size,TVP* elements);
-TVP newSetWithValuesGC(size_t size,TVP* elements, TVP *from);
+TVP newSetWithValuesGC(size_t size,TVP* elements);
 /*
  * Create new set from variadic list of elements
  */
 TVP newSetVar(size_t size, ...);
-TVP newSetVarGC(size_t size, TVP *from, ...);
+TVP newSetVarGC(size_t size, ...);
 TVP newSetVarToGrow(size_t size, size_t expected_size, ...);
-TVP newSetVarToGrowGC(size_t size, size_t expected_size, TVP *from,  ...);
+TVP newSetVarToGrowGC(size_t size, size_t expected_size,  ...);
 
 void vdmSetGrow(TVP set, TVP element);
 void vdmSetFit(TVP set);
 TVP vdmSetEnumerateSetOfInts(int lower, int upper);
+TVP vdmSetEnumerateSetOfIntsGC(int lower, int upper);
 TVP vdmSetElementAt(TVP set, int loc);
-TVP vdmSetElementAtGC(TVP set, int loc, TVP *from);
+TVP vdmSetElementAtGC(TVP set, int loc);
 TVP vdmSetMemberOf(TVP set, TVP element);
-TVP vdmSetMemberOfGC(TVP set, TVP element, TVP *from);
+TVP vdmSetMemberOfGC(TVP set, TVP element);
 TVP vdmSetNotMemberOf(TVP set, TVP element);
-TVP vdmSetNotMemberOfGC(TVP set, TVP element, TVP *from);
+TVP vdmSetNotMemberOfGC(TVP set, TVP element);
 TVP vdmSetUnion(TVP set1, TVP set2);
-TVP vdmSetUnionGC(TVP set1, TVP set2, TVP *from);
+TVP vdmSetUnionGC(TVP set1, TVP set2);
 TVP vdmSetInter(TVP set1, TVP set2);
-TVP vdmSetInterGC(TVP set1, TVP set2, TVP *from);
+TVP vdmSetInterGC(TVP set1, TVP set2);
 TVP vdmSetDifference(TVP set1, TVP set2);
-TVP vdmSetDifferenceGC(TVP set1, TVP set2, TVP *from);
+TVP vdmSetDifferenceGC(TVP set1, TVP set2);
 TVP vdmSetSubset(TVP set1, TVP set2);
-TVP vdmSetSubsetGC(TVP set1, TVP set2, TVP *from);
+TVP vdmSetSubsetGC(TVP set1, TVP set2);
 TVP vdmSetProperSubset(TVP set1, TVP set2);
-TVP vdmSetProperSubsetGC(TVP set1, TVP set2, TVP *from);
+TVP vdmSetProperSubsetGC(TVP set1, TVP set2);
 TVP vdmSetEquals(TVP set1, TVP set2);
 TVP vdmSetCard(TVP set);
-TVP vdmSetCardGC(TVP set, TVP *from);
+TVP vdmSetCardGC(TVP set);
 TVP vdmSetDunion(TVP set);
-TVP vdmSetDunionGC(TVP set, TVP *from);
+TVP vdmSetDunionGC(TVP set);
 TVP vdmSetDinter(TVP set);
-TVP vdmSetDinterGC(TVP set, TVP *from);
+TVP vdmSetDinterGC(TVP set);
 TVP vdmSetPower(TVP set);
-TVP vdmSetPowerGC(TVP set, TVP *from);
+TVP vdmSetPowerGC(TVP set);
 
 #endif /* NO_SETS */
 #endif /* LIB_VDMSET_H_ */

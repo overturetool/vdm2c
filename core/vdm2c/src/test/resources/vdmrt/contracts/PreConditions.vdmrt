@@ -1,0 +1,82 @@
+class PreConditions
+
+instance variables
+
+x : int := 5;
+
+static g : char := 'a';
+
+operations
+
+public opPreCondTrue : () ==> bool
+opPreCondTrue () == return true
+pre true;
+
+public opPreCondFalse : () ==> bool
+opPreCondFalse () == return true
+pre false;
+
+public opNoPreSuccess : () ==> bool
+opNoPreSuccess () == return true;
+
+public opFailPreCondSecondFame : () ==> bool
+opFailPreCondSecondFame () == return expectPos(-1);
+
+public opStatePreSuccess : () ==> bool
+opStatePreSuccess() == return true
+pre x = 5;
+
+public opStatePreFail : () ==> bool
+opStatePreFail() == return true
+pre x = 4;
+
+public opStaticStatePreSuccess : () ==> bool
+opStaticStatePreSuccess() == return true
+pre g = 'a';
+
+public opStaticStatePreFail : () ==> bool
+opStaticStatePreFail() == return true
+pre g = 'b';
+
+public opCallOpWithArgsSuccess : () ==> bool
+opCallOpWithArgsSuccess() == return opArgs(5,'c');
+
+public opCallOpWithArgsFail : () ==> bool
+opCallOpWithArgsFail() == return opArgs(5,'b');
+
+
+functions
+
+public funcPreCondSuccess :  () -> bool
+funcPreCondSuccess () == true
+pre true;
+
+public funcPreCondFail :  () -> bool
+funcPreCondFail () == true
+pre false;
+
+public funcPassPreCondSecondFame :  () -> bool
+funcPassPreCondSecondFame () == true
+pre expectPos(5);
+
+public funcFailPreCondSecondFame :  () -> bool
+funcFailPreCondSecondFame () == true
+pre expectPos(-5);
+
+--
+---- Utility operations and functions below
+--
+
+operations
+
+public opArgs : nat * char ==> bool
+opArgs(n,c) == return true
+pre n = 5 and c = 'c';
+
+functions
+
+expectPos :  nat -> bool
+expectPos (x) == true
+pre x > 0;
+
+end PreConditions

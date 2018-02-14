@@ -27,6 +27,10 @@
  *      Author: Victor Bandur
  */
 
+
+/*  VERSION: For the version of VDM2C used to generate this project, refer to one of the generated files.  */
+
+
 #ifndef MATHLIB_H_
 #define MATHLIB_H_
 
