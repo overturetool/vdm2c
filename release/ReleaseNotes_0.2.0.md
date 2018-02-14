@@ -1,5 +1,5 @@
 
-# [VDM2C 0.2 - Release Notes - 14 February 2018](https://github.com/overturetool/vdm2c/milestone/19)
+# [VDM2C 0.2.0 - Release Notes - 14 February 2018](https://github.com/overturetool/vdm2c/milestone/19)
 
 ## What's New?
 
