@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.overturetool.vdm2c</groupId>
 		<artifactId>root</artifactId>
-		<version>0.2.0</version>
+		<version>0.2.2</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 <packaging>pom</packaging>
@@ -155,9 +155,9 @@ the manifests, though.
 
 	<repositories>
 		<repository>
-			<id>eclipse-neon</id>
+			<id>eclipse-oxygen</id>
 			<layout>p2</layout>
-			<url>http://download.eclipse.org/releases/neon</url>
+			<url>http://download.eclipse.org/releases/oxygen</url>
 		</repository>
 
  	<repository>
