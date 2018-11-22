@@ -10,7 +10,7 @@ import org.overture.codegen.ir.IRConstants;
 
 abstract public class FeatureAnalysis extends DepthFirstAnalysisAdaptor
 {
-	public static final List<String> LIB_NAMES = Arrays.asList(IRConstants.CLASS_NAMES_USED_IN_VDM);
+	public static final List<String> LIB_NAMES = Arrays.asList(IRConstants.CLASS_NAMES_USED_IN_VDM_PP_RT);
 	
 	public boolean hasFeature(List<SClassDefinition> ast)
 	{
