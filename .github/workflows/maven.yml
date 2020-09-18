@@ -2,7 +2,7 @@ name: Java CI with Maven
 
 on:
   push:
-    branches: [ development ]
+    branches: [ development, update_overture30 ]
   pull_request:
     branches: [ development ]
 
