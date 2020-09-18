@@ -81,9 +81,7 @@ INCLUDE_DIRECTORIES(
 )
 
 target_link_libraries(${PROJECT_NAME} gtest_main)
-TARGET_LINK_LIBRARIES(${PROJECT_NAME}
-    ${GLIB2_LIBRARIES}
-)
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${GLIB_LDFLAGS})
 
 
 add_test(NAME AllTestsIn-##PROJECT_NAME## COMMAND ${PROJECT_NAME} "--gtest_output=xml:report.xml")
