@@ -5,13 +5,13 @@
   ignore = dirty
 [submodule "cases/single-watertank"]
 	path = cases/single-watertank
-	url = https://github.com/into-cps/case-study_single_watertank
+	url = https://github.com/INTO-CPS-Association/example-single_watertank
 [submodule "cases/three-tank"]
 	path = cases/three-tank
-	url = https://github.com/into-cps/case-study_three_tank
+	url = https://github.com/into-cps-association/example-three_tank_watertank
 [submodule "cases/fcu"]
 	path = cases/fcu
-	url = https://github.com/into-cps/case-study_fcu
+	url = https://github.com/INTO-CPS-Association/example-fcu
 [submodule "cases/line-follower-robot"]
 	path = cases/line-follower-robot
-	url = https://github.com/into-cps/case-study_line_follower_robot
+	url = https://github.com/INTO-CPS-Association/example-line_follower_robot
